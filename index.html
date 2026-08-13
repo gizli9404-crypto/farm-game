@@ -59,6 +59,7 @@
         .quick-btn { background: rgba(0, 255, 245, 0.1); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 4px 8px; font-size: 10px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; }
         .calc-preview-card { background: rgba(10, 17, 40, 0.9); border-radius: 10px; padding: 10px 14px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4); }
 
+        /* Admin Panel Stilleri */
         .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 14px; padding: 12px; margin-bottom: 15px; text-align: left; }
         .admin-section h4 { color: #00fff5; font-size: 13px; margin: 0 0 8px 0; }
         .admin-req-card { background: rgba(20, 10, 30, 0.9); border: 1px solid #ff416c; border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 12px; }
@@ -86,6 +87,7 @@
         </div>
     </div>
 
+    <!-- TAB 1: KAZIM -->
     <div id="tab-mine" class="tab-content active">
         <div class="rig-container"><div class="rig-icon">🖥️</div></div>
         <div class="stat-box">
@@ -100,6 +102,7 @@
         <button class="ad-btn" onclick="showAd()">📺 Reklam İzle (Hız +0.5x)</button>
     </div>
 
+    <!-- TAB 2: MARKET -->
     <div id="tab-shop" class="tab-content">
         <h3 style="text-align: left; color: #00fff5; font-size: 16px;">💻 Ekran Kartı Marketi</h3>
         <div class="shop-card">
@@ -116,6 +119,7 @@
         </div>
     </div>
 
+    <!-- TAB 3: DAVET -->
     <div id="tab-ref" class="tab-content">
         <h3 style="text-align: left; color: #00fff5; font-size: 16px;">👥 Arkadaşını Davet Et</h3>
         <div class="stat-box">
@@ -125,6 +129,7 @@
         <button onclick="shareRefLink()">🔗 Davet Linkini Paylaş</button>
     </div>
 
+    <!-- TAB 4: ÖDÜL -->
     <div id="tab-rewards" class="tab-content">
         <h3 style="text-align: left; color: #00fff5; font-size: 16px;">🎁 Günlük Ödül & Görevler</h3>
         <div class="stat-box" style="text-align: left;">
@@ -137,6 +142,7 @@
         </div>
     </div>
 
+    <!-- TAB 5: ÇEKİM -->
     <div id="tab-withdraw" class="tab-content">
         <h3 style="text-align: left; color: #00fff5; font-size: 16px; margin-bottom: 12px;">💸 Kripto Çekim Talebi</h3>
         <div class="rate-badge"><span>Dönüşüm Oranı:</span><b>10.000 PTS = 1.00 USDT</b></div>
@@ -159,8 +165,11 @@
         </div>
     </div>
 
+    <!-- TAB 6: OYUN İÇİ ADMIN PANELİ (Sadece Sana Görünür) -->
     <div id="tab-admin" class="tab-content">
         <h3 style="text-align: left; color: #ff416c; font-size: 16px; margin-bottom: 10px;">👑 Admin Yönetim Paneli</h3>
+        
+        <!-- YENİ: Anında Oyun İçi Bakiye Yükleme (Kendi testin için) -->
         <div class="admin-section">
             <h4>⚡ Hızlı Oyun İçi Bakiye Ekle</h4>
             <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -169,6 +178,8 @@
                 <button style="background: #ff9900; color:#fff; font-size:12px; padding:8px; margin:0;" onclick="adminAddDirectBalance(1000000)">+1 Milyon PTS</button>
             </div>
         </div>
+
+        <!-- Oyuncuya ID ile Bakiye Gönderme Bölümü -->
         <div class="admin-section">
             <h4>🎁 Etkinlik / Oyuncuya Mesaj Gönder</h4>
             <div class="form-group" style="margin-bottom: 8px;">
@@ -181,6 +192,7 @@
             </div>
             <button style="background: linear-gradient(135deg, #ff416c, #ff9900); color: #fff; padding: 10px; font-size: 13px; margin-top: 5px;" onclick="adminSendBalance()">🚀 Bot Üzerinden Bildirim Gönder</button>
         </div>
+
         <h4 style="text-align: left; color: #00fff5; font-size: 14px; margin: 15px 0 5px 0;">📥 Bekleyen Çekim Talepleri</h4>
         <div id="admin-requests-list" style="max-height: 250px; overflow-y: auto;">
             <p style="font-size: 12px; color: #666; margin-top: 20px;">Henüz bekleyen çekim talebi yok.</p>
@@ -188,6 +200,7 @@
     </div>
 </div>
 
+<!-- ALT GEZİNTİ MENÜSÜ -->
 <div class="navbar" id="main-navbar">
     <div class="nav-item active" onclick="switchTab('mine', this)">⛏️ Kazım</div>
     <div class="nav-item" onclick="switchTab('shop', this)">💻 Market</div>
@@ -333,7 +346,9 @@
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
             const user = window.Telegram.WebApp.initDataUnsafe.user;
             const currentUserId = String(user.id);
+            
             document.getElementById('user-id-display').innerText = "ID: " + currentUserId;
+
             if (currentUserId === ADMIN_ID) {
                 document.getElementById('nav-admin-btn').style.display = 'block';
             }
@@ -498,9 +513,8 @@
         alert("Talep reddedildi, tutar kullanıcının hesabına iade edildi.");
     }
 
-    // GÜNCEL REKLAM ENTEGRASYONU
     let AdController = null;
-    if (window.Adsgram) { AdController = window.Adsgram.init({ blockId: "42652" }); }
+    if (window.Adsgram) { AdController = window.Adsgram.init({ blockId: "42750" }); }
     function showAd() {
         if (!AdController) { alert("Reklam sistemi hazır değil."); return; }
         AdController.show().then(() => {
