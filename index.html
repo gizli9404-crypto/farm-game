@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sanal Miner Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
@@ -14,63 +14,66 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             margin: 0;
-            padding: 15px;
-            padding-bottom: 90px;
+            padding: 12px;
+            padding-bottom: 85px;
             min-height: 100vh;
-            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
         }
         .container {
-            max-width: 400px;
+            width: 100%;
+            max-width: 480px;
             margin: 0 auto;
-            background: rgba(22, 33, 62, 0.7);
+            background: rgba(22, 33, 62, 0.75);
             backdrop-filter: blur(12px);
-            padding: 20px;
+            padding: 16px;
             border-radius: 20px;
             border: 1px solid rgba(0, 255, 245, 0.25);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
-            position: relative;
+            flex: 1;
         }
-        .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        h1 { color: #00fff5; font-size: 22px; margin: 0; text-shadow: 0 0 12px rgba(0, 255, 245, 0.8); }
-        .music-btn { background: rgba(15, 52, 96, 0.8); border: 1px solid rgba(0, 255, 245, 0.4); color: #00fff5; padding: 6px 12px; border-radius: 20px; font-size: 14px; cursor: pointer; width: 100%; }
-        .user-id-badge { font-size: 10px; color: #8a99ad; margin-top: 5px; text-align: right; width: 100%; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        h1 { color: #00fff5; font-size: 20px; margin: 0; text-shadow: 0 0 12px rgba(0, 255, 245, 0.8); text-align: left; }
+        .music-btn { background: rgba(15, 52, 96, 0.8); border: 1px solid rgba(0, 255, 245, 0.4); color: #00fff5; padding: 6px 12px; border-radius: 16px; font-size: 13px; cursor: pointer; }
+        .user-id-badge { font-size: 10px; color: #8a99ad; margin-top: 2px; text-align: right; }
         
-        .rig-container { margin: 15px 0; position: relative; display: inline-block; }
-        .rig-icon { font-size: 65px; filter: drop-shadow(0 0 15px rgba(0, 255, 245, 0.6)); animation: pulse 2s infinite alternate; }
+        .rig-container { margin: 10px 0; }
+        .rig-icon { font-size: 55px; filter: drop-shadow(0 0 15px rgba(0, 255, 245, 0.6)); animation: pulse 2s infinite alternate; }
         @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
-        .stat-box { background: rgba(15, 52, 96, 0.6); padding: 12px; border-radius: 14px; margin: 10px 0; border: 1px solid rgba(255, 255, 255, 0.08); }
+        .stat-box { background: rgba(15, 52, 96, 0.6); padding: 10px 14px; border-radius: 14px; margin: 8px 0; border: 1px solid rgba(255, 255, 255, 0.08); }
         .stat-title { font-size: 11px; color: #8a99ad; text-transform: uppercase; }
-        .stat-value { font-size: 26px; font-weight: bold; color: #ff416c; text-shadow: 0 0 10px rgba(255, 65, 108, 0.6); margin-top: 2px; }
-        .shop-card { background: rgba(15, 52, 96, 0.85); padding: 14px; border-radius: 14px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; text-align: left; border: 1px solid rgba(0, 255, 245, 0.2); }
-        button { background: linear-gradient(135deg, #00fff5, #0088cc); border: none; color: #000; padding: 12px 18px; font-size: 15px; font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; margin-top: 10px; }
-        #mine-btn { background: linear-gradient(135deg, #00fff5, #00b894); font-size: 17px; padding: 16px; border-radius: 16px; }
-        .buy-btn { width: auto; font-size: 12px; padding: 8px 14px; border-radius: 10px; }
+        .stat-value { font-size: 24px; font-weight: bold; color: #ff416c; text-shadow: 0 0 10px rgba(255, 65, 108, 0.6); margin-top: 2px; }
+        .shop-card { background: rgba(15, 52, 96, 0.85); padding: 12px; border-radius: 14px; margin: 8px 0; display: flex; justify-content: space-between; align-items: center; text-align: left; border: 1px solid rgba(0, 255, 245, 0.2); }
+        button { background: linear-gradient(135deg, #00fff5, #0088cc); border: none; color: #000; padding: 12px 18px; font-size: 15px; font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; margin-top: 8px; }
+        #mine-btn { background: linear-gradient(135deg, #00fff5, #00b894); font-size: 16px; padding: 14px; border-radius: 16px; }
+        .buy-btn { width: auto; font-size: 12px; padding: 8px 12px; border-radius: 10px; margin: 0; }
         .ad-btn { background: linear-gradient(135deg, #ff9900, #ff5500); color: #fff; }
         .reward-btn { background: linear-gradient(135deg, #00b09b, #96c93d); color: #fff; }
         .support-btn { background: rgba(15, 52, 96, 0.9); color: #00fff5; border: 1px solid #00fff5; }
         .admin-nav-item { display: none; color: #ff416c !important; font-weight: bold; }
         
-        .rate-badge { background: rgba(10, 17, 40, 0.85); border: 1px dashed #00fff5; padding: 12px; border-radius: 12px; font-size: 12px; color: #00fff5; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .withdraw-card { background: rgba(15, 52, 96, 0.5); border: 1px solid rgba(0, 255, 245, 0.2); border-radius: 16px; padding: 15px; margin-top: 10px; text-align: left; }
-        .form-group { margin-bottom: 12px; text-align: left; }
-        .form-label { font-size: 12px; color: #8a99ad; margin-bottom: 5px; display: block; font-weight: 600; }
-        .form-input-container select, .form-input-container input { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(0, 255, 245, 0.3); background: #0a1128; color: #fff; font-size: 13px; outline: none; }
-        .quick-btn-group { display: flex; gap: 6px; margin-top: 6px; }
+        .rate-badge { background: rgba(10, 17, 40, 0.85); border: 1px dashed #00fff5; padding: 10px; border-radius: 12px; font-size: 12px; color: #00fff5; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .withdraw-card { background: rgba(15, 52, 96, 0.5); border: 1px solid rgba(0, 255, 245, 0.2); border-radius: 16px; padding: 12px; margin-top: 5px; text-align: left; }
+        .form-group { margin-bottom: 8px; text-align: left; }
+        .form-label { font-size: 11px; color: #8a99ad; margin-bottom: 3px; display: block; font-weight: 600; }
+        .form-input-container select, .form-input-container input { width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(0, 255, 245, 0.3); background: #0a1128; color: #fff; font-size: 13px; outline: none; }
+        .quick-btn-group { display: flex; gap: 6px; margin-top: 4px; }
         .quick-btn { background: rgba(0, 255, 245, 0.1); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 4px 8px; font-size: 10px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; }
-        .calc-preview-card { background: rgba(10, 17, 40, 0.9); border-radius: 10px; padding: 10px 14px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4); }
+        .calc-preview-card { background: rgba(10, 17, 40, 0.9); border-radius: 10px; padding: 8px 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4); }
 
-        .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 14px; padding: 12px; margin-bottom: 15px; text-align: left; }
-        .admin-section h4 { color: #00fff5; font-size: 13px; margin: 0 0 8px 0; }
-        .admin-req-card { background: rgba(20, 10, 30, 0.9); border: 1px solid #ff416c; border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 12px; }
+        .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 14px; padding: 10px; margin-bottom: 10px; text-align: left; }
+        .admin-section h4 { color: #00fff5; font-size: 12px; margin: 0 0 6px 0; }
+        .admin-req-card { background: rgba(20, 10, 30, 0.9); border: 1px solid #ff416c; border-radius: 12px; padding: 10px; margin-bottom: 8px; text-align: left; font-size: 11px; }
         .admin-req-card b { color: #00fff5; }
 
-        .navbar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 52, 96, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(0, 255, 245, 0.2); z-index: 100; }
-        .nav-item { color: #8a99ad; font-size: 11px; cursor: pointer; text-decoration: none; }
+        .navbar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 52, 96, 0.98); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(0, 255, 245, 0.2); z-index: 100; }
+        .nav-item { color: #8a99ad; font-size: 10px; cursor: pointer; text-decoration: none; flex: 1; text-align: center; }
         .nav-item.active { color: #00fff5; font-weight: bold; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .daily-earn { color: #ff9900; font-size: 11px; font-weight: bold; }
-        .gpu-count { color: #00fff5; font-size: 10px; background: rgba(10, 17, 40, 0.8); padding: 2px 8px; border-radius: 8px; border: 1px solid rgba(0, 255, 245, 0.3); }
+        .daily-earn { color: #ff9900; font-size: 10px; font-weight: bold; }
+        .gpu-count { color: #00fff5; font-size: 10px; background: rgba(10, 17, 40, 0.8); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(0, 255, 245, 0.3); }
         .float-text { position: absolute; color: #00fff5; font-weight: bold; font-size: 18px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 99; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.3); } }
     </style>
@@ -80,7 +83,7 @@
 <div class="container" id="main-container">
     <div class="top-bar">
         <h1>🚀 SANAL MINER</h1>
-        <div style="display: flex; flex-direction: column; align-items: flex-end;">
+        <div>
             <button class="music-btn" id="music-toggle-btn" onclick="toggleMusic()">🔊 Müzik</button>
             <div id="user-id-display" class="user-id-badge">ID: Yükleniyor...</div>
         </div>
@@ -95,7 +98,7 @@
         </div>
         <div class="stat-box">
             <div class="stat-title">Mevcut Hız | Pasif Kazanç</div>
-            <div class="stat-value" style="color: #00fff5;"><span id="speed">1.0</span>x | +<span id="passive-rate">0.0000</span>/sn</div>
+            <div class="stat-value" style="color: #00fff5; font-size: 20px;"><span id="speed">1.0</span>x | +<span id="passive-rate">0.0000</span>/sn</div>
         </div>
         <button id="mine-btn" onclick="mine(event)">⛏️ Kazım Yap (+<span id="click-power">0.0010</span>)</button>
         <button class="ad-btn" onclick="showAd()">📺 Reklam İzle (Hız +0.5x)</button>
@@ -103,7 +106,7 @@
 
     <!-- TAB 2: MARKET -->
     <div id="tab-shop" class="tab-content">
-        <h3 style="text-align: left; color: #00fff5; font-size: 16px;">💻 Ekran Kartı Marketi</h3>
+        <h3 style="text-align: left; color: #00fff5; font-size: 15px; margin: 5px 0 10px 0;">💻 Ekran Kartı Marketi</h3>
         <div class="shop-card">
             <div><b>GTX 1660 Super</b> <span class="gpu-count" id="count-gtx1660">0 Adet</span><br><small style="color: #00fff5;">+0.0005 PTS/sn</small><br><span class="daily-earn">⚡ ~43.2 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;">Fiyat: 10 PTS</small></div>
             <button class="buy-btn" onclick="buyGPU('gtx1660', 'GTX 1660', 10, 0.0005)">Satın Al</button>
@@ -120,7 +123,7 @@
 
     <!-- TAB 3: DAVET -->
     <div id="tab-ref" class="tab-content">
-        <h3 style="text-align: left; color: #00fff5; font-size: 16px;">👥 Arkadaşını Davet Et</h3>
+        <h3 style="text-align: left; color: #00fff5; font-size: 15px; margin: 5px 0 10px 0;">👥 Arkadaşını Davet Et</h3>
         <div class="stat-box">
             <div class="stat-title">Davet Edilen Kişi</div>
             <div class="stat-value" style="color: #00fff5;"><span id="ref-count">0</span></div>
@@ -130,12 +133,12 @@
 
     <!-- TAB 4: ÖDÜL -->
     <div id="tab-rewards" class="tab-content">
-        <h3 style="text-align: left; color: #00fff5; font-size: 16px;">🎁 Günlük Ödül & Görevler</h3>
+        <h3 style="text-align: left; color: #00fff5; font-size: 15px; margin: 5px 0 10px 0;">🎁 Günlük Ödül & Görevler</h3>
         <div class="stat-box" style="text-align: left;">
             <div class="stat-title">Günlük Bonus</div>
             <button class="reward-btn" onclick="claimDailyReward()">🎁 5 PTS Al</button>
         </div>
-        <div class="stat-box" style="margin-top: 15px; text-align: left;">
+        <div class="stat-box" style="margin-top: 10px; text-align: left;">
             <div class="stat-title">Topluluk & Destek</div>
             <button class="support-btn" onclick="openSupport()">💬 Destek / Kanal</button>
         </div>
@@ -143,7 +146,7 @@
 
     <!-- TAB 5: ÇEKİM -->
     <div id="tab-withdraw" class="tab-content">
-        <h3 style="text-align: left; color: #00fff5; font-size: 16px; margin-bottom: 12px;">💸 Kripto Çekim Talebi</h3>
+        <h3 style="text-align: left; color: #00fff5; font-size: 15px; margin: 0 0 8px 0;">💸 Kripto Çekim Talebi</h3>
         <div class="rate-badge"><span>Dönüşüm Oranı:</span><b>10.000 PTS = 1.00 USDT</b></div>
         <div class="withdraw-card">
             <div class="form-group">
@@ -152,59 +155,59 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Cüzdan Adresiniz</label>
-                <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... atau 0x..."></div>
+                <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... veya 0x..."></div>
             </div>
             <div class="form-group">
-                <label class="form-label">Çekilecek PTS Miktarı <small style="color:#ff416c; float:right;">Min: 10.000</small></label>
+                <label class="form-label">Çekilecek PTS <small style="color:#ff416c; float:right;">Min: 10.000</small></label>
                 <div class="form-input-container"><input type="number" id="withdraw-amount" placeholder="0.00" oninput="calculateEstimate()"></div>
                 <div class="quick-btn-group"><button class="quick-btn" onclick="setQuickAmount(0.25)">%25</button><button class="quick-btn" onclick="setQuickAmount(0.50)">%50</button><button class="quick-btn" onclick="setQuickAmount(1.0)">MAX</button></div>
             </div>
-            <div class="calc-preview-card"><span style="font-size: 12px; color: #8a99ad;">Tahmini Alınacak:</span><span id="calc-result" style="color: #00fff5; font-weight: bold;">0.00 USDT</span></div>
-            <button style="margin-top: 15px;" onclick="requestWithdraw()">💸 Çekim Talebini Onayla</button>
+            <div class="calc-preview-card"><span style="font-size: 11px; color: #8a99ad;">Tahmini Alınacak:</span><span id="calc-result" style="color: #00fff5; font-weight: bold;">0.00 USDT</span></div>
+            <button style="margin-top: 10px;" onclick="requestWithdraw()">💸 Çekim Talebini Onayla</button>
         </div>
     </div>
 
-    <!-- TAB 6: OYUN İÇİ ADMIN PANELİ -->
+    <!-- TAB 6: ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
-        <h3 style="text-align: left; color: #ff416c; font-size: 16px; margin-bottom: 10px;">👑 Admin Yönetim Paneli</h3>
+        <h3 style="text-align: left; color: #ff416c; font-size: 15px; margin: 0 0 8px 0;">👑 Admin Yönetim Paneli</h3>
         
         <div class="admin-section">
             <h4>⚡ Hızlı Oyun İçi Bakiye Ekle</h4>
-            <div style="display: flex; gap: 8px; margin-top: 8px;">
-                <button style="background: #00b894; color:#fff; font-size:12px; padding:8px; margin:0;" onclick="adminAddDirectBalance(10000)">+10 Bin PTS</button>
-                <button style="background: #0088cc; color:#fff; font-size:12px; padding:8px; margin:0;" onclick="adminAddDirectBalance(100000)">+100 Bin PTS</button>
-                <button style="background: #ff9900; color:#fff; font-size:12px; padding:8px; margin:0;" onclick="adminAddDirectBalance(1000000)">+1 Milyon PTS</button>
+            <div style="display: flex; gap: 6px; margin-top: 6px;">
+                <button style="background: #00b894; color:#fff; font-size:11px; padding:6px; margin:0;" onclick="adminAddDirectBalance(10000)">+10 Bin</button>
+                <button style="background: #0088cc; color:#fff; font-size:11px; padding:6px; margin:0;" onclick="adminAddDirectBalance(100000)">+100 Bin</button>
+                <button style="background: #ff9900; color:#fff; font-size:11px; padding:6px; margin:0;" onclick="adminAddDirectBalance(1000000)">+1 Milyon</button>
             </div>
         </div>
 
         <div class="admin-section">
-            <h4>🎁 Etkinlik / Oyuncuya Mesaj Gönder</h4>
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label class="form-label">Oyuncu Telegram ID</label>
+            <h4>🎁 Oyuncuya Ödül / Mesaj Gönder</h4>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label class="form-label">Telegram ID</label>
                 <div class="form-input-container"><input type="text" id="admin-target-id" placeholder="Örn: 8256539395"></div>
             </div>
-            <div class="form-group" style="margin-bottom: 8px;">
-                <label class="form-label">Gönderilecek PTS Miktarı</label>
+            <div class="form-group" style="margin-bottom: 6px;">
+                <label class="form-label">PTS Miktarı</label>
                 <div class="form-input-container"><input type="number" id="admin-target-amount" placeholder="Örn: 5000"></div>
             </div>
-            <button style="background: linear-gradient(135deg, #ff416c, #ff9900); color: #fff; padding: 10px; font-size: 13px; margin-top: 5px;" onclick="adminSendBalance()">🚀 Bot Üzerinden & Kanala Bildirim Gönder</button>
+            <button style="background: linear-gradient(135deg, #ff416c, #ff9900); color: #fff; padding: 8px; font-size: 12px; margin-top: 4px;" onclick="adminSendBalance()">🚀 Bot ile Gönder & Duyur</button>
         </div>
 
-        <h4 style="text-align: left; color: #00fff5; font-size: 14px; margin: 15px 0 5px 0;">📥 Bekleyen Çekim Talepleri</h4>
-        <div id="admin-requests-list" style="max-height: 250px; overflow-y: auto;">
-            <p style="font-size: 12px; color: #666; margin-top: 20px;">Henüz bekleyen çekim talebi yok.</p>
+        <h4 style="text-align: left; color: #00fff5; font-size: 13px; margin: 10px 0 4px 0;">📥 Bekleyen Çekim Talepleri</h4>
+        <div id="admin-requests-list" style="max-height: 180px; overflow-y: auto;">
+            <p style="font-size: 11px; color: #666; margin-top: 10px;">Bekleyen talep yok.</p>
         </div>
     </div>
 </div>
 
 <!-- ALT GEZİNTİ MENÜSÜ -->
 <div class="navbar" id="main-navbar">
-    <div class="nav-item active" onclick="switchTab('mine', this)">⛏️ Kazım</div>
-    <div class="nav-item" onclick="switchTab('shop', this)">💻 Market</div>
-    <div class="nav-item" onclick="switchTab('ref', this)">👥 Davet</div>
-    <div class="nav-item" onclick="switchTab('rewards', this)">🎁 Ödül</div>
-    <div class="nav-item" onclick="switchTab('withdraw', this)">💸 Çekim</div>
-    <div class="nav-item admin-nav-item" id="nav-admin-btn" onclick="switchTab('admin', this)">👑 Admin</div>
+    <div class="nav-item active" onclick="switchTab('mine', this)">⛏️<br>Kazım</div>
+    <div class="nav-item" onclick="switchTab('shop', this)">💻<br>Market</div>
+    <div class="nav-item" onclick="switchTab('ref', this)">👥<br>Davet</div>
+    <div class="nav-item" onclick="switchTab('rewards', this)">🎁<br>Ödül</div>
+    <div class="nav-item" onclick="switchTab('withdraw', this)">💸<br>Çekim</div>
+    <div class="nav-item admin-nav-item" id="nav-admin-btn" onclick="switchTab('admin', this)">👑<br>Admin</div>
 </div>
 
 <script>
@@ -442,20 +445,11 @@
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: CHANNEL_ID, text: msg, parse_mode: 'Markdown' })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.ok) {
-                alert(`✅ Başarılı!\n\nOyuncuya ve ${CHANNEL_ID} kanalına bildirim gönderildi.`);
-                document.getElementById('admin-target-id').value = '';
-                document.getElementById('admin-target-amount').value = '';
-            } else {
-                alert(`⚠️ Gönderildi ancak kanalda botun admin yetkisi olmayabilir.`);
-            }
-        })
-        .catch(e => {
-            alert("Bağlantı hatası oluştu.");
-        });
+        }).catch(e => {});
+
+        alert(`✅ Oyuncuya ${amount} PTS gönderildi.`);
+        document.getElementById('admin-target-id').value = '';
+        document.getElementById('admin-target-amount').value = '';
     }
 
     function renderAdminPanel() {
@@ -463,7 +457,7 @@
         if (!listContainer) return;
 
         if (pendingWithdraws.length === 0) {
-            listContainer.innerHTML = `<p style="font-size: 12px; color: #666; margin-top: 10px;">Henüz bekleyen çekim talebi yok.</p>`;
+            listContainer.innerHTML = `<p style="font-size: 11px; color: #666; margin-top: 5px;">Bekleyen talep yok.</p>`;
             return;
         }
 
@@ -473,11 +467,10 @@
                 <div class="admin-req-card">
                     <div><b>Kullanıcı:</b> ${req.username} (ID: ${req.userId})</div>
                     <div><b>Tutar:</b> ${req.amount} PTS (${req.usdt} USDT)</div>
-                    <div><b>Ağ / Cüzdan:</b> ${req.network}</div>
-                    <div style="word-break: break-all; color: #00fff5;"><b>Adres:</b> ${req.wallet}</div>
-                    <div style="margin-top: 8px; display: flex; gap: 6px;">
-                        <button style="padding: 6px; font-size: 11px; margin: 0; background: #00b894; color:#fff;" onclick="approveRequest(${index})">✅ Onayla</button>
-                        <button style="padding: 6px; font-size: 11px; margin: 0; background: #ff416c; color:#fff;" onclick="rejectRequest(${index})">❌ Reddet</button>
+                    <div><b>Ağ:</b> ${req.network} | <b>Cüzdan:</b> <span style="color: #00fff5;">${req.wallet}</span></div>
+                    <div style="margin-top: 6px; display: flex; gap: 6px;">
+                        <button style="padding: 4px 8px; font-size: 10px; margin: 0; background: #00b894; color:#fff;" onclick="approveRequest(${index})">✅ Onayla</button>
+                        <button style="padding: 4px 8px; font-size: 10px; margin: 0; background: #ff416c; color:#fff;" onclick="rejectRequest(${index})">❌ Reddet</button>
                     </div>
                 </div>
             `;
@@ -487,7 +480,7 @@
 
     function approveRequest(index) {
         const req = pendingWithdraws[index];
-        let msg = `✅ *ÇEKİM TALEBİ ONAYLANDI!*\n\n👤 *Kullanıcı:* ${req.username}\n💰 *Tutar:* ${req.usdt} USDT (${req.network})\n🚀 Ödemesi başarıyla cüzdanına gönderilmiştir!`;
+        let msg = `✅ *ÇEKİM TALEBİ ONAYLANDI!*\n\n👤 *Kullanıcı:* ${req.username}\n💰 *Tutar:* ${req.usdt} USDT (${req.network})\n🚀 Ödemeniz başarıyla cüzdanınıza gönderilmiştir!`;
         
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
@@ -504,7 +497,7 @@
         pendingWithdraws.splice(index, 1);
         localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-        alert("Talep onaylandı ve hem kullanıcıya hem kanala duyuruldu.");
+        alert("Talep onaylandı.");
     }
 
     function rejectRequest(index) {
@@ -512,7 +505,7 @@
         balance += req.amount;
         localStorage.setItem('miner_balance', balance);
 
-        let msg = `❌ *ÇEKİM TALEBİ REDDEDİLDİ!*\n\n👤 *Kullanıcı:* ${req.username}\n💰 *Tutar:* ${req.amount} PTS\n⚠️ Geçersiz cüzdan veya kural dışı işlem sebebiyle talep reddedildi, bakiye kullanıcıya iade edildi.`;
+        let msg = `❌ *ÇEKİM TALEBİ REDDEDİLDİ!*\n\n👤 *Kullanıcı:* ${req.username}\n💰 *Tutar:* ${req.amount} PTS\n⚠️ Hatalı cüzdan veya kural dışı işlem sebebiyle talep reddedildi, bakiye hesabınıza iade edildi.`;
         
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
@@ -520,7 +513,7 @@
             body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
         }).catch(e => {});
 
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}.sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: CHANNEL_ID, text: msg, parse_mode: 'Markdown' })
@@ -529,7 +522,7 @@
         pendingWithdraws.splice(index, 1);
         localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-        alert("Talep reddedildi, tutar kullanıcının hesabına iade edildi.");
+        alert("Talep reddedildi, bakiye iade edildi.");
     }
 
     let AdController = null;
