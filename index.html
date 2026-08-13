@@ -59,7 +59,6 @@
         .quick-btn { background: rgba(0, 255, 245, 0.1); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 4px 8px; font-size: 10px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; }
         .calc-preview-card { background: rgba(10, 17, 40, 0.9); border-radius: 10px; padding: 10px 14px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4); }
 
-        /* Admin Panel Stilleri */
         .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 14px; padding: 12px; margin-bottom: 15px; text-align: left; }
         .admin-section h4 { color: #00fff5; font-size: 13px; margin: 0 0 8px 0; }
         .admin-req-card { background: rgba(20, 10, 30, 0.9); border: 1px solid #ff416c; border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 12px; }
@@ -153,7 +152,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label">Cüzdan Adresiniz</label>
-                <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... veya 0x..."></div>
+                <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... atau 0x..."></div>
             </div>
             <div class="form-group">
                 <label class="form-label">Çekilecek PTS Miktarı <small style="color:#ff416c; float:right;">Min: 10.000</small></label>
@@ -165,11 +164,10 @@
         </div>
     </div>
 
-    <!-- TAB 6: OYUN İÇİ ADMIN PANELİ (Sadece Sana Görünür) -->
+    <!-- TAB 6: OYUN İÇİ ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
         <h3 style="text-align: left; color: #ff416c; font-size: 16px; margin-bottom: 10px;">👑 Admin Yönetim Paneli</h3>
         
-        <!-- YENİ: Anında Oyun İçi Bakiye Yükleme (Kendi testin için) -->
         <div class="admin-section">
             <h4>⚡ Hızlı Oyun İçi Bakiye Ekle</h4>
             <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -179,7 +177,6 @@
             </div>
         </div>
 
-        <!-- Oyuncuya ID ile Bakiye Gönderme Bölümü -->
         <div class="admin-section">
             <h4>🎁 Etkinlik / Oyuncuya Mesaj Gönder</h4>
             <div class="form-group" style="margin-bottom: 8px;">
@@ -190,7 +187,7 @@
                 <label class="form-label">Gönderilecek PTS Miktarı</label>
                 <div class="form-input-container"><input type="number" id="admin-target-amount" placeholder="Örn: 5000"></div>
             </div>
-            <button style="background: linear-gradient(135deg, #ff416c, #ff9900); color: #fff; padding: 10px; font-size: 13px; margin-top: 5px;" onclick="adminSendBalance()">🚀 Bot Üzerinden Bildirim Gönder</button>
+            <button style="background: linear-gradient(135deg, #ff416c, #ff9900); color: #fff; padding: 10px; font-size: 13px; margin-top: 5px;" onclick="adminSendBalance()">🚀 Bot Üzerinden & Kanala Bildirim Gönder</button>
         </div>
 
         <h4 style="text-align: left; color: #00fff5; font-size: 14px; margin: 15px 0 5px 0;">📥 Bekleyen Çekim Talepleri</h4>
@@ -213,6 +210,7 @@
 <script>
     const ADMIN_ID = "8256539395";
     const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
+    const CHANNEL_ID = "@sanal_miner_duyuru"; 
 
     const bgMusic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a2b53b.mp3?filename=cyberpunk-2099-10701.mp3');
     bgMusic.loop = true; bgMusic.volume = 0.25;
@@ -233,7 +231,6 @@
     let lastRewardTime = parseInt(localStorage.getItem('last_reward_time')) || 0;
     let refCount = parseInt(localStorage.getItem('miner_ref_count')) || 0;
     let gpuCounts = JSON.parse(localStorage.getItem('miner_gpu_counts')) || { gtx1660: 0, rtx3060: 0, rtx4090: 0 };
-    
     let pendingWithdraws = JSON.parse(localStorage.getItem('admin_pending_withdraws')) || [];
 
     const balanceEl = document.getElementById('balance');
@@ -342,24 +339,16 @@
         else window.open(url, '_blank');
     }
 
-    // YENİ EKLENEN: Telegram ID'sini ekranda gösteren ve Admin yetkisini kontrol eden fonksiyon
     function checkUserTelegramData() {
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
             const user = window.Telegram.WebApp.initDataUnsafe.user;
             const currentUserId = String(user.id);
-            
-            // ID'yi sağ üst köşeye yazdır
             document.getElementById('user-id-display').innerText = "ID: " + currentUserId;
-
-            // Eğer giren kişi sensen (Admin), paneli göster
             if (currentUserId === ADMIN_ID) {
                 document.getElementById('nav-admin-btn').style.display = 'block';
             }
         } else {
-            // Telegram dışında (örneğin normal web tarayıcısında) açılırsa
             document.getElementById('user-id-display').innerText = "Tarayıcı (Test)";
-            // Test amaçlı PC'de de Admin görünmesini istersen aşağıdaki yorumu kaldırabilirsin:
-            // document.getElementById('nav-admin-btn').style.display = 'block'; 
         }
     }
 
@@ -418,10 +407,15 @@
             body: JSON.stringify({ chat_id: ADMIN_ID, text: adminMessage, parse_mode: 'Markdown' })
         }).catch(e => {});
 
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHANNEL_ID, text: adminMessage, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
         alert(`✅ Çekim Talebi Başarıyla Alındı!\n\nMiktar: ${amount} PTS (${usdtAmount} USDT)`);
     }
 
-    // YENİ EKLENEN: Kendi hesabına hızlı bakiye ekleme fonksiyonu
     function adminAddDirectBalance(amount) {
         balance += amount;
         localStorage.setItem('miner_balance', balance);
@@ -429,7 +423,6 @@
         alert(`✅ Hesabınıza başarıyla ${amount} PTS eklendi!`);
     }
 
-    // Admin Panelinden ID Girerek Oyuncuya Bildirim Atma
     function adminSendBalance() {
         const targetId = document.getElementById('admin-target-id').value.trim();
         const amount = parseFloat(document.getElementById('admin-target-amount').value);
@@ -437,21 +430,27 @@
         if (!targetId || targetId.length < 5) { alert("Lütfen geçerli bir Telegram ID girin."); return; }
         if (isNaN(amount) || amount <= 0) { alert("Lütfen geçerli bir miktar girin."); return; }
 
-        let msg = `🎉 *ETKİNLİK ÖDÜLÜ KAZANDINIZ!*\n\nKurucu tarafından hesabınıza doğrudan *${amount} PTS* etkinlik ödülü tanımlanmıştır. İyi kazımlar! 🚀`;
+        let msg = `🎉 *ETKİNLİK ÖDÜLÜ DAĞITILDI!*\n\nID: \`${targetId}\` olan oyuncuya kurucu tarafından doğrudan *${amount} PTS* etkinlik ödülü tanımlanmıştır! İyi kazımlar 🚀`;
         
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: targetId, text: msg, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHANNEL_ID, text: msg, parse_mode: 'Markdown' })
         })
         .then(res => res.json())
         .then(data => {
             if (data.ok) {
-                alert(`✅ Başarılı!\n\nID: ${targetId} olan oyuncuya ${amount} PTS ödül bildirimi gönderildi.`);
+                alert(`✅ Başarılı!\n\nOyuncuya ve ${CHANNEL_ID} kanalına bildirim gönderildi.`);
                 document.getElementById('admin-target-id').value = '';
                 document.getElementById('admin-target-amount').value = '';
             } else {
-                alert(`⚠️ Mesaj gönderilemedi! Oyuncu botu başlatmış (/start) olmalıdır.`);
+                alert(`⚠️ Gönderildi ancak kanalda botun admin yetkisi olmayabilir.`);
             }
         })
         .catch(e => {
@@ -488,7 +487,7 @@
 
     function approveRequest(index) {
         const req = pendingWithdraws[index];
-        let msg = `✅ *ÇEKİM TALEBİNİZ ONAYLANDI!*\n\nKurucu tarafından *${req.usdt} USDT* tutarındaki ödemeniz (${req.network}) cüzdanınıza gönderilmiştir. İyi günlerde harcayın! 🚀`;
+        let msg = `✅ *ÇEKİM TALEBİ ONAYLANDI!*\n\n👤 *Kullanıcı:* ${req.username}\n💰 *Tutar:* ${req.usdt} USDT (${req.network})\n🚀 Ödemesi başarıyla cüzdanına gönderilmiştir!`;
         
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
@@ -496,10 +495,16 @@
             body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
         }).catch(e => {});
 
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHANNEL_ID, text: msg, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
         pendingWithdraws.splice(index, 1);
         localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-        alert("Talep onaylandı ve kullanıcıya bot üzerinden bilgi gönderildi.");
+        alert("Talep onaylandı ve hem kullanıcıya hem kanala duyuruldu.");
     }
 
     function rejectRequest(index) {
@@ -507,12 +512,18 @@
         balance += req.amount;
         localStorage.setItem('miner_balance', balance);
 
-        let msg = `❌ *ÇEKİM TALEBİNİZ REDDEDİLDİ!*\n\n${req.amount} PTS tutarındaki çekim talebiniz geçersiz cüzdan veya kural dışı işlem sebebiyle reddedilmiştir. Bakiyeniz hesabınıza iade edilmiştir.`;
+        let msg = `❌ *ÇEKİM TALEBİ REDDEDİLDİ!*\n\n👤 *Kullanıcı:* ${req.username}\n💰 *Tutar:* ${req.amount} PTS\n⚠️ Geçersiz cüzdan veya kural dışı işlem sebebiyle talep reddedildi, bakiye kullanıcıya iade edildi.`;
         
         fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: CHANNEL_ID, text: msg, parse_mode: 'Markdown' })
         }).catch(e => {});
 
         pendingWithdraws.splice(index, 1);
@@ -536,7 +547,6 @@
         window.Telegram.WebApp.expand();
     }
 
-    // Uygulama başlarken ID'yi kontrol et
     checkUserTelegramData();
     updateUI();
 </script>
