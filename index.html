@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanal Miner - Telegram Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; text-align: center; margin: 0; padding: 20px; }
+        .card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        button { background: #3b82f6; color: white; border: none; padding: 12px 20px; font-size: 16px; border-radius: 8px; cursor: pointer; width: 100%; margin-top: 10px; }
+        button:hover { background: #2563eb; }
+        #adminPanel { display: none; border: 2px dashed #ef4444; padding: 15px; margin-top: 20px; border-radius: 12px; }
+        input { width: 80%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; background: #0f172a; color: white; }
+    </style>
+</head>
+<body>
+
+    <h1>🚀 Sanal Miner</h1>
+    <div id="userInfo" style="font-size: 14px; color: #94a3b8; margin-bottom: 15px;">Kullanıcı Yükleniyor...</div>
+
+    <div class="card">
+        <h3>Bakiye: <span id="balance">0.00</span> GBT</h3>
+        <p>Hız: <span id="hashrate">10</span> H/s</p>
+        <button onclick="mine()">Kazanç Topla / Kaz</button>
+    </div>
+
+    <div id="adminPanel">
+        <h3 style="color: #ef4444;">⚙️ Admin Paneli</h3>
+        <input type="number" id="adminAmount" placeholder="Eklenecek Miktar">
+        <button onclick="adminAddBalance()" style="background: #ef4444;">Bakiyeyi Güncelle</button>
+    </div>
+
+    <script>
+        const ADMIN_ID = 8256539395; // Admin ID'niz
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let userId = "guest_user";
+        let username = "Misafir";
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            userId = tg.initDataUnsafe.user.id;
+            username = tg.initDataUnsafe.user.first_name || "Kullanıcı";
+            document.getElementById('userInfo').innerText = `Kullanıcı: ${username} (ID: ${userId})`;
+        } else {
+            document.getElementById('userInfo').innerText = `Test Modu (ID: ${userId})`;
+        }
+
+        // Admin kontrolü
+        if (Number(userId) === ADMIN_ID) {
+            document.getElementById('adminPanel').style.display = 'block';
+        }
+
+        let balance = parseFloat(localStorage.getItem('miner_balance_' + userId)) || 0.00;
+        document.getElementById('balance').innerText = balance.toFixed(2);
+
+        function mine() {
+            balance += 1.50;
+            localStorage.setItem('miner_balance_' + userId, balance);
+            document.getElementById('balance').innerText = balance.toFixed(2);
+        }
+
+        function adminAddBalance() {
+            let amount = parseFloat(document.getElementById('adminAmount').value);
+            if (!isNaN(amount)) {
+                balance += amount;
+                localStorage.setItem('miner_balance_' + userId, balance);
+                document.getElementById('balance').innerText = balance.toFixed(2);
+                alert("Bakiye güncellendi!");
+            }
+        }
+    </script>
+</body>
+</html>
