@@ -115,7 +115,7 @@
             <div class="stat-value" style="color: #00fff5;"><span id="speed">1.0</span>x | +<span id="passive-rate">0.0000</span>/sn</div>
         </div>
         <button id="mine-btn" onclick="mine(event)"><span id="txt-mine-btn">⛏️ Kazım Yap</span> (+<span id="click-power">0.0010</span>)</button>
-        <button class="ad-btn" onclick="showAd()" id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</button>
+        <button class="ad-btn" onclick="watchAd()" id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</button>
     </div>
 
     <div id="tab-shop" class="tab-content">
@@ -503,7 +503,7 @@
         } else { alert("Yetersiz bakiye!"); }
     }
 
-    // Adsgram Entegrasyonu (UnitID: 42750) - Doğru Sıralama (Önce Reklam, Sonra Ödül)
+    // Adsgram Entegrasyonu (UnitID: 42750) - Kesin ve Hatasız Akış
     let adsgramController = null;
     if (typeof Adsgram !== 'undefined') {
         try {
@@ -513,33 +513,29 @@
         }
     }
 
-    function showAd() {
+    function watchAd() {
         if (adsgramController && typeof adsgramController.show === 'function') {
-            adsgramController.show().then((result) => {
-                // Reklam başarıyla izlendiğinde ödülü ver
-                grantAdReward();
-            }).catch((err) => {
-                // Reklam yüklenemezse veya hata alınırsa simülasyon üzerinden ödülü ver
-                console.warn("Adsgram show error or dismissed:", err);
-                simulateAdReward();
-            });
+            adsgramController.show()
+                .then((result) => {
+                    // Reklam başarıyla izlendiğinde ödülü tanımla
+                    applyAdReward("Tebrikler! Reklam başarıyla izlendi, hızınız +0.5x artırıldı.");
+                })
+                .catch((err) => {
+                    // Reklam yüklenemezse veya simülasyondaysa hatayı yakalayıp simülasyon ödülü ver
+                    console.warn("Adsgram show error or dismissed:", err);
+                    applyAdReward("Reklam izlendi (Simülasyon)! Hız arttı.");
+                });
         } else {
-            simulateAdReward();
+            // SDK yüklü değilse doğrudan simülasyon ödülü ver
+            applyAdReward("Reklam izlendi (Simülasyon)! Hız arttı.");
         }
     }
 
-    function grantAdReward() {
+    function applyAdReward(msg) {
         speed += 0.5;
         localStorage.setItem('miner_speed', speed);
         updateUI();
-        alert("Tebrikler! Reklam başarıyla izlendi, hızınız +0.5x artırıldı.");
-    }
-
-    function simulateAdReward() {
-        speed += 0.5;
-        localStorage.setItem('miner_speed', speed);
-        updateUI();
-        alert("Reklam izlendi (Simülasyon)! Hız arttı.");
+        alert(msg);
     }
 
     function claimDailyReward() {
