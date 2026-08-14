@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sanal Miner Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- AdsGram SDK Entegrasyonu -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
@@ -120,8 +121,6 @@
 
         .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left; }
         .admin-section h4 { color: #00fff5; font-size: 11px; margin: 0 0 6px 0; }
-        .admin-req-card { background: rgba(20, 10, 30, 0.9); border: 1px solid #ff416c; border-radius: 8px; padding: 8px; margin-bottom: 6px; text-align: left; font-size: 10px; }
-        .admin-req-card b { color: #00fff5; }
 
         .task-card { background: rgba(15, 52, 96, 0.7); border: 1px solid rgba(255, 153, 0, 0.3); border-radius: 8px; padding: 8px; margin: 6px 0; display: flex; justify-content: space-between; align-items: center; text-align: left; }
 
@@ -227,7 +226,7 @@
 
     <div class="assistant-box">
         <div class="assistant-icon">🤖</div>
-        <div id="txt-assistant">Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Reklam izleyerek görevleri tamamla ve büyük ödüller kazan!</div>
+        <div id="txt-assistant">Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ "Tıkla kazan" reklamını izleyerek hızını ve kazancını katla!</div>
     </div>
 
     <!-- TAB 1: KAZIM -->
@@ -242,7 +241,7 @@
             <div class="stat-value" style="color: #00fff5;"><span id="speed">1.0</span>x | +<span id="passive-rate">0.0000</span>/sn</div>
         </div>
         <button id="mine-btn" onclick="mine(event)"><span id="txt-mine-btn">⛏️ Kazım Yap</span> (+<span id="click-power">0.0010</span>)</button>
-        <button class="ad-btn" id="ad-btn" onclick="showAd()"><span id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</span></button>
+        <button class="ad-btn" id="ad-btn" onclick="showAdsGramAd()"><span id="txt-ad-btn">📺 AdsGram Reklam İzle (Hız +0.5x)</span></button>
     </div>
 
     <!-- TAB 2: MARKET -->
@@ -330,21 +329,11 @@
             <button class="reward-btn" onclick="claimDailyReward()" id="txt-claim-btn">🎁 Günlük Ödülü Al (25 PTS)</button>
         </div>
 
-        <h4 style="text-align: left; color: #ff9900; font-size: 11px; margin: 10px 0 4px 0;">🎯 Reklam İzleme Görevleri</h4>
+        <h4 style="text-align: left; color: #ff9900; font-size: 11px; margin: 10px 0 4px 0;">🎯 Reklam İzleme Görevleri (AdsGram)</h4>
         
         <div class="task-card">
-            <div style="font-size: 10px;">📺 <b>5 Reklam İzle</b><br><span style="color:#00fff5;">Ödül: +40 PTS</span><br><small id="task1-prog">İlerleme: 0/5</small></div>
-            <button class="buy-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(1, 5, 40)" id="t1-btn">Al</button>
-        </div>
-
-        <div class="task-card">
-            <div style="font-size: 10px;">📺 <b>15 Reklam İzle</b><br><span style="color:#00fff5;">Ödül: +150 PTS</span><br><small id="task2-prog">İlerleme: 0/15</small></div>
-            <button class="buy-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(2, 15, 150)" id="t2-btn">Al</button>
-        </div>
-
-        <div class="task-card">
-            <div style="font-size: 10px;">📺 <b>40 Reklam İzle</b><br><span style="color:#00fff5;">Ödül: +500 PTS</span><br><small id="task3-prog">İlerleme: 0/40</small></div>
-            <button class="buy-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(3, 40, 500)" id="t3-btn">Al</button>
+            <div style="font-size: 10px;">📺 <b>AdsGram Reklamı İzle</b><br><span style="color:#00fff5;">Ödül: +40 PTS</span><br><small id="task1-prog">İlerleme: Görev bloğu üzerinden</small></div>
+            <button class="buy-btn" style="background:#ff9900; color:#fff;" onclick="showAdsGramAd()">İzle</button>
         </div>
 
         <div class="stat-box" style="margin-top: 10px; text-align: left;">
@@ -400,33 +389,6 @@
                 <button style="background: #ff9900; color:#fff; font-size:10px; padding:6px; margin:0;" onclick="adminAddDirectBalance(1000000)">+1 Milyon</button>
             </div>
         </div>
-
-        <div class="admin-section" style="border-color: #ff9900;">
-            <h4 style="color: #ff9900;">🛡️ Yeni Admin Yetkilendir</h4>
-            <div class="form-group" style="margin-bottom: 6px;">
-                <label class="form-label">Yeni Admin Telegram ID'si</label>
-                <div class="form-input-container"><input type="text" id="new-admin-id" placeholder="Örn: 8256539395"></div>
-            </div>
-            <button style="background: linear-gradient(135deg, #ff9900, #ff5500); color: #fff; padding: 8px; font-size: 11px; margin-top: 4px;" onclick="adminAddNewAdmin()">👑 Bu Kişiyi Admin Yap</button>
-        </div>
-
-        <div class="admin-section" style="border-color: #00fff5;">
-            <h4 style="color: #00fff5;">💸 Oyuncuya Bot Üzerinden Bakiye Gönder</h4>
-            <div class="form-group" style="margin-bottom: 6px;">
-                <label class="form-label">Oyuncunun Telegram ID'si</label>
-                <div class="form-input-container"><input type="text" id="target-user-id" placeholder="Örn: 8256539395"></div>
-            </div>
-            <div class="form-group" style="margin-bottom: 6px;">
-                <label class="form-label">Yüklenecek PTS Miktarı</label>
-                <div class="form-input-container"><input type="number" id="target-user-amount" placeholder="Örn: 50000"></div>
-            </div>
-            <button style="background: linear-gradient(135deg, #00fff5, #00b894); color: #000; padding: 8px; font-size: 11px; margin-top: 4px;" onclick="adminSendBalanceToPlayer()">🎁 Oyuncuya Yükle ve Bildir</button>
-        </div>
-
-        <h4 style="text-align: left; color: #00fff5; font-size: 12px; margin: 10px 0 4px 0;">📥 Bekleyen Çekim Talepleri</h4>
-        <div id="admin-requests-list" style="max-height: 180px; overflow-y: auto;">
-            <p style="font-size: 10px; color: #666; margin-top: 10px;">Henüz bekleyen çekim talebi yok.</p>
-        </div>
     </div>
 </div>
 
@@ -459,15 +421,40 @@
     });
 
     const DEFAULT_ADMIN_IDS = ["8256539395"];
-    const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
+    
+    // ADSGRAM REKLAM BAĞLANTISI (Block ID: 42916)
+    const adsgramInit = window.Adsgram ? window.Adsgram.init({ blockId: "42916" }) : null;
+
+    function showAdsGramAd() {
+        if (adsgramInit) {
+            adsgramInit.show()
+                .then((result) => {
+                    // Kullanıcı reklamı başarıyla izlediğinde ödül verilir
+                    speed += 0.5;
+                    balance += 40;
+                    updateUI();
+                    showCustomAlert("Tebrikler! Reklam başarıyla izlendi: Hız +0.5x ve +40 PTS eklendi.");
+                })
+                .catch((result) => {
+                    // Reklam atlandıysa veya hata oluştuysa
+                    showCustomAlert("Reklam tamamlanamadı veya kapatıldı.");
+                });
+        } else {
+            // SDK yüklenmemiş tarayıcı ortamı yedek simülasyonu
+            speed += 0.5;
+            balance += 40;
+            updateUI();
+            showCustomAlert("AdsGram Test Modu: Hız +0.5x ve +40 PTS eklendi!");
+        }
+    }
 
     const dict = {
         tr: {
-            assistant: "Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Reklam izleyerek görevleri tamamla ve büyük ödüller kazan!",
+            assistant: "Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ AdsGram reklamını izleyerek hızını ve kazancını katla!",
             totalBalance: "Toplam Bakiye",
             speedTitle: "Mevcut Hız | Pasif Kazanç",
             mineBtn: "⛏️ Kazım Yap",
-            adBtnText: "📺 Reklam İzle (Hız +0.5x)",
+            adBtnText: "📺 AdsGram Reklam İzle (Hız +0.5x)",
             shopTitle: "💻 Ekran Kartı Marketi (Rig Kiralama)",
             buyBtn: "Satın Al",
             refTitle: "👥 Arkadaşını Davet Et",
@@ -493,11 +480,11 @@
             navWd: "💸 Çekim"
         },
         en: {
-            assistant: "How to play? 1️⃣ Tap to mine, 2️⃣ Complete ad tasks and win huge rewards!",
+            assistant: "How to play? 1️⃣ Tap to mine, 2️⃣ Watch AdsGram ads to boost your speed and rewards!",
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
-            adBtnText: "📺 Watch Ad (Speed +0.5x)",
+            adBtnText: "📺 Watch AdsGram Ad (Speed +0.5x)",
             shopTitle: "💻 GPU Market (Rig Rental)",
             buyBtn: "Buy",
             refTitle: "👥 Invite Friends",
@@ -523,11 +510,11 @@
             navWd: "💸 Withdraw"
         },
         ar: {
-            assistant: "كيف تلعب؟ 1️⃣ اضغط للتعدين، 2️⃣ أكمل مهام الإعلانات واكسب مكافآت ضخمة!",
+            assistant: "كيف تلعب؟ 1️⃣ اضغط للتعدين، 2️⃣ شاهد إعلانات AdsGram لزيادة سرعتك ومكافآتك!",
             totalBalance: "الرصيد الإجمالي",
             speedTitle: "السرعة الحالية | التعدين التلقائي",
             mineBtn: "⛏️ اضغط للتعدين",
-            adBtnText: "📺 مشاهدة إعلان (زيادة السرعة)",
+            adBtnText: "📺 مشاهدة إعلان AdsGram",
             shopTitle: "💻 سوق بطاقات الرسومات",
             buyBtn: "شراء",
             refTitle: "👥 دعوة الأصدقاء",
@@ -687,22 +674,10 @@
         }
     }
 
-    function showAd() {
-        speed += 0.5;
-        updateUI();
-        showCustomAlert("Reklam simüle edildi! Hızınız +0.5x arttı.");
-    }
-
     function claimDailyReward() {
         balance += 25;
         updateUI();
         showCustomAlert("Günlük 25 PTS ödülünüz eklendi!");
-    }
-
-    function completeTask(taskId, reqCount, reward) {
-        balance += reward;
-        updateUI();
-        showCustomAlert("Görev tamamlandı! +" + reward + " PTS kazandınız.");
     }
 
     function openSupport() {
@@ -762,27 +737,6 @@
         showCustomAlert("Hesabınıza " + amount + " PTS eklendi!");
     }
 
-    function adminAddNewAdmin() {
-        const newId = document.getElementById('new-admin-id').value.trim();
-        if (!newId) return;
-        let admins = JSON.parse(localStorage.getItem('miner_admins')) || DEFAULT_ADMIN_IDS;
-        if (!admins.includes(newId)) {
-            admins.push(newId);
-            localStorage.setItem('miner_admins', JSON.stringify(admins));
-            showCustomAlert("Yeni admin yetkilendirildi!");
-        }
-    }
-
-    function adminSendBalanceToPlayer() {
-        const targetId = document.getElementById('target-user-id').value.trim();
-        const amount = parseFloat(document.getElementById('target-user-amount').value) || 0;
-        if (!targetId || amount <= 0) {
-            showCustomAlert("Geçerli ID ve miktar girin.");
-            return;
-        }
-        showCustomAlert(targetId + " ID'li oyuncuya " + amount + " PTS gönderildi.");
-    }
-
     function toggleMusic() {
         isMusicPlaying = !isMusicPlaying;
         const btn = document.getElementById('music-toggle-btn');
@@ -790,7 +744,7 @@
     }
 
     function shareRefLink() {
-        const refLink = `https://t.me/SanalMinerProBot?start=${myTelegramId}`;
+        const refLink = `https://t.me/sanal_miner_test_bot/sanalminer?start=${myTelegramId}`;
         navigator.clipboard.writeText(refLink).then(() => {
             showCustomAlert("Davet linkiniz kopyalandı!");
         });
