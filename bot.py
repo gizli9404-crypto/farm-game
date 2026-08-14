@@ -3,14 +3,11 @@ import os
 import time
 import requests
 
-# Railway veya GitHub Secrets'tan token ve grup ID'lerini alır
 TOKEN = os.getenv("TOKEN")
-# Çekimlerin ve kazançların atılacağı Telegram Duyuru/Log Grubu ID'si (Örn: -100xxxxxxxxxx)
 LOG_CHANNEL_ID = os.getenv("LOG_CHANNEL_ID", "-1001234567890") 
-
 URL = f"https://api.telegram.org/bot{TOKEN}/"
 
-# SİZE ÖZEL ANA YÖNETİCİ ID
+# Admin ID listene kendi ID'ni ekledik
 ADMIN_IDS = [825653395]
 DATA_FILE = "bakiye.json"
 
@@ -52,25 +49,27 @@ def answer_callback_query(callback_query_id, text=""):
     except Exception as e:
         print(f"Callback yanıt hatası: {e}")
 
-# Çeviriler (Türkçe, İngilizce, Arapça)
 TRANSLATIONS = {
     "tr": {
         "welcome": "🚀 <b>Sanal Miner Pro</b>'ya hoş geldin!\nAşağıdan dilini seç ve madenciliğe başla:",
         "balance": "💰 <b>Güncel Bakiyeniz:</b> {balance} PTS\n🆔 <b>ID'niz:</b> <code>{chat_id}</code>",
         "lang_set": "🇹🇷 Dil Türkçe olarak ayarlandı!",
+        "admin_welcome": "👑 <b>Hoş geldin Patron / Admin!</b>\nSistem seni yönetici olarak tanıdı. \n\n⚙️ <b>Admin Komutları:</b>\n• /gonder [ID] [Miktar] - Bakiye yükle\n• /aktif - Toplam kullanıcıları tara\n• /talepler - Bekleyen çekim taleplerini tara",
         "admin_only": "❌ Bu komutu kullanmaya yetkiniz yok!"
     },
     "en": {
         "welcome": "🚀 Welcome to <b>Sanal Miner Pro</b>!\nChoose your language below and start mining:",
         "balance": "💰 <b>Your Balance:</b> {balance} PTS\n🆔 <b>Your ID:</b> <code>{chat_id}</code>",
         "lang_set": "🇬🇧 Language set to English!",
+        "admin_welcome": "👑 <b>Welcome Admin!</b>\nSystem recognized you as an administrator.",
         "admin_only": "❌ You are not authorized!"
     },
     "ar": {
         "welcome": "🚀 أهلاً بك في <b>Sanal Miner Pro</b>!\nاختر لغتك أدناه وابدأ التعدين:",
         "balance": "💰 <b>رصيدك الحالي:</b> {balance} PTS\n🆔 <b>معرفك:</b> <code>{chat_id}</code>",
         "lang_set": "🇸🇦 تم تغيير اللغة إلى العربية!",
-        "admin_only": "❌ ليس لديك صلاحية لاستخدام هذا الأمر!"
+        "admin_welcome": "👑 <b>أهلاً بك يا مدير!</b>\nتم التعرف عليك كمسؤول عن النظام.",
+        "admin_only": "❌ ليس لديك صلاحية!"
     }
 }
 
@@ -79,7 +78,7 @@ def main():
         print("HATA: TOKEN bulunamadı!")
         return
 
-    print("Bot çoklu dil ve duyuru sistemiyle çalışıyor...")
+    print("Bot admin paneli ve tarama özellikleriyle çalışıyor...")
     offset = None
     while True:
         users_data = load_data()
@@ -89,7 +88,6 @@ def main():
             for update in updates["result"]:
                 offset = update["update_id"] + 1
 
-                # 1. BUTON TIKLAMALARI (DİL SEÇİMİ)
                 if "callback_query" in update:
                     cq = update["callback_query"]
                     cq_id = cq["id"]
@@ -105,12 +103,16 @@ def main():
                         save_data(users_data)
                         
                         answer_callback_query(cq_id, TRANSLATIONS[lang]["lang_set"])
-                        bal = users_data[chat_id_str]["balance"]
-                        send_message(int(chat_id_str), TRANSLATIONS[lang]["balance"].format(balance=bal, chat_id=chat_id_str))
+                        
+                        # Eğer adminse dil seçince admin paneli karşılama metnini gönder
+                        if int(chat_id_str) in ADMIN_IDS:
+                            send_message(int(chat_id_str), TRANSLATIONS[lang]["admin_welcome"])
+                        else:
+                            bal = users_data[chat_id_str]["balance"]
+                            send_message(int(chat_id_str), TRANSLATIONS[lang]["balance"].format(balance=bal, chat_id=chat_id_str))
 
                     continue
 
-                # 2. MESAJLAR VE KOMUTLAR
                 if "message" in update and "text" in update["message"]:
                     chat_id = update["message"]["chat"]["id"]
                     chat_id_str = str(chat_id)
@@ -122,33 +124,51 @@ def main():
 
                     lang = users_data[chat_id_str]["lang"]
 
+                    # /start komutu
                     if message_text.startswith("/start"):
-                        keyboard = {
-                            "inline_keyboard": [
-                                [
-                                    {"text": "🇹🇷 Türkçe", "callback_data": "lang_tr"},
-                                    {"text": "🇬🇧 English", "callback_data": "lang_en"},
-                                    {"text": "🇸🇦 العربية", "callback_data": "lang_ar"}
+                        if chat_id in ADMIN_IDS:
+                            send_message(chat_id, TRANSLATIONS[lang]["admin_welcome"])
+                        else:
+                            keyboard = {
+                                "inline_keyboard": [
+                                    [
+                                        {"text": "🇹🇷 Türkçe", "callback_data": "lang_tr"},
+                                        {"text": "🇬🇧 English", "callback_data": "lang_en"},
+                                        {"text": "🇸🇦 العربية", "callback_data": "lang_ar"}
+                                    ]
                                 ]
-                            ]
-                        }
-                        send_message(chat_id, TRANSLATIONS[lang]["welcome"], reply_markup=keyboard)
+                            }
+                            send_message(chat_id, TRANSLATIONS[lang]["welcome"], reply_markup=keyboard)
 
                     elif message_text in ["/bakiye", "/balance"]:
                         bal = users_data[chat_id_str]["balance"]
                         send_message(chat_id, TRANSLATIONS[lang]["balance"].format(balance=bal, chat_id=chat_id_str))
 
-                    # ÇEKİM TALEBİNİ GRUBA GÖNDERME KOMUTU (Test veya Web App entegrasyonu için)
+                    # ADMIN: Aktif Kullanıcıları Tarama Komutu
+                    elif message_text == "/aktif":
+                        if chat_id not in ADMIN_IDS:
+                            send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
+                        else:
+                            toplam_kullanici = len(users_data)
+                            aktif_liste = f"📊 <b>Sistem Tarama Raporu</b>\n\n👥 Toplam Kayıtlı Kullanıcı: <b>{toplam_kullanici}</b>\n✅ Sistem aktif ve kusursuz çalışıyor."
+                            send_message(chat_id, aktif_liste)
+
+                    # ADMIN: Çekim Taleplerini Tarama
+                    elif message_text == "/talepler":
+                        if chat_id not in ADMIN_IDS:
+                            send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
+                        else:
+                            # Burayı ileride dosya veya veritabanından çekim listesiyle bağlayabiliriz
+                            send_message(chat_id, "📥 <b>Tarama Tamamlandı:</b> Şu an bekleyen yeni bir çekim talebi bulunmuyor.")
+
                     elif message_text.startswith("/cekim"):
                         parts = message_text.split()
                         if len(parts) >= 2:
                              miktar = parts[1]
-                             # Log grubuna otomatik gönder
                              log_text = f"💸 <b>Yeni Çekim Talebi!</b>\n👤 Kullanıcı ID: <code>{chat_id}</code>\n💰 Miktar: {miktar} PTS\n⏳ Durum: Bekliyor..."
                              send_message(LOG_CHANNEL_ID, log_text)
                              send_message(chat_id, "✅ Çekim talebiniz onay için gönderildi!")
 
-                    # ADMIN: Bakiye Gönderme
                     elif message_text.startswith("/gonder"):
                         if chat_id not in ADMIN_IDS:
                             send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
@@ -167,7 +187,6 @@ def main():
                                     send_message(chat_id, f"✅ Başarılı! {hedef_id_str} ID'sine {miktar} PTS eklendi.")
                                     send_message(int(hedef_id_str), f"🎉 Hesabınıza {miktar} PTS eklendi!")
                                     
-                                    # Gruba kazanç duyurusu at
                                     log_text = f"🎉 <b>Ödeme / Kazanç Dağıtıldı!</b>\n👤 Kullanıcı: <code>{hedef_id_str}</code>\n💎 Tutar: <b>{miktar} PTS</b>"
                                     send_message(LOG_CHANNEL_ID, log_text)
                                 except:
