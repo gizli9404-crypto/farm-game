@@ -4,7 +4,183 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sanal Miner Pro App</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            background-color: #0d0e15;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            background: #141622;
+            border: 2px solid #1f2235;
+            border-radius: 16px;
+            padding: 15px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+
+        .section-box {
+            background: #1a1c29;
+            border: 1px solid #2a2e45;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* Çark Tasarımı */
+        .wheel-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            margin: 15px auto;
+        }
+
+        .pointer {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 20px solid #ff0055;
+            z-index: 10;
+        }
+
+        .wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 4px solid #00ffcc;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            transform: rotate(0deg);
+        }
+
+        .slice {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: 100% 100%;
+            left: 0; top: 0;
+            transform: rotate(calc(var(--i) * 60deg));
+            border-right: 1px solid rgba(255,255,255,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slice span {
+            position: absolute;
+            transform: rotate(30deg) translate(35px, 35px);
+            font-size: 11px;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        /* Slot Makinesi Tasarımı */
+        .slot-machine {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .slot-box {
+            width: 55px;
+            height: 65px;
+            background: #0d0e15;
+            border: 2px solid #00ffcc;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+            box-shadow: inset 0 0 10px rgba(0, 255, 204, 0.2);
+        }
+
+        .spinning-slot {
+            animation: slotBlur 0.1s infinite alternate;
+        }
+
+        @keyframes slotBlur {
+            0% { transform: translateY(-3px); filter: blur(1px); }
+            100% { transform: translateY(3px); filter: blur(1px); }
+        }
+
+        .slot-info {
+            font-size: 12px;
+            color: #a0a5c0;
+            margin: 5px 0;
+        }
+
+        /* Genel Butonlar */
+        .action-btn {
+            background: linear-gradient(90deg, #00ffcc, #00b3ff);
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 10px;
+            transition: 0.2s;
+        }
+
+        .action-btn:hover {
+            transform: scale(1.02);
+        }
+
+        /* Modal / Popup Tasarımı */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1a1c29, #0d0e15);
+            border: 2px solid #00ffcc;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            width: 80%;
+            max-width: 280px;
+            box-shadow: 0 0 25px rgba(0, 255, 204, 0.4);
+            color: #fff;
+        }
+
+        .modal-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .modal-btn {
+            background: linear-gradient(90deg, #00ffcc, #00b3ff);
+            color: #000;
+            border: none;
+            padding: 8px 20px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 
@@ -51,6 +227,92 @@
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        const wheelSlices = [
+            { pts: 10 },
+            { pts: 60 },
+            { pts: 100 },
+            { pts: 250 },
+            { pts: 500 },
+            { pts: 1000 }
+        ];
+
+        let currentRotation = 0;
+        let isSpinning = false;
+
+        function spinWheel() {
+            if (isSpinning) return;
+            isSpinning = true;
+
+            const sliceAngle = 60;
+            const winningIndex = Math.floor(Math.random() * wheelSlices.length);
+            const selectedPrize = wheelSlices[winningIndex];
+
+            const extraSpins = 5;
+            const targetAngle = 360 - (winningIndex * sliceAngle) - (sliceAngle / 2);
+            const totalRotation = currentRotation + (360 * extraSpins) + ((targetAngle - (currentRotation % 360) + 360) % 360);
+
+            const wheelElement = document.getElementById("inner-wheel");
+            wheelElement.style.transition = "transform 4s cubic-bezier(0.15, 0.75, 0.14, 1)";
+            wheelElement.style.transform = `rotate(${totalRotation}deg)`;
+
+            currentRotation = totalRotation;
+
+            setTimeout(() => {
+                isSpinning = false;
+                showCustomPopup(`🎉 Çark Durdu! Tebrikler, ${selectedPrize.pts} PTS Kazandınız!`);
+            }, 4000);
+        }
+
+        const slotSymbols = ["💎", "⭐", "🍒", "🔔", "7️⃣", "🍋"];
+
+        function spinSlot() {
+            const slots = [
+                document.getElementById("slot-1"),
+                document.getElementById("slot-2"),
+                document.getElementById("slot-3")
+            ];
+
+            slots.forEach(slot => slot.classList.add("spinning-slot"));
+
+            let counter = 0;
+            const rollInterval = setInterval(() => {
+                slots.forEach(slot => {
+                    slot.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+                });
+                counter++;
+
+                if (counter > 15) {
+                    clearInterval(rollInterval);
+                    slots.forEach(slot => slot.classList.remove("spinning-slot"));
+
+                    const finalResults = [
+                        slotSymbols[Math.floor(Math.random() * slotSymbols.length)],
+                        slotSymbols[Math.floor(Math.random() * slotSymbols.length)],
+                        slotSymbols[Math.floor(Math.random() * slotSymbols.length)]
+                    ];
+
+                    slots.forEach((slot, index) => {
+                        slot.innerText = finalResults[index];
+                    });
+
+                    if (finalResults[0] === finalResults[1] && finalResults[1] === finalResults[2]) {
+                        showCustomPopup(`🎉 BINGO! Üç Eşleşti! 300 PTS Kazandınız!`);
+                    } else {
+                        showCustomPopup(`😢 Maalesef, bu sefer kazanamadın. Tekrar dene!`);
+                    }
+                }
+            }, 100);
+        }
+
+        function showCustomPopup(message) {
+            document.getElementById("modal-text").innerText = message;
+            document.getElementById("custom-modal").style.display = "flex";
+        }
+
+        function closeModal() {
+            document.getElementById("custom-modal").style.display = "none";
+        }
+    </script>
 </body>
 </html>
