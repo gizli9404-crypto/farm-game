@@ -231,29 +231,6 @@
     const ADMIN_ID = "8256539395";
     const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
 
-    // Adsgram Entegrasyonu (Block ID'yi kendi Adsgram ID'n ile değiştirebilirsin)
-    const adController = window.Adsgram ? window.Adsgram.init({ blockId: "int-id-here" }) : null;
-
-    function showAd() {
-        if (adController) {
-            adController.show().then((result) => {
-                // Reklam başarıyla izlendiğinde hız artışı verilir
-                speed += 0.5;
-                localStorage.setItem('miner_speed', speed);
-                updateUI();
-                alert("Tebrikler! Reklam izlendi, hızınız +0.5x arttı.");
-            }).catch((err) => {
-                alert("Reklam gösterilemedi veya kapatıldı.");
-            });
-        } else {
-            // Tarayıcı testi / simülasyon modu
-            speed += 0.5;
-            localStorage.setItem('miner_speed', speed);
-            updateUI();
-            alert("Reklam izlendi (Simülasyon)! Hız arttı.");
-        }
-    }
-
     // Çeviri Sözlüğü (Türkçe, İngilizce, Arapça)
     const dict = {
         tr: {
@@ -563,76 +540,152 @@
             userId = user.id;
         }
 
+        const newReq = {
+            id: Date.now(),
+            username: username,
+            userId: userId,
+            network: network,
+            wallet: wallet,
+            amount: amount,
+            usdt: usdtAmount,
+            time: new Date().toLocaleTimeString()
+        };
+
+        pendingWithdraws.unshift(newReq);
+        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
+
         balance -= amount;
         localStorage.setItem('miner_balance', balance);
         updateUI();
-
-        const reqData = { id: Date.now(), userId, username, amount, usdtAmount, network, wallet };
-        pendingWithdraws.push(reqData);
-        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
-        alert("Çekim talebiniz başarıyla alındı ve yöneticiye iletildi!");
         document.getElementById('withdraw-amount').value = '';
         calculateEstimate();
+
+        const adminMessage = `🚨 *YENİ ÇEKİM TALEBİ!*\n\n👤 *Kullanıcı:* ${username} (ID: \`${userId}\`)\n🌐 *Ağ:* ${network}\n💰 *Miktar:* ${amount} PTS (*${usdtAmount} USDT*)\n👛 *Cüzdan:* \`${wallet}\``;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: ADMIN_ID, text: adminMessage, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
+        alert(`✅ Çekim Talebi Başarıyla Alındı!\n\nMiktar: ${amount} PTS (${usdtAmount} USDT)`);
     }
 
-    function adminAddDirectBalance(val) {
-        balance += val;
+    function adminAddDirectBalance(amount) {
+        balance += amount;
         localStorage.setItem('miner_balance', balance);
         updateUI();
-        alert(`Hesaba ${val} PTS eklendi!`);
+        alert(`✅ Hesabınıza başarıyla ${amount} PTS eklendi!`);
     }
 
     function adminSendBalance() {
-        const targetId = document.getElementById('admin-target-id').value;
-        const amt = document.getElementById('admin-target-amount').value;
-        if (!targetId || !amt) { alert("ID ve miktar girin."); return; }
-        alert(`[Simülasyon] ${targetId} ID'li kullanıcıya ${amt} PTS ödül bildirimi gönderildi!`);
-        document.getElementById('admin-target-id').value = '';
-        document.getElementById('admin-target-amount').value = '';
+        const targetId = document.getElementById('admin-target-id').value.trim();
+        const amount = parseFloat(document.getElementById('admin-target-amount').value);
+
+        if (!targetId || targetId.length < 5) { alert("Lütfen geçerli bir Telegram ID girin."); return; }
+        if (isNaN(amount) || amount <= 0) { alert("Lütfen geçerli bir miktar girin."); return; }
+
+        let msg = `🎉 *ETKİNLİK ÖDÜLÜ KAZANDINIZ!*\n\nKurucu tarafından hesabınıza doğrudan *${amount} PTS* etkinlik ödülü tanımlanmıştır. İyi kazımlar! 🚀`;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: targetId, text: msg, parse_mode: 'Markdown' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) {
+                alert(`✅ Başarılı!\n\nID: ${targetId} olan oyuncuya ${amount} PTS ödül bildirimi gönderildi.`);
+                document.getElementById('admin-target-id').value = '';
+                document.getElementById('admin-target-amount').value = '';
+            } else {
+                alert(`⚠️ Mesaj gönderilemedi! Oyuncu botu başlatmış (/start) olmalıdır.`);
+            }
+        })
+        .catch(e => { alert("Bağlantı hatası oluştu."); });
     }
 
     function renderAdminPanel() {
-        const listEl = document.getElementById('admin-requests-list');
-        if (!listEl) return;
+        const listContainer = document.getElementById('admin-requests-list');
+        if (!listContainer) return;
+
         if (pendingWithdraws.length === 0) {
-            listEl.innerHTML = '<p style="font-size: 12px; color: #666; margin-top: 10px;">Henüz bekleyen çekim talebi yok.</p>';
+            listContainer.innerHTML = `<p style="font-size: 12px; color: #666; margin-top: 10px;">Henüz bekleyen çekim talebi yok.</p>`;
             return;
         }
+
         let html = '';
         pendingWithdraws.forEach((req, index) => {
-            html += `<div class="admin-req-card">
-                <b>Kullanıcı:</b> ${req.username} (${req.userId})<br>
-                <b>Tutar:</b> ${req.amount} PTS (~${req.usdtAmount} USDT)<br>
-                <b>Ağ / Cüzdan:</b> ${req.network} / <span style="color:#00fff5;">${req.wallet}</span><br>
-                <button style="background:#00b894; color:#fff; font-size:11px; padding:6px; margin-top:6px; width:auto;" onclick="approveWithdraw(${index})">✅ Onayla & Öde</button>
-                <button style="background:#ff416c; color:#fff; font-size:11px; padding:6px; margin-top:6px; width:auto; margin-left:6px;" onclick="rejectWithdraw(${index})">❌ Reddet</button>
-            </div>`;
+            html += `
+                <div class="admin-req-card">
+                    <div><b>Kullanıcı:</b> ${req.username} (ID: ${req.userId})</div>
+                    <div><b>Tutar:</b> ${req.amount} PTS (${req.usdt} USDT)</div>
+                    <div><b>Ağ / Cüzdan:</b> ${req.network}</div>
+                    <div style="word-break: break-all; color: #00fff5;"><b>Adres:</b> ${req.wallet}</div>
+                    <div style="margin-top: 8px; display: flex; gap: 6px;">
+                        <button style="padding: 6px; font-size: 11px; margin: 0; background: #00b894; color:#fff;" onclick="approveRequest(${index})">✅ Onayla</button>
+                        <button style="padding: 6px; font-size: 11px; margin: 0; background: #ff416c; color:#fff;" onclick="rejectRequest(${index})">❌ Reddet</button>
+                    </div>
+                </div>
+            `;
         });
-        listEl.innerHTML = html;
+        listContainer.innerHTML = html;
     }
 
-    function approveWithdraw(index) {
-        pendingWithdraws.splice(index, 1);
-        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
-        updateUI();
-        alert("Çekim onaylandı!");
-    }
-
-    function rejectWithdraw(index) {
+    function approveRequest(index) {
         const req = pendingWithdraws[index];
-        balance += req.amount; // İade et
-        localStorage.setItem('miner_balance', balance);
+        let msg = `✅ *ÇEKİM TALEBİNİZ ONAYLANDI!*\n\nKurucu tarafından *${req.usdt} USDT* tutarındaki ödemeniz (${req.network}) cüzdanınıza gönderilmiştir. İyi günlerde harcayın! 🚀`;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
         pendingWithdraws.splice(index, 1);
         localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-        alert("Çekim reddedildi ve tutar kullanıcıya iade edildi.");
+        alert("Talep onaylandı ve kullanıcıya bot üzerinden bilgi gönderildi.");
     }
 
-    window.onload = function() {
-        checkUserTelegramData();
-        setLanguage(currentLang);
+    function rejectRequest(index) {
+        const req = pendingWithdraws[index];
+        balance += req.amount;
+        localStorage.setItem('miner_balance', balance);
+
+        let msg = `❌ *ÇEKİM TALEBİNİZ REDDEDİLDİ!*\n\n${req.amount} PTS tutarındaki çekim talebiniz geçersiz cüzdan veya kural dışı işlem sebebiyle reddedilmiştir. Bakiyeniz hesabınıza iade edilmiştir.`;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
+        pendingWithdraws.splice(index, 1);
+        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-    };
+        alert("Talep reddedildi, tutar kullanıcının hesabına iade edildi.");
+    }
+
+    let AdController = null;
+    if (window.Adsgram) { AdController = window.Adsgram.init({ blockId: "42750" }); }
+    function showAd() {
+        if (!AdController) { alert("Reklam sistemi hazır değil."); return; }
+        AdController.show().then(() => {
+            speed += 0.5; localStorage.setItem('miner_speed', speed); updateUI();
+            alert("Hızın +0.5x arttı! 🚀");
+        }).catch(e => {});
+    }
+
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+    }
+
+    setLanguage(currentLang);
+    checkUserTelegramData();
+    updateUI();
 </script>
+
 </body>
 </html>
