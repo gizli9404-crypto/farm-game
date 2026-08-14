@@ -14,101 +14,126 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
             margin: 0;
-            padding: 15px;
-            padding-bottom: 90px;
+            padding: 12px;
+            padding-bottom: 85px;
             min-height: 100vh;
             overflow-x: hidden;
         }
         .container {
             max-width: 400px;
             margin: 0 auto;
-            background: rgba(22, 33, 62, 0.7);
+            background: rgba(22, 33, 62, 0.75);
             backdrop-filter: blur(12px);
-            padding: 20px;
+            padding: 15px;
             border-radius: 20px;
             border: 1px solid rgba(0, 255, 245, 0.25);
             box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.7);
             position: relative;
         }
-        .top-bar { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        h1 { color: #00fff5; font-size: 22px; margin: 0; text-shadow: 0 0 12px rgba(0, 255, 245, 0.8); }
-        .music-btn { background: rgba(15, 52, 96, 0.8); border: 1px solid rgba(0, 255, 245, 0.4); color: #00fff5; padding: 6px 12px; border-radius: 20px; font-size: 14px; cursor: pointer; width: 100%; }
-        .user-id-badge { font-size: 10px; color: #8a99ad; margin-top: 5px; text-align: right; width: 100%; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        h1 { color: #00fff5; font-size: 20px; margin: 0; text-shadow: 0 0 10px rgba(0, 255, 245, 0.8); }
+        .music-btn { background: rgba(15, 52, 96, 0.9); border: 1px solid rgba(0, 255, 245, 0.4); color: #00fff5; padding: 5px 10px; border-radius: 15px; font-size: 12px; cursor: pointer; }
+        .user-id-badge { font-size: 10px; color: #8a99ad; margin-top: 3px; text-align: right; }
         
-        .lang-selector { display: flex; gap: 4px; margin-bottom: 10px; justify-content: flex-end; }
-        .lang-btn { background: rgba(15, 52, 96, 0.8); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 4px 8px; font-size: 11px; border-radius: 8px; cursor: pointer; width: auto; margin: 0; }
+        .lang-selector { display: flex; gap: 4px; margin-bottom: 8px; justify-content: flex-end; }
+        .lang-btn { background: rgba(15, 52, 96, 0.8); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 3px 6px; font-size: 10px; border-radius: 6px; cursor: pointer; }
         .lang-btn.active { background: #00fff5; color: #000; font-weight: bold; }
 
-        .rig-container { margin: 15px 0; position: relative; display: inline-block; }
-        .rig-icon { font-size: 60px; filter: drop-shadow(0 0 15px rgba(0, 255, 245, 0.6)); animation: pulse 2s infinite alternate; }
+        .rig-container { margin: 10px 0; }
+        .rig-icon { font-size: 50px; filter: drop-shadow(0 0 12px rgba(0, 255, 245, 0.6)); animation: pulse 2s infinite alternate; }
         @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
-        .stat-box { background: rgba(15, 52, 96, 0.6); padding: 12px; border-radius: 14px; margin: 10px 0; border: 1px solid rgba(255, 255, 255, 0.08); }
-        .stat-title { font-size: 11px; color: #8a99ad; text-transform: uppercase; }
-        .stat-value { font-size: 22px; font-weight: bold; color: #ff416c; text-shadow: 0 0 10px rgba(255, 65, 108, 0.6); margin-top: 2px; }
         
-        .shop-list { max-height: 380px; overflow-y: auto; padding-right: 4px; }
-        .shop-card { background: rgba(15, 52, 96, 0.85); padding: 12px; border-radius: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-align: left; border: 1px solid rgba(0, 255, 245, 0.2); gap: 8px; }
+        .stat-box { background: rgba(15, 52, 96, 0.6); padding: 10px; border-radius: 12px; margin: 8px 0; border: 1px solid rgba(255, 255, 255, 0.08); }
+        .stat-title { font-size: 10px; color: #8a99ad; text-transform: uppercase; }
+        .stat-value { font-size: 20px; font-weight: bold; color: #ff416c; text-shadow: 0 0 8px rgba(255, 65, 108, 0.6); margin-top: 2px; }
+        
+        .shop-list { max-height: 340px; overflow-y: auto; padding-right: 4px; }
+        .shop-card { background: rgba(15, 52, 96, 0.85); padding: 10px; border-radius: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; text-align: left; border: 1px solid rgba(0, 255, 245, 0.2); gap: 8px; }
         .shop-info { flex: 1; min-width: 0; }
-        .shop-info b { font-size: 13px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .shop-info b { font-size: 12px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         
-        button { background: linear-gradient(135deg, #00fff5, #0088cc); border: none; color: #000; padding: 12px 18px; font-size: 15px; font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; margin-top: 10px; }
-        #mine-btn { background: linear-gradient(135deg, #00fff5, #00b894); font-size: 16px; padding: 14px; border-radius: 16px; }
-        .buy-btn { width: auto; font-size: 12px; padding: 8px 12px; border-radius: 10px; margin: 0; white-space: nowrap; }
+        button { background: linear-gradient(135deg, #00fff5, #0088cc); border: none; color: #000; padding: 10px 14px; font-size: 14px; font-weight: 800; border-radius: 12px; cursor: pointer; width: 100%; margin-top: 8px; }
+        #mine-btn { background: linear-gradient(135deg, #00fff5, #00b894); font-size: 15px; padding: 12px; }
+        .buy-btn { width: auto; font-size: 11px; padding: 6px 10px; border-radius: 8px; margin: 0; white-space: nowrap; }
         .ad-btn { background: linear-gradient(135deg, #ff9900, #ff5500); color: #fff; }
         .reward-btn { background: linear-gradient(135deg, #ff416c, #cc0000); color: #fff; }
-        .support-btn { background: rgba(15, 52, 96, 0.9); color: #00fff5; border: 1px solid #00fff5; }
-        .admin-nav-item { display: none; color: #ff416c !important; font-weight: bold; }
+        .support-btn { background: rgba(15, 52, 96, 0.9); color: #00fff5; border: 1px solid #00fff5; font-size: 12px; padding: 8px; }
+        .admin-nav-item { display: none; color: #ff416c !important; }
         
-        .rate-badge { background: rgba(10, 17, 40, 0.85); border: 1px dashed #00fff5; padding: 12px; border-radius: 12px; font-size: 12px; color: #00fff5; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; }
-        .withdraw-card { background: rgba(15, 52, 96, 0.5); border: 1px solid rgba(0, 255, 245, 0.2); border-radius: 16px; padding: 15px; margin-top: 10px; text-align: left; }
-        .form-group { margin-bottom: 12px; text-align: left; }
-        .form-label { font-size: 12px; color: #8a99ad; margin-bottom: 5px; display: block; font-weight: 600; }
-        .form-input-container select, .form-input-container input { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(0, 255, 245, 0.3); background: #0a1128; color: #fff; font-size: 13px; outline: none; }
-        .quick-btn-group { display: flex; gap: 6px; margin-top: 6px; }
-        .quick-btn { background: rgba(0, 255, 245, 0.1); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 4px 8px; font-size: 10px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; }
-        .calc-preview-card { background: rgba(10, 17, 40, 0.9); border-radius: 10px; padding: 10px 14px; margin-top: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4); }
+        .rate-badge { background: rgba(10, 17, 40, 0.85); border: 1px dashed #00fff5; padding: 10px; border-radius: 10px; font-size: 11px; color: #00fff5; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .withdraw-card { background: rgba(15, 52, 96, 0.5); border: 1px solid rgba(0, 255, 245, 0.2); border-radius: 14px; padding: 12px; margin-top: 8px; text-align: left; }
+        .form-group { margin-bottom: 10px; text-align: left; }
+        .form-label { font-size: 11px; color: #8a99ad; margin-bottom: 3px; display: block; font-weight: 600; }
+        .form-input-container select, .form-input-container input { width: 100%; padding: 10px; border-radius: 8px; border: 1px solid rgba(0, 255, 245, 0.3); background: #0a1128; color: #fff; font-size: 12px; outline: none; }
+        .quick-btn-group { display: flex; gap: 5px; margin-top: 5px; }
+        .quick-btn { background: rgba(0, 255, 245, 0.1); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 3px 6px; font-size: 10px; border-radius: 5px; cursor: pointer; width: auto; margin: 0; }
+        .calc-preview-card { background: rgba(10, 17, 40, 0.9); border-radius: 8px; padding: 8px 12px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4); font-size: 12px; }
 
-        .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 14px; padding: 12px; margin-bottom: 15px; text-align: left; }
-        .admin-section h4 { color: #00fff5; font-size: 13px; margin: 0 0 8px 0; }
-        .admin-req-card { background: rgba(20, 10, 30, 0.9); border: 1px solid #ff416c; border-radius: 12px; padding: 12px; margin-bottom: 10px; text-align: left; font-size: 12px; }
-        .admin-req-card b { color: #00fff5; }
+        .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 12px; padding: 10px; margin-bottom: 10px; text-align: left; }
+        .admin-section h4 { color: #00fff5; font-size: 12px; margin: 0 0 6px 0; }
+        .admin-req-card { background: rgba(20, 10, 30, 0.9); border: 1px solid #ff416c; border-radius: 10px; padding: 10px; margin-bottom: 8px; text-align: left; font-size: 11px; }
 
-        .navbar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 52, 96, 0.95); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid rgba(0, 255, 245, 0.2); z-index: 100; }
-        .nav-item { color: #8a99ad; font-size: 10px; cursor: pointer; text-decoration: none; }
-        .nav-item.active { color: #00fff5; font-weight: bold; }
+        /* TELEGRAM MINI APP OPTİMİZE ALT MENÜ */
+        .navbar { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background: rgba(15, 52, 96, 0.98); 
+            backdrop-filter: blur(12px); 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 8px 4px; 
+            border-top: 1px solid rgba(0, 255, 245, 0.25); 
+            z-index: 100; 
+        }
+        .nav-item { 
+            color: #8a99ad; 
+            font-size: 9px; 
+            cursor: pointer; 
+            text-decoration: none; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            gap: 2px; 
+            flex: 1;
+            transition: 0.2s;
+        }
+        .nav-item span.nav-icon { font-size: 16px; }
+        .nav-item.active { color: #00fff5; font-weight: bold; transform: translateY(-2px); }
+        
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .daily-earn { color: #ff9900; font-size: 10px; font-weight: bold; }
-        .gpu-count { color: #00fff5; font-size: 10px; background: rgba(10, 17, 40, 0.8); padding: 2px 6px; border-radius: 6px; border: 1px solid rgba(0, 255, 245, 0.3); }
-        .float-text { position: absolute; color: #00fff5; font-weight: bold; font-size: 18px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 99; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.3); } }
+        .daily-earn { color: #ff9900; font-size: 9px; font-weight: bold; }
+        .gpu-count { color: #00fff5; font-size: 9px; background: rgba(10, 17, 40, 0.8); padding: 1px 5px; border-radius: 4px; border: 1px solid rgba(0, 255, 245, 0.3); }
+        .float-text { position: absolute; color: #00fff5; font-weight: bold; font-size: 16px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 99; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-40px) scale(1.2); } }
 
-        .leaderboard-box { background: rgba(10, 17, 40, 0.8); border-radius: 12px; padding: 10px; margin-top: 12px; border: 1px solid rgba(0, 255, 245, 0.2); text-align: left; }
-        .leaderboard-title { font-size: 12px; color: #00fff5; font-weight: bold; margin-bottom: 6px; display: flex; justify-content: space-between; }
-        .leaderboard-item { font-size: 11px; display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .leaderboard-box { background: rgba(10, 17, 40, 0.8); border-radius: 10px; padding: 8px; margin-top: 10px; border: 1px solid rgba(0, 255, 245, 0.2); text-align: left; }
+        .leaderboard-title { font-size: 11px; color: #00fff5; font-weight: bold; margin-bottom: 5px; display: flex; justify-content: space-between; }
+        .leaderboard-item { font-size: 10px; display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* 1win Aviator Tarzı Canlı Ekran */
-        .aviator-screen { background: #0d1117; border: 2px solid #ff416c; border-radius: 16px; padding: 15px; margin-top: 10px; text-align: center; position: relative; overflow: hidden; }
-        .aviator-graph { height: 180px; background: radial-gradient(circle at bottom, #1f1b2c, #0d1117); border-radius: 12px; position: relative; border: 1px solid rgba(255,65,108,0.3); overflow: hidden; }
-        .multiplier-display-overlay { position: absolute; top: 20px; left: 0; width: 100%; font-size: 38px; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,65,108,0.9); z-index: 5; pointer-events: none; }
+        /* Aviator Ekranı */
+        .aviator-screen { background: #0d1117; border: 2px solid #ff416c; border-radius: 14px; padding: 10px; margin-top: 8px; text-align: center; position: relative; overflow: hidden; }
+        .aviator-graph { height: 150px; background: radial-gradient(circle at bottom, #1f1b2c, #0d1117); border-radius: 10px; position: relative; border: 1px solid rgba(255,65,108,0.3); overflow: hidden; }
+        .multiplier-display-overlay { position: absolute; top: 15px; left: 0; width: 100%; font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0 0 12px rgba(255,65,108,0.9); z-index: 5; pointer-events: none; }
         #aviator-canvas { width: 100%; height: 100%; display: block; }
-        .multiplier-history { display: flex; gap: 4px; overflow-x: auto; padding: 6px 0; margin-bottom: 10px; justify-content: center; }
-        .m-pill { background: #161b22; border: 1px solid #30363d; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; color: #00fff5; white-space: nowrap; }
+        .multiplier-history { display: flex; gap: 4px; overflow-x: auto; padding: 4px 0; margin-bottom: 8px; justify-content: center; }
+        .m-pill { background: #161b22; border: 1px solid #30363d; padding: 2px 6px; border-radius: 5px; font-size: 9px; font-weight: bold; color: #00fff5; white-space: nowrap; }
 
-        /* Custom Toast Notification Overlay */
         #custom-toast {
             position: fixed;
-            top: 20px;
+            top: 15px;
             left: 50%;
             transform: translateX(-50%) translateY(-100px);
             background: rgba(15, 52, 96, 0.95);
             border: 1px solid #00fff5;
             color: #fff;
-            padding: 12px 20px;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,255,245,0.4);
+            padding: 10px 16px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,255,245,0.4);
             z-index: 9999;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             transition: transform 0.3s ease-in-out;
             max-width: 90%;
@@ -119,7 +144,7 @@
 </head>
 <body>
 
-<div id="custom-toast">Bildirim mesajı</div>
+<div id="custom-toast">Bildirim</div>
 
 <div class="container" id="main-container">
     <div class="lang-selector">
@@ -136,7 +161,7 @@
         </div>
     </div>
 
-    <!-- TAB 1: KAZIM & LİDERLİK -->
+    <!-- TAB 1: KAZIM -->
     <div id="tab-mine" class="tab-content active">
         <div class="rig-container"><div class="rig-icon">🖥️</div></div>
         <div class="stat-box">
@@ -145,56 +170,56 @@
         </div>
         <div class="stat-box">
             <div class="stat-title" id="txt-speed-title">Mevcut Hız | Pasif Kazanç</div>
-            <div class="stat-value" style="color: #00fff5;"><span id="speed">1.0</span>x | +<span id="passive-rate">0.0000</span>/sn</div>
+            <div class="stat-value" style="color: #00fff5; font-size:16px;"><span id="speed">1.0</span>x | +<span id="passive-rate">0.0000</span>/sn</div>
         </div>
         <button id="mine-btn" onclick="mine(event)"><span id="txt-mine-btn">⛏️ Kazım Yap</span> (+<span id="click-power">0.0010</span>)</button>
         <button class="ad-btn" id="ad-btn" onclick="showAd()"><span id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</span></button>
 
         <div class="leaderboard-box">
-            <div class="leaderboard-title"><span>🏆 En İyi Madenciler</span> <span style="font-size:10px; color:#ff9900;">Canlı</span></div>
+            <div class="leaderboard-title"><span>🏆 En İyi Madenciler</span> <span style="font-size:9px; color:#ff9900;">Canlı</span></div>
             <div id="leaderboard-list">
-                <div style="color: #666; font-size: 11px;">Yükleniyor...</div>
+                <div style="color: #666; font-size: 10px;">Yükleniyor...</div>
             </div>
         </div>
     </div>
 
     <!-- TAB 2: MARKET -->
     <div id="tab-shop" class="tab-content">
-        <h3 id="txt-shop-title" style="text-align: left; color: #00fff5; font-size: 15px; margin-bottom: 8px;">💻 Donanım & Madencilik Marketi</h3>
+        <h3 id="txt-shop-title" style="text-align: left; color: #00fff5; font-size: 13px; margin-bottom: 6px;">💻 Donanım Marketi</h3>
         <div class="shop-list">
             <div class="shop-card">
                 <div class="shop-info">
                     <b>Radeon RX 580</b> <span class="gpu-count" id="count-rx580">0 Adet</span>
-                    <div style="color: #00fff5; font-size:10px;">+0.0002 PTS/sn</div>
+                    <div style="color: #00fff5; font-size:9px;">+0.0002 PTS/sn</div>
                     <div class="daily-earn">⚡ ~17.2 PTS / Gün</div>
-                    <div style="color: #ff416c; font-weight: bold; font-size:11px;">Fiyat: 4 PTS</div>
+                    <div style="color: #ff416c; font-weight: bold; font-size:10px;">Fiyat: 4 PTS</div>
                 </div>
                 <button class="buy-btn buy-text" onclick="buyGPU('rx580', 'RX 580', 4, 0.0002)">Satın Al</button>
             </div>
             <div class="shop-card">
                 <div class="shop-info">
                     <b>GTX 1660 Super</b> <span class="gpu-count" id="count-gtx1660">0 Adet</span>
-                    <div style="color: #00fff5; font-size:10px;">+0.0005 PTS/sn</div>
+                    <div style="color: #00fff5; font-size:9px;">+0.0005 PTS/sn</div>
                     <div class="daily-earn">⚡ ~43.2 PTS / Gün</div>
-                    <div style="color: #ff416c; font-weight: bold; font-size:11px;">Fiyat: 10 PTS</div>
+                    <div style="color: #ff416c; font-weight: bold; font-size:10px;">Fiyat: 10 PTS</div>
                 </div>
                 <button class="buy-btn buy-text" onclick="buyGPU('gtx1660', 'GTX 1660', 10, 0.0005)">Satın Al</button>
             </div>
             <div class="shop-card">
                 <div class="shop-info">
                     <b>RTX 3060 Ti</b> <span class="gpu-count" id="count-rtx3060">0 Adet</span>
-                    <div style="color: #00fff5; font-size:10px;">+0.0020 PTS/sn</div>
+                    <div style="color: #00fff5; font-size:9px;">+0.0020 PTS/sn</div>
                     <div class="daily-earn">⚡ ~172.8 PTS / Gün</div>
-                    <div style="color: #ff416c; font-weight: bold; font-size:11px;">Fiyat: 35 PTS</div>
+                    <div style="color: #ff416c; font-weight: bold; font-size:10px;">Fiyat: 35 PTS</div>
                 </div>
                 <button class="buy-btn buy-text" onclick="buyGPU('rtx3060', 'RTX 3060', 35, 0.0020)">Satın Al</button>
             </div>
             <div class="shop-card">
                 <div class="shop-info">
                     <b>RTX 4090 Rig</b> <span class="gpu-count" id="count-rtx4090">0 Adet</span>
-                    <div style="color: #00fff5; font-size:10px;">+0.0100 PTS/sn</div>
+                    <div style="color: #00fff5; font-size:9px;">+0.0100 PTS/sn</div>
                     <div class="daily-earn">⚡ ~864.0 PTS / Gün</div>
-                    <div style="color: #ff416c; font-weight: bold; font-size:11px;">Fiyat: 150 PTS</div>
+                    <div style="color: #ff416c; font-weight: bold; font-size:10px;">Fiyat: 150 PTS</div>
                 </div>
                 <button class="buy-btn buy-text" onclick="buyGPU('rtx4090', 'RTX 4090', 150, 0.0100)">Satın Al</button>
             </div>
@@ -203,7 +228,7 @@
 
     <!-- TAB 3: DAVET -->
     <div id="tab-ref" class="tab-content">
-        <h3 id="txt-ref-title" style="text-align: left; color: #00fff5; font-size: 15px;">👥 Arkadaşını Davet Et</h3>
+        <h3 id="txt-ref-title" style="text-align: left; color: #00fff5; font-size: 13px;">👥 Arkadaşını Davet Et</h3>
         <div class="stat-box">
             <div class="stat-title" id="txt-ref-sub">Davet Edilen Kişi</div>
             <div class="stat-value" style="color: #00fff5;"><span id="ref-count">0</span></div>
@@ -211,15 +236,14 @@
         <button onclick="shareRefLink()" id="txt-ref-btn">🔗 Davet Linkini Paylaş</button>
     </div>
 
-    <!-- TAB 4: 1WIN TARZI CANLI AVIATOR EKRANI -->
+    <!-- TAB 4: 1WIN AVIATOR -->
     <div id="tab-rewards" class="tab-content">
-        <h3 style="text-align: left; color: #ff416c; font-size: 15px; margin-bottom: 6px;">✈️ Canlı 1win Aviator Simülatörü</h3>
+        <h3 style="text-align: left; color: #ff416c; font-size: 13px; margin-bottom: 4px;">✈️ Canlı Aviator Simülatörü</h3>
         <div class="multiplier-history" id="multiplier-history">
             <div class="m-pill">1.16x</div>
             <div class="m-pill">3.66x</div>
             <div class="m-pill" style="color:#ff416c;">1.00x</div>
             <div class="m-pill">2.03x</div>
-            <div class="m-pill">1.41x</div>
         </div>
         
         <div class="aviator-screen">
@@ -227,95 +251,116 @@
                 <div class="multiplier-display-overlay" id="aviator-multiplier">1.00x</div>
                 <canvas id="aviator-canvas"></canvas>
             </div>
-            <div style="margin-top: 10px; display: flex; gap: 8px;">
-                <input type="number" id="aviator-bet" placeholder="Bahis (PTS)" value="100" style="flex:1; padding:10px; border-radius:10px; border:1px solid #ff416c; background:#161b22; color:#fff; font-weight:bold;">
-                <button class="reward-btn" id="aviator-action-btn" onclick="toggleAviatorBet()" style="flex:1; margin-top:0;">BAHİS YAP</button>
+            <div style="margin-top: 8px; display: flex; gap: 6px;">
+                <input type="number" id="aviator-bet" value="100" style="flex:1; padding:8px; border-radius:8px; border:1px solid #ff416c; background:#161b22; color:#fff; font-weight:bold; font-size:12px;">
+                <button class="reward-btn" id="aviator-action-btn" onclick="toggleAviatorBet()" style="flex:1; margin-top:0; font-size:12px; padding:8px;">BAHİS YAP</button>
             </div>
         </div>
-        <div class="stat-box" style="margin-top: 10px; text-align: left;">
+        <div style="margin-top: 8px;">
             <button class="support-btn" onclick="openSupport()" id="txt-support-btn">💬 Destek / Kanal</button>
         </div>
     </div>
 
-    <!-- TAB 5: ÇEKİLİŞ KISMI -->
+    <!-- TAB 5: ÇEKİLİŞ -->
     <div id="tab-lottery" class="tab-content">
-        <h3 style="text-align: left; color: #ff9900; font-size: 15px; margin-bottom: 8px;">🎟️ Özel Çekiliş Havuzu</h3>
+        <h3 style="text-align: left; color: #ff9900; font-size: 13px; margin-bottom: 6px;">🎟️ Özel Çekiliş Havuzu</h3>
         <div class="stat-box" style="text-align: left; border-color: rgba(255,153,0,0.4);">
             <div class="stat-title">Büyük Havuz Ödülü</div>
             <div class="stat-value" style="color: #ff9900;">50,000 PTS</div>
-            <p style="font-size: 11px; color: #aaa; margin: 8px 0;">Bilet alarak havuz çekilişine katılabilirsin!</p>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; color: #00fff5;">
+            <p style="font-size: 10px; color: #aaa; margin: 6px 0;">Bilet alarak havuz çekilişine katıl!</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 8px; font-size: 10px; color: #00fff5;">
                 <span>Toplam Biletin: <b id="my-tickets">0</b></span>
-                <span>Bilet Fiyatı: <b>500 PTS</b></span>
+                <span>Fiyat: <b>500 PTS</b></span>
             </div>
-            <button class="reward-btn" style="margin-top: 10px;" onclick="buyLotteryTicket()">🎟️ 500 PTS ile Bilet Al</button>
+            <button class="reward-btn" style="margin-top: 8px; font-size: 12px; padding: 8px;" onclick="buyLotteryTicket()">🎟️ Bilet Al (500 PTS)</button>
         </div>
     </div>
 
     <!-- TAB 6: ÇEKİM -->
     <div id="tab-withdraw" class="tab-content">
-        <h3 id="txt-wd-title" style="text-align: left; color: #00fff5; font-size: 15px; margin-bottom: 10px;">💸 Kripto Çekim Talebi</h3>
-        <div class="rate-badge"><span id="txt-rate-label">Dönüşüm Oranı:</span><b>10.000 PTS = 1.00 USDT</b></div>
+        <h3 id="txt-wd-title" style="text-align: left; color: #00fff5; font-size: 13px; margin-bottom: 8px;">💸 Kripto Çekim Talebi</h3>
+        <div class="rate-badge"><span id="txt-rate-label">Dönüşüm:</span><b>10.000 PTS = 1 USDT</b></div>
         <div class="withdraw-card">
             <div class="form-group">
-                <label class="form-label" id="txt-net-label">Çekim Ağı (Network)</label>
+                <label class="form-label" id="txt-net-label">Çekim Ağı</label>
                 <div class="form-input-container"><select id="wallet-network"><option value="TON Network">TON Network</option><option value="TRC20">TRON (TRC20)</option><option value="BEP20">BSC (BEP20)</option></select></div>
             </div>
             <div class="form-group">
-                <label class="form-label" id="txt-wallet-label">Cüzdan Adresiniz</label>
+                <label class="form-label" id="txt-wallet-label">Cüzdan Adresi</label>
                 <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... veya 0x..."></div>
             </div>
             <div class="form-group">
-                <label class="form-label"><span id="txt-amount-label">Çekilecek PTS Miktarı</span> <small style="color:#ff416c; float:right;" id="txt-min-label">Min: 10.000</small></label>
+                <label class="form-label"><span id="txt-amount-label">Miktar</span> <small style="color:#ff416c; float:right;" id="txt-min-label">Min: 10.000</small></label>
                 <div class="form-input-container"><input type="number" id="withdraw-amount" placeholder="0.00" oninput="calculateEstimate()"></div>
                 <div class="quick-btn-group"><button class="quick-btn" onclick="setQuickAmount(0.25)">%25</button><button class="quick-btn" onclick="setQuickAmount(0.50)">%50</button><button class="quick-btn" onclick="setQuickAmount(1.0)">MAX</button></div>
             </div>
-            <div class="calc-preview-card"><span style="font-size: 12px; color: #8a99ad;" id="txt-est-label">Tahmini Alınacak:</span><span id="calc-result" style="color: #00fff5; font-weight: bold;">0.00 USDT</span></div>
-            <button style="margin-top: 12px;" onclick="requestWithdraw()" id="txt-wd-btn">💸 Çekim Talebini Onayla</button>
+            <div class="calc-preview-card"><span id="txt-est-label">Tahmini Alınacak:</span><span id="calc-result" style="color: #00fff5; font-weight: bold;">0.00 USDT</span></div>
+            <button style="margin-top: 10px; font-size: 12px; padding: 10px;" onclick="requestWithdraw()" id="txt-wd-btn">💸 Talebi Onayla</button>
         </div>
     </div>
 
-    <!-- TAB 7: ADMIN PANELİ -->
+    <!-- TAB 7: ADMIN -->
     <div id="tab-admin" class="tab-content">
-        <h3 style="text-align: left; color: #ff416c; font-size: 15px; margin-bottom: 10px;">👑 Admin Yönetim Paneli</h3>
+        <h3 style="text-align: left; color: #ff416c; font-size: 13px; margin-bottom: 8px;">👑 Admin Paneli</h3>
         
         <div class="admin-section" style="border-color: #00fff5;">
-            <h4 style="color: #00fff5;">👥 Tüm Kayıtlı Oyuncular</h4>
-            <div id="admin-players-list" style="max-height: 140px; overflow-y: auto; background: rgba(10,17,40,0.8); border-radius: 8px; padding: 8px; font-size: 11px; text-align: left;">
-                <p style="color: #666; margin: 0;">Kayıtlı oyuncu yok.</p>
+            <h4 style="color: #00fff5;">👥 Kayıtlı Oyuncular</h4>
+            <div id="admin-players-list" style="max-height: 120px; overflow-y: auto; background: rgba(10,17,40,0.8); border-radius: 6px; padding: 6px; font-size: 10px; text-align: left;">
+                <p style="color: #666; margin: 0;">Oyuncu yok.</p>
             </div>
         </div>
 
         <div class="admin-section" style="border-color: #ff416c;">
             <h4 style="color: #ff416c;">⚠️ Hard Reset</h4>
-            <button style="background: linear-gradient(135deg, #ff416c, #cc0000); color: #fff; padding: 10px; font-size: 12px; margin: 0;" onclick="adminHardReset()">💥 Tüm Verileri Sıfırla</button>
+            <button style="background: linear-gradient(135deg, #ff416c, #cc0000); color: #fff; padding: 8px; font-size: 11px; margin: 0;" onclick="adminHardReset()">💥 Tüm Verileri Sıfırla</button>
         </div>
 
         <div class="admin-section">
-            <h4>⚡ Hızlı Bakiye Ekle</h4>
-            <div style="display: flex; gap: 6px; margin-top: 6px;">
-                <button style="background: #00b894; color:#fff; font-size:11px; padding:6px; margin:0;" onclick="adminAddDirectBalance(10000)">+10 Bin</button>
-                <button style="background: #0088cc; color:#fff; font-size:11px; padding:6px; margin:0;" onclick="adminAddDirectBalance(100000)">+100 Bin</button>
-                <button style="background: #ff9900; color:#fff; font-size:11px; padding:6px; margin:0;" onclick="adminAddDirectBalance(1000000)">+1 Milyon</button>
+            <h4>⚡ Bakiye Ekle</h4>
+            <div style="display: flex; gap: 5px; margin-top: 5px;">
+                <button style="background: #00b894; color:#fff; font-size:10px; padding:5px; margin:0;" onclick="adminAddDirectBalance(10000)">+10B</button>
+                <button style="background: #0088cc; color:#fff; font-size:10px; padding:5px; margin:0;" onclick="adminAddDirectBalance(100000)">+100B</button>
+                <button style="background: #ff9900; color:#fff; font-size:10px; padding:5px; margin:0;" onclick="adminAddDirectBalance(1000000)">+1M</button>
             </div>
         </div>
 
-        <h4 style="text-align: left; color: #00fff5; font-size: 13px; margin: 12px 0 5px 0;">📥 Bekleyen Çekimler</h4>
-        <div id="admin-requests-list" style="max-height: 200px; overflow-y: auto;">
-            <p style="font-size: 11px; color: #666; margin-top: 15px;">Bekleyen talep yok.</p>
+        <h4 style="text-align: left; color: #00fff5; font-size: 12px; margin: 10px 0 4px 0;">📥 Bekleyen Çekimler</h4>
+        <div id="admin-requests-list" style="max-height: 150px; overflow-y: auto;">
+            <p style="font-size: 10px; color: #666;">Talep yok.</p>
         </div>
     </div>
 </div>
 
-<!-- ALT MENÜ -->
+<!-- TELEGRAM BOT TARZI SADE İKONLU ALT MENÜ -->
 <div class="navbar" id="main-navbar">
-    <div class="nav-item active" onclick="switchTab('mine', this)" id="nav-mine">⛏️ Kazım</div>
-    <div class="nav-item" onclick="switchTab('shop', this)" id="nav-shop">💻 Market</div>
-    <div class="nav-item" onclick="switchTab('ref', this)" id="nav-ref">👥 Davet</div>
-    <div class="nav-item" onclick="switchTab('rewards', this)" id="nav-reward">✈️ Aviator</div>
-    <div class="nav-item" onclick="switchTab('lottery', this)" id="nav-lottery">🎟️ Çekiliş</div>
-    <div class="nav-item" onclick="switchTab('withdraw', this)" id="nav-wd">💸 Çekim</div>
-    <div class="nav-item admin-nav-item" id="nav-admin-btn" onclick="switchTab('admin', this)">👑 Admin</div>
+    <div class="nav-item active" onclick="switchTab('mine', this)" id="nav-mine">
+        <span class="nav-icon">⛏️</span>
+        <span id="label-mine">Kazım</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('shop', this)" id="nav-shop">
+        <span class="nav-icon">💻</span>
+        <span id="label-shop">Market</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('ref', this)" id="nav-ref">
+        <span class="nav-icon">👥</span>
+        <span id="label-ref">Davet</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('rewards', this)" id="nav-reward">
+        <span class="nav-icon">✈️</span>
+        <span id="label-reward">Aviator</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('lottery', this)" id="nav-lottery">
+        <span class="nav-icon">🎟️</span>
+        <span id="label-lottery">Çekiliş</span>
+    </div>
+    <div class="nav-item" onclick="switchTab('withdraw', this)" id="nav-wd">
+        <span class="nav-icon">💸</span>
+        <span id="label-wd">Çekim</span>
+    </div>
+    <div class="nav-item admin-nav-item" id="nav-admin-btn" onclick="switchTab('admin', this)">
+        <span class="nav-icon">👑</span>
+        <span>Admin</span>
+    </div>
 </div>
 
 <script>
@@ -333,76 +378,76 @@
             totalBalance: "Toplam Bakiye",
             speedTitle: "Mevcut Hız | Pasif Kazanç",
             mineBtn: "⛏️ Kazım Yap",
-            shopTitle: "💻 Donanım & Madencilik Marketi",
+            shopTitle: "💻 Donanım Marketi",
             buyBtn: "Satın Al",
             refTitle: "👥 Arkadaşını Davet Et",
             refSub: "Davet Edilen Kişi",
             refBtn: "🔗 Davet Linkini Paylaş",
             supportBtn: "💬 Destek / Kanal",
             wdTitle: "💸 Kripto Çekim Talebi",
-            rateLabel: "Dönüşüm Oranı:",
-            netLabel: "Çekim Ağı (Network)",
-            walletLabel: "Cüzdan Adresiniz",
-            amountLabel: "Çekilecek PTS Miktarı",
+            rateLabel: "Dönüşüm:",
+            netLabel: "Çekim Ağı",
+            walletLabel: "Cüzdan Adresi",
+            amountLabel: "Miktar",
             minLabel: "Min: 10.000",
             estLabel: "Tahmini Alınacak:",
-            wdBtn: "💸 Çekim Talebini Onayla",
-            navMine: "⛏️ Kazım",
-            navShop: "💻 Market",
-            navRef: "👥 Davet",
-            navReward: "✈️ Aviator",
-            navLottery: "🎟️ Çekiliş",
-            navWd: "💸 Çekim"
+            wdBtn: "💸 Talebi Onayla",
+            labelMine: "Kazım",
+            labelShop: "Market",
+            labelRef: "Davet",
+            labelReward: "Aviator",
+            labelLottery: "Çekiliş",
+            labelWd: "Çekim"
         },
         en: {
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
-            shopTitle: "💻 Hardware & Mining Market",
+            shopTitle: "💻 Hardware Market",
             buyBtn: "Buy",
             refTitle: "👥 Invite Friends",
             refSub: "Invited Friends",
             refBtn: "🔗 Share Invite Link",
             supportBtn: "💬 Support / Channel",
             wdTitle: "💸 Crypto Withdrawal",
-            rateLabel: "Conversion Rate:",
-            netLabel: "Withdrawal Network",
-            walletLabel: "Your Wallet Address",
-            amountLabel: "PTS Amount to Withdraw",
+            rateLabel: "Rate:",
+            netLabel: "Network",
+            walletLabel: "Wallet Address",
+            amountLabel: "Amount",
             minLabel: "Min: 10,000",
-            estLabel: "Estimated Receive:",
-            wdBtn: "💸 Confirm Withdrawal",
-            navMine: "⛏️ Mine",
-            navShop: "💻 Market",
-            navRef: "👥 Invite",
-            navReward: "✈️ Aviator",
-            navLottery: "🎟️ Lottery",
-            navWd: "💸 Withdraw"
+            estLabel: "Estimated:",
+            wdBtn: "💸 Confirm",
+            labelMine: "Mine",
+            labelShop: "Market",
+            labelRef: "Invite",
+            labelReward: "Aviator",
+            labelLottery: "Lottery",
+            labelWd: "Withdraw"
         },
         ar: {
             totalBalance: "الرصيد الإجمالي",
-            speedTitle: "السرعة الحالية | التعدين التلقائي",
+            speedTitle: "السرعة | التعدين التلقائي",
             mineBtn: "⛏️ اضغط للتعدين",
-            shopTitle: "💻 سوق الأجهزة والتعدين",
+            shopTitle: "💻 سوق الأجهزة",
             buyBtn: "شراء",
             refTitle: "👥 دعوة الأصدقاء",
             refSub: "الأصدقاء المدعوون",
-            refBtn: "🔗 مشاركة رابط الدعوة",
+            refBtn: "🔗 مشاركة الرابط",
             supportBtn: "💬 الدعم / القناة",
             wdTitle: "💸 طلب سحب العملات",
-            rateLabel: "سعر التحويل:",
-            netLabel: "شبكة السحب",
-            walletLabel: "عنوان محفظتك",
-            amountLabel: "كمية PTS",
+            rateLabel: "التحويل:",
+            netLabel: "الشبكة",
+            walletLabel: "عنوان المحفظة",
+            amountLabel: "الكمية",
             minLabel: "الحد الأدنى: 10,000",
             estLabel: "المبلغ المقدر:",
-            wdBtn: "💸 تأكيد طلب السحب",
-            navMine: "⛏️ التعدين",
-            navShop: "💻 السوق",
-            navRef: "👥 الدعوات",
-            navReward: "✈️ Aviator",
-            navLottery: "🎟️ السحب",
-            navWd: "💸 السحب"
+            wdBtn: "💸 تأكيد",
+            labelMine: "التعدين",
+            labelShop: "السوق",
+            labelRef: "الدعوات",
+            labelReward: "Aviator",
+            labelLottery: "السحب",
+            labelWd: "السحب"
         }
     };
 
@@ -432,12 +477,12 @@
         document.getElementById('txt-est-label').innerText = t.estLabel;
         document.getElementById('txt-wd-btn').innerText = t.wdBtn;
 
-        document.getElementById('nav-mine').innerText = t.navMine;
-        document.getElementById('nav-shop').innerText = t.navShop;
-        document.getElementById('nav-ref').innerText = t.navRef;
-        document.getElementById('nav-reward').innerText = t.navReward;
-        document.getElementById('nav-lottery').innerText = t.navLottery;
-        document.getElementById('nav-wd').innerText = t.navWd;
+        document.getElementById('label-mine').innerText = t.labelMine;
+        document.getElementById('label-shop').innerText = t.labelShop;
+        document.getElementById('label-ref').innerText = t.labelRef;
+        document.getElementById('label-reward').innerText = t.labelReward;
+        document.getElementById('label-lottery').innerText = t.labelLottery;
+        document.getElementById('label-wd').innerText = t.labelWd;
         document.querySelectorAll('.buy-text').forEach(el => el.innerText = t.buyBtn);
     }
 
@@ -504,7 +549,7 @@
             });
             listEl.innerHTML = html;
         } else {
-            listEl.innerHTML = '<div style="color: #666; font-size: 11px;">Henüz oyuncu yok.</div>';
+            listEl.innerHTML = '<div style="color: #666; font-size: 10px;">Henüz oyuncu yok.</div>';
         }
     }
 
@@ -512,7 +557,7 @@
         let allAdmins = [...DEFAULT_ADMIN_IDS];
         const adminBtn = document.getElementById('nav-admin-btn');
         if (allAdmins.includes(userId) || userId === "Tarayıcı") {
-            adminBtn.style.display = 'block';
+            adminBtn.style.display = 'flex';
         } else {
             adminBtn.style.display = 'none';
         }
@@ -571,11 +616,11 @@
             localStorage.setItem('miner_balance', balance);
             localStorage.setItem('miner_tickets', myTickets);
             updateUI();
-            showToast("🎟️ Başarıyla 1 Çekiliş Bileti Aldınız!");
-        } else { showToast("Yetersiz bakiye! Bilet fiyatı 500 PTS'dir."); }
+            showToast("🎟️ Başarıyla bilet alındı!");
+        } else { showToast("Yetersiz bakiye (500 PTS gerekli)."); }
     }
 
-    // --- 1WIN TARZI CANLI UÇUŞ CANVAS MOTORU ---
+    // Aviator Motoru
     let aviatorActive = false;
     let currentMultiplier = 1.00;
     let crashPoint = 1.00;
@@ -595,21 +640,16 @@
 
     function drawFlight(progress, multiplier, isCrashed) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        let w = canvas.width;
-        let h = canvas.height;
+        let w = canvas.width, h = canvas.height;
+        let startX = 20, startY = h - 20;
+        let currentX = startX + (w - 40) * progress;
+        let currentY = startY - (h - 40) * Math.pow(progress, 1.5);
 
-        let startX = 30;
-        let startY = h - 30;
-        let currentX = startX + (w - 60) * progress;
-        let currentY = startY - (h - 60) * Math.pow(progress, 1.5);
-
-        // Canlı Kırmızı/Mavi tırmanış çizgisi
         ctx.beginPath();
         ctx.moveTo(startX, startY);
         ctx.quadraticCurveTo(startX + (currentX - startX) * 0.5, startY, currentX, currentY);
         ctx.strokeStyle = isCrashed ? '#ff416c' : '#00fff5';
-        ctx.lineWidth = 4;
+        ctx.lineWidth = 3;
         ctx.stroke();
 
         ctx.lineTo(currentX, startY);
@@ -617,11 +657,10 @@
         ctx.fillStyle = isCrashed ? 'rgba(255, 65, 108, 0.15)' : 'rgba(0, 255, 245, 0.15)';
         ctx.fill();
 
-        // Uçak Simgesi
-        ctx.font = "24px Arial";
+        ctx.font = "20px Arial";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(isCrashed ? "💥" : "✈️", currentX, currentY - 10);
+        ctx.fillText(isCrashed ? "💥" : "✈️", currentX, currentY - 8);
     }
 
     function toggleAviatorBet() {
@@ -631,7 +670,7 @@
         
         if (!aviatorActive) {
             const betVal = parseFloat(betInput.value);
-            if (isNaN(betVal) || betVal <= 0) { showToast("Geçerli bir bahis miktarı girin!"); return; }
+            if (isNaN(betVal) || betVal <= 0) { showToast("Geçerli bir miktar girin!"); return; }
             if (betVal > balance) { showToast("Yetersiz bakiye!"); return; }
 
             balance -= betVal;
@@ -643,13 +682,12 @@
             currentMultiplier = 1.00;
             progressAnim = 0;
 
-            // Adil oran dağılımı (1win mantığı)
             let rand = Math.random();
             if (rand < 0.45) crashPoint = (1.05 + Math.random() * 0.40).toFixed(2);
             else if (rand < 0.80) crashPoint = (1.45 + Math.random() * 2.10).toFixed(2);
             else crashPoint = (3.55 + Math.random() * 7.50).toFixed(2);
 
-            btn.innerText = "NAKİT ÇEK (CASH OUT)";
+            btn.innerText = "NAKİT ÇEK";
             btn.style.background = "linear-gradient(135deg, #00b894, #0088cc)";
             betInput.disabled = true;
 
@@ -670,19 +708,17 @@
             }, 80);
 
         } else {
-            // Nakit Çek (Cash Out) - Uçak patlamadan önce bozdurma
             clearInterval(aviatorInterval);
             let winAmount = Math.floor(activeBetAmount * currentMultiplier);
             balance += winAmount;
             localStorage.setItem('miner_balance', balance);
             updateUI();
             
-            // 1win tarzı: Bozdurulduğunda uçak uçmaya devam eder ama sen kazancını alırsın
             const multiplierDisplay = document.getElementById('aviator-multiplier');
             multiplierDisplay.innerText = `${currentMultiplier.toFixed(2)}x (KAZANDIN)`;
             drawFlight(progressAnim, currentMultiplier, false);
 
-            showToast(`🎯 BAŞARILI! ${currentMultiplier.toFixed(2)}x oranında bozdurdun: +${winAmount} PTS`);
+            showToast(`🎯 BAŞARILI! +${winAmount} PTS kazandın`);
             addHistoryPill(currentMultiplier.toFixed(2) + "x", false);
             resetAviatorUI();
         }
@@ -692,7 +728,7 @@
         const multiplierDisplay = document.getElementById('aviator-multiplier');
         multiplierDisplay.innerText = "UÇTU! " + crashPoint + "x";
         drawFlight(progressAnim, crashPoint, true);
-        showToast(`💥 UÇAK KAÇTI! (${crashPoint}x) Bahis yandı.`);
+        showToast(`💥 UÇAK KAÇTI! (${crashPoint}x)`);
         addHistoryPill(crashPoint + "x", true);
         resetAviatorUI();
     }
@@ -713,7 +749,7 @@
         pill.innerText = text;
         if (isCrash) pill.style.color = "#ff416c";
         historyContainer.prepend(pill);
-        if (historyContainer.children.length > 6) historyContainer.lastChild.remove();
+        if (historyContainer.children.length > 5) historyContainer.lastChild.remove();
     }
 
     let adsgramController = null;
@@ -729,17 +765,17 @@
             adsgramController.show().then(() => {
                 isAdLoading = false;
                 speed += 0.5; localStorage.setItem('miner_speed', speed); updateUI();
-                showToast("Tebrikler! Hızınız +0.5x artırıldı.");
+                showToast("Hızınız +0.5x artırıldı!");
             }).catch(() => {
                 isAdLoading = false;
                 speed += 0.5; localStorage.setItem('miner_speed', speed); updateUI();
-                showToast("Tebrikler! Hızınız +0.5x artırıldı.");
+                showToast("Hızınız +0.5x artırıldı!");
             });
         } else {
             setTimeout(() => {
                 isAdLoading = false;
                 speed += 0.5; localStorage.setItem('miner_speed', speed); updateUI();
-                showToast("Tebrikler! Hızınız +0.5x artırıldı.");
+                showToast("Hızınız +0.5x artırıldı!");
             }, 800);
         }
     }
@@ -764,7 +800,7 @@
             userId = window.Telegram.WebApp.initDataUnsafe.user.id;
         }
         const refLink = `https://t.me/sanal_miner_test_bot?start=${userId}`;
-        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("Sanal Miner'a katıl, madencilik yapıp kazan! 🚀")}`;
+        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("Sanal Miner'a katıl, kazanmaya başla! 🚀")}`;
         if (window.Telegram && window.Telegram.WebApp) window.Telegram.WebApp.openTelegramLink(shareUrl);
         else window.open(shareUrl, '_blank');
     }
@@ -785,11 +821,11 @@
         const amount = parseFloat(document.getElementById('withdraw-amount').value);
 
         if (!wallet || wallet.length < 8) { showToast("Geçerli cüzdan adresi girin."); return; }
-        if (isNaN(amount) || amount < 10000) { showToast("Minimum çekim 10.000 PTS'dir."); return; }
+        if (isNaN(amount) || amount < 10000) { showToast("Minimum çekim 10.000 PTS."); return; }
         if (amount > balance) { showToast("Yetersiz bakiye!"); return; }
 
         const usdtAmount = (amount / 10000).toFixed(2);
-        let username = "Gizli Kullanıcı", userId = "Tarayıcı";
+        let username = "Gizli", userId = "Tarayıcı";
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
             const user = window.Telegram.WebApp.initDataUnsafe.user;
             username = user.username ? `@${user.username}` : (user.first_name || 'İsimsiz');
@@ -807,18 +843,18 @@
         updateUI();
         document.getElementById('withdraw-amount').value = '';
         calculateEstimate();
-        showToast(`✅ Çekim Talebi Alındı! (${usdtAmount} USDT)`);
+        showToast(`✅ Çekim talebi alındı! (${usdtAmount} USDT)`);
     }
 
     function adminAddDirectBalance(amount) {
         balance += amount;
         localStorage.setItem('miner_balance', balance);
         updateUI();
-        showToast(`✅ Başarıyla ${amount} PTS eklendi!`);
+        showToast(`+${amount} PTS eklendi!`);
     }
 
     function adminHardReset() {
-        if (confirm("Tüm oyun verileri sıfırlanacak. Emin misiniz?")) {
+        if (confirm("Tüm veriler sıfırlansın mı?")) {
             localStorage.clear();
             location.reload();
         }
@@ -831,11 +867,11 @@
         if (playerKeys.length > 0) {
             let html = '';
             playerKeys.forEach(id => {
-                html += `<div>👤 ID: <b>${id}</b> - Bakiye: <span style="color:#00fff5">${parseFloat(players[id]).toFixed(2)} PTS</span></div>`;
+                html += `<div>ID: <b>${id}</b> - <span style="color:#00fff5">${parseFloat(players[id]).toFixed(2)} PTS</span></div>`;
             });
             playersListEl.innerHTML = html;
         } else {
-            playersListEl.innerHTML = '<p style="color: #666; margin: 0;">Kayıtlı oyuncu yok.</p>';
+            playersListEl.innerHTML = '<p style="color: #666; margin: 0;">Oyuncu yok.</p>';
         }
 
         const reqListEl = document.getElementById('admin-requests-list');
@@ -845,19 +881,18 @@
             pendingWithdraws.forEach((req, index) => {
                 html += `
                     <div class="admin-req-card">
-                        <div><b>Kullanıcı:</b> ${req.username || 'İsimsiz'} (ID: ${req.userId})</div>
-                        <div><b>Tutar:</b> ${req.amount} PTS (${req.usdt} USDT)</div>
-                        <div style="word-break: break-all; color: #00fff5;"><b>Adres:</b> ${req.wallet}</div>
-                        <div style="margin-top: 6px; display: flex; gap: 6px;">
-                            <button style="padding: 5px; font-size: 10px; margin: 0; background: #00b894; color:#fff; width:auto;" onclick="approveRequest(${index})">✅ Onayla</button>
-                            <button style="padding: 5px; font-size: 10px; margin: 0; background: #ff416c; color:#fff; width:auto;" onclick="rejectRequest(${index})">❌ Reddet</button>
+                        <div><b>${req.username}</b> (${req.amount} PTS)</div>
+                        <div style="word-break: break-all; color: #00fff5;">${req.wallet}</div>
+                        <div style="margin-top: 5px; display: flex; gap: 5px;">
+                            <button style="padding: 4px; font-size: 9px; margin: 0; background: #00b894; color:#fff; width:auto;" onclick="approveRequest(${index})">Onayla</button>
+                            <button style="padding: 4px; font-size: 9px; margin: 0; background: #ff416c; color:#fff; width:auto;" onclick="rejectRequest(${index})">Reddet</button>
                         </div>
                     </div>
                 `;
             });
             reqListEl.innerHTML = html;
         } else {
-            reqListEl.innerHTML = '<p style="font-size: 11px; color: #666;">Bekleyen talep yok.</p>';
+            reqListEl.innerHTML = '<p style="font-size: 10px; color: #666;">Talep yok.</p>';
         }
     }
 
