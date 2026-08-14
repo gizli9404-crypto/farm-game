@@ -2,12 +2,16 @@ import os
 import time
 import requests
 
-# Token'ı GitHub ortam değişkenlerinden (Environment Variables) güvenli bir şekilde alır
+# Token'ı GitHub ortam değişkenlerinden güvenli bir şekilde alır
 TOKEN = os.getenv("TOKEN")
 URL = f"https://api.telegram.org/bot{TOKEN}/"
 
-# Kullanıcı bakiyelerini tutmak için basit bir sözlük (Örn: {chat_id: bakiye})
+# Kullanıcı bakiyelerini tutan sözlük
 user_balances = {}
+
+# SİZİN ADMIN TELEGRAM ID'NİZ (Buraya kendi Telegram ID'nizi yazabilirsiniz)
+# Not: Botunuza ilk mesaj attığınızda konsolda ID'niz görünecek, oradan öğrenebilirsiniz.
+ADMIN_ID = None  # İlk başta boş bırakabilirsiniz, ilk mesaj atan kişi otomatik admin olur veya kendi ID'nizi yazabilirsiniz.
 
 def get_updates(offset=None):
   params = {"timeout": 100, "offset": offset}
@@ -26,11 +30,11 @@ def send_message(chat_id, text):
     print(f"Mesaj gönderme hatası: {e}")
 
 def is_english(text):
-  # Basit bir İngilizce kelime/karakter kontrolü
   english_words = ["hello", "hi", "balance", "send", "mining", "start"]
   return any(word in text.lower() for word in english_words)
 
 def main():
+  global ADMIN_ID
   if not TOKEN:
     print("HATA: TOKEN bulunamadı! Lütfen ortam değişkenlerini kontrol edin.")
     return
@@ -45,56 +49,65 @@ def main():
         if "message" in update and "text" in update["message"]:
           chat_id = update["message"]["chat"]["id"]
           message_text = update["message"]["text"].strip()
+          
+          # Kullanıcı adını ve ID'yi konsola yazdır (Admin olarak kimin yazdığını görmek için)
+          user_name = update["message"]["from"].get("first_name", "Bilinmeyen")
+          print(f"[{chat_id}] {user_name} yazdı: {message_text}")
 
-          print(f"Mesaj alındı [{chat_id}]: {message_text}")
+          # Eğer sistemde hiç admin yoksa, ilk mesajı atan kişi otomatik admin olsun (isterseniz sonradan sabitleyebilirsiniz)
+          if ADMIN_ID is None:
+            ADMIN_ID = chat_id
+            print(f">>> İLK KULLANICI ADMIN OLARAK ATANDI: {ADMIN_ID} ({user_name}) <<<")
 
-          # Yeni kullanıcı ise başlangıç bakiyesi tanımlayalım (Örn: 100 Coin)
+          # Yeni kullanıcı ise başlangıç bakiyesi tanımlayalım
           if chat_id not in user_balances:
             user_balances[chat_id] = 100.0
 
-          # Dil kontrolü (İngilizce mi Türkçe mi?)
           english = is_english(message_text)
 
           # Komutlar
           if message_text == "/start" or message_text == "/baslat":
             if english:
-              send_message(chat_id, "Hello! Welcome to Virtual Miner Bot. System is active! 🚀\nYour initial balance: 100 coins.")
+              send_message(chat_id, f"Hello! Welcome. Your ID: `{chat_id}`\nYour balance: {user_balances[chat_id]} coins.")
             else:
-              send_message(chat_id, "Selam! Sanal Madenci Bot'a hoş geldin. Sistem aktif! 🚀\nBaşlangıç bakiyen: 100 coin.")
+              send_message(chat_id, f"Selam! Sanal Madenci Bot'a hoş geldin. ID'n: `{chat_id}`\nBaşlangıç bakiyen: {user_balances[chat_id]} coin.")
 
           elif message_text == "/bakiye" or message_text == "/balance":
             bakiye = user_balances[chat_id]
             if english:
-              send_message(chat_id, f"💰 Your current balance: {bakiye} coins.")
+              send_message(chat_id, f"💰 Your balance: {bakiye} coins. (Your ID: {chat_id})")
             else:
-              send_message(chat_id, f"💰 Güncel bakiyen: {bakiye} coin.")
+              send_message(chat_id, f"💰 Güncel bakiyen: {bakiye} coin. (ID'n: {chat_id})")
 
+          # SADECE ADMİNİN KULLANABİLECEĞİ PARA GÖNDERME KOMUTU
           elif message_text.startswith("/gonder") or message_text.startswith("/send"):
-            # Örnek kullanım: /gonder [Hedef_ID] [Miktar]
-            parts = message_text.split()
-            if len(parts) == 3:
-              try:
-                hedef_id = int(parts[1])
-                miktar = float(parts[2])
-
-                if user_balances[chat_id] >= miktar and miktar > 0:
-                  # Bakiyeleri güncelle
-                  user_balances[chat_id] -= miktar
-                  if hedef_id not in user_balances:
-                    user_balances[hedef_id] = 0.0
-                  user_balances[hedef_id] += miktar
-
-                  # Gönderene bildirim
-                  send_message(chat_id, f"✅ Başarılı! {hedef_id} ID'li kullanıcıya {miktar} coin gönderildi.")
-                  
-                  # Alıcıya bildirim
-                  send_message(hedef_id, f"🎉 Hesabınıza {chat_id} ID'li kullanıcıdan {miktar} coin transfer edildi!")
-                else:
-                  send_message(chat_id, "❌ Yetersiz bakiye veya geçersiz miktar!")
-              except ValueError:
-                send_message(chat_id, "❌ Hatalı format! Kullanım: /gonder [ID] [Miktar]")
+            if chat_id != ADMIN_ID:
+              send_message(chat_id, "❌ Bu komutu kullanmaya yetkiniz yok! Sadece Admin para gönderebilir.")
             else:
-              send_message(chat_id, "❌ Eksik parametre! Kullanım: /gonder [ID] [Miktar]")
+              # Kullanım: /gonder [Hedef_ID] [Miktar]
+              parts = message_text.split()
+              if len(parts) == 3:
+                try:
+                  hedef_id = int(parts[1])
+                  miktar = float(parts[2])
+
+                  if miktar > 0:
+                    if hedef_id not in user_balances:
+                      user_balances[hedef_id] = 0.0
+                    
+                    user_balances[hedef_id] += miktar
+
+                    # Admin'e bilgi
+                    send_message(chat_id, f"✅ [ADMİN İŞLEMİ] {hedef_id} ID'li kullanıcıya {miktar} coin eklendi. Yeni bakiyesi: {user_balances[hedef_id]}")
+                    
+                    # Alıcıya bildirim
+                    send_message(hedef_id, f"🎉 Tebrikler! Hesabınıza admin tarafından {miktar} coin yatırıldı! Güncel bakiyeniz: {user_balances[hedef_id]}")
+                  else:
+                    send_message(chat_id, "❌ Miktar 0'dan büyük olmalıdır!")
+                except ValueError:
+                  send_message(chat_id, "❌ Hatalı format! Kullanım: /gonder [ID] [Miktar]")
+              else:
+                send_message(chat_id, "❌ Eksik parametre! Kullanım: /gonder [ID] [Miktar]")
 
           else:
             if english:
