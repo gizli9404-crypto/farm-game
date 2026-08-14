@@ -7,7 +7,7 @@ TOKEN = os.getenv("TOKEN")
 LOG_CHANNEL_ID = os.getenv("LOG_CHANNEL_ID", "-1001234567890") 
 URL = f"https://api.telegram.org/bot{TOKEN}/"
 
-# Admin ID'lerini hem sayı hem metin olarak garantiye aldık
+# Admin ID listesi (Hem sayı hem metin olarak tanımlandı)
 ADMIN_IDS = [825653395, "825653395"]
 DATA_FILE = "bakiye.json"
 
@@ -74,14 +74,15 @@ TRANSLATIONS = {
 }
 
 def is_admin(chat_id):
-    return chat_id in ADMIN_IDS or str(chat_id) in ADMIN_IDS
+    # Gelen ID ister int ister str olsun, yöneticiler listesinde kesin olarak eşleştirir
+    return chat_id in ADMIN_IDS or str(chat_id) in ADMIN_IDS or int(chat_id) == 825653395
 
 def main():
     if not TOKEN:
         print("HATA: TOKEN bulunamadı!")
         return
 
-    print("Bot tam sürüm ve admin korumasıyla çalışıyor...")
+    print("Bot tam sürüm ve kesin admin korumasıyla çalışıyor...")
     offset = None
     while True:
         users_data = load_data()
