@@ -190,14 +190,6 @@
     <!-- TAB 6: ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
         <h3 style="text-align: left; color: #ff416c; font-size: 16px; margin-bottom: 10px;">👑 Admin Yönetim Paneli</h3>
-        
-        <!-- YENİ: SIFIRLAMA BUTONU -->
-        <div class="admin-section" style="border-color: #ff416c;">
-            <h4 style="color: #ff416c;">⚠️ Tehlikeli Bölge / Hard Reset</h4>
-            <p style="font-size: 11px; color: #aaa; margin: 0 0 10px 0; text-align: left;">Bakiye, hız, kartlar, istatistikler ve bekleyen talepler dahil her şeyi tamamen sıfırlar.</p>
-            <button style="background: linear-gradient(135deg, #ff416c, #cc0000); color: #fff; padding: 10px; font-size: 13px; margin: 0;" onclick="adminHardReset()">💥 Tüm Verileri ve Parayı Sıfırla</button>
-        </div>
-
         <div class="admin-section">
             <h4>⚡ Hızlı Oyun İçi Bakiye Ekle</h4>
             <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -237,8 +229,9 @@
 
 <script>
     const ADMIN_ID = "8256539395";
-    const BOT_TOKEN = "8823061600:AAGUkhL30j-OP_8L4RVVySpaWiidNKjvN1I";
+    const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
 
+    // Çeviri Sözlüğü (Türkçe, İngilizce, Arapça)
     const dict = {
         tr: {
             assistant: "Nasıl oynanır? 1️⃣ Kazım yaparak veya kart alarak pasif gelir kas, 2️⃣ Reklam izleyerek hızını artır ve USDT çek!",
@@ -483,7 +476,7 @@
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
             userId = window.Telegram.WebApp.initDataUnsafe.user.id;
         }
-        const refLink = `https://t.me/test_miner_yeni_bot?start=${userId}`;
+        const refLink = `https://t.me/sanal_miner_test_bot?start=${userId}`;
         const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("Sanal Miner'a katıl, madencilik yapıp kazan! 🚀")}`;
         if (window.Telegram && window.Telegram.WebApp) window.Telegram.WebApp.openTelegramLink(shareUrl);
         else window.open(shareUrl, '_blank');
@@ -539,89 +532,160 @@
         if (isNaN(amount) || amount < 10000) { alert("Minimum çekim 10.000 PTS'dir."); return; }
         if (amount > balance) { alert("Yetersiz bakiye!"); return; }
 
+        const usdtAmount = (amount / 10000).toFixed(2);
+        let username = "Gizli Kullanıcı", userId = "xxxx";
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
+            const user = window.Telegram.WebApp.initDataUnsafe.user;
+            username = user.username ? `@${user.username}` : (user.first_name || 'İsimsiz');
+            userId = user.id;
+        }
+
+        const newReq = {
+            id: Date.now(),
+            username: username,
+            userId: userId,
+            network: network,
+            wallet: wallet,
+            amount: amount,
+            usdt: usdtAmount,
+            time: new Date().toLocaleTimeString()
+        };
+
+        pendingWithdraws.unshift(newReq);
+        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
+
         balance -= amount;
         localStorage.setItem('miner_balance', balance);
-        pendingWithdraws.push({ id: Date.now(), user: document.getElementById('user-id-display').innerText, network, wallet, amount });
-        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-        alert("Çekim talebiniz alındı! Admin onayından sonra ödenecektir.");
-    }
+        document.getElementById('withdraw-amount').value = '';
+        calculateEstimate();
 
-    function renderAdminPanel() {
-        const container = document.getElementById('admin-requests-list');
-        container.innerHTML = pendingWithdraws.length ? '' : '<p style="font-size: 12px; color: #666; margin-top: 20px;">Henüz bekleyen çekim talebi yok.</p>';
-        pendingWithdraws.forEach((req, index) => {
-            const card = document.createElement('div');
-            card.className = 'admin-req-card';
-            card.innerHTML = `<b>User:</b> ${req.user}<br><b>Network:</b> ${req.network}<br><b>Wallet:</b> ${req.wallet}<br><b>Amount:</b> ${req.amount} PTS<br>
-                              <button style="background:#00b894; color:#fff; border:none; padding:5px; margin-top:5px; border-radius:5px;" onclick="adminApprove(${index})">✅ Onayla</button>
-                              <button style="background:#ff416c; color:#fff; border:none; padding:5px; margin-top:5px; border-radius:5px;" onclick="adminDelete(${index})">❌ Sil</button>`;
-            container.appendChild(card);
-        });
-    }
+        const adminMessage = `🚨 *YENİ ÇEKİM TALEBİ!*\n\n👤 *Kullanıcı:* ${username} (ID: \`${userId}\`)\n🌐 *Ağ:* ${network}\n💰 *Miktar:* ${amount} PTS (*${usdtAmount} USDT*)\n👛 *Cüzdan:* \`${wallet}\``;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: ADMIN_ID, text: adminMessage, parse_mode: 'Markdown' })
+        }).catch(e => {});
 
-    function adminApprove(index) {
-        pendingWithdraws.splice(index, 1);
-        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
-        updateUI();
-    }
-
-    function adminDelete(index) {
-        pendingWithdraws.splice(index, 1);
-        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
-        updateUI();
-    }
-
-    function adminHardReset() {
-        if(confirm("TÜM VERİLERİ SİLMEK İSTEDİĞİNE EMİN MİSİN?")) {
-            localStorage.clear();
-            location.reload();
-        }
+        alert(`✅ Çekim Talebi Başarıyla Alındı!\n\nMiktar: ${amount} PTS (${usdtAmount} USDT)`);
     }
 
     function adminAddDirectBalance(amount) {
         balance += amount;
         localStorage.setItem('miner_balance', balance);
         updateUI();
-    }
-    
-    function adminSendBalance() {
-        const targetId = document.getElementById('admin-target-id').value;
-        const amount = document.getElementById('admin-target-amount').value;
-        if(targetId && amount) {
-            alert(`ID: ${targetId} adresine ${amount} PTS gönderimi tetiklendi! (Bot API gereklidir)`);
-        }
+        alert(`✅ Hesabınıza başarıyla ${amount} PTS eklendi!`);
     }
 
-    // App Initialization
-    window.onload = () => {
-        if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.ready();
+    function adminSendBalance() {
+        const targetId = document.getElementById('admin-target-id').value.trim();
+        const amount = parseFloat(document.getElementById('admin-target-amount').value);
+
+        if (!targetId || targetId.length < 5) { alert("Lütfen geçerli bir Telegram ID girin."); return; }
+        if (isNaN(amount) || amount <= 0) { alert("Lütfen geçerli bir miktar girin."); return; }
+
+        let msg = `🎉 *ETKİNLİK ÖDÜLÜ KAZANDINIZ!*\n\nKurucu tarafından hesabınıza doğrudan *${amount} PTS* etkinlik ödülü tanımlanmıştır. İyi kazımlar! 🚀`;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: targetId, text: msg, parse_mode: 'Markdown' })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.ok) {
+                alert(`✅ Başarılı!\n\nID: ${targetId} olan oyuncuya ${amount} PTS ödül bildirimi gönderildi.`);
+                document.getElementById('admin-target-id').value = '';
+                document.getElementById('admin-target-amount').value = '';
+            } else {
+                alert(`⚠️ Mesaj gönderilemedi! Oyuncu botu başlatmış (/start) olmalıdır.`);
+            }
+        })
+        .catch(e => { alert("Bağlantı hatası oluştu."); });
+    }
+
+    function renderAdminPanel() {
+        const listContainer = document.getElementById('admin-requests-list');
+        if (!listContainer) return;
+
+        if (pendingWithdraws.length === 0) {
+            listContainer.innerHTML = `<p style="font-size: 12px; color: #666; margin-top: 10px;">Henüz bekleyen çekim talebi yok.</p>`;
+            return;
         }
+
+        let html = '';
+        pendingWithdraws.forEach((req, index) => {
+            html += `
+                <div class="admin-req-card">
+                    <div><b>Kullanıcı:</b> ${req.username} (ID: ${req.userId})</div>
+                    <div><b>Tutar:</b> ${req.amount} PTS (${req.usdt} USDT)</div>
+                    <div><b>Ağ / Cüzdan:</b> ${req.network}</div>
+                    <div style="word-break: break-all; color: #00fff5;"><b>Adres:</b> ${req.wallet}</div>
+                    <div style="margin-top: 8px; display: flex; gap: 6px;">
+                        <button style="padding: 6px; font-size: 11px; margin: 0; background: #00b894; color:#fff;" onclick="approveRequest(${index})">✅ Onayla</button>
+                        <button style="padding: 6px; font-size: 11px; margin: 0; background: #ff416c; color:#fff;" onclick="rejectRequest(${index})">❌ Reddet</button>
+                    </div>
+                </div>
+            `;
+        });
+        listContainer.innerHTML = html;
+    }
+
+    function approveRequest(index) {
+        const req = pendingWithdraws[index];
+        let msg = `✅ *ÇEKİM TALEBİNİZ ONAYLANDI!*\n\nKurucu tarafından *${req.usdt} USDT* tutarındaki ödemeniz (${req.network}) cüzdanınıza gönderilmiştir. İyi günlerde harcayın! 🚀`;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
+        pendingWithdraws.splice(index, 1);
+        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-        checkUserTelegramData();
-        setLanguage(currentLang);
-    };
-    
-    // Adsgram initialization (Gerçek UnitID: 42750 bağlandı)
-    if (window.Adsgram) {
-        window.AdController = window.Adsgram.init({ blockId: "int-42750" });
+        alert("Talep onaylandı ve kullanıcıya bot üzerinden bilgi gönderildi.");
     }
+
+    function rejectRequest(index) {
+        const req = pendingWithdraws[index];
+        balance += req.amount;
+        localStorage.setItem('miner_balance', balance);
+
+        let msg = `❌ *ÇEKİM TALEBİNİZ REDDEDİLDİ!*\n\n${req.amount} PTS tutarındaki çekim talebiniz geçersiz cüzdan veya kural dışı işlem sebebiyle reddedilmiştir. Bakiyeniz hesabınıza iade edilmiştir.`;
+        
+        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
+        }).catch(e => {});
+
+        pendingWithdraws.splice(index, 1);
+        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
+        updateUI();
+        alert("Talep reddedildi, tutar kullanıcının hesabına iade edildi.");
+    }
+
+    let AdController = null;
+    if (window.Adsgram) { AdController = window.Adsgram.init({ blockId: "42750" }); }
     function showAd() {
-        if (window.AdController) {
-            window.AdController.show().then(() => {
-                speed += 0.5;
-                localStorage.setItem('miner_speed', speed);
-                updateUI();
-            });
-        } else {
-            // Mock Ad (Adsgram yüklenemezse yedek simülasyon)
-            speed += 0.5;
-            localStorage.setItem('miner_speed', speed);
-            updateUI();
-            alert("Reklam izlendi (Simülasyon)! Hız arttı.");
-        }
+        if (!AdController) { alert("Reklam sistemi hazır değil."); return; }
+        AdController.show().then(() => {
+            speed += 0.5; localStorage.setItem('miner_speed', speed); updateUI();
+            alert("Hızın +0.5x arttı! 🚀");
+        }).catch(e => {});
     }
+
+    if (window.Telegram && window.Telegram.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+    }
+
+    setLanguage(currentLang);
+    checkUserTelegramData();
+    updateUI();
 </script>
+
 </body>
 </html>
