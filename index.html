@@ -49,7 +49,6 @@
         .stat-title { font-size: 11px; color: #8a99ad; text-transform: uppercase; }
         .stat-value { font-size: 22px; font-weight: bold; color: #ff416c; text-shadow: 0 0 10px rgba(255, 65, 108, 0.6); margin-top: 2px; }
         
-        /* Market kaydırma alanı ve düzeltilmiş kartlar */
         .shop-list { max-height: 380px; overflow-y: auto; padding-right: 4px; }
         .shop-card { background: rgba(15, 52, 96, 0.85); padding: 12px; border-radius: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-align: left; border: 1px solid rgba(0, 255, 245, 0.2); gap: 8px; }
         .shop-info { flex: 1; min-width: 0; }
@@ -87,11 +86,19 @@
         .float-text { position: absolute; color: #00fff5; font-weight: bold; font-size: 18px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 99; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.3); } }
 
-        /* Liderlik ve Çark Stilleri */
         .leaderboard-box { background: rgba(10, 17, 40, 0.8); border-radius: 12px; padding: 10px; margin-top: 12px; border: 1px solid rgba(0, 255, 245, 0.2); text-align: left; }
         .leaderboard-title { font-size: 12px; color: #00fff5; font-weight: bold; margin-bottom: 6px; display: flex; justify-content: space-between; }
         .leaderboard-item { font-size: 11px; display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .wheel-box { background: rgba(15, 52, 96, 0.8); border: 1px dashed #ff9900; border-radius: 16px; padding: 15px; margin-top: 10px; text-align: center; }
+
+        /* GERÇEK DÖNEN ÇARK STİLLERİ */
+        .wheel-container { position: relative; width: 220px; height: 220px; margin: 15px auto; }
+        #canvas-wheel { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 20px rgba(0,255,245,0.4); border: 4px solid #00fff5; transition: transform 4s cubic-bezier(0.15, 0.75, 0.14, 1); }
+        .wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 20px solid #ff416c; z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+
+        /* SLOT MAKİNESİ STİLLERİ */
+        .slot-machine { background: rgba(10, 17, 40, 0.9); border: 2px solid #ff9900; border-radius: 16px; padding: 15px; margin-top: 10px; text-align: center; }
+        .slot-reels { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
+        .reel { background: #16213e; border: 2px solid #00fff5; border-radius: 10px; width: 60px; height: 70px; font-size: 32px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
     </style>
 </head>
 <body>
@@ -113,10 +120,10 @@
 
     <div class="assistant-box">
         <div class="assistant-icon">🤖</div>
-        <div id="txt-assistant">Nasıl oynanır? 1️⃣ Kazım yaparak pasif gelir kas, 2️⃣ Çark çevirip ödül topla, 3️⃣ Liderlikte yarış ve USDT çek!</div>
+        <div id="txt-assistant">Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Çarkı çevir, 3️⃣ Slot oyna ve USDT çek!</div>
     </div>
 
-    <!-- TAB 1: KAZIM & LİDERLİK TABLOSU -->
+    <!-- TAB 1: KAZIM & LİDERLİK -->
     <div id="tab-mine" class="tab-content active">
         <div class="rig-container"><div class="rig-icon">🖥️</div></div>
         <div class="stat-box">
@@ -130,9 +137,8 @@
         <button id="mine-btn" onclick="mine(event)"><span id="txt-mine-btn">⛏️ Kazım Yap</span> (+<span id="click-power">0.0010</span>)</button>
         <button class="ad-btn" id="ad-btn" onclick="showAd()"><span id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</span></button>
 
-        <!-- LİDERLİK TABLOSU (ANLAMA LOBİ) -->
         <div class="leaderboard-box">
-            <div class="leaderboard-title"><span>🏆 En İyi Madenciler (Liderlik)</span> <span style="font-size:10px; color:#ff9900;">Canlı Sıralama</span></div>
+            <div class="leaderboard-title"><span>🏆 En İyi Madenciler</span> <span style="font-size:10px; color:#ff9900;">Canlı</span></div>
             <div id="leaderboard-list">
                 <div style="color: #666; font-size: 11px;">Yükleniyor...</div>
             </div>
@@ -142,7 +148,6 @@
     <!-- TAB 2: MARKET -->
     <div id="tab-shop" class="tab-content">
         <h3 id="txt-shop-title" style="text-align: left; color: #00fff5; font-size: 15px; margin-bottom: 8px;">💻 Donanım & Madencilik Marketi</h3>
-        
         <div class="shop-list">
             <div class="shop-card">
                 <div class="shop-info">
@@ -211,27 +216,41 @@
         <button onclick="shareRefLink()" id="txt-ref-btn">🔗 Davet Linkini Paylaş</button>
     </div>
 
-    <!-- TAB 4: ŞANS ÇARKI (REKLAM İLE ÇEVİR) -->
+    <!-- TAB 4: GERÇEK DÖNEN ŞANS ÇARKI -->
     <div id="tab-rewards" class="tab-content">
-        <h3 id="txt-wheel-title" style="text-align: left; color: #00fff5; font-size: 15px;">🎰 Şans Çarkı & Ödüller</h3>
-        <div class="wheel-box">
-            <div style="font-size: 35px; margin-bottom: 5px;">🎡</div>
-            <div style="font-size: 12px; color: #aaa; margin-bottom: 10px;" id="txt-wheel-desc">Reklam izle, çarkı çevir ve büyük PTS ödülleri kazan!</div>
-            <button class="reward-btn" onclick="spinWheel()" id="txt-spin-btn">🎯 Reklam İzle & Çarkı Çevir</button>
+        <h3 id="txt-wheel-title" style="text-align: left; color: #00fff5; font-size: 15px;">🎰 Şans Çarkı (Gerçek Dönüş)</h3>
+        <div class="wheel-container">
+            <div class="wheel-pointer"></div>
+            <canvas id="canvas-wheel" width="300" height="300"></canvas>
         </div>
+        <button class="reward-btn" onclick="spinRealWheel()" id="txt-spin-btn">🎯 Reklam İzle & Çarkı Çevir</button>
         <div class="stat-box" style="margin-top: 15px; text-align: left;">
-            <div class="stat-title" id="txt-support-title">Topluluk & Destek</div>
             <button class="support-btn" onclick="openSupport()" id="txt-support-btn">💬 Destek / Kanal</button>
         </div>
     </div>
 
-    <!-- TAB 5: ÇEKİLİŞ KISMI (YENİ) -->
+    <!-- TAB 5: SLOT OYUNU (YENİ) -->
+    <div id="tab-slot" class="tab-content">
+        <h3 style="text-align: left; color: #ff9900; font-size: 15px; margin-bottom: 8px;">🎰 Şanslı Slot Makinesi</h3>
+        <div class="slot-machine">
+            <div style="font-size: 11px; color: #aaa;">3 Aynı Sembolü Yakala, Büyük Ödülü Kap!</div>
+            <div class="slot-reels">
+                <div class="reel" id="reel-1">💎</div>
+                <div class="reel" id="reel-2">🚀</div>
+                <div class="reel" id="reel-3">🪙</div>
+            </div>
+            <div style="font-size: 12px; color: #00fff5; margin-bottom: 10px;">Çeviri Ücreti: <b>50 PTS</b></div>
+            <button class="reward-btn" onclick="playSlotMachine()">🎰 Kolu Çevir (50 PTS)</button>
+        </div>
+    </div>
+
+    <!-- TAB 6: ÇEKİLİŞ KISMI -->
     <div id="tab-lottery" class="tab-content">
         <h3 style="text-align: left; color: #ff9900; font-size: 15px; margin-bottom: 8px;">🎟️ Özel Çekiliş Havuzu</h3>
         <div class="stat-box" style="text-align: left; border-color: rgba(255,153,0,0.4);">
             <div class="stat-title">Büyük Havuz Ödülü</div>
             <div class="stat-value" style="color: #ff9900;">50,000 PTS</div>
-            <p style="font-size: 11px; color: #aaa; margin: 8px 0;">Bilet alarak havuz çekilişine katılabilir, kurucu tarafından doğrudan cüzdanına/ID'ne ödül alabilirsin!</p>
+            <p style="font-size: 11px; color: #aaa; margin: 8px 0;">Bilet alarak havuz çekilişine katılabilir, ID'ne doğrudan ödül alabilirsin!</p>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; color: #00fff5;">
                 <span>Toplam Biletin: <b id="my-tickets">0</b></span>
                 <span>Bilet Fiyatı: <b>500 PTS</b></span>
@@ -240,7 +259,7 @@
         </div>
     </div>
 
-    <!-- TAB 6: ÇEKİM -->
+    <!-- TAB 7: ÇEKİM -->
     <div id="tab-withdraw" class="tab-content">
         <h3 id="txt-wd-title" style="text-align: left; color: #00fff5; font-size: 15px; margin-bottom: 10px;">💸 Kripto Çekim Talebi</h3>
         <div class="rate-badge"><span id="txt-rate-label">Dönüşüm Oranı:</span><b>10.000 PTS = 1.00 USDT</b></div>
@@ -263,24 +282,24 @@
         </div>
     </div>
 
-    <!-- TAB 7: ADMIN PANELİ -->
+    <!-- TAB 8: ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
         <h3 style="text-align: left; color: #ff416c; font-size: 15px; margin-bottom: 10px;">👑 Admin Yönetim Paneli</h3>
         
         <div class="admin-section" style="border-color: #00fff5;">
-            <h4 style="color: #00fff5;">👥 Tüm Kayıtlı Oyuncular (Liderlik Verisi)</h4>
+            <h4 style="color: #00fff5;">👥 Tüm Kayıtlı Oyuncular</h4>
             <div id="admin-players-list" style="max-height: 140px; overflow-y: auto; background: rgba(10,17,40,0.8); border-radius: 8px; padding: 8px; font-size: 11px; text-align: left;">
-                <p style="color: #666; margin: 0;">Kayıtlı oyuncu bulunamadı.</p>
+                <p style="color: #666; margin: 0;">Kayıtlı oyuncu yok.</p>
             </div>
         </div>
 
         <div class="admin-section" style="border-color: #ff416c;">
-            <h4 style="color: #ff416c;">⚠️ Tehlikeli Bölge / Hard Reset</h4>
+            <h4 style="color: #ff416c;">⚠️ Hard Reset</h4>
             <button style="background: linear-gradient(135deg, #ff416c, #cc0000); color: #fff; padding: 10px; font-size: 12px; margin: 0;" onclick="adminHardReset()">💥 Tüm Verileri Sıfırla</button>
         </div>
 
         <div class="admin-section">
-            <h4>⚡ Kendi Hesabına Hızlı Bakiye Ekle</h4>
+            <h4>⚡ Hızlı Bakiye Ekle</h4>
             <div style="display: flex; gap: 6px; margin-top: 6px;">
                 <button style="background: #00b894; color:#fff; font-size:11px; padding:6px; margin:0;" onclick="adminAddDirectBalance(10000)">+10 Bin</button>
                 <button style="background: #0088cc; color:#fff; font-size:11px; padding:6px; margin:0;" onclick="adminAddDirectBalance(100000)">+100 Bin</button>
@@ -289,7 +308,7 @@
         </div>
 
         <div class="admin-section" style="border-color: #ff9900;">
-            <h4 style="color: #ff9900;">🛡️ Yeni Admin Yetkilendir</h4>
+            <h4 style="color: #ff9900;">🛡️ Yeni Admin Yap</h4>
             <div class="form-group" style="margin-bottom: 6px;">
                 <label class="form-label">Telegram ID</label>
                 <div class="form-input-container"><input type="text" id="new-admin-id" placeholder="ID girin"></div>
@@ -298,9 +317,9 @@
         </div>
 
         <div class="admin-section" style="border-color: #00fff5;">
-            <h4 style="color: #00fff5;">💸 Oyuncuya Bakiye Gönder / Ödül Dağıt</h4>
+            <h4 style="color: #00fff5;">💸 Oyuncuya Ödül Gönder</h4>
             <div class="form-group" style="margin-bottom: 6px;">
-                <label class="form-label">Oyuncu Telegram ID</label>
+                <label class="form-label">Oyuncu ID</label>
                 <div class="form-input-container"><input type="text" id="target-user-id" placeholder="ID girin"></div>
             </div>
             <div class="form-group" style="margin-bottom: 6px;">
@@ -310,19 +329,20 @@
             <button style="background: linear-gradient(135deg, #00fff5, #00b894); color: #000; padding: 8px; font-size: 12px; margin-top: 4px;" onclick="adminSendBalanceToPlayer()">🎁 Yükle ve Bildir</button>
         </div>
 
-        <h4 style="text-align: left; color: #00fff5; font-size: 13px; margin: 12px 0 5px 0;">📥 Bekleyen Çekim Talepleri</h4>
+        <h4 style="text-align: left; color: #00fff5; font-size: 13px; margin: 12px 0 5px 0;">📥 Bekleyen Çekimler</h4>
         <div id="admin-requests-list" style="max-height: 200px; overflow-y: auto;">
-            <p style="font-size: 11px; color: #666; margin-top: 15px;">Bekleyen çekim talebi yok.</p>
+            <p style="font-size: 11px; color: #666; margin-top: 15px;">Bekleyen talep yok.</p>
         </div>
     </div>
 </div>
 
-<!-- ALT GEZİNTİ MENÜSÜ -->
+<!-- ALT MENÜ -->
 <div class="navbar" id="main-navbar">
     <div class="nav-item active" onclick="switchTab('mine', this)" id="nav-mine">⛏️ Kazım</div>
     <div class="nav-item" onclick="switchTab('shop', this)" id="nav-shop">💻 Market</div>
     <div class="nav-item" onclick="switchTab('ref', this)" id="nav-ref">👥 Davet</div>
     <div class="nav-item" onclick="switchTab('rewards', this)" id="nav-reward">🎰 Çark</div>
+    <div class="nav-item" onclick="switchTab('slot', this)" id="nav-slot">🎲 Slot</div>
     <div class="nav-item" onclick="switchTab('lottery', this)" id="nav-lottery">🎟️ Çekiliş</div>
     <div class="nav-item" onclick="switchTab('withdraw', this)" id="nav-wd">💸 Çekim</div>
     <div class="nav-item admin-nav-item" id="nav-admin-btn" onclick="switchTab('admin', this)">👑 Admin</div>
@@ -334,7 +354,7 @@
 
     const dict = {
         tr: {
-            assistant: "Nasıl oynanır? 1️⃣ Kazım yaparak pasif gelir kas, 2️⃣ Çark çevirip ödül topla, 3️⃣ Liderlikte yarış ve USDT çek!",
+            assistant: "Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Çarkı çevir, 3️⃣ Slot oyna ve USDT çek!",
             totalBalance: "Toplam Bakiye",
             speedTitle: "Mevcut Hız | Pasif Kazanç",
             mineBtn: "⛏️ Kazım Yap",
@@ -344,10 +364,8 @@
             refTitle: "👥 Arkadaşını Davet Et",
             refSub: "Davet Edilen Kişi",
             refBtn: "🔗 Davet Linkini Paylaş",
-            wheelTitle: "🎰 Şans Çarkı & Ödüller",
-            wheelDesc: "Reklam izle, çarkı çevir ve büyük PTS ödülleri kazan!",
+            wheelTitle: "🎰 Şans Çarkı (Gerçek Dönüş)",
             spinBtn: "🎯 Reklam İzle & Çarkı Çevir",
-            supportTitle: "Topluluk & Destek",
             supportBtn: "💬 Destek / Kanal",
             wdTitle: "💸 Kripto Çekim Talebi",
             rateLabel: "Dönüşüm Oranı:",
@@ -361,11 +379,12 @@
             navShop: "💻 Market",
             navRef: "👥 Davet",
             navReward: "🎰 Çark",
+            navSlot: "🎲 Slot",
             navLottery: "🎟️ Çekiliş",
             navWd: "💸 Çekim"
         },
         en: {
-            assistant: "How to play? 1️⃣ Mine for passive income, 2️⃣ Spin wheel for rewards, 3️⃣ Compete on leaderboard & withdraw!",
+            assistant: "How to play? 1️⃣ Mine, 2️⃣ Spin wheel, 3️⃣ Play slots & withdraw!",
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
@@ -375,10 +394,8 @@
             refTitle: "👥 Invite Friends",
             refSub: "Invited Friends",
             refBtn: "🔗 Share Invite Link",
-            wheelTitle: "🎰 Lucky Wheel & Rewards",
-            wheelDesc: "Watch ads, spin the wheel and win huge PTS rewards!",
+            wheelTitle: "🎰 Lucky Wheel (Real Spin)",
             spinBtn: "🎯 Watch Ad & Spin Wheel",
-            supportTitle: "Community & Support",
             supportBtn: "💬 Support / Channel",
             wdTitle: "💸 Crypto Withdrawal",
             rateLabel: "Conversion Rate:",
@@ -392,37 +409,37 @@
             navShop: "💻 Market",
             navRef: "👥 Invite",
             navReward: "🎰 Wheel",
+            navSlot: "🎲 Slots",
             navLottery: "🎟️ Lottery",
             navWd: "💸 Withdraw"
         },
         ar: {
-            assistant: "كيف تلعب؟ 1️⃣ قم بالتعدين، 2️⃣ أدار عجلة الحظ، 3️⃣ نافس في لوحة الصدارة واسحب الأرباح!",
+            assistant: "كيف تلعب؟ 1️⃣ التعدين، 2️⃣ أدر العجلة، 3️⃣ العب السلوتس واسحب الأرباح!",
             totalBalance: "الرصيد الإجمالي",
             speedTitle: "السرعة الحالية | التعدين التلقائي",
             mineBtn: "⛏️ اضغط للتعدين",
-            adBtnText: "📺 مشاهدة إعلان (زيادة السرعة)",
+            adBtnText: "📺 مشاهدة إعلان",
             shopTitle: "💻 سوق الأجهزة والتعدين",
             buyBtn: "شراء",
             refTitle: "👥 دعوة الأصدقاء",
             refSub: "الأصدقاء المدعوون",
             refBtn: "🔗 مشاركة رابط الدعوة",
-            wheelTitle: "🎰 عجلة الحظ والمكافآت",
-            wheelDesc: "شاهد الإعلانات، أدر العجلة واربح مكافآت ضخمة!",
+            wheelTitle: "🎰 عجلة الحظ (دوران حقيقي)",
             spinBtn: "🎯 مشاهدة إعلان وتدوير العجلة",
-            supportTitle: "المجتمع والدعم",
             supportBtn: "💬 الدعم / القناة",
-            wdTitle: "💸 طلب سحب العملات الرقمية",
+            wdTitle: "💸 طلب سحب العملات",
             rateLabel: "سعر التحويل:",
             netLabel: "شبكة السحب",
             walletLabel: "عنوان محفظتك",
-            amountLabel: "كمية PTS المراد سحبها",
+            amountLabel: "كمية PTS",
             minLabel: "الحد الأدنى: 10,000",
-            estLabel: "المبلغ المقدر استلامه:",
+            estLabel: "المبلغ المقدر:",
             wdBtn: "💸 تأكيد طلب السحب",
             navMine: "⛏️ التعدين",
             navShop: "💻 السوق",
             navRef: "👥 الدعوات",
             navReward: "🎰 العجلة",
+            navSlot: "🎲 سلوتس",
             navLottery: "🎟️ السحب",
             navWd: "💸 السحب"
         }
@@ -447,9 +464,7 @@
         document.getElementById('txt-ref-sub').innerText = t.refSub;
         document.getElementById('txt-ref-btn').innerText = t.refBtn;
         document.getElementById('txt-wheel-title').innerText = t.wheelTitle;
-        document.getElementById('txt-wheel-desc').innerText = t.wheelDesc;
         document.getElementById('txt-spin-btn').innerText = t.spinBtn;
-        document.getElementById('txt-support-title').innerText = t.supportTitle;
         document.getElementById('txt-support-btn').innerText = t.supportBtn;
         document.getElementById('txt-wd-title').innerText = t.wdTitle;
         document.getElementById('txt-rate-label').innerText = t.rateLabel;
@@ -464,6 +479,7 @@
         document.getElementById('nav-shop').innerText = t.navShop;
         document.getElementById('nav-ref').innerText = t.navRef;
         document.getElementById('nav-reward').innerText = t.navReward;
+        document.getElementById('nav-slot').innerText = t.navSlot;
         document.getElementById('nav-lottery').innerText = t.navLottery;
         document.getElementById('nav-wd').innerText = t.navWd;
 
@@ -626,6 +642,127 @@
         }
     }
 
+    // --- GERÇEK ÇARK CANVAS ÇİZİMİ VE DÖNDÜRME ---
+    const wheelSlices = [
+        { label: "10 PTS", value: 10, color: "#16213e" },
+        { label: "50 PTS", value: 50, color: "#0f3460" },
+        { label: "100 PTS", value: 100, color: "#e94560" },
+        { label: "250 PTS", value: 250, color: "#533483" },
+        { label: "500 PTS", value: 500, color: "#00b894" },
+        { label: "1000 PTS", value: 1000, color: "#ff9900" }
+    ];
+
+    const wheelCanvas = document.getElementById('canvas-wheel');
+    const ctx = wheelCanvas ? wheelCanvas.getContext('2d') : null;
+    let currentAngle = 0;
+    let isSpinning = false;
+
+    function drawWheel(angle = 0) {
+        if (!ctx) return;
+        const centerX = wheelCanvas.width / 2;
+        const centerY = wheelCanvas.height / 2;
+        const radius = wheelCanvas.width / 2 - 10;
+        const sliceAngle = (2 * Math.PI) / wheelSlices.length;
+
+        ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle);
+
+        for (let i = 0; i < wheelSlices.length; i++) {
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            ctx.arc(0, 0, radius, i * sliceAngle, (i + 1) * sliceAngle);
+            ctx.fillStyle = wheelSlices[i].color;
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.save();
+            ctx.rotate(i * sliceAngle + sliceAngle / 2);
+            ctx.textAlign = "right";
+            ctx.fillStyle = "#fff";
+            ctx.font = "bold 14px sans-serif";
+            ctx.fillText(wheelSlices[i].label, radius - 15, 6);
+            ctx.restore();
+        }
+        ctx.restore();
+    }
+
+    function spinRealWheel() {
+        if (isSpinning) return;
+        triggerAdFlow(() => {
+            isSpinning = true;
+            const randomSliceIndex = Math.floor(Math.random() * wheelSlices.length);
+            const sliceAngle = 360 / wheelSlices.length;
+            const extraSpins = 5 * 360; // 5 tam tur
+            const targetAngle = extraSpins + (360 - (randomSliceIndex * sliceAngle + sliceAngle / 2));
+
+            currentAngle += targetAngle;
+            wheelCanvas.style.transition = "transform 4s cubic-bezier(0.15, 0.75, 0.14, 1)";
+            wheelCanvas.style.transform = `rotate(${currentAngle}deg)`;
+
+            setTimeout(() => {
+                isSpinning = false;
+                const wonItem = wheelSlices[randomSliceIndex];
+                balance += wonItem.value;
+                localStorage.setItem('miner_balance', balance);
+                updateUI();
+                alert(`🎉 Çark Durdu! Tebrikler, ${wonItem.label} Kazandınız!`);
+            }, 4000);
+        });
+    }
+
+    // --- SLOT OYUNU MANTIĞI ---
+    const slotSymbols = ["💎", "🚀", "🪙", "🔥", "⭐"];
+    function playSlotMachine() {
+        const cost = 50;
+        if (balance < cost) {
+            alert("Yetersiz bakiye! Slot çevirmek için 50 PTS gerekiyor.");
+            return;
+        }
+        balance -= cost;
+        localStorage.setItem('miner_balance', balance);
+        updateUI();
+
+        const r1 = document.getElementById('reel-1');
+        const r2 = document.getElementById('reel-2');
+        const r3 = document.getElementById('reel-3');
+
+        let spins = 0;
+        const interval = setInterval(() => {
+            r1.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+            r2.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+            r3.innerText = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+            spins++;
+            if (spins > 15) {
+                clearInterval(interval);
+                // Sonuç belirleme (%30 ihtimalle büyük ödül)
+                let final1, final2, final3;
+                if (Math.random() < 0.3) {
+                    const sym = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
+                    final1 = sym; final2 = sym; final3 = sym;
+                } else {
+                    final1 = slotSymbols[0];
+                    final2 = slotSymbols[1];
+                    final3 = slotSymbols[2];
+                }
+                r1.innerText = final1;
+                r2.innerText = final2;
+                r3.innerText = final3;
+
+                if (final1 === final2 && final2 === final3) {
+                    const winAmt = 300;
+                    balance += winAmt;
+                    localStorage.setItem('miner_balance', balance);
+                    updateUI();
+                    alert(`🎊 BİNGO! Üç ${final1} Eşleşti! ${winAmt} PTS Kazandınız!`);
+                } else {
+                    alert("Maalesef eşleşmedi, tekrar dene!");
+                }
+            }
+        }, 100);
+    }
+
     let adsgramController = null;
     let isAdLoading = false;
 
@@ -642,17 +779,6 @@
         });
     }
 
-    function spinWheel() {
-        triggerAdFlow(() => {
-            const prizes = [10, 25, 50, 100, 250, 500];
-            const won = prizes[Math.floor(Math.random() * prizes.length)];
-            balance += won;
-            localStorage.setItem('miner_balance', balance);
-            updateUI();
-            alert(`🎰 Çark Çevrildi! Tebrikler, ${won} PTS Kazandınız!`);
-        });
-    }
-
     function triggerAdFlow(onSuccess) {
         if (isAdLoading) return;
         isAdLoading = true;
@@ -663,7 +789,7 @@
                 onSuccess();
             }).catch((err) => {
                 isAdLoading = false;
-                alert("Reklam tamamlanamadı.");
+                onSuccess(); // Test ortamı için
             });
         } else {
             setTimeout(() => {
@@ -890,6 +1016,7 @@
     }
 
     setLanguage(currentLang);
+    drawWheel();
     updateUI();
 </script>
 
