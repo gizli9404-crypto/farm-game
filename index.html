@@ -90,11 +90,11 @@
         .leaderboard-title { font-size: 12px; color: #00fff5; font-weight: bold; margin-bottom: 6px; display: flex; justify-content: space-between; }
         .leaderboard-item { font-size: 11px; display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* 1win Aviator Ekran Tasarımı */
+        /* Canlı Akıcı Aviator Ekran Tasarımı */
         .aviator-screen { background: #0d1117; border: 2px solid #ff416c; border-radius: 16px; padding: 15px; margin-top: 10px; text-align: center; position: relative; overflow: hidden; }
-        .aviator-graph { height: 160px; background: radial-gradient(circle at bottom, #1f1b2c, #0d1117); border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative; border: 1px solid rgba(255,65,108,0.3); }
-        .multiplier-text { font-size: 38px; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,65,108,0.8); z-index: 2; }
-        .plane-icon { position: absolute; font-size: 28px; z-index: 1; transition: all 0.2s linear; }
+        .aviator-graph { height: 170px; background: radial-gradient(circle at bottom, #1f1b2c, #0d1117); border-radius: 12px; position: relative; border: 1px solid rgba(255,65,108,0.3); overflow: hidden; }
+        .multiplier-display-overlay { position: absolute; top: 15px; left: 0; width: 100%; font-size: 36px; font-weight: 900; color: #fff; text-shadow: 0 0 15px rgba(255,65,108,0.9); z-index: 5; pointer-events: none; }
+        #aviator-canvas { width: 100%; height: 100%; display: block; }
         .multiplier-history { display: flex; gap: 4px; overflow-x: auto; padding: 6px 0; margin-bottom: 10px; justify-content: center; }
         .m-pill { background: #161b22; border: 1px solid #30363d; padding: 3px 8px; border-radius: 6px; font-size: 10px; font-weight: bold; color: #00fff5; white-space: nowrap; }
 
@@ -219,9 +219,9 @@
         <button onclick="shareRefLink()" id="txt-ref-btn">🔗 Davet Linkini Paylaş</button>
     </div>
 
-    <!-- TAB 4: 1WIN CANLI AVIATOR EKRANI (YENİ KASA DOSTU OYUN) -->
+    <!-- TAB 4: CANLI AKICI AVIATOR EKRANI -->
     <div id="tab-rewards" class="tab-content">
-        <h3 style="text-align: left; color: #ff416c; font-size: 15px; margin-bottom: 6px;">✈️ Canlı Aviator Çarpan Simülatörü</h3>
+        <h3 style="text-align: left; color: #ff416c; font-size: 15px; margin-bottom: 6px;">✈️ Canlı Akıcı Aviator Simülatörü</h3>
         <div class="multiplier-history" id="multiplier-history">
             <div class="m-pill">1.16x</div>
             <div class="m-pill">3.66x</div>
@@ -232,8 +232,8 @@
         
         <div class="aviator-screen">
             <div class="aviator-graph">
-                <div class="plane-icon" id="plane-obj" style="left: 20%; bottom: 20%;">✈️</div>
-                <div class="multiplier-text" id="aviator-multiplier">1.00x</div>
+                <div class="multiplier-display-overlay" id="aviator-multiplier">1.00x</div>
+                <canvas id="aviator-canvas"></canvas>
             </div>
             <div style="margin-top: 10px; display: flex; gap: 8px;">
                 <input type="number" id="aviator-bet" placeholder="Bahis (PTS)" value="100" style="flex:1; padding:10px; border-radius:10px; border:1px solid #ff416c; background:#161b22; color:#fff; font-weight:bold;">
@@ -328,7 +328,6 @@
 
 <script>
     const DEFAULT_ADMIN_IDS = ["8256539395"];
-    const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
 
     function showToast(message) {
         const toast = document.getElementById('custom-toast');
@@ -343,7 +342,6 @@
             totalBalance: "Toplam Bakiye",
             speedTitle: "Mevcut Hız | Pasif Kazanç",
             mineBtn: "⛏️ Kazım Yap",
-            adBtnText: "📺 Reklam İzle (Hız +0.5x)",
             shopTitle: "💻 Donanım & Madencilik Marketi",
             buyBtn: "Satın Al",
             refTitle: "👥 Arkadaşını Davet Et",
@@ -370,7 +368,6 @@
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
-            adBtnText: "📺 Watch Ad (Speed +0.5x)",
             shopTitle: "💻 Hardware & Mining Market",
             buyBtn: "Buy",
             refTitle: "👥 Invite Friends",
@@ -397,7 +394,6 @@
             totalBalance: "الرصيد الإجمالي",
             speedTitle: "السرعة الحالية | التعدين التلقائي",
             mineBtn: "⛏️ اضغط للتعدين",
-            adBtnText: "📺 مشاهدة إعلان",
             shopTitle: "💻 سوق الأجهزة والتعدين",
             buyBtn: "شراء",
             refTitle: "👥 دعوة الأصدقاء",
@@ -537,7 +533,7 @@
     let lastClickTime = 0;
     function mine(e) {
         const now = Date.now();
-        if (now - lastClickTime < 100) return; // Anti-cheat click spam engeli
+        if (now - lastClickTime < 100) return;
         lastClickTime = now;
         const gain = 0.0010 * speed;
         balance += gain;
@@ -591,14 +587,58 @@
         } else { showToast("Yetersiz bakiye! Bilet fiyatı 500 PTS'dir."); }
     }
 
-    // --- AVIATOR KASA DOSTU OYUN MOTORU ---
+    // --- GERÇEKÇİ CANLI UÇUŞ CANVAS MOTORU ---
     let aviatorActive = false;
     let currentMultiplier = 1.00;
     let crashPoint = 1.00;
     let aviatorInterval = null;
     let activeBetAmount = 0;
+    let progressAnim = 0;
+
+    const canvas = document.getElementById('aviator-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    setTimeout(resizeCanvas, 200);
+
+    function drawFlight(progress, multiplier, isCrashed) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        let w = canvas.width;
+        let h = canvas.height;
+
+        let startX = 30;
+        let startY = h - 30;
+        let currentX = startX + (w - 60) * progress;
+        let currentY = startY - (h - 60) * Math.pow(progress, 1.5);
+
+        // Kırmızı eğri çizgi
+        ctx.beginPath();
+        ctx.moveTo(startX, startY);
+        ctx.quadraticCurveTo(startX + (currentX - startX) * 0.5, startY, currentX, currentY);
+        ctx.strokeStyle = isCrashed ? '#ff416c' : '#00fff5';
+        ctx.lineWidth = 4;
+        ctx.stroke();
+
+        // Eğrinin altındaki dolgu
+        ctx.lineTo(currentX, startY);
+        ctx.lineTo(startX, startY);
+        ctx.fillStyle = isCrashed ? 'rgba(255, 65, 108, 0.15)' : 'rgba(0, 255, 245, 0.15)';
+        ctx.fill();
+
+        // Uçak Simgesi (Çizginin ucunda)
+        ctx.font = "24px Arial";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(isCrashed ? "💥" : "✈️", currentX, currentY - 10);
+    }
 
     function toggleAviatorBet() {
+        resizeCanvas();
         const btn = document.getElementById('aviator-action-btn');
         const betInput = document.getElementById('aviator-bet');
         
@@ -614,37 +654,36 @@
 
             aviatorActive = true;
             currentMultiplier = 1.00;
-            // Kasa dostu oran: %40 ihtimalle hemen patlar (1.00x - 1.20x), nadiren yükselir.
+            progressAnim = 0;
+
+            // Kasa dostu oran ayarı (%50 erken patlama, %35 orta, %15 yüksek)
             let rand = Math.random();
-            if (rand < 0.5) crashPoint = (1.01 + Math.random() * 0.3).toFixed(2);
-            else if (rand < 0.85) crashPoint = (1.30 + Math.random() * 1.5).toFixed(2);
-            else crashPoint = (3.00 + Math.random() * 7.00).toFixed(2);
+            if (rand < 0.5) crashPoint = (1.02 + Math.random() * 0.35).toFixed(2);
+            else if (rand < 0.85) crashPoint = (1.40 + Math.random() * 1.80).toFixed(2);
+            else crashPoint = (3.20 + Math.random() * 6.50).toFixed(2);
 
             btn.innerText = "NAKİT ÇEK (CASH OUT)";
             btn.style.background = "linear-gradient(135deg, #00b894, #0088cc)";
             betInput.disabled = true;
 
             const multiplierDisplay = document.getElementById('aviator-multiplier');
-            const planeObj = document.getElementById('plane-obj');
 
             aviatorInterval = setInterval(() => {
-                currentMultiplier += 0.03;
+                currentMultiplier += 0.025;
+                progressAnim += 0.012;
+                if (progressAnim > 1) progressAnim = 1;
+
                 multiplierDisplay.innerText = currentMultiplier.toFixed(2) + "x";
-                
-                // Uçak hareket animasyonu
-                let posX = Math.min(80, 20 + (currentMultiplier * 5));
-                let posY = Math.min(75, 20 + (currentMultiplier * 4));
-                planeObj.style.left = posX + "%";
-                planeObj.style.bottom = posY + "%";
+                drawFlight(progressAnim, currentMultiplier, false);
 
                 if (currentMultiplier >= parseFloat(crashPoint)) {
                     clearInterval(aviatorInterval);
-                    crashAviator(false);
+                    crashAviator();
                 }
-            }, 100);
+            }, 80);
 
         } else {
-            // Nakit Çek (Cash Out basıldı)
+            // Nakit Çek (Cash Out)
             clearInterval(aviatorInterval);
             let winAmount = Math.floor(activeBetAmount * currentMultiplier);
             balance += winAmount;
@@ -656,10 +695,11 @@
         }
     }
 
-    function crashAviator(isCrash) {
+    function crashAviator() {
         const multiplierDisplay = document.getElementById('aviator-multiplier');
         multiplierDisplay.innerText = "UÇTU! " + crashPoint + "x";
-        showToast(`💥 UÇAK KAÇTI! (${crashPoint}x) Bahis kayboldu.`);
+        drawFlight(progressAnim, crashPoint, true);
+        showToast(`💥 UÇAK KAÇTI! (${crashPoint}x) Bahis yandı.`);
         addHistoryPill(crashPoint + "x", true);
         resetAviatorUI();
     }
@@ -671,8 +711,6 @@
         btn.innerText = "BAHİS YAP";
         btn.style.background = "linear-gradient(135deg, #ff416c, #cc0000)";
         betInput.disabled = false;
-        document.getElementById('plane-obj').style.left = "20%";
-        document.getElementById('plane-obj').style.bottom = "20%";
     }
 
     function addHistoryPill(text, isCrash) {
@@ -724,6 +762,7 @@
         document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
         document.getElementById('tab-' + tabName).classList.add('active');
         element.classList.add('active');
+        if (tabName === 'rewards') setTimeout(resizeCanvas, 100);
     }
 
     function shareRefLink() {
