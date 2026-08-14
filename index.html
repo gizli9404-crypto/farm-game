@@ -503,7 +503,7 @@
         } else { alert("Yetersiz bakiye!"); }
     }
 
-    // Adsgram Entegrasyonu (UnitID: 42750)
+    // Adsgram Entegrasyonu (UnitID: 42750) - Doğru Sıralama (Önce Reklam, Sonra Ödül)
     let adsgramController = null;
     if (typeof Adsgram !== 'undefined') {
         try {
@@ -515,18 +515,24 @@
 
     function showAd() {
         if (adsgramController && typeof adsgramController.show === 'function') {
-            adsgramController.show().then(() => {
-                speed += 0.5;
-                localStorage.setItem('miner_speed', speed);
-                updateUI();
-                alert("Tebrikler! Reklam başarıyla izlendi, hızınız +0.5x artırıldı.");
-            }).catch((result) => {
-                // Eğer gerçek reklam gösterilemezse veya hata alırsa simülasyona düşer
+            adsgramController.show().then((result) => {
+                // Reklam başarıyla izlendiğinde ödülü ver
+                grantAdReward();
+            }).catch((err) => {
+                // Reklam yüklenemezse veya hata alınırsa simülasyon üzerinden ödülü ver
+                console.warn("Adsgram show error or dismissed:", err);
                 simulateAdReward();
             });
         } else {
             simulateAdReward();
         }
+    }
+
+    function grantAdReward() {
+        speed += 0.5;
+        localStorage.setItem('miner_speed', speed);
+        updateUI();
+        alert("Tebrikler! Reklam başarıyla izlendi, hızınız +0.5x artırıldı.");
     }
 
     function simulateAdReward() {
