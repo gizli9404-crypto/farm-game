@@ -56,25 +56,10 @@ TRANSLATIONS = {
         "lang_set": "🇹🇷 Dil Türkçe olarak ayarlandı!",
         "admin_welcome": "👑 <b>Hoş geldin Patron / Admin!</b>\nSistem seni yönetici olarak tanıdı.\n\n⚙️ <b>Admin Komutları:</b>\n• /gonder [ID] [Miktar] - Bakiye yükle\n• /aktif - Toplam kullanıcıları tara\n• /talepler - Bekleyen çekim taleplerini tara",
         "admin_only": "❌ Bu komutu kullanmaya yetkiniz yok!"
-    },
-    "en": {
-        "welcome": "🚀 Welcome to <b>Sanal Miner Pro</b>!\nChoose your language below and start mining:",
-        "balance": "💰 <b>Your Balance:</b> {balance} PTS\n🆔 <b>Your ID:</b> <code>{chat_id}</code>",
-        "lang_set": "🇬🇧 Language set to English!",
-        "admin_welcome": "👑 <b>Welcome Admin!</b>\nSystem recognized you as an administrator.",
-        "admin_only": "❌ You are not authorized!"
-    },
-    "ar": {
-        "welcome": "🚀 أهلاً بك في <b>Sanal Miner Pro</b>!\nاختر لغتك أدناه وابدأ التعدين:",
-        "balance": "💰 <b>رصيدك الحالي:</b> {balance} PTS\n🆔 <b>معرفك:</b> <code>{chat_id}</code>",
-        "lang_set": "🇸🇦 تم تغيير اللغة إلى العربية!",
-        "admin_welcome": "👑 <b>أهلاً بك يا مدير!</b>\nتم التعرف عليك كمسؤول عن النظام.",
-        "admin_only": "❌ ليس لديك صلاحية!"
     }
 }
 
 def is_admin(chat_id):
-    # ID tip bağımsız olarak (string/int) kesin eşleşme sağlar
     return str(chat_id) in [str(i) for i in ADMIN_IDS]
 
 def main():
@@ -82,7 +67,7 @@ def main():
         print("HATA: TOKEN bulunamadı!")
         return
 
-    print("Bot kusursuz admin korumasıyla çalışıyor...")
+    print("Bot aktif ve admin koruması devrede...")
     offset = None
     while True:
         users_data = load_data()
@@ -92,11 +77,12 @@ def main():
             for update in updates["result"]:
                 offset = update["update_id"] + 1
 
+                # 1. Buton Tıklamaları (Callback Query)
                 if "callback_query" in update:
                     cq = update["callback_query"]
                     cq_id = cq["id"]
-                    chat_id_str = str(cq["message"]["chat"]["id"])
                     chat_id_int = cq["message"]["chat"]["id"]
+                    chat_id_str = str(chat_id_int)
                     data = cq["data"]
                     
                     if chat_id_str not in users_data:
@@ -107,16 +93,17 @@ def main():
                         users_data[chat_id_str]["lang"] = lang
                         save_data(users_data)
                         
-                        answer_callback_query(cq_id, TRANSLATIONS[lang]["lang_set"])
+                        answer_callback_query(cq_id, "Dil seçildi!")
                         
+                        # EĞER ADMİN SEÇTİYSE DİREKT AÇ
                         if is_admin(chat_id_int):
-                            send_message(chat_id_int, TRANSLATIONS[lang]["admin_welcome"])
+                            send_message(chat_id_int, TRANSLATIONS["tr"]["admin_welcome"])
                         else:
                             bal = users_data[chat_id_str]["balance"]
-                            send_message(chat_id_int, TRANSLATIONS[lang]["balance"].format(balance=bal, chat_id=chat_id_str))
-
+                            send_message(chat_id_int, TRANSLATIONS["tr"]["balance"].format(balance=bal, chat_id=chat_id_str))
                     continue
 
+                # 2. Normal Mesajlar ve Komutlar
                 if "message" in update and "text" in update["message"]:
                     chat_id = update["message"]["chat"]["id"]
                     chat_id_str = str(chat_id)
@@ -126,38 +113,38 @@ def main():
                         users_data[chat_id_str] = {"balance": 100.0, "lang": "tr"}
                         save_data(users_data)
 
-                    lang = users_data[chat_id_str]["lang"]
+                    # KESİN KONTROL: EĞER KİŞİ ADMİN SE VE /start YAZDIYSA DİREKT PANELİ VER
+                    if is_admin(chat_id) and message_text.startswith("/start"):
+                        send_message(chat_id, TRANSLATIONS["tr"]["admin_welcome"])
+                        continue
 
+                    # Normal /start Akışı (Admin Olmayanlar İçin)
                     if message_text.startswith("/start"):
-                        if is_admin(chat_id):
-                            send_message(chat_id, TRANSLATIONS[lang]["admin_welcome"])
-                        else:
-                            keyboard = {
-                                "inline_keyboard": [
-                                    [
-                                        {"text": "🇹🇷 Türkçe", "callback_data": "lang_tr"},
-                                        {"text": "🇬🇧 English", "callback_data": "lang_en"},
-                                        {"text": "🇸🇦 العربية", "callback_data": "lang_ar"}
-                                    ]
+                        keyboard = {
+                            "inline_keyboard": [
+                                [
+                                    {"text": "🇹🇷 Türkçe", "callback_data": "lang_tr"},
+                                    {"text": "🇬🇧 English", "callback_data": "lang_en"},
+                                    {"text": "🇸🇦 العربية", "callback_data": "lang_ar"}
                                 ]
-                            }
-                            send_message(chat_id, TRANSLATIONS[lang]["welcome"], reply_markup=keyboard)
+                            ]
+                        }
+                        send_message(chat_id, TRANSLATIONS["tr"]["welcome"], reply_markup=keyboard)
 
                     elif message_text in ["/bakiye", "/balance"]:
                         bal = users_data[chat_id_str]["balance"]
-                        send_message(chat_id, TRANSLATIONS[lang]["balance"].format(balance=bal, chat_id=chat_id_str))
+                        send_message(chat_id, TRANSLATIONS["tr"]["balance"].format(balance=bal, chat_id=chat_id_str))
 
                     elif message_text == "/aktif":
                         if not is_admin(chat_id):
-                            send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
+                            send_message(chat_id, TRANSLATIONS["tr"]["admin_only"])
                         else:
                             toplam_kullanici = len(users_data)
-                            aktif_liste = f"📊 <b>Sistem Tarama Raporu</b>\n\n👥 Toplam Kayıtlı Kullanıcı: <b>{toplam_kullanici}</b>\n✅ Sistem aktif ve kusursuz çalışıyor."
-                            send_message(chat_id, aktif_liste)
+                            send_message(chat_id, f"📊 <b>Sistem Tarama Raporu</b>\n\n👥 Toplam Kayıtlı Kullanıcı: <b>{toplam_kullanici}</b>\n✅ Sistem aktif ve kusursuz çalışıyor.")
 
                     elif message_text == "/talepler":
                         if not is_admin(chat_id):
-                            send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
+                            send_message(chat_id, TRANSLATIONS["tr"]["admin_only"])
                         else:
                             send_message(chat_id, "📥 <b>Tarama Tamamlandı:</b> Şu an bekleyen yeni bir çekim talebi bulunmuyor.")
 
@@ -171,7 +158,7 @@ def main():
 
                     elif message_text.startswith("/gonder"):
                         if not is_admin(chat_id):
-                            send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
+                            send_message(chat_id, TRANSLATIONS["tr"]["admin_only"])
                         else:
                             parts = message_text.split()
                             if len(parts) == 3:
