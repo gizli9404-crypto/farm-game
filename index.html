@@ -90,12 +90,10 @@
         .leaderboard-title { font-size: 12px; color: #00fff5; font-weight: bold; margin-bottom: 6px; display: flex; justify-content: space-between; }
         .leaderboard-item { font-size: 11px; display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        /* GERÇEK DÖNEN ÇARK STİLLERİ */
         .wheel-container { position: relative; width: 220px; height: 220px; margin: 15px auto; }
         #canvas-wheel { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 20px rgba(0,255,245,0.4); border: 4px solid #00fff5; transition: transform 4s cubic-bezier(0.15, 0.75, 0.14, 1); }
         .wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 20px solid #ff416c; z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
 
-        /* SLOT MAKİNESİ STİLLERİ */
         .slot-machine { background: rgba(10, 17, 40, 0.9); border: 2px solid #ff9900; border-radius: 16px; padding: 15px; margin-top: 10px; text-align: center; }
         .slot-reels { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
         .reel { background: #16213e; border: 2px solid #00fff5; border-radius: 10px; width: 60px; height: 70px; font-size: 32px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
@@ -120,7 +118,7 @@
 
     <div class="assistant-box">
         <div class="assistant-icon">🤖</div>
-        <div id="txt-assistant">Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Çarkı çevir, 3️⃣ Slot oyna ve USDT çek![cite: 1]</div>
+        <div id="txt-assistant">Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Çarkı çevir, 3️⃣ Slot oyna ve USDT çek!</div>
     </div>
 
     <!-- TAB 1: KAZIM & LİDERLİK -->
@@ -216,22 +214,22 @@
         <button onclick="shareRefLink()" id="txt-ref-btn">🔗 Davet Linkini Paylaş</button>
     </div>
 
-    <!-- TAB 4: GERÇEK DÖNEN ŞANS ÇARKI -->
+    <!-- TAB 4: ŞANS ÇARKI -->
     <div id="tab-rewards" class="tab-content">
-        <h3 id="txt-wheel-title" style="text-align: left; color: #00fff5; font-size: 15px;">🎰 Şans Çarkı (Gerçek Dönüş)[cite: 1]</h3>
+        <h3 id="txt-wheel-title" style="text-align: left; color: #00fff5; font-size: 15px;">🎰 Şans Çarkı</h3>
         <div class="wheel-container">
             <div class="wheel-pointer"></div>
             <canvas id="canvas-wheel" width="300" height="300"></canvas>
         </div>
-        <button class="reward-btn" onclick="spinRealWheel()" id="txt-spin-btn">🎯 Reklam İzle & Çarkı Çevir[cite: 1]</button>
+        <button class="reward-btn" onclick="spinRealWheel()" id="txt-spin-btn">🎯 Reklam İzle & Çarkı Çevir</button>
         <div class="stat-box" style="margin-top: 15px; text-align: left;">
             <button class="support-btn" onclick="openSupport()" id="txt-support-btn">💬 Destek / Kanal</button>
         </div>
     </div>
 
-    <!-- TAB 5: SLOT OYUNU (YENİ) -->
+    <!-- TAB 5: SLOT OYUNU -->
     <div id="tab-slot" class="tab-content">
-        <h3 style="text-align: left; color: #ff9900; font-size: 15px; margin-bottom: 8px;">🎰 Şanslı Slot Makinesi[cite: 1]</h3>
+        <h3 style="text-align: left; color: #ff9900; font-size: 15px; margin-bottom: 8px;">🎰 Şanslı Slot Makinesi</h3>
         <div class="slot-machine">
             <div style="font-size: 11px; color: #aaa;">3 Aynı Sembolü Yakala, Büyük Ödülü Kap!</div>
             <div class="slot-reels">
@@ -354,7 +352,7 @@
 
     const dict = {
         tr: {
-            assistant: "Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Çarkı çevir, 3️⃣ Slot oyna ve USDT çek!",[cite: 1]
+            assistant: "Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Çarkı çevir, 3️⃣ Slot oyna ve USDT çek!",
             totalBalance: "Toplam Bakiye",
             speedTitle: "Mevcut Hız | Pasif Kazanç",
             mineBtn: "⛏️ Kazım Yap",
@@ -364,8 +362,8 @@
             refTitle: "👥 Arkadaşını Davet Et",
             refSub: "Davet Edilen Kişi",
             refBtn: "🔗 Davet Linkini Paylaş",
-            wheelTitle: "🎰 Şans Çarkı (Gerçek Dönüş)",[cite: 1]
-            spinBtn: "🎯 Reklam İzle & Çarkı Çevir",[cite: 1]
+            wheelTitle: "🎰 Şans Çarkı",
+            spinBtn: "🎯 Reklam İzle & Çarkı Çevir",
             supportBtn: "💬 Destek / Kanal",
             wdTitle: "💸 Kripto Çekim Talebi",
             rateLabel: "Dönüşüm Oranı:",
@@ -384,7 +382,7 @@
             navWd: "💸 Çekim"
         },
         en: {
-            assistant: "How to play? 1️⃣ Mine, 2️⃣ Spin wheel, 3️⃣ Play slots & withdraw!",[cite: 1]
+            assistant: "How to play? 1️⃣ Mine, 2️⃣ Spin wheel, 3️⃣ Play slots & withdraw!",
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
@@ -394,8 +392,8 @@
             refTitle: "👥 Invite Friends",
             refSub: "Invited Friends",
             refBtn: "🔗 Share Invite Link",
-            wheelTitle: "🎰 Lucky Wheel (Real Spin)",[cite: 1]
-            spinBtn: "🎯 Watch Ad & Spin Wheel",[cite: 1]
+            wheelTitle: "🎰 Lucky Wheel",
+            spinBtn: "🎯 Watch Ad & Spin Wheel",
             supportBtn: "💬 Support / Channel",
             wdTitle: "💸 Crypto Withdrawal",
             rateLabel: "Conversion Rate:",
@@ -414,7 +412,7 @@
             navWd: "💸 Withdraw"
         },
         ar: {
-            assistant: "كيف تلعب؟ 1️⃣ التعدين، 2️⃣ أدر العجلة، 3️⃣ العب السلوتس واسحب الأرباح!",[cite: 1]
+            assistant: "كيف تلعب؟ 1️⃣ التعدين، 2️⃣ أدر العجلة، 3️⃣ العب السلوتس واسحب الأرباح!",
             totalBalance: "الرصيد الإجمالي",
             speedTitle: "السرعة الحالية | التعدين التلقائي",
             mineBtn: "⛏️ اضغط للتعدين",
@@ -424,8 +422,8 @@
             refTitle: "👥 دعوة الأصدقاء",
             refSub: "الأصدقاء المدعوون",
             refBtn: "🔗 مشاركة رابط الدعوة",
-            wheelTitle: "🎰 عجلة الحظ (دوران حقيقي)",[cite: 1]
-            spinBtn: "🎯 مشاهدة إعلان وتدوير العجلة",[cite: 1]
+            wheelTitle: "🎰 عجلة الحظ",
+            spinBtn: "🎯 مشاهدة إعلان وتدوير العجلة",
             supportBtn: "💬 الدعم / القناة",
             wdTitle: "💸 طلب سحب العملات",
             rateLabel: "سعر التحويل:",
@@ -642,7 +640,6 @@
         }
     }
 
-    // --- GERÇEK ÇARK CANVAS ÇİZİMİ VE DÖNDÜRME ---
     const wheelSlices = [
         { label: "10 PTS", value: 10, color: "#16213e" },
         { label: "50 PTS", value: 50, color: "#0f3460" },
@@ -694,7 +691,7 @@
             isSpinning = true;
             const randomSliceIndex = Math.floor(Math.random() * wheelSlices.length);
             const sliceAngle = 360 / wheelSlices.length;
-            const extraSpins = 5 * 360; // 5 tam tur
+            const extraSpins = 5 * 360;
             const targetAngle = extraSpins + (360 - (randomSliceIndex * sliceAngle + sliceAngle / 2));
 
             currentAngle += targetAngle;
@@ -712,7 +709,6 @@
         });
     }
 
-    // --- SLOT OYUNU MANTIĞI ---
     const slotSymbols = ["💎", "🚀", "🪙", "🔥", "⭐"];
     function playSlotMachine() {
         const cost = 50;
@@ -736,7 +732,6 @@
             spins++;
             if (spins > 15) {
                 clearInterval(interval);
-                // Sonuç belirleme (%30 ihtimalle büyük ödül)
                 let final1, final2, final3;
                 if (Math.random() < 0.3) {
                     const sym = slotSymbols[Math.floor(Math.random() * slotSymbols.length)];
@@ -789,7 +784,7 @@
                 onSuccess();
             }).catch((err) => {
                 isAdLoading = false;
-                onSuccess(); // Test ortamı için
+                onSuccess();
             });
         } else {
             setTimeout(() => {
