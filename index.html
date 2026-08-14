@@ -190,6 +190,14 @@
     <!-- TAB 6: ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
         <h3 style="text-align: left; color: #ff416c; font-size: 16px; margin-bottom: 10px;">👑 Admin Yönetim Paneli</h3>
+        
+        <!-- YENİ: SIFIRLAMA BUTONU -->
+        <div class="admin-section" style="border-color: #ff416c;">
+            <h4 style="color: #ff416c;">⚠️ Tehlikeli Bölge / Hard Reset</h4>
+            <p style="font-size: 11px; color: #aaa; margin: 0 0 10px 0; text-align: left;">Bakiye, hız, kartlar, istatistikler ve bekleyen talepler dahil her şeyi tamamen sıfırlar.</p>
+            <button style="background: linear-gradient(135deg, #ff416c, #cc0000); color: #fff; padding: 10px; font-size: 13px; margin: 0;" onclick="adminHardReset()">💥 Tüm Verileri ve Parayı Sıfırla</button>
+        </div>
+
         <div class="admin-section">
             <h4>⚡ Hızlı Oyun İçi Bakiye Ekle</h4>
             <div style="display: flex; gap: 8px; margin-top: 8px;">
@@ -569,6 +577,30 @@
         }).catch(e => {});
 
         alert(`✅ Çekim Talebi Başarıyla Alındı!\n\nMiktar: ${amount} PTS (${usdtAmount} USDT)`);
+    }
+
+    // ADMIN HARD RESET (TÜMÜNÜ SIFIRLA) FONKSİYONU
+    function adminHardReset() {
+        if (confirm("⚠️ DİKKAT: Bakiye, hız, ekran kartları, günlük ödüller ve bekleyen tüm talepler kalıcı olarak sıfırlanacak. Emin misiniz?")) {
+            localStorage.removeItem('miner_balance');
+            localStorage.removeItem('miner_speed');
+            localStorage.removeItem('miner_passive_rate');
+            localStorage.removeItem('last_reward_time');
+            localStorage.removeItem('miner_ref_count');
+            localStorage.removeItem('miner_gpu_counts');
+            localStorage.removeItem('admin_pending_withdraws');
+
+            balance = 0;
+            speed = 1.0;
+            passiveRate = 0;
+            lastRewardTime = 0;
+            refCount = 0;
+            gpuCounts = { gtx1660: 0, rtx3060: 0, rtx4090: 0 };
+            pendingWithdraws = [];
+
+            updateUI();
+            alert("💥 Hard Reset Başarılı! Tüm veriler ve bakiye sıfırlandı.");
+        }
     }
 
     function adminAddDirectBalance(amount) {
