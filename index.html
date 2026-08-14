@@ -48,10 +48,14 @@
         .stat-box { background: rgba(15, 52, 96, 0.6); padding: 12px; border-radius: 14px; margin: 10px 0; border: 1px solid rgba(255, 255, 255, 0.08); }
         .stat-title { font-size: 11px; color: #8a99ad; text-transform: uppercase; }
         .stat-value { font-size: 26px; font-weight: bold; color: #ff416c; text-shadow: 0 0 10px rgba(255, 65, 108, 0.6); margin-top: 2px; }
-        .shop-card { background: rgba(15, 52, 96, 0.85); padding: 14px; border-radius: 14px; margin: 10px 0; display: flex; justify-content: space-between; align-items: center; text-align: left; border: 1px solid rgba(0, 255, 245, 0.2); }
+        
+        /* Market kaydırma alanı */
+        .shop-list { max-height: 380px; overflow-y: auto; padding-right: 4px; }
+        .shop-card { background: rgba(15, 52, 96, 0.85); padding: 12px 14px; border-radius: 14px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-align: left; border: 1px solid rgba(0, 255, 245, 0.2); }
+        
         button { background: linear-gradient(135deg, #00fff5, #0088cc); border: none; color: #000; padding: 12px 18px; font-size: 15px; font-weight: 800; border-radius: 14px; cursor: pointer; width: 100%; margin-top: 10px; }
         #mine-btn { background: linear-gradient(135deg, #00fff5, #00b894); font-size: 17px; padding: 16px; border-radius: 16px; }
-        .buy-btn { width: auto; font-size: 12px; padding: 8px 14px; border-radius: 10px; }
+        .buy-btn { width: auto; font-size: 12px; padding: 8px 14px; border-radius: 10px; margin: 0; }
         .ad-btn { background: linear-gradient(135deg, #ff9900, #ff5500); color: #fff; }
         .reward-btn { background: linear-gradient(135deg, #00b09b, #96c93d); color: #fff; }
         .support-btn { background: rgba(15, 52, 96, 0.9); color: #00fff5; border: 1px solid #00fff5; }
@@ -76,7 +80,7 @@
         .nav-item.active { color: #00fff5; font-weight: bold; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .daily-earn { color: #ff9900; font-size: 11px; font-weight: bold; }
+        .daily-earn { color: #ff9900; font-size: 10px; font-weight: bold; }
         .gpu-count { color: #00fff5; font-size: 10px; background: rgba(10, 17, 40, 0.8); padding: 2px 8px; border-radius: 8px; border: 1px solid rgba(0, 255, 245, 0.3); }
         .float-text { position: absolute; color: #00fff5; font-weight: bold; font-size: 18px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 99; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-50px) scale(1.3); } }
@@ -119,20 +123,35 @@
         <button class="ad-btn" id="ad-btn" onclick="showAd()"><span id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</span></button>
     </div>
 
-    <!-- TAB 2: MARKET -->
+    <!-- TAB 2: MARKET (GENİŞLETİLDİ) -->
     <div id="tab-shop" class="tab-content">
-        <h3 id="txt-shop-title" style="text-align: left; color: #00fff5; font-size: 16px;">💻 Ekran Kartı Marketi</h3>
-        <div class="shop-card">
-            <div><b>GTX 1660 Super</b> <span class="gpu-count" id="count-gtx1660">0 Adet</span><br><small style="color: #00fff5;">+0.0005 PTS/sn</small><br><span class="daily-earn">⚡ ~43.2 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;" id="txt-price-1">Fiyat: 10 PTS</small></div>
-            <button class="buy-btn buy-text" onclick="buyGPU('gtx1660', 'GTX 1660', 10, 0.0005)">Satın Al</button>
-        </div>
-        <div class="shop-card">
-            <div><b>RTX 3060 Ti</b> <span class="gpu-count" id="count-rtx3060">0 Adet</span><br><small style="color: #00fff5;">+0.0020 PTS/sn</small><br><span class="daily-earn">⚡ ~172.8 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;" id="txt-price-2">Fiyat: 35 PTS</small></div>
-            <button class="buy-btn buy-text" onclick="buyGPU('rtx3060', 'RTX 3060', 35, 0.0020)">Satın Al</button>
-        </div>
-        <div class="shop-card">
-            <div><b>RTX 4090 Rig</b> <span class="gpu-count" id="count-rtx4090">0 Adet</span><br><small style="color: #00fff5;">+0.0100 PTS/sn</small><br><span class="daily-earn">⚡ ~864.0 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;" id="txt-price-3">Fiyat: 150 PTS</small></div>
-            <button class="buy-btn buy-text" onclick="buyGPU('rtx4090', 'RTX 4090', 150, 0.0100)">Satın Al</button>
+        <h3 id="txt-shop-title" style="text-align: left; color: #00fff5; font-size: 16px; margin-bottom: 8px;">💻 Donanım & Madencilik Marketi</h3>
+        
+        <div class="shop-list">
+            <div class="shop-card">
+                <div><b>Radeon RX 580</b> <span class="gpu-count" id="count-rx580">0 Adet</span><br><small style="color: #00fff5;">+0.0002 PTS/sn</small><br><span class="daily-earn">⚡ ~17.2 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;">Fiyat: 4 PTS</small></div>
+                <button class="buy-btn buy-text" onclick="buyGPU('rx580', 'RX 580', 4, 0.0002)">Satın Al</button>
+            </div>
+            <div class="shop-card">
+                <div><b>GTX 1660 Super</b> <span class="gpu-count" id="count-gtx1660">0 Adet</span><br><small style="color: #00fff5;">+0.0005 PTS/sn</small><br><span class="daily-earn">⚡ ~43.2 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;">Fiyat: 10 PTS</small></div>
+                <button class="buy-btn buy-text" onclick="buyGPU('gtx1660', 'GTX 1660', 10, 0.0005)">Satın Al</button>
+            </div>
+            <div class="shop-card">
+                <div><b>RTX 3060 Ti</b> <span class="gpu-count" id="count-rtx3060">0 Adet</span><br><small style="color: #00fff5;">+0.0020 PTS/sn</small><br><span class="daily-earn">⚡ ~172.8 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;">Fiyat: 35 PTS</small></div>
+                <button class="buy-btn buy-text" onclick="buyGPU('rtx3060', 'RTX 3060', 35, 0.0020)">Satın Al</button>
+            </div>
+            <div class="shop-card">
+                <div><b>RTX 4090 Rig</b> <span class="gpu-count" id="count-rtx4090">0 Adet</span><br><small style="color: #00fff5;">+0.0100 PTS/sn</small><br><span class="daily-earn">⚡ ~864.0 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;">Fiyat: 150 PTS</small></div>
+                <button class="buy-btn buy-text" onclick="buyGPU('rtx4090', 'RTX 4090', 150, 0.0100)">Satın Al</button>
+            </div>
+            <div class="shop-card">
+                <div><b>Antminer S19 Pro</b> <span class="gpu-count" id="count-s19">0 Adet</span><br><small style="color: #00fff5;">+0.0500 PTS/sn</small><br><span class="daily-earn">⚡ ~4,320 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;">Fiyat: 700 PTS</small></div>
+                <button class="buy-btn buy-text" onclick="buyGPU('s19', 'Antminer S19 Pro', 700, 0.0500)">Satın Al</button>
+            </div>
+            <div class="shop-card">
+                <div><b>Kuantum Madenci Ünitesi</b> <span class="gpu-count" id="count-quantum">0 Adet</span><br><small style="color: #00fff5;">+0.2500 PTS/sn</small><br><span class="daily-earn">⚡ ~21,600 PTS / Gün</span><br><small style="color: #ff416c; font-weight: bold;">Fiyat: 3,000 PTS</small></div>
+                <button class="buy-btn buy-text" onclick="buyGPU('quantum', 'Kuantum Madenci', 3000, 0.2500)">Satın Al</button>
+            </div>
         </div>
     </div>
 
@@ -261,8 +280,7 @@
             speedTitle: "Mevcut Hız | Pasif Kazanç",
             mineBtn: "⛏️ Kazım Yap",
             adBtnText: "📺 Reklam İzle (Hız +0.5x)",
-            shopTitle: "💻 Ekran Kartı Marketi",
-            price: "Fiyat:",
+            shopTitle: "💻 Donanım & Madencilik Marketi",
             buyBtn: "Satın Al",
             refTitle: "👥 Arkadaşını Davet Et",
             refSub: "Davet Edilen Kişi",
@@ -292,8 +310,7 @@
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
             adBtnText: "📺 Watch Ad (Speed +0.5x)",
-            shopTitle: "💻 GPU Market",
-            price: "Price:",
+            shopTitle: "💻 Hardware & Mining Market",
             buyBtn: "Buy",
             refTitle: "👥 Invite Friends",
             refSub: "Invited Friends",
@@ -323,8 +340,7 @@
             speedTitle: "السرعة الحالية | التعدين التلقائي",
             mineBtn: "⛏️ اضغط للتعدين",
             adBtnText: "📺 مشاهدة إعلان (زيادة السرعة)",
-            shopTitle: "💻 سوق بطاقات الرسومات",
-            price: "السعر:",
+            shopTitle: "💻 سوق الأجهزة والتعدين",
             buyBtn: "شراء",
             refTitle: "👥 دعوة الأصدقاء",
             refSub: "الأصدقاء المدعوون",
@@ -389,9 +405,6 @@
         document.getElementById('nav-wd').innerText = t.navWd;
 
         document.querySelectorAll('.buy-text').forEach(el => el.innerText = t.buyBtn);
-        document.getElementById('txt-price-1').innerText = `${t.price} 10 PTS`;
-        document.getElementById('txt-price-2').innerText = `${t.price} 35 PTS`;
-        document.getElementById('txt-price-3').innerText = `${t.price} 150 PTS`;
 
         if (!isAdLoading) {
             document.getElementById('txt-ad-btn').innerText = t.adBtnText;
@@ -416,7 +429,8 @@
     let passiveRate = parseFloat(localStorage.getItem('miner_passive_rate')) || 0;
     let lastRewardTime = parseInt(localStorage.getItem('last_reward_time')) || 0;
     let refCount = parseInt(localStorage.getItem('miner_ref_count')) || 0;
-    let gpuCounts = JSON.parse(localStorage.getItem('miner_gpu_counts')) || { gtx1660: 0, rtx3060: 0, rtx4090: 0 };
+    
+    let gpuCounts = JSON.parse(localStorage.getItem('miner_gpu_counts')) || { rx580: 0, gtx1660: 0, rtx3060: 0, rtx4090: 0, s19: 0, quantum: 0 };
     let pendingWithdraws = JSON.parse(localStorage.getItem('admin_pending_withdraws')) || [];
 
     const balanceEl = document.getElementById('balance');
@@ -432,10 +446,13 @@
         passiveRateEl.innerText = passiveRate.toFixed(4);
         refCountEl.innerText = refCount;
 
-        if (document.getElementById('count-gtx1660')) {
+        if (document.getElementById('count-rx580')) {
+            document.getElementById('count-rx580').innerText = (gpuCounts.rx580 || 0) + " Adet";
             document.getElementById('count-gtx1660').innerText = (gpuCounts.gtx1660 || 0) + " Adet";
             document.getElementById('count-rtx3060').innerText = (gpuCounts.rtx3060 || 0) + " Adet";
             document.getElementById('count-rtx4090').innerText = (gpuCounts.rtx4090 || 0) + " Adet";
+            document.getElementById('count-s19').innerText = (gpuCounts.s19 || 0) + " Adet";
+            document.getElementById('count-quantum').innerText = (gpuCounts.quantum || 0) + " Adet";
         }
 
         let currentUserId = "Tarayıcı";
@@ -514,7 +531,6 @@
         } else { alert("Yetersiz bakiye!"); }
     }
 
-    // ADSGRAM KORUMALI VE GÜVENLİ REKLAM MEKANİZMASI
     let adsgramController = null;
     let isAdLoading = false;
 
@@ -527,7 +543,7 @@
     }
 
     function showAd() {
-        if (isAdLoading) return; // Peşpeşe tıklama koruması
+        if (isAdLoading) return;
         
         isAdLoading = true;
         const adBtn = document.getElementById('ad-btn');
@@ -536,7 +552,6 @@
 
         if (adsgramController && typeof adsgramController.show === 'function') {
             adsgramController.show().then(() => {
-                // Reklam başarıyla izlendi
                 grantAdReward();
                 resetAdButton();
             }).catch((err) => {
@@ -545,7 +560,6 @@
                 resetAdButton();
             });
         } else {
-            // Test veya SDK bulunamadığı durumlar için simülasyon
             setTimeout(() => {
                 grantAdReward();
                 resetAdButton();
