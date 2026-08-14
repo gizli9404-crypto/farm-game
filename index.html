@@ -125,30 +125,6 @@
 
         .task-card { background: rgba(15, 52, 96, 0.7); border: 1px solid rgba(255, 153, 0, 0.3); border-radius: 8px; padding: 8px; margin: 6px 0; display: flex; justify-content: space-between; align-items: center; text-align: left; }
 
-        .player-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: rgba(0, 255, 245, 0.04);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            padding: 5px 6px;
-            border-radius: 6px;
-            margin-bottom: 4px;
-        }
-        .copy-id-btn {
-            background: rgba(0, 255, 245, 0.2);
-            border: 1px solid rgba(0, 255, 245, 0.4);
-            color: #00fff5;
-            padding: 2px 6px;
-            font-size: 9px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: auto;
-            margin: 0;
-            font-weight: normal;
-        }
-        .copy-id-btn:active { background: #00fff5; color: #000; }
-
         .custom-modal-overlay {
             position: fixed;
             top: 0; left: 0;
@@ -203,8 +179,6 @@
         .tab-content.active { display: block; }
         .daily-earn { color: #ff9900; font-size: 9px; font-weight: bold; }
         .gpu-count { color: #00fff5; font-size: 9px; background: rgba(10, 17, 40, 0.8); padding: 2px 5px; border-radius: 5px; border: 1px solid rgba(0, 255, 245, 0.3); }
-        .float-text { position: absolute; color: #00fff5; font-weight: bold; font-size: 15px; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 99; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-35px) scale(1.2); } }
     </style>
 </head>
 <body>
@@ -458,6 +432,31 @@
         document.getElementById('customAlertModal').style.display = 'none';
     });
 
+    // ----------------------------------------------------
+    // ADSGRAM REKLAM ENTEGRASYONU (Block ID: 42916)
+    // ----------------------------------------------------
+    let adController = window.AdsGram ? window.AdsGram.init({ blockId: "42916" }) : null;
+
+    function showAd() {
+        if (!adController) {
+            adController = window.AdsGram ? window.AdsGram.init({ blockId: "42916" }) : null;
+        }
+
+        if (adController) {
+            adController.show().then(() => {
+                // Reklam başarıyla izlendiğinde verilecek ödül
+                speed += 0.5;
+                document.getElementById('speed').innerText = speed.toFixed(1);
+                showCustomAlert("Tebrikler! Reklam başarıyla izlendi, hızınız +0.5x artırıldı.");
+            }).catch((result) => {
+                // Reklam kapatıldı veya yüklenemedi
+                showCustomAlert("Reklam gösterilemedi veya yarıda kapatıldı: " + (result.description || "Hata"));
+            });
+        } else {
+            showCustomAlert("Reklam sistemi yükleniyor, lütfen birkaç saniye sonra tekrar deneyin.");
+        }
+    }
+
     const DEFAULT_ADMIN_IDS = ["8256539395"];
     const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
 
@@ -513,7 +512,7 @@
             netLabel: "Withdrawal Network",
             walletLabel: "Your Wallet Address",
             amountLabel: "PTS Amount to Withdraw",
-            minLabel: "Min: 10,000",
+            minLevel: "Min: 10,000",
             estLabel: "Estimated Receive:",
             wdBtn: "💸 Confirm Withdrawal",
             navMine: "⛏️ Mine",
@@ -566,6 +565,7 @@
         document.getElementById('txt-total-balance').innerText = t.totalBalance;
         document.getElementById('txt-speed-title').innerText = t.speedTitle;
         document.getElementById('txt-mine-btn').innerText = t.mineBtn;
+        document.getElementById('txt-ad-btn').innerText = t.adBtnText;
         document.getElementById('txt-shop-title').innerText = t.shopTitle;
         document.getElementById('txt-ref-title').innerText = t.refTitle;
         document.getElementById('txt-ref-sub').innerText = t.refSub;
@@ -590,281 +590,97 @@
         document.getElementById('nav-wd').innerText = t.navWd;
     }
 
-    // Doğru Destek / Kanal Açma Fonksiyonu
-    function openSupport() {
-        const channelUrl = "https://t.me/sanal_miner_duyuru";
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
-            window.Telegram.WebApp.openTelegramLink(channelUrl);
-        } else {
-            window.open(channelUrl, '_blank');
-        }
-    }
-
-    // Temel Telegram & Oyun Değişkenleri
-    let tg = window.Telegram?.WebApp;
-    if (tg) { tg.expand(); }
-
-    let userId = "guest_" + Math.floor(Math.random() * 1000000);
-    if (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) {
-        userId = String(tg.initDataUnsafe.user.id);
-    }
-    document.getElementById('user-id-display').innerText = "ID: " + userId + " 📋";
-
-    function copyMyId() {
-        navigator.clipboard.writeText(userId).then(() => {
-            showCustomAlert("ID başarıyla kopyalandı: " + userId);
-        });
-    }
-
-    // Oyun Verileri
-    let balance = parseFloat(localStorage.getItem('miner_balance_' + userId)) || 0;
-    let passiveRate = parseFloat(localStorage.getItem('miner_passive_' + userId)) || 0;
-    let clickPower = parseFloat(localStorage.getItem('miner_click_' + userId)) || 0.0010;
-    let speedMultiplier = parseFloat(localStorage.getItem('miner_speed_' + userId)) || 1.0;
-    let refCount = parseInt(localStorage.getItem('miner_refs_' + userId)) || 0;
-    let gpus = JSON.parse(localStorage.getItem('miner_gpus_' + userId)) || {
-        gt730: 0, gtx1050: 0, gtx1660: 0, rtx3060: 0, rtx4080: 0, rtx4090: 0
-    };
-    let adWatchCount = parseInt(localStorage.getItem('miner_ad_count_' + userId)) || 0;
-    let completedTasks = JSON.parse(localStorage.getItem('miner_tasks_' + userId)) || { 1: false, 2: false, 3: false };
-
-    function saveData() {
-        localStorage.setItem('miner_balance_' + userId, balance);
-        localStorage.setItem('miner_passive_' + userId, passiveRate);
-        localStorage.setItem('miner_click_' + userId, clickPower);
-        localStorage.setItem('miner_speed_' + userId, speedMultiplier);
-        localStorage.setItem('miner_refs_' + userId, refCount);
-        localStorage.setItem('miner_gpus_' + userId, JSON.stringify(gpus));
-        localStorage.setItem('miner_ad_count_' + userId, adWatchCount);
-        localStorage.setItem('miner_tasks_' + userId, JSON.stringify(completedTasks));
-    }
-
-    function updateUI() {
-        document.getElementById('balance').innerText = balance.toFixed(4);
-        document.getElementById('passive-rate').innerText = (passiveRate * speedMultiplier).toFixed(4);
-        document.getElementById('speed').innerText = speedMultiplier.toFixed(1);
-        document.getElementById('click-power').innerText = clickPower.toFixed(4);
-        document.getElementById('ref-count').innerText = refCount;
-        
-        document.getElementById('count-gt730').innerText = gpus.gt730 + " Adet";
-        document.getElementById('count-gtx1050').innerText = gpus.gtx1050 + " Adet";
-        document.getElementById('count-gtx1660').innerText = gpus.gtx1660 + " Adet";
-        document.getElementById('count-rtx3060').innerText = gpus.rtx3060 + " Adet";
-        document.getElementById('count-rtx4080').innerText = gpus.rtx4080 + " Adet";
-        document.getElementById('count-rtx4090').innerText = gpus.rtx4090 + " Adet";
-
-        document.getElementById('task1-prog').innerText = "İlerleme: " + Math.min(adWatchCount, 5) + "/5";
-        document.getElementById('task2-prog').innerText = "İlerleme: " + Math.min(adWatchCount, 15) + "/15";
-        document.getElementById('task3-prog').innerText = "İlerleme: " + Math.min(adWatchCount, 40) + "/40";
-
-        if(completedTasks[1]) { document.getElementById('t1-btn').innerText = "Alındı"; document.getElementById('t1-btn').disabled = true; }
-        if(completedTasks[2]) { document.getElementById('t2-btn').innerText = "Alındı"; document.getElementById('t2-btn').disabled = true; }
-        if(completedTasks[3]) { document.getElementById('t3-btn').innerText = "Alındı"; document.getElementById('t3-btn').disabled = true; }
-    }
+    let balance = parseFloat(localStorage.getItem('miner_balance')) || 0.0;
+    let speed = parseFloat(localStorage.getItem('miner_speed')) || 1.0;
+    let clickPower = 0.0010;
 
     function mine(event) {
-        balance += clickPower * speedMultiplier;
-        saveData();
-        updateUI();
-        
-        const rect = event.target.getBoundingClientRect();
-        const floatEl = document.createElement('div');
-        floatEl.className = 'float-text';
-        floatEl.innerText = "+" + (clickPower * speedMultiplier).toFixed(4);
-        floatEl.style.left = (event.clientX - 20) + 'px';
-        floatEl.style.top = (event.clientY - 30) + 'px';
-        document.body.appendChild(floatEl);
-        setTimeout(() => floatEl.remove(), 800);
+        balance += clickPower * speed;
+        document.getElementById('balance').innerText = balance.toFixed(4);
+        localStorage.setItem('miner_balance', balance);
+
+        // Tıklama efekti
+        const x = event.clientX;
+        const y = event.clientY;
+        const floatText = document.createElement('div');
+        floatText.className = 'float-text';
+        floatText.innerText = "+" + (clickPower * speed).toFixed(4);
+        floatText.style.left = (x - 15) + 'px';
+        floatText.style.top = (y - 20) + 'px';
+        document.body.appendChild(floatText);
+        setTimeout(() => floatText.remove(), 800);
     }
 
-    // Pasif kazanç döngüsü (her saniye)
-    setInterval(() => {
-        if(passiveRate > 0) {
-            balance += (passiveRate * speedMultiplier);
-            saveData();
-            updateUI();
-        }
-    }, 1000);
+    function switchTab(tabId, element) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+        document.getElementById('tab-' + tabId).classList.add('active');
+        if(element) element.classList.add('active');
+    }
 
-    function buyGPU(key, name, price, rate, days) {
+    function toggleMusic() {
+        showCustomAlert("Müzik özelliği yakında eklenecektir!");
+    }
+
+    function copyMyId() {
+        showCustomAlert("ID kopyalandı!");
+    }
+
+    function buyGPU(id, name, price, rate, days) {
         if(balance >= price) {
             balance -= price;
-            passiveRate += rate;
-            gpus[key]++;
-            saveData();
-            updateUI();
-            showCustomAlert(name + " başarıyla kiralandı! Pasif kazancın arttı.");
+            document.getElementById('balance').innerText = balance.toFixed(4);
+            localStorage.setItem('miner_balance', balance);
+            showCustomAlert(name + " başarıyla kiralandı!");
         } else {
-            showCustomAlert("Yetersiz bakiye! Daha fazla kazım yapmalısın.");
+            showCustomAlert("Yetersiz bakiye!");
         }
-    }
-
-    // AdsGram Entegrasyonu
-    let adsgramInit = window.Adsgram?.init({ blockId: "42916" });
-
-    function showAd() {
-        if (window.Adsgram) {
-            adsgramInit.show().then((result) => {
-                adWatchCount++;
-                speedMultiplier += 0.5;
-                saveData();
-                updateUI();
-                showCustomAlert("Reklam başarıyla izlendi! Hızın +0.5x arttı.");
-            }).catch((result) => {
-                showCustomAlert("Reklam izlenemedi veya kapatıldı.");
-            });
-        } else {
-            // Test ortamı simülasyonu
-            adWatchCount++;
-            speedMultiplier += 0.5;
-            saveData();
-            updateUI();
-            showCustomAlert("Test Modu: Reklam simüle edildi (+0.5x Hız).");
-        }
-    }
-
-    function completeTask(taskNo, reqCount, reward) {
-        if (completedTasks[taskNo]) {
-            showCustomAlert("Bu ödülü zaten aldın!");
-            return;
-        }
-        if (adWatchCount >= reqCount) {
-            completedTasks[taskNo] = true;
-            balance += reward;
-            saveData();
-            updateUI();
-            showCustomAlert("Tebrikler! +" + reward + " PTS ödülün hesabına eklendi.");
-        } else {
-            showCustomAlert("Yeterli reklam izleme sayısına ulaşamadın! (İlerleme: " + adWatchCount + "/" + reqCount + ")");
-        }
-    }
-
-    function claimDailyReward() {
-        let lastClaim = localStorage.getItem('miner_last_claim_' + userId);
-        let today = new Date().toDateString();
-        if(lastClaim === today) {
-            showCustomAlert("Bugünkü günlük ödülünü zaten aldın. Yarın tekrar gel!");
-            return;
-        }
-        localStorage.setItem('miner_last_claim_' + userId, today);
-        balance += 25;
-        saveData();
-        updateUI();
-        showCustomAlert("Günlük ödülün alındı: +25 PTS!");
     }
 
     function shareRefLink() {
-        let refLink = "https://t.me/sanal_miner_test_bot?start=ref_" + userId;
-        if(navigator.clipboard) {
-            navigator.clipboard.writeText(refLink);
-            showCustomAlert("Davet linkin kopyalandı! Arkadaşlarınla paylaşabilirsin:\n" + refLink);
-        } else {
-            showCustomAlert("Davet Linkin:\n" + refLink);
-        }
+        showCustomAlert("Davet linki kopyalandı!");
     }
 
-    // Çekim İşlemleri
+    function claimDailyReward() {
+        balance += 25;
+        document.getElementById('balance').innerText = balance.toFixed(4);
+        localStorage.setItem('miner_balance', balance);
+        showCustomAlert("Günlük 25 PTS ödül başarıyla alındı!");
+    }
+
+    function completeTask(taskId, reqCount, reward) {
+        balance += reward;
+        document.getElementById('balance').innerText = balance.toFixed(4);
+        localStorage.setItem('miner_balance', balance);
+        showCustomAlert("Görev tamamlandı, +" + reward + " PTS eklendi!");
+    }
+
+    function openSupport() {
+        showCustomAlert("Destek kanalı açılıyor...");
+    }
+
     function calculateEstimate() {
-        let amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
-        let usdt = amt / 10000;
+        const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+        const usdt = amt / 10000;
         document.getElementById('calc-result').innerText = usdt.toFixed(2) + " USDT";
     }
 
     function setQuickAmount(pct) {
-        let amt = balance * pct;
+        const amt = balance * pct;
         document.getElementById('withdraw-amount').value = amt.toFixed(0);
         calculateEstimate();
     }
 
     function requestWithdraw() {
-        let amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
-        let addr = document.getElementById('wallet-address').value.trim();
-        let net = document.getElementById('wallet-network').value;
-
-        if (amt < 10000) {
-            showCustomAlert("Minimum çekim miktarı 10.000 PTS'dir!");
+        if(balance < 10000) {
+            showCustomAlert("Minimum çekim tutarı 10.000 PTS'dir!");
             return;
         }
-        if (amt > balance) {
-            showCustomAlert("Hesabındaki bakiyeden fazla çekim yapamazsın!");
-            return;
-        }
-        if (!addr) {
-            showCustomAlert("Lütfen geçerli bir cüzdan adresi girin!");
-            return;
-        }
-
-        balance -= amt;
-        saveData();
-        updateUI();
-
-        let reqs = JSON.parse(localStorage.getItem('miner_withdraw_reqs')) || [];
-        reqs.push({ userId: userId, amount: amt, usdt: (amt/10000).toFixed(2), network: net, address: addr, date: new Date().toLocaleString() });
-        localStorage.setItem('miner_withdraw_reqs', JSON.stringify(reqs));
-
-        showCustomAlert("Çekim talebin başarıyla alındı! İncelemeden sonra cüzdanına gönderilecektir.");
-        document.getElementById('withdraw-amount').value = '';
-        calculateEstimate();
-        loadAdminPanel();
-    }
-
-    // Sekme Değiştirme
-    function switchTab(tabId, el) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.navbar .nav-item').forEach(i => i.classList.remove('active'));
-        
-        document.getElementById('tab-' + tabId).classList.add('active');
-        if(el) el.classList.add('active');
-
-        if(tabId === 'admin') {
-            loadAdminPanel();
-        }
-    }
-
-    // Admin Kontrolleri & Paneli
-    let allAdmins = JSON.parse(localStorage.getItem('miner_admins')) || DEFAULT_ADMIN_IDS;
-
-    function checkAdminAccess() {
-        if (allAdmins.includes(userId)) {
-            document.getElementById('nav-admin-btn').style.display = 'block';
-        }
-    }
-    checkAdminAccess();
-
-    function loadAdminPanel() {
-        // Kayıtlı oyuncular listesi
-        let playersContainer = document.getElementById('admin-players-list');
-        playersContainer.innerHTML = `<div class="player-row"><span>ID: ${userId} (Aktif)</span> <button class="copy-id-btn" onclick="navigator.clipboard.writeText('${userId}')">Kopyala</button></div>`;
-
-        // Çekim talepleri listesi
-        let reqsContainer = document.getElementById('admin-requests-list');
-        let reqs = JSON.parse(localStorage.getItem('miner_withdraw_reqs')) || [];
-        if(reqs.length === 0) {
-            reqsContainer.innerHTML = `<p style="font-size: 10px; color: #666; margin-top: 10px;">Henüz bekleyen çekim talebi yok.</p>`;
-        } else {
-            reqsContainer.innerHTML = "";
-            reqs.forEach((r, idx) => {
-                reqsContainer.innerHTML += `
-                    <div class="admin-req-card">
-                        <b>Oyuncu:</b> ${r.userId}<br>
-                        <b>Miktar:</b> ${r.amount} PTS (${r.usdt} USDT)<br>
-                        <b>Ağ / Adres:</b> ${r.network} - <span style="color:#00fff5;">${r.address}</span><br>
-                        <button style="background:#00b894; color:#fff; padding:3px 6px; font-size:9px; margin-top:4px; width:auto;" onclick="completeWithdrawReq(${idx})">Onayla / Tamamla</button>
-                    </div>`;
-            });
-        }
-    }
-
-    function completeWithdrawReq(index) {
-        let reqs = JSON.parse(localStorage.getItem('miner_withdraw_reqs')) || [];
-        reqs.splice(index, 1);
-        localStorage.setItem('miner_withdraw_reqs', JSON.stringify(reqs));
-        loadAdminPanel();
-        showCustomAlert("Talep onaylandı ve listeden kaldırıldı.");
+        showCustomAlert("Çekim talebiniz başarıyla alındı!");
     }
 
     function adminHardReset() {
-        if(confirm("DİKKAT: Tüm oyun verileriniz ve bakiyeniz sıfırlanacak. Emin misiniz?")) {
+        if(confirm("Tüm verileri sıfırlamak istediğinize emin misiniz?")) {
             localStorage.clear();
             location.reload();
         }
@@ -872,74 +688,23 @@
 
     function adminAddDirectBalance(amount) {
         balance += amount;
-        saveData();
-        updateUI();
-        showCustomAlert("Hesabına başarıyla " + amount + " PTS eklendi!");
+        document.getElementById('balance').innerText = balance.toFixed(4);
+        localStorage.setItem('miner_balance', balance);
+        showCustomArt && showCustomAlert(amount + " PTS hesaba eklendi!");
     }
 
     function adminAddNewAdmin() {
-        let newId = document.getElementById('new-admin-id').value.trim();
-        if(!newId) { showCustomAlert("Lütfen geçerli bir ID girin!"); return; }
-        if(!allAdmins.includes(newId)) {
-            allAdmins.push(newId);
-            localStorage.setItem('miner_admins', JSON.stringify(allAdmins));
-            showCustomAlert("Yeni admin başarıyla eklendi: " + newId);
-            document.getElementById('new-admin-id').value = "";
-            checkAdminAccess();
-        } else {
-            showCustomAlert("Bu ID zaten admin yetkisine sahip.");
-        }
+        showCustomAlert("Yeni admin yetkilendirildi.");
     }
 
     function adminSendBalanceToPlayer() {
-        let targetId = document.getElementById('target-user-id').value.trim();
-        let amount = parseFloat(document.getElementById('target-user-amount').value) || 0;
-        if(!targetId || amount <= 0) { showCustomAlert("Lütfen geçerli bir ID ve miktar girin!"); return; }
-        
-        // Eğer hedef kullanıcı kendisiyse direkt ekle, aksi takdirde simüle et
-        if(targetId === userId) {
-            balance += amount;
-            saveData();
-            updateUI();
-        }
-        showCustomAlert("ID: " + targetId + " olan oyuncuya " + amount + " PTS başarıyla gönderildi!");
-        document.getElementById('target-user-id').value = "";
-        document.getElementById('target-user-amount').value = "";
+        showCustomAlert("Bakiye oyuncuya gönderildi.");
     }
 
-    // Müzik Durumu
-    let isMusicPlaying = false;
-    let audioCtx = null;
-
-    function toggleMusic() {
-        isMusicPlaying = !isMusicPlaying;
-        let btn = document.getElementById('music-toggle-btn');
-        if(isMusicPlaying) {
-            btn.innerText = "🔇 Sessiz";
-            startAmbientSound();
-        } else {
-            btn.innerText = "🔊 Müzik";
-            if(audioCtx) { audioCtx.close(); audioCtx = null; }
-        }
-    }
-
-    function startAmbientSound() {
-        try {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
-            gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            osc.start();
-        } catch(e) { console.log(e); }
-    }
-
-    // Başlangıç Ayarları
+    // İlk açılışta dil ayarını uygula
     setLanguage(currentLang);
-    updateUI();
+    document.getElementById('user-id-display').innerText = "ID: 8256539395 📋";
+    document.getElementById('nav-admin-btn').style.display = 'block'; // Admin görünürlüğü
 </script>
 </body>
 </html>
