@@ -90,9 +90,11 @@
         .leaderboard-title { font-size: 12px; color: #00fff5; font-weight: bold; margin-bottom: 6px; display: flex; justify-content: space-between; }
         .leaderboard-item { font-size: 11px; display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
 
-        .wheel-container { position: relative; width: 220px; height: 220px; margin: 15px auto; }
-        #canvas-wheel { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 20px rgba(0,255,245,0.4); border: 4px solid #00fff5; transition: transform 4s cubic-bezier(0.15, 0.75, 0.14, 1); }
-        .wheel-pointer { position: absolute; top: -10px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 20px solid #ff416c; z-index: 10; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.5)); }
+        /* 1win Tarzı Buz Mavisi Şans Çarkı Tasarımı */
+        .wheel-container { position: relative; width: 250px; height: 250px; margin: 15px auto; }
+        #canvas-wheel { width: 100%; height: 100%; border-radius: 50%; box-shadow: 0 0 25px rgba(0,255,245,0.5), inset 0 0 15px rgba(0,0,0,0.8); border: 5px solid #00fff5; transition: transform 4s cubic-bezier(0.15, 0.75, 0.14, 1); background: #0a1128; }
+        .wheel-pointer { position: absolute; top: -12px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 12px solid transparent; border-right: 12px solid transparent; border-top: 24px solid #ff416c; z-index: 10; filter: drop-shadow(0 3px 3px rgba(0,0,0,0.8)); }
+        .wheel-center-badge { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 50px; height: 50px; background: linear-gradient(135deg, #16213e, #0f3460); border: 3px solid #00fff5; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 11px; color: #00fff5; box-shadow: 0 0 10px rgba(0,255,245,0.8); z-index: 5; }
 
         .slot-machine { background: rgba(10, 17, 40, 0.9); border: 2px solid #ff9900; border-radius: 16px; padding: 15px; margin-top: 10px; text-align: center; }
         .slot-reels { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
@@ -239,11 +241,12 @@
         <button onclick="shareRefLink()" id="txt-ref-btn">🔗 Davet Linkini Paylaş</button>
     </div>
 
-    <!-- TAB 4: ŞANS ÇARKI -->
+    <!-- TAB 4: 1WIN TARZI ŞANS ÇARKI -->
     <div id="tab-rewards" class="tab-content">
-        <h3 id="txt-wheel-title" style="text-align: left; color: #00fff5; font-size: 15px;">🎰 Şans Çarkı</h3>
+        <h3 id="txt-wheel-title" style="text-align: left; color: #00fff5; font-size: 15px;">🎰 Ice Fishing Şans Çarkı</h3>
         <div class="wheel-container">
             <div class="wheel-pointer"></div>
+            <div class="wheel-center-badge">1win</div>
             <canvas id="canvas-wheel" width="300" height="300"></canvas>
         </div>
         <button class="reward-btn" onclick="spinRealWheel()" id="txt-spin-btn">🎯 Reklam İzle & Çarkı Çevir</button>
@@ -375,7 +378,6 @@
     const DEFAULT_ADMIN_IDS = ["8256539395"];
     const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
 
-    // Modern Alert / Toast Bildirim Sistemi
     function showToast(message) {
         const toast = document.getElementById('custom-toast');
         toast.innerText = message;
@@ -397,7 +399,7 @@
             refTitle: "👥 Arkadaşını Davet Et",
             refSub: "Davet Edilen Kişi",
             refBtn: "🔗 Davet Linkini Paylaş",
-            wheelTitle: "🎰 Şans Çarkı",
+            wheelTitle: "🎰 Ice Fishing Şans Çarkı",
             spinBtn: "🎯 Reklam İzle & Çarkı Çevir",
             supportBtn: "💬 Destek / Kanal",
             wdTitle: "💸 Kripto Çekim Talebi",
@@ -427,7 +429,7 @@
             refTitle: "👥 Invite Friends",
             refSub: "Invited Friends",
             refBtn: "🔗 Share Invite Link",
-            wheelTitle: "🎰 Lucky Wheel",
+            wheelTitle: "🎰 Ice Fishing Wheel",
             spinBtn: "🎯 Watch Ad & Spin Wheel",
             supportBtn: "💬 Support / Channel",
             wdTitle: "💸 Crypto Withdrawal",
@@ -457,7 +459,7 @@
             refTitle: "👥 دعوة الأصدقاء",
             refSub: "الأصدقاء المدعوون",
             refBtn: "🔗 مشاركة رابط الدعوة",
-            wheelTitle: "🎰 عجلة الحظ",
+            wheelTitle: "🎰 عجلة الحظ Ice Fishing",
             spinBtn: "🎯 مشاهدة إعلان وتدوير العجلة",
             supportBtn: "💬 الدعم / القناة",
             wdTitle: "💸 طلب سحب العملات",
@@ -675,13 +677,14 @@
         }
     }
 
+    // 1win Tarzı Ice Fishing Çark Dilimleri
     const wheelSlices = [
-        { label: "10 PTS", value: 10, color: "#16213e" },
-        { label: "50 PTS", value: 50, color: "#0f3460" },
-        { label: "100 PTS", value: 100, color: "#e94560" },
-        { label: "250 PTS", value: 250, color: "#533483" },
-        { label: "500 PTS", value: 500, color: "#00b894" },
-        { label: "1000 PTS", value: 1000, color: "#ff9900" }
+        { label: "10 PTS", value: 10, color: "#0f3460" },
+        { label: "LIL' BLUES", value: 50, color: "#1b263b" },
+        { label: "100 PTS", value: 100, color: "#1d3557" },
+        { label: "BIG ORANGES", value: 250, color: "#e07a5f" },
+        { label: "500 PTS", value: 500, color: "#2a9d8f" },
+        { label: "HUGE REDS", value: 1000, color: "#e63946" }
     ];
 
     const wheelCanvas = document.getElementById('canvas-wheel');
@@ -693,7 +696,7 @@
         if (!ctx) return;
         const centerX = wheelCanvas.width / 2;
         const centerY = wheelCanvas.height / 2;
-        const radius = wheelCanvas.width / 2 - 10;
+        const radius = wheelCanvas.width / 2 - 12;
         const sliceAngle = (2 * Math.PI) / wheelSlices.length;
 
         ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
@@ -706,14 +709,16 @@
             ctx.arc(0, 0, radius, i * sliceAngle, (i + 1) * sliceAngle);
             ctx.fillStyle = wheelSlices[i].color;
             ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = "#00fff5";
             ctx.stroke();
 
             ctx.save();
             ctx.rotate(i * sliceAngle + sliceAngle / 2);
             ctx.textAlign = "right";
-            ctx.fillStyle = "#fff";
-            ctx.font = "bold 14px sans-serif";
-            ctx.fillText(wheelSlices[i].label, radius - 15, 6);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 11px sans-serif";
+            ctx.fillText(wheelSlices[i].label, radius - 15, 5);
             ctx.restore();
         }
         ctx.restore();
@@ -726,9 +731,8 @@
             const randomSliceIndex = Math.floor(Math.random() * wheelSlices.length);
             const sliceDegree = 360 / wheelSlices.length;
             
-            // Ok tam üstte (0 derece veya 360 derece noktasında) duracak şekilde hesaplama
             const targetSliceCenter = randomSliceIndex * sliceDegree + sliceDegree / 2;
-            const extraSpins = 360 * 6; // 6 tam tur
+            const extraSpins = 360 * 6; 
             const exactDegree = extraSpins + (360 - targetSliceCenter);
 
             currentAngle = exactDegree;
@@ -741,7 +745,7 @@
                 balance += wonItem.value;
                 localStorage.setItem('miner_balance', balance);
                 updateUI();
-                showToast(`🎉 Çark Durdu! Tebrikler, ${wonItem.label} Kazandınız!`);
+                showToast(`🎉 Ice Fishing Çarkı Durdu! Tebrikler, ${wonItem.label} Kazandınız!`);
             }, 4000);
         });
     }
