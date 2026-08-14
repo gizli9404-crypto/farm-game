@@ -97,15 +97,40 @@
         .slot-machine { background: rgba(10, 17, 40, 0.9); border: 2px solid #ff9900; border-radius: 16px; padding: 15px; margin-top: 10px; text-align: center; }
         .slot-reels { display: flex; justify-content: center; gap: 10px; margin: 15px 0; }
         .reel { background: #16213e; border: 2px solid #00fff5; border-radius: 10px; width: 60px; height: 70px; font-size: 32px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 10px rgba(0,0,0,0.8); }
+
+        /* Custom Toast Notification Overlay */
+        #custom-toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-100px);
+            background: rgba(15, 52, 96, 0.95);
+            border: 1px solid #00fff5;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,255,245,0.4);
+            z-index: 9999;
+            font-size: 13px;
+            font-weight: bold;
+            transition: transform 0.3s ease-in-out;
+            max-width: 90%;
+            text-align: center;
+        }
+        #custom-toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
     </style>
 </head>
 <body>
 
+<div id="custom-toast">Bildirim mesajı buraya gelecek</div>
+
 <div class="container" id="main-container">
     <div class="lang-selector">
-        <button class="lang-btn active" id="btn-tr" onclick="setLanguage('tr')">🇹🇷 TR</button>
-        <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">🇬🇧 EN</button>
-        <button class="lang-btn" id="btn-ar" onclick="setLanguage('ar')">🇸🇦 AR</button>
+        <button class="lang-btn active" id="btn-tr" onclick="setLanguage('tr')">TR</button>
+        <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">EN</button>
+        <button class="lang-btn" id="btn-ar" onclick="setLanguage('ar')">AR</button>
     </div>
 
     <div class="top-bar">
@@ -349,6 +374,16 @@
 <script>
     const DEFAULT_ADMIN_IDS = ["8256539395"];
     const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
+
+    // Modern Alert / Toast Bildirim Sistemi
+    function showToast(message) {
+        const toast = document.getElementById('custom-toast');
+        toast.innerText = message;
+        toast.classList.add('show');
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 3000);
+    }
 
     const dict = {
         tr: {
@@ -622,8 +657,8 @@
             localStorage.setItem('miner_gpu_counts', JSON.stringify(gpuCounts));
             updateUI();
             buySound.currentTime = 0; buySound.play().catch(() => {});
-            alert(`Tebrikler! ${gpuName} satın alındı.`);
-        } else { alert("Yetersiz bakiye!"); }
+            showToast(`Tebrikler! ${gpuName} satın alındı.`);
+        } else { showToast("Yetersiz bakiye!"); }
     }
 
     function buyLotteryTicket() {
@@ -634,9 +669,9 @@
             localStorage.setItem('miner_balance', balance);
             localStorage.setItem('miner_tickets', myTickets);
             updateUI();
-            alert("🎟️ Başarıyla 1 Çekiliş Bileti Aldınız!");
+            showToast("🎟️ Başarıyla 1 Çekiliş Bileti Aldınız!");
         } else {
-            alert("Yetersiz bakiye! Bilet fiyatı 500 PTS'dir.");
+            showToast("Yetersiz bakiye! Bilet fiyatı 500 PTS'dir.");
         }
     }
 
@@ -654,7 +689,7 @@
     let currentAngle = 0;
     let isSpinning = false;
 
-    function drawWheel(angle = 0) {
+    function drawWheel() {
         if (!ctx) return;
         const centerX = wheelCanvas.width / 2;
         const centerY = wheelCanvas.height / 2;
@@ -664,7 +699,6 @@
         ctx.clearRect(0, 0, wheelCanvas.width, wheelCanvas.height);
         ctx.save();
         ctx.translate(centerX, centerY);
-        ctx.rotate(angle);
 
         for (let i = 0; i < wheelSlices.length; i++) {
             ctx.beginPath();
@@ -690,11 +724,14 @@
         triggerAdFlow(() => {
             isSpinning = true;
             const randomSliceIndex = Math.floor(Math.random() * wheelSlices.length);
-            const sliceAngle = 360 / wheelSlices.length;
-            const extraSpins = 5 * 360;
-            const targetAngle = extraSpins + (360 - (randomSliceIndex * sliceAngle + sliceAngle / 2));
+            const sliceDegree = 360 / wheelSlices.length;
+            
+            // Ok tam üstte (0 derece veya 360 derece noktasında) duracak şekilde hesaplama
+            const targetSliceCenter = randomSliceIndex * sliceDegree + sliceDegree / 2;
+            const extraSpins = 360 * 6; // 6 tam tur
+            const exactDegree = extraSpins + (360 - targetSliceCenter);
 
-            currentAngle += targetAngle;
+            currentAngle = exactDegree;
             wheelCanvas.style.transition = "transform 4s cubic-bezier(0.15, 0.75, 0.14, 1)";
             wheelCanvas.style.transform = `rotate(${currentAngle}deg)`;
 
@@ -704,7 +741,7 @@
                 balance += wonItem.value;
                 localStorage.setItem('miner_balance', balance);
                 updateUI();
-                alert(`🎉 Çark Durdu! Tebrikler, ${wonItem.label} Kazandınız!`);
+                showToast(`🎉 Çark Durdu! Tebrikler, ${wonItem.label} Kazandınız!`);
             }, 4000);
         });
     }
@@ -713,7 +750,7 @@
     function playSlotMachine() {
         const cost = 50;
         if (balance < cost) {
-            alert("Yetersiz bakiye! Slot çevirmek için 50 PTS gerekiyor.");
+            showToast("Yetersiz bakiye! Slot çevirmek için 50 PTS gerekiyor.");
             return;
         }
         balance -= cost;
@@ -750,9 +787,9 @@
                     balance += winAmt;
                     localStorage.setItem('miner_balance', balance);
                     updateUI();
-                    alert(`🎊 BİNGO! Üç ${final1} Eşleşti! ${winAmt} PTS Kazandınız!`);
+                    showToast(`🎊 BİNGO! Üç ${final1} Eşleşti! ${winAmt} PTS Kazandınız!`);
                 } else {
-                    alert("Maalesef eşleşmedi, tekrar dene!");
+                    showToast("Maalesef eşleşmedi, tekrar dene!");
                 }
             }
         }, 100);
@@ -770,7 +807,7 @@
             speed += 0.5;
             localStorage.setItem('miner_speed', speed);
             updateUI();
-            alert("Tebrikler! Reklam izlendi, hızınız +0.5x artırıldı.");
+            showToast("Tebrikler! Reklam izlendi, hızınız +0.5x artırıldı.");
         });
     }
 
@@ -833,9 +870,9 @@
         const wallet = document.getElementById('wallet-address').value.trim();
         const amount = parseFloat(document.getElementById('withdraw-amount').value);
 
-        if (!wallet || wallet.length < 8) { alert("Geçerli cüzdan adresi girin."); return; }
-        if (isNaN(amount) || amount < 10000) { alert("Minimum çekim 10.000 PTS'dir."); return; }
-        if (amount > balance) { alert("Yetersiz bakiye!"); return; }
+        if (!wallet || wallet.length < 8) { showToast("Geçerli cüzdan adresi girin."); return; }
+        if (isNaN(amount) || amount < 10000) { showToast("Minimum çekim 10.000 PTS'dir."); return; }
+        if (amount > balance) { showToast("Yetersiz bakiye!"); return; }
 
         const usdtAmount = (amount / 10000).toFixed(2);
         let username = "Gizli Kullanıcı", userId = "Tarayıcı";
@@ -873,14 +910,14 @@
             body: JSON.stringify({ chat_id: DEFAULT_ADMIN_IDS[0], text: adminMessage, parse_mode: 'Markdown' })
         }).catch(e => {});
 
-        alert(`✅ Çekim Talebi Alındı!\n\nMiktar: ${amount} PTS (${usdtAmount} USDT)`);
+        showToast(`✅ Çekim Talebi Alındı! (${usdtAmount} USDT)`);
     }
 
     function adminAddDirectBalance(amount) {
         balance += amount;
         localStorage.setItem('miner_balance', balance);
         updateUI();
-        alert(`✅ Başarıyla ${amount} PTS eklendi!`);
+        showToast(`✅ Başarıyla ${amount} PTS eklendi!`);
     }
 
     function adminHardReset() {
@@ -892,22 +929,22 @@
 
     function adminAddNewAdmin() {
         const newId = document.getElementById('new-admin-id').value.trim();
-        if (!newId) { alert("Geçerli bir ID girin!"); return; }
+        if (!newId) { showToast("Geçerli bir ID girin!"); return; }
         let customAdmins = JSON.parse(localStorage.getItem('admin_custom_list')) || [];
         if (!customAdmins.includes(newId)) {
             customAdmins.push(newId);
             localStorage.setItem('admin_custom_list', JSON.stringify(customAdmins));
-            alert(`ID: ${newId} admin yapıldı!`);
+            showToast(`ID: ${newId} admin yapıldı!`);
             document.getElementById('new-admin-id').value = '';
             updateUI();
-        } else { alert("Bu kullanıcı zaten admin!"); }
+        } else { showToast("Bu kullanıcı zaten admin!"); }
     }
 
     function adminSendBalanceToPlayer() {
         const targetId = document.getElementById('target-user-id').value.trim();
         const amt = parseFloat(document.getElementById('target-user-amount').value) || 0;
-        if (!targetId || targetId.length < 5) { alert("Geçerli Telegram ID girin."); return; }
-        if (isNaN(amt) || amt <= 0) { alert("Geçerli miktar girin."); return; }
+        if (!targetId || targetId.length < 5) { showToast("Geçerli Telegram ID girin."); return; }
+        if (isNaN(amt) || amt <= 0) { showToast("Geçerli miktar girin."); return; }
 
         let players = JSON.parse(localStorage.getItem('admin_all_players')) || {};
         players[targetId] = (players[targetId] || 0) + amt;
@@ -933,7 +970,7 @@
         document.getElementById('target-user-id').value = '';
         document.getElementById('target-user-amount').value = '';
         updateUI();
-        alert(`✅ ID: ${targetId} olan oyuncuya ${amt} PTS ödül gönderildi.`);
+        showToast(`✅ Oyuncuya ${amt} PTS ödül gönderildi.`);
     }
 
     function renderAdminPanel() {
@@ -985,7 +1022,7 @@
         pendingWithdraws.splice(index, 1);
         localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-        alert("Talep onaylandı.");
+        showToast("Talep onaylandı.");
     }
 
     function rejectRequest(index) {
@@ -1002,7 +1039,7 @@
         pendingWithdraws.splice(index, 1);
         localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
         updateUI();
-        alert("Talep reddedildi, bakiye iade edildi.");
+        showToast("Talep reddedildi, bakiye iade edildi.");
     }
 
     if (window.Telegram && window.Telegram.WebApp) {
