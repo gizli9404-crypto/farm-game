@@ -34,7 +34,7 @@
             margin-bottom: 15px;
         }
 
-        /* Çark Tasarımı */
+        /* Çark Tasarımı ve Renkleri */
         .wheel-container {
             position: relative;
             width: 220px;
@@ -44,15 +44,16 @@
 
         .pointer {
             position: absolute;
-            top: -10px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
             border-left: 10px solid transparent;
             border-right: 10px solid transparent;
-            border-top: 20px solid #ff0055;
+            border-top: 22px solid #ff0055;
             z-index: 10;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
         }
 
         .wheel {
@@ -62,7 +63,7 @@
             border: 4px solid #00ffcc;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 15px rgba(0, 255, 204, 0.4);
+            box-shadow: 0 0 20px rgba(0, 255, 204, 0.3);
             transform: rotate(0deg);
         }
 
@@ -72,19 +73,27 @@
             height: 50%;
             transform-origin: 100% 100%;
             left: 0; top: 0;
-            transform: rotate(calc(var(--i) * 60deg));
-            border-right: 1px solid rgba(255,255,255,0.2);
+            border-right: 1px solid rgba(255,255,255,0.1);
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
+        /* 6 Dilim için Açı ve Renk Tanımlamaları */
+        .slice:nth-child(1) { transform: rotate(0deg); background-color: #ff4757; }
+        .slice:nth-child(2) { transform: rotate(60deg); background-color: #ffa502; }
+        .slice:nth-child(3) { transform: rotate(120deg); background-color: #2ed573; }
+        .slice:nth-child(4) { transform: rotate(180deg); background-color: #1e90ff; }
+        .slice:nth-child(5) { transform: rotate(240deg); background-color: #9b59b6; }
+        .slice:nth-child(6) { transform: rotate(300deg); background-color: #e84393; }
+
         .slice span {
             position: absolute;
-            transform: rotate(30deg) translate(35px, 35px);
+            transform: rotate(30deg) translate(40px, 40px);
             font-size: 11px;
             font-weight: bold;
             color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
 
         /* Slot Makinesi Tasarımı */
@@ -193,12 +202,12 @@
             <div class="wheel-container">
                 <div class="pointer"></div>
                 <div id="inner-wheel" class="wheel">
-                    <div class="slice" style="--i:0;"><span>10 PTS</span></div>
-                    <div class="slice" style="--i:1;"><span>60 PTS</span></div>
-                    <div class="slice" style="--i:2;"><span>100 PTS</span></div>
-                    <div class="slice" style="--i:3;"><span>250 PTS</span></div>
-                    <div class="slice" style="--i:4;"><span>500 PTS</span></div>
-                    <div class="slice" style="--i:5;"><span>1000 PTS</span></div>
+                    <div class="slice"><span>10 PTS</span></div>
+                    <div class="slice"><span>60 PTS</span></div>
+                    <div class="slice"><span>100 PTS</span></div>
+                    <div class="slice"><span>250 PTS</span></div>
+                    <div class="slice"><span>500 PTS</span></div>
+                    <div class="slice"><span>1000 PTS</span></div>
                 </div>
             </div>
             <button onclick="spinWheel()" class="action-btn">🎁 Reklam İzle & Çarkı Çevir</button>
