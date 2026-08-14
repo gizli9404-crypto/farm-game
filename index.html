@@ -116,7 +116,7 @@
             <div class="stat-value" style="color: #00fff5;"><span id="speed">1.0</span>x | +<span id="passive-rate">0.0000</span>/sn</div>
         </div>
         <button id="mine-btn" onclick="mine(event)"><span id="txt-mine-btn">⛏️ Kazım Yap</span> (+<span id="click-power">0.0010</span>)</button>
-        <button class="ad-btn" onclick="showAd()" id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</button>
+        <button class="ad-btn" id="ad-btn" onclick="showAd()"><span id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</span></button>
     </div>
 
     <!-- TAB 2: MARKET -->
@@ -182,7 +182,7 @@
         </div>
     </div>
 
-    <!-- TAB 6: ADMIN PANELİ (BİRLEŞTİRİLMİŞ GELİŞMİŞ SÜRÜM) -->
+    <!-- TAB 6: ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
         <h3 style="text-align: left; color: #ff416c; font-size: 16px; margin-bottom: 10px;">👑 Admin Yönetim Paneli</h3>
         
@@ -254,14 +254,13 @@
     const DEFAULT_ADMIN_IDS = ["8256539395"];
     const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
 
-    // Çeviri Sözlüğü (Türkçe, İngilizce, Arapça)
     const dict = {
         tr: {
             assistant: "Nasıl oynanır? 1️⃣ Kazım yaparak veya kart alarak pasif gelir kas, 2️⃣ Reklam izleyerek hızını artır ve USDT çek!",
             totalBalance: "Toplam Bakiye",
             speedTitle: "Mevcut Hız | Pasif Kazanç",
             mineBtn: "⛏️ Kazım Yap",
-            adBtn: "📺 Reklam İzle (Hız +0.5x)",
+            adBtnText: "📺 Reklam İzle (Hız +0.5x)",
             shopTitle: "💻 Ekran Kartı Marketi",
             price: "Fiyat:",
             buyBtn: "Satın Al",
@@ -292,7 +291,7 @@
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
-            adBtn: "📺 Watch Ad (Speed +0.5x)",
+            adBtnText: "📺 Watch Ad (Speed +0.5x)",
             shopTitle: "💻 GPU Market",
             price: "Price:",
             buyBtn: "Buy",
@@ -323,7 +322,7 @@
             totalBalance: "الرصيد الإجمالي",
             speedTitle: "السرعة الحالية | التعدين التلقائي",
             mineBtn: "⛏️ اضغط للتعدين",
-            adBtn: "📺 مشاهدة إعلان (زيادة السرعة)",
+            adBtnText: "📺 مشاهدة إعلان (زيادة السرعة)",
             shopTitle: "💻 سوق بطاقات الرسومات",
             price: "السعر:",
             buyBtn: "شراء",
@@ -365,7 +364,6 @@
         document.getElementById('txt-total-balance').innerText = t.totalBalance;
         document.getElementById('txt-speed-title').innerText = t.speedTitle;
         document.getElementById('txt-mine-btn').innerText = t.mineBtn;
-        document.getElementById('txt-ad-btn').innerText = t.adBtn;
         document.getElementById('txt-shop-title').innerText = t.shopTitle;
         document.getElementById('txt-ref-title').innerText = t.refTitle;
         document.getElementById('txt-ref-sub').innerText = t.refSub;
@@ -394,6 +392,10 @@
         document.getElementById('txt-price-1').innerText = `${t.price} 10 PTS`;
         document.getElementById('txt-price-2').innerText = `${t.price} 35 PTS`;
         document.getElementById('txt-price-3').innerText = `${t.price} 150 PTS`;
+
+        if (!isAdLoading) {
+            document.getElementById('txt-ad-btn').innerText = t.adBtnText;
+        }
     }
 
     const bgMusic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a2b53b.mp3?filename=cyberpunk-2099-10701.mp3');
@@ -512,8 +514,10 @@
         } else { alert("Yetersiz bakiye!"); }
     }
 
-    // Adsgram Entegrasyonu (UnitID: 42750)
+    // ADSGRAM KORUMALI VE GÜVENLİ REKLAM MEKANİZMASI
     let adsgramController = null;
+    let isAdLoading = false;
+
     if (typeof Adsgram !== 'undefined') {
         try {
             adsgramController = Adsgram.init({ blockId: "42750" });
@@ -523,25 +527,44 @@
     }
 
     function showAd() {
+        if (isAdLoading) return; // Peşpeşe tıklama koruması
+        
+        isAdLoading = true;
+        const adBtn = document.getElementById('ad-btn');
+        adBtn.style.opacity = "0.5";
+        document.getElementById('txt-ad-btn').innerText = "⏳ Reklam Yükleniyor...";
+
         if (adsgramController && typeof adsgramController.show === 'function') {
             adsgramController.show().then(() => {
-                speed += 0.5;
-                localStorage.setItem('miner_speed', speed);
-                updateUI();
-                alert("Tebrikler! Reklam başarıyla izlendi, hızınız +0.5x artırıldı.");
-            }).catch(() => {
-                simulateAdReward();
+                // Reklam başarıyla izlendi
+                grantAdReward();
+                resetAdButton();
+            }).catch((err) => {
+                console.warn("Adsgram reklam hatası veya kapatıldı:", err);
+                alert("Reklam tamamlanamadığı için hız eklenmedi.");
+                resetAdButton();
             });
         } else {
-            simulateAdReward();
+            // Test veya SDK bulunamadığı durumlar için simülasyon
+            setTimeout(() => {
+                grantAdReward();
+                resetAdButton();
+            }, 1000);
         }
     }
 
-    function simulateAdReward() {
+    function grantAdReward() {
         speed += 0.5;
         localStorage.setItem('miner_speed', speed);
         updateUI();
-        alert("Reklam izlendi (Simülasyon)! Hız arttı.");
+        alert("Tebrikler! Reklam başarıyla izlendi, hızınız +0.5x artırıldı.");
+    }
+
+    function resetAdButton() {
+        isAdLoading = false;
+        const adBtn = document.getElementById('ad-btn');
+        adBtn.style.opacity = "1.0";
+        document.getElementById('txt-ad-btn').innerText = dict[currentLang].adBtnText;
     }
 
     function claimDailyReward() {
