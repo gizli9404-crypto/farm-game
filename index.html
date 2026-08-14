@@ -239,7 +239,6 @@
     const ADMIN_ID = "8256539395";
     const BOT_TOKEN = "8823061600:AAGUkhL30j-OP_8L4RVVySpaWiidNKjvN1I";
 
-    // ... (Remainder of the JavaScript code remains exactly as requested by user)
     const dict = {
         tr: {
             assistant: "Nasıl oynanır? 1️⃣ Kazım yaparak veya kart alarak pasif gelir kas, 2️⃣ Reklam izleyerek hızını artır ve USDT çek!",
@@ -604,9 +603,9 @@
         setLanguage(currentLang);
     };
     
-    // Adsgram initialization
+    // Adsgram initialization (Gerçek UnitID: 42750 bağlandı)
     if (window.Adsgram) {
-        window.AdController = window.Adsgram.init({ blockId: "int-1234" });
+        window.AdController = window.Adsgram.init({ blockId: "int-42750" });
     }
     function showAd() {
         if (window.AdController) {
@@ -616,7 +615,7 @@
                 updateUI();
             });
         } else {
-            // Mock Ad
+            // Mock Ad (Adsgram yüklenemezse yedek simülasyon)
             speed += 0.5;
             localStorage.setItem('miner_speed', speed);
             updateUI();
