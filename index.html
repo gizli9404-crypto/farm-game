@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sanal Miner Pro - Şans Çarkı</title>
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * {
             box-sizing: border-box;
@@ -12,8 +14,8 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
         }
         body {
-            background-color: #0b0e14;
-            color: #ffffff;
+            background-color: var(--tg-theme-bg-color, #0b0e14);
+            color: var(--tg-theme-text-color, #ffffff);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -28,12 +30,12 @@
         }
         .header h1 {
             font-size: 18px;
-            color: #00b09b;
+            color: var(--tg-theme-accent-text-color, #00b09b);
             margin-bottom: 5px;
         }
         .balance {
             font-size: 14px;
-            color: #a4b0be;
+            color: var(--tg-theme-hint-color, #a4b0be);
         }
         .wheel-container {
             position: relative;
@@ -76,17 +78,16 @@
             font-weight: bold;
             cursor: pointer;
             text-align: center;
-            color: white;
+            color: #ffffff;
+            background: var(--tg-theme-button-color, #00b09b);
+            color: var(--tg-theme-button-text-color, #ffffff);
             transition: 0.2s;
-        }
-        .btn-spin {
-            background: linear-gradient(135deg, #00b09b, #96c93d);
             box-shadow: 0 4px 15px rgba(0, 176, 155, 0.3);
         }
-        .btn-spin:active {
+        .btn:active {
             transform: scale(0.97);
         }
-        .btn-spin:disabled {
+        .btn:disabled {
             background: #4b6584;
             cursor: not-allowed;
             box-shadow: none;
@@ -131,10 +132,14 @@
     </div>
 
     <div class="actions">
-        <button id="spinBtn" class="btn btn-spin" onclick="spinWheel()">Çarkı Çevir</button>
+        <button id="spinBtn" class="btn" onclick="spinWheel()">Çarkı Çevir</button>
     </div>
 
     <script>
+        // Telegram WebApp başlatma
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
         const canvas = document.getElementById("wheel");
         const ctx = canvas.getContext("2d");
         const balanceEl = document.getElementById("balance");
@@ -147,7 +152,7 @@
         let spinning = false;
         let currentRotation = 0;
 
-        // Çark dilimleri (Saat yönünde sırasıyla)
+        // Çark dilimleri
         const sectors = [
             { color: "#ff4757", text: "10 PTS", value: 10 },
             { color: "#2ed573", text: "50 PTS", value: 50 },
@@ -171,7 +176,6 @@
             ctx.strokeStyle = "#0b0e14";
             ctx.stroke();
 
-            // Yazı yerleşimi
             ctx.translate(250, 250);
             ctx.rotate(angle + arc / 2);
             ctx.textAlign = "right";
@@ -194,22 +198,15 @@
             spinBtn.disabled = true;
             popup.classList.remove("show");
 
-            // Rastgele ödül seçimi (0 ile sectors.length-1 arası)
             const randomIndex = Math.floor(Math.random() * sectors.length);
-            
-            // Her dilim 60 derece (360 / 6). Ödülün tam üstteki ibreye gelmesi için gereken açı hesaplaması
             const degreesPerSector = 360 / sectors.length;
-            
-            // Ekstra turlar (En az 5 tam tur = 1800 derece)
             const extraTurns = 360 * 5;
             
-            // Hedef açı hesaplama
             const targetDegree = extraTurns + (360 - (randomIndex * degreesPerSector)) - (degreesPerSector / 2);
             currentRotation += targetDegree;
 
             canvas.style.transform = `rotate(${currentRotation}deg)`;
 
-            // Dönme bittiğinde çalışacak kısım (4 saniye sonra)
             setTimeout(() => {
                 spinning = false;
                 spinBtn.disabled = false;
@@ -218,11 +215,14 @@
                 balance += won.value;
                 balanceEl.innerText = balance.toFixed(1);
 
-                // Bildirim popup göster
+                // Telegram Haptic Feedback (Telefonu hafifçe titreştirir)
+                if (tg.HapticFeedback) {
+                    tg.HapticFeedback.notificationOccurred('success');
+                }
+
                 winAmount.innerText = `+${won.value} PTS Kazandın!`;
                 popup.classList.add("show");
 
-                // 2 saniye sonra popup'ı kapat
                 setTimeout(() => {
                     popup.classList.remove("show");
                 }, 2000);
@@ -230,7 +230,6 @@
             }, 4000);
         }
 
-        // İlk çizim
         drawWheel();
     </script>
 </body>
