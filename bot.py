@@ -7,8 +7,8 @@ TOKEN = os.getenv("TOKEN")
 LOG_CHANNEL_ID = os.getenv("LOG_CHANNEL_ID", "-1001234567890") 
 URL = f"https://api.telegram.org/bot{TOKEN}/"
 
-# Admin ID listene kendi ID'ni ekledik
-ADMIN_IDS = [825653395]
+# Admin ID'lerini hem sayı hem metin olarak garantiye aldık
+ADMIN_IDS = [825653395, "825653395"]
 DATA_FILE = "bakiye.json"
 
 def load_data():
@@ -54,7 +54,7 @@ TRANSLATIONS = {
         "welcome": "🚀 <b>Sanal Miner Pro</b>'ya hoş geldin!\nAşağıdan dilini seç ve madenciliğe başla:",
         "balance": "💰 <b>Güncel Bakiyeniz:</b> {balance} PTS\n🆔 <b>ID'niz:</b> <code>{chat_id}</code>",
         "lang_set": "🇹🇷 Dil Türkçe olarak ayarlandı!",
-        "admin_welcome": "👑 <b>Hoş geldin Patron / Admin!</b>\nSistem seni yönetici olarak tanıdı. \n\n⚙️ <b>Admin Komutları:</b>\n• /gonder [ID] [Miktar] - Bakiye yükle\n• /aktif - Toplam kullanıcıları tara\n• /talepler - Bekleyen çekim taleplerini tara",
+        "admin_welcome": "👑 <b>Hoş geldin Patron / Admin!</b>\nSistem seni yönetici olarak tanıdı.\n\n⚙️ <b>Admin Komutları:</b>\n• /gonder [ID] [Miktar] - Bakiye yükle\n• /aktif - Toplam kullanıcıları tara\n• /talepler - Bekleyen çekim taleplerini tara",
         "admin_only": "❌ Bu komutu kullanmaya yetkiniz yok!"
     },
     "en": {
@@ -73,12 +73,15 @@ TRANSLATIONS = {
     }
 }
 
+def is_admin(chat_id):
+    return chat_id in ADMIN_IDS or str(chat_id) in ADMIN_IDS
+
 def main():
     if not TOKEN:
         print("HATA: TOKEN bulunamadı!")
         return
 
-    print("Bot admin paneli ve tarama özellikleriyle çalışıyor...")
+    print("Bot tam sürüm ve admin korumasıyla çalışıyor...")
     offset = None
     while True:
         users_data = load_data()
@@ -92,6 +95,7 @@ def main():
                     cq = update["callback_query"]
                     cq_id = cq["id"]
                     chat_id_str = str(cq["message"]["chat"]["id"])
+                    chat_id_int = cq["message"]["chat"]["id"]
                     data = cq["data"]
                     
                     if chat_id_str not in users_data:
@@ -104,12 +108,11 @@ def main():
                         
                         answer_callback_query(cq_id, TRANSLATIONS[lang]["lang_set"])
                         
-                        # Eğer adminse dil seçince admin paneli karşılama metnini gönder
-                        if int(chat_id_str) in ADMIN_IDS:
-                            send_message(int(chat_id_str), TRANSLATIONS[lang]["admin_welcome"])
+                        if is_admin(chat_id_int):
+                            send_message(chat_id_int, TRANSLATIONS[lang]["admin_welcome"])
                         else:
                             bal = users_data[chat_id_str]["balance"]
-                            send_message(int(chat_id_str), TRANSLATIONS[lang]["balance"].format(balance=bal, chat_id=chat_id_str))
+                            send_message(chat_id_int, TRANSLATIONS[lang]["balance"].format(balance=bal, chat_id=chat_id_str))
 
                     continue
 
@@ -124,9 +127,8 @@ def main():
 
                     lang = users_data[chat_id_str]["lang"]
 
-                    # /start komutu
                     if message_text.startswith("/start"):
-                        if chat_id in ADMIN_IDS:
+                        if is_admin(chat_id):
                             send_message(chat_id, TRANSLATIONS[lang]["admin_welcome"])
                         else:
                             keyboard = {
@@ -144,21 +146,18 @@ def main():
                         bal = users_data[chat_id_str]["balance"]
                         send_message(chat_id, TRANSLATIONS[lang]["balance"].format(balance=bal, chat_id=chat_id_str))
 
-                    # ADMIN: Aktif Kullanıcıları Tarama Komutu
                     elif message_text == "/aktif":
-                        if chat_id not in ADMIN_IDS:
+                        if not is_admin(chat_id):
                             send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
                         else:
                             toplam_kullanici = len(users_data)
                             aktif_liste = f"📊 <b>Sistem Tarama Raporu</b>\n\n👥 Toplam Kayıtlı Kullanıcı: <b>{toplam_kullanici}</b>\n✅ Sistem aktif ve kusursuz çalışıyor."
                             send_message(chat_id, aktif_liste)
 
-                    # ADMIN: Çekim Taleplerini Tarama
                     elif message_text == "/talepler":
-                        if chat_id not in ADMIN_IDS:
+                        if not is_admin(chat_id):
                             send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
                         else:
-                            # Burayı ileride dosya veya veritabanından çekim listesiyle bağlayabiliriz
                             send_message(chat_id, "📥 <b>Tarama Tamamlandı:</b> Şu an bekleyen yeni bir çekim talebi bulunmuyor.")
 
                     elif message_text.startswith("/cekim"):
@@ -170,7 +169,7 @@ def main():
                              send_message(chat_id, "✅ Çekim talebiniz onay için gönderildi!")
 
                     elif message_text.startswith("/gonder"):
-                        if chat_id not in ADMIN_IDS:
+                        if not is_admin(chat_id):
                             send_message(chat_id, TRANSLATIONS[lang]["admin_only"])
                         else:
                             parts = message_text.split()
