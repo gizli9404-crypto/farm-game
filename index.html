@@ -120,23 +120,24 @@
             animation: bouncePulse 0.35s ease-in-out;
         }
 
-        /* TIKLAMA ESNASINDA ORTADAN FIRLAYAN COIN EFEKTİ */
+        /* TIKLAMA ESNASINDA ORTADAN FIRLAYAN HAVALI COIN EFEKTİ */
         .tap-coin-effect {
             position: absolute;
             font-size: 18px;
             font-weight: 800;
             color: #00e676;
-            text-shadow: 0 0 12px rgba(0,230,118,0.9);
+            text-shadow: 0 0 12px rgba(0,230,118,0.9), 0 0 25px rgba(212,160,23,0.8);
             pointer-events: none;
             z-index: 99999;
             animation: tapFlyUp 0.8s cubic-bezier(0.2, 1.2, 0.4, 1) forwards;
         }
         @keyframes tapFlyUp {
-            0% { transform: translate(0, 0) scale(0.5) rotate(0deg); opacity: 1; }
-            100% { transform: translate(var(--rand-x), -90px) scale(1.4) rotate(var(--rand-rot)); opacity: 0; }
+            0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 1; }
+            50% { opacity: 1; }
+            100% { transform: translate(var(--rand-x), -100px) scale(1.5) rotate(var(--rand-rot)); opacity: 0; }
         }
 
-        /* TIKLANABİLİR KART (KARTIN ÜZERİNDE DÖNEN COİN ÇERÇEVESİ) */
+        /* TIKLANABİLİR MİNER KARTI */
         .gpu-card-container {
             width: 100%;
             background: linear-gradient(145deg, #1e170a, #0c0a04);
@@ -147,11 +148,12 @@
             box-shadow: inset 0 0 35px rgba(212,160,23,0.15), 0 10px 30px rgba(0,0,0,0.8);
             position: relative;
             cursor: pointer;
-            transition: transform 0.08s ease;
+            transition: transform 0.06s ease;
         }
         .gpu-card-container:active {
-            transform: scale(0.97);
+            transform: scale(0.96);
             border-color: #00e676;
+            box-shadow: inset 0 0 45px rgba(0,230,118,0.3), 0 5px 15px rgba(0,0,0,0.9);
         }
 
         .gpu-top-bar {
@@ -188,7 +190,7 @@
             width: 100%;
             height: 100%;
             position: relative;
-            animation: spinFan 0.4s linear infinite;
+            animation: spinFan 0.6s linear infinite;
         }
         @keyframes spinFan {
             0% { transform: rotate(0deg); }
@@ -211,14 +213,6 @@
             border-radius: 50%;
             z-index: 2;
             box-shadow: 0 0 12px #00e676;
-            animation: coinSpinOrbit 2s linear infinite;
-        }
-        
-        /* ETRAFINDA DÖNEN COIN EFK BENZERİ PARILTI */
-        @keyframes coinSpinOrbit {
-            0% { box-shadow: 0 0 8px #00e676, 0 0 20px rgba(212,160,23,0.8); }
-            50% { box-shadow: 0 0 16px #d4a017, 0 0 30px rgba(0,230,118,0.9); }
-            100% { box-shadow: 0 0 8px #00e676, 0 0 20px rgba(212,160,23,0.8); }
         }
 
         .gpu-bottom-bar {
@@ -345,18 +339,18 @@
         <div class="profile-card" style="padding: 16px; margin-bottom: 12px;">
             <div style="font-size: 10px; color: #8c7355; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🚀 TOPLAM MİNER BAKİYESİ</div>
             <div style="font-size: 30px; font-weight: 800; color: #d4a017; margin: 8px 0;" id="balanceDisplayBox">
-                <span id="homeBalance">135.19</span> <span style="font-size: 14px; color:#fff;">HRT</span>
+                <span id="homeBalance">15.00</span> <span style="font-size: 14px; color:#fff;">HRT</span>
             </div>
-            <div style="font-size: 11px; color: #00e676; font-weight: 600;">Sistem Durumu: Pasif & Tıklama Aktif 🟢</div>
+            <div style="font-size: 11px; color: #00e676; font-weight: 600;">Mod: Manuel Tıklama (Pasif Kazanç Yok) ⚡</div>
         </div>
 
-        <div class="tap-hint">👇 Karta Tıklayarak Ekstra HRT Kazan! (+0.50 HRT)</div>
+        <div class="tap-hint">👇 Karta Aralıksız Tıkla, HRT Fırtınası Kopar! (+0.01 HRT)</div>
 
-        <!-- TIKLANABİLİR MİNER RIG (TAP-TO-EARN KARTI) -->
+        <!-- TIKLANABİLİR KART -->
         <div class="gpu-card-container" id="tapCard" onclick="handleCardClick(event)">
             <div class="gpu-top-bar">
                 <span>ASUS RTX 4090 Rig (HertzCore)</span>
-                <span style="color: #00e676;">Dokun & Kazan</span>
+                <span style="color: #00e676;">Dokun Kazan</span>
             </div>
             
             <div class="fans-row">
@@ -366,8 +360,8 @@
             </div>
 
             <div class="gpu-bottom-bar">
-                <span>Tıklama Başı: <b style="color:#00e676;">+0.50 HRT</b></span>
-                <span>Soğutma: Turbo</span>
+                <span>Tıklama Başı: <b style="color:#00e676;">+0.01 HRT</b></span>
+                <span>Durum: Aktif</span>
             </div>
         </div>
 
@@ -380,24 +374,41 @@
         </div>
     </div>
 
-    <!-- 2. TAB: KAZAN -->
+    <!-- 2. TAB: KAZAN (REKLAM & GÖREV AĞIRLIKLI) -->
     <div id="tab-earn" class="tab-content">
-        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 12px;">🎯 Güncel Görevler</h3>
+        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 6px;">🎯 Ödüllü Görevler & Reklamlar</h3>
+        <p style="font-size: 11px; color: #8c7355; margin-bottom: 12px;">Hızlı HRT toplamak için reklam izle ve görevleri tamamla!</p>
         
         <div class="task-card">
             <div class="task-info">
-                <b>SUBSCRIBE HERTZ CHANNEL</b>
-                <small>+25 HRT</small>
+                <b>🎬 AdsGram Ödüllü Video İzle</b>
+                <small style="color:#d4a017;">+5.00 HRT</small>
             </div>
-            <button class="btn-task-open" onclick="completeTask(25, 'YouTube Abone')">→ AÇ</button>
+            <button class="btn-task-open" onclick="watchAd()">İZLE</button>
         </div>
 
         <div class="task-card">
             <div class="task-info">
-                <b>AdsGram Ödüllü Reklam İzle</b>
-                <small>+25 HRT</small>
+                <b>🎬 Bonus Sponsor Reklamı #2</b>
+                <small style="color:#d4a017;">+5.00 HRT</small>
             </div>
-            <button class="btn-task-open" onclick="watchAd()">İZLE</button>
+            <button class="btn-task-open" onclick="watchBonusAd()">İZLE</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-info">
+                <b>SUBSCRIBE HERTZ CHANNEL</b>
+                <small>+10.00 HRT</small>
+            </div>
+            <button class="btn-task-open" onclick="completeTask(10, 'YouTube Abone')">→ AÇ</button>
+        </div>
+
+        <div class="task-card">
+            <div class="task-info">
+                <b>TELEGRAM KANALINA KATIL</b>
+                <small>+10.00 HRT</small>
+            </div>
+            <button class="btn-task-open" onclick="completeTask(10, 'Telegram Kanalı')">→ KATIL</button>
         </div>
     </div>
 
@@ -406,8 +417,8 @@
         <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;">👥 Arkadaşını Davet Et</h3>
         
         <div class="profile-card" style="text-align: center; padding: 18px; margin-bottom: 12px;">
-            <div style="font-size: 14px; font-weight: 800; color: #d4a017;">Her Arkadaş İçin +100 HRT</div>
-            <div style="font-size: 11px; color: #8c7355; margin-top: 4px;">Ömür boyu %10 kazanç komisyonu!</div>
+            <div style="font-size: 14px; font-weight: 800; color: #d4a017;">Her Arkadaş İçin +25.00 HRT</div>
+            <div style="font-size: 11px; color: #8c7355; margin-top: 4px;">Ömür boyu kazanç ortaklığı!</div>
             <div style="font-size: 12px; color: #fff; margin-top: 10px;">Toplam Davet: <span id="refCountText" style="color:#d4a017; font-weight:bold;">0</span> Kişi</div>
         </div>
 
@@ -417,7 +428,7 @@
         </div>
     </div>
 
-    <!-- 4. TAB: CÜZDAN (ESKİ DÜZEN ÇEKİM EKRANI) -->
+    <!-- 4. TAB: CÜZDAN (ESKİ ÇEKİM EKRANI) -->
     <div id="tab-wallet" class="tab-content">
         <div class="profile-card">
             <div class="profile-name" id="userName">ENGİN GÜVEN</div>
@@ -435,7 +446,7 @@
                 <div class="stat-icon">💼</div>
                 <div class="stat-info">
                     <span>Bakiye</span>
-                    <b id="walletBalance">135.19</b>
+                    <b id="walletBalance">15.00</b>
                 </div>
             </div>
             <div class="stat-box">
@@ -497,8 +508,7 @@
 
     let tgUser = tg?.initDataUnsafe?.user;
     let gameData = {
-        balance: parseFloat(localStorage.getItem('sm_balance')) || 135.19,
-        passiveRate: parseFloat(localStorage.getItem('sm_passive')) || 0.02,
+        balance: parseFloat(localStorage.getItem('sm_balance')) || 15.00,
         refCount: parseInt(localStorage.getItem('sm_ref')) || 0,
         usedPromo: localStorage.getItem('sm_promo') === 'true',
         userName: tgUser?.first_name || "ENGİN GÜVEN",
@@ -536,9 +546,9 @@
         document.getElementById('walletRefCount').innerText = gameData.refCount;
     }
 
-    // KARTA TIKLANDIĞINDA ÇALIŞAN FONKSİYON (HAVALI TIKLAMA VE COİN EFK FIRLATMA)
+    // KARTA TIKLANDIĞINDA ÇALIŞAN (ZORLAŞTIRILMIŞ +0.01 HRT + COIN EFK FIRLATMA)
     function handleCardClick(event) {
-        let tapAmount = 0.50;
+        let tapAmount = 0.01;
         gameData.balance += tapAmount;
         updateUI();
         saveData();
@@ -548,7 +558,7 @@
         void box.offsetWidth;
         box.classList.add('balance-bounce');
 
-        // Tıklanan koordinatta fışkıran coin efekti
+        // Tıklanan yerde havalı neon coin fışkırtma efekti
         let card = document.getElementById('tapCard');
         let rect = card.getBoundingClientRect();
         
@@ -558,10 +568,10 @@
         for (let i = 0; i < 2; i++) {
             let coin = document.createElement('div');
             coin.className = 'tap-coin-effect';
-            coin.innerText = `+${tapAmount} HRT`;
+            coin.innerText = `+${tapAmount.toFixed(2)} HRT`;
             
-            let randX = (Math.random() * 80 - 40) + 'px';
-            let randRot = (Math.random() * 60 - 30) + 'deg';
+            let randX = (Math.random() * 90 - 45) + 'px';
+            let randRot = (Math.random() * 50 - 25) + 'deg';
             coin.style.setProperty('--rand-x', randX);
             coin.style.setProperty('--rand-rot', randRot);
             
@@ -573,7 +583,7 @@
         }
 
         if (tg?.HapticFeedback) {
-            tg.HapticFeedback.impactOccurred('medium');
+            tg.HapticFeedback.impactOccurred('light');
         }
     }
 
@@ -581,27 +591,34 @@
         let code = document.getElementById('promoInput').value.trim().toUpperCase();
         if (gameData.usedPromo) { showAlert("Bu promosyon kodunu zaten kullandınız!"); return; }
         if (code === "MINERPRO") {
-            gameData.balance += 50;
+            gameData.balance += 10;
             updateUI();
             saveData();
-            showAlert("Tebrikler! Promosyon kodu aktifleşti: +50 HRT eklendi.");
+            showAlert("Tebrikler! Promosyon kodu aktifleşti: +10.00 HRT eklendi.");
         } else {
             showAlert("Geçersiz veya süresi dolmuş promosyon kodu!");
         }
     }
 
     function watchAd() {
-        gameData.balance += 25;
+        gameData.balance += 5.00;
         updateUI();
         saveData();
-        showAlert("Reklam Tamamlandı: +25 HRT eklendi!");
+        showAlert("AdsGram Reklamı Tamamlandı: +5.00 HRT eklendi!");
+    }
+
+    function watchBonusAd() {
+        gameData.balance += 5.00;
+        updateUI();
+        saveData();
+        showAlert("Sponsor Reklamı Tamamlandı: +5.00 HRT eklendi!");
     }
 
     function completeTask(reward, taskName) {
         gameData.balance += reward;
         updateUI();
         saveData();
-        showAlert(`"${taskName}" görevi tamamlandı: +${reward} HRT eklendi!`);
+        showAlert(`"${taskName}" görevi tamamlandı: +${reward.toFixed(2)} HRT eklendi!`);
     }
 
     function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
@@ -641,15 +658,6 @@
         document.getElementById('alertModal').style.display = 'flex';
     }
     function closeModal() { document.getElementById('alertModal').style.display = 'none'; }
-
-    // HAFİF PASİF ÜRETİM (ARKA PLAN DESTEĞİ)
-    setInterval(() => {
-        if (gameData.passiveRate > 0) {
-            gameData.balance += gameData.passiveRate;
-            updateUI();
-            saveData();
-        }
-    }, 1000);
 </script>
 </body>
 </html>
