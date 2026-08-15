@@ -3,28 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CryptoTap Pro - Mining Bot</title>
+    <title>Rig Tycoon - Mining Manager</title>
     <style>
         :root {
-            --bg-dark: #0f1219;
-            --card-bg: #181d28;
-            --accent: #f3ba2f;
-            --accent-glow: rgba(243, 186, 47, 0.3);
-            --text-main: #ffffff;
-            --text-muted: #8c96a5;
+            --bg: #090a0f;
+            --panel: #131722;
+            --border: #2a2e3d;
+            --accent: #00ff88;
+            --warning: #ff4d4d;
+            --text: #ffffff;
+            --muted: #848e9c;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             user-select: none;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--text);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -32,146 +33,187 @@
             overflow: hidden;
         }
 
-        .app-container {
+        .app {
             width: 100%;
             max-width: 400px;
             height: 100%;
             max-height: 850px;
-            background: var(--bg-dark);
+            background: var(--bg);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 20px;
+            padding: 15px;
             position: relative;
         }
 
-        /* Üst Bilgi / Profil */
-        .header {
+        /* Top Header */
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: var(--panel);
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
         }
 
-        .profile-info h3 {
-            font-size: 15px;
-            font-weight: 600;
-        }
-
-        .profile-info span {
-            font-size: 11px;
-            color: var(--text-muted);
-        }
-
-        .ad-badge {
-            background: rgba(243, 186, 47, 0.1);
+        .rig-title h4 {
+            font-size: 13px;
             color: var(--accent);
-            border: 1px solid rgba(243, 186, 47, 0.3);
+        }
+
+        .rig-title span {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .ad-income-btn {
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent);
+            border: 1px solid var(--accent);
             padding: 5px 10px;
-            border-radius: 20px;
+            border-radius: 6px;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        /* Skor Göstergesi */
-        .score-section {
+        /* Main Dashboard Screen */
+        .dash-screen {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 15px;
             text-align: center;
+            position: relative;
+        }
+
+        .stat-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .stat-box {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            padding: 8px;
+            border-radius: 8px;
+        }
+
+        .stat-box .lbl {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .stat-box .val {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--text);
+            margin-top: 2px;
+        }
+
+        .main-balance {
             margin: 10px 0;
+            padding: 12px;
+            background: rgba(0, 255, 136, 0.05);
+            border: 1px dashed var(--accent);
+            border-radius: 8px;
         }
 
-        .coin-icon {
-            font-size: 32px;
-            margin-bottom: 5px;
+        .main-balance .title {
+            font-size: 10px;
+            color: var(--muted);
         }
 
-        .score-value {
-            font-size: 36px;
+        .main-balance .amount {
+            font-size: 24px;
             font-weight: 800;
             color: var(--accent);
-            letter-spacing: 0.5px;
+            margin-top: 2px;
         }
 
-        .score-title {
-            font-size: 12px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* Interactive Mining Rig Area */
+        .rig-workbench {
+            background: #1a1f2c;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 10px;
+            text-align: center;
         }
 
-        /* Tıklama Alanı (Ana Maden Taşı) */
-        .tap-area-wrapper {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            flex-grow: 1;
+        .rig-workbench p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 10px;
         }
 
-        .tap-coin {
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, #252c3d 0%, #181d28 100%);
-            border: 4px solid var(--accent);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+        .action-main-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff88 0%, #00b4d8 100%);
+            color: #000;
+            border: none;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 8px;
             cursor: pointer;
-            box-shadow: 0 0 30px var(--accent-glow);
-            transition: transform 0.05s ease;
-            position: relative;
+            box-shadow: 0 4px 15px rgba(0,255,136,0.2);
         }
 
-        .tap-coin:active {
-            transform: scale(0.93);
+        .action-main-btn:active {
+            transform: scale(0.97);
         }
 
-        .tap-coin span {
-            font-size: 50px;
-        }
-
-        /* Enerji Barı */
-        .energy-section {
-            margin-bottom: 15px;
-        }
-
-        .energy-info {
+        /* Mandatory Ad / Difficulty Wall */
+        .ad-wall {
+            background: rgba(255, 77, 77, 0.05);
+            border: 1px solid rgba(255, 77, 77, 0.3);
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-top: 10px;
             display: flex;
             justify-content: space-between;
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
+            align-items: center;
         }
 
-        .energy-bar-bg {
-            width: 100%;
-            height: 8px;
-            background: var(--card-bg);
-            border-radius: 4px;
-            overflow: hidden;
+        .ad-wall-info h5 {
+            font-size: 11px;
+            color: var(--warning);
         }
 
-        .energy-bar-fill {
-            width: 100%;
-            height: 100%;
-            background: var(--accent);
-            border-radius: 4px;
-            transition: width 0.2s;
+        .ad-wall-info p {
+            font-size: 9px;
+            color: var(--muted);
         }
 
-        /* Alt Menü Barı */
-        .nav-menu {
+        .watch-ad-btn {
+            background: var(--warning);
+            color: #fff;
+            border: none;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Bottom Nav */
+        .nav-bar {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            background: var(--card-bg);
-            border-radius: 14px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 12px;
             padding: 8px;
-            gap: 5px;
+            gap: 4px;
         }
 
-        .nav-item {
+        .nav-btn {
             text-align: center;
-            color: var(--text-muted);
+            color: var(--muted);
             font-size: 10px;
             cursor: pointer;
             padding: 6px;
@@ -179,154 +221,112 @@
             transition: 0.2s;
         }
 
-        .nav-item.active, .nav-item:hover {
-            background: rgba(255, 255, 255, 0.05);
+        .nav-btn.active, .nav-btn:hover {
+            background: rgba(255,255,255,0.05);
             color: var(--accent);
         }
 
-        .nav-item div {
+        .nav-btn div {
             font-size: 16px;
             margin-bottom: 2px;
-        }
-
-        /* Uçan Puan Animasyonu */
-        .floating-number {
-            position: absolute;
-            color: var(--accent);
-            font-weight: bold;
-            font-size: 20px;
-            animation: floatUp 0.8s ease-out forwards;
-            pointer-events: none;
-        }
-
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-70px) scale(1.2); }
         }
     </style>
 </head>
 <body>
 
-    <div class="app-container" id="app">
-        <!-- Header -->
-        <div class="header">
-            <div class="profile-info">
-                <h3>Madenci #8912</h3>
-                <span>Lig: Bronz 🥉</span>
+    <div class="app">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="rig-title">
+                <h4>ASIC Rig #01</h4>
+                <span>Durum: Aktif & Stabil</span>
             </div>
-            <!-- Senin reklamdan para kazanacağın ana buton -->
-            <div class="ad-badge" onclick="watchAdReward()">📺 2x Kazan (Reklam)</div>
+            <button class="ad-income-btn" onclick="triggerForcedAd()">📺 2X Güç</button>
         </div>
 
-        <!-- Skor -->
-        <div class="score-section">
-            <div class="score-title">Toplam Kazanç</div>
-            <div class="score-value" id="score">0.00</div>
+        <!-- Main Dashboard -->
+        <div class="dash-screen">
+            <div class="stat-row">
+                <div class="stat-box">
+                    <div class="lbl">Anlık Hashrate</div>
+                    <div class="val" id="hashrate">45.0 MH/s</div>
+                </div>
+                <div class="stat-box">
+                    <div class="lbl">GPU Sıcaklığı</div>
+                    <div class="val" id="temp">65 °C</div>
+                </div>
+            </div>
+
+            <div class="main-balance">
+                <div class="title">HAVUZDA BİRİKEN BAKİYE</div>
+                <div class="amount" id="balance">0.000000 USDT</div>
+            </div>
+
+            <!-- Rig Workbench / Zorunlu Tıklama & Bakım Alanı -->
+            <div class="rig-workbench">
+                <p>⚠️ Cihazın soğuması ve blok çözmesi için işlem yapman gerekiyor!</p>
+                <button class="action-main-btn" onclick="boostWork()">⚡ BLOK ÇÖZ & HİSSE TOPLA</button>
+            </div>
+
+            <!-- Zorunlu Reklam / Para Kazanma Duvarı -->
+            <div class="ad-wall">
+                <div class="ad-wall-info">
+                    <h5>Çekim Kilidi Aktif!</h5>
+                    <p>Bakiyeyi cüzdana aktarmak için reklam izle.</p>
+                </div>
+                <button class="watch-ad-btn" onclick="triggerForcedAd()">REKLAM İZLE</button>
+            </div>
         </div>
 
-        <!-- Tıklama Alanı -->
-        <div class="tap-area-wrapper" id="tapArea" onclick="tapCoin(event)">
-            <div class="tap-coin">
-                <span>🪙</span>
+        <!-- Bottom Navigation -->
+        <div class="nav-bar">
+            <div class="nav-btn active">
+                <div>💻</div>Rigler
             </div>
-        </div>
-
-        <!-- Enerji -->
-        <div class="energy-section">
-            <div class="energy-info">
-                <span>Enerji</span>
-                <span id="energyText">1000 / 1000</span>
+            <div class="nav-btn" onclick="alert('Market: Buradan daha güçlü ekran kartları alarak pasif geliri artırabilirsin!')">
+                <div>🛒</div>Market
             </div>
-            <div class="energy-bar-bg">
-                <div class="energy-bar-fill" id="energyFill"></div>
+            <div class="nav-btn" onclick="alert('Görevler: Reklam izleyerek ekstra ödüller topla!')">
+                <div>🎯</div>Görevler
             </div>
-        </div>
-
-        <!-- Menü -->
-        <div class="nav-menu">
-            <div class="nav-item active">
-                <div>⛏️</div>Madende
-            </div>
-            <div class="nav-item" onclick="openBoostMenu()">
-                <div>🚀</div>Boost
-            </div>
-            <div class="nav-item" onclick="openFriendsMenu()">
-                <div>👥</div>Arkadaş
-            </div>
-            <div class="nav-item" onclick="openWalletMenu()">
-                <div>💰</div>Cüzdan
+            <div class="nav-btn" onclick="alert('Cüzdan: Çekim yapabilmek için reklam sınırını doldurmalısın.')">
+                <div>💳</div>Cüzdan
             </div>
         </div>
     </div>
 
     <script>
-        let score = 0.00;
-        let energy = 1000;
-        let maxEnergy = 1000;
-        let tapPower = 1;
-        let multiplier = 1;
+        let balance = 0.000000;
+        let hashrate = 45.0;
 
-        function tapCoin(event) {
-            if (energy >= tapPower) {
-                energy -= tapPower;
-                score += (tapPower * multiplier);
-                
-                updateUI();
-                showFloatingText(event);
-            }
-        }
-
-        function showFloatingText(event) {
-            const app = document.getElementById('app');
-            const el = document.createElement('div');
-            el.className = 'floating-number';
-            el.innerText = "+" + (tapPower * multiplier);
-            
-            const rect = app.getBoundingClientRect();
-            el.style.left = (event.clientX - rect.left) + 'px';
-            el.style.top = (event.clientY - rect.top - 20) + 'px';
-            
-            app.appendChild(el);
-            setTimeout(() => el.remove(), 800);
-        }
-
-        function updateUI() {
-            document.getElementById('score').innerText = score.toFixed(2);
-            document.getElementById('energyText').innerText = `${energy} / ${maxEnergy}`;
-            let percentage = (energy / maxEnergy) * 100;
-            document.getElementById('energyFill').style.width = percentage + '%';
-        }
-
-        // Enerji dolumu (Her saniye)
+        // Çok yavaş artış (Millet hemen kazanamasın, zorlansın ki reklam izlesin)
         setInterval(() => {
-            if (energy < maxEnergy) {
-                energy = Math.min(maxEnergy, energy + 5);
-                updateUI();
-            }
+            balance += 0.000001 * (hashrate / 10);
+            document.getElementById("balance").innerText = balance.toFixed(6) + " USDT";
         }, 1000);
 
-        function watchAdReward() {
-            // Buraya Adsgram veya Telegram reklam SDK entegrasyonu gelecek.
-            // Kullanıcı reklam izlediğinde hem reklam gösterilip sana para kazandıracak 
-            // hem de kullanıcıya 30 saniyeliğine 2x kazanç bonusu vereceksin.
-            alert("📺 Reklam gösteriliyor... (İzleme bittiğinde sana reklam geliri yazıldı ve 2x aktifleşti!)");
-            multiplier = 2;
+        function boostWork() {
+            balance += 0.000500;
+            document.getElementById("balance").innerText = balance.toFixed(6) + " USDT";
+            
+            // Kullanıcı tıkladıkça sanki işlemci ısınıyormuş gibi dereceyi anlık oynatalım
+            let tempEl = document.getElementById("temp");
+            let currentTemp = parseInt(tempEl.innerText);
+            tempEl.innerText = (currentTemp + 1) + " °C";
+            
             setTimeout(() => {
-                multiplier = 1;
-                alert("⏰ 2x bonus süresi bitti.");
-            }, 30000); // 30 saniye 2x
+                tempEl.innerText = currentTemp + " °C";
+            }, 500);
         }
 
-        function openBoostMenu() {
-            alert("🚀 Boost Menüsü: Reklam izleyerek enerji sınırını artırabilir veya otomatik kazım botu kiralayabilirsin!");
-        }
-
-        function openFriendsMenu() {
-            alert("👥 Davet Et Kazan: Arkadaşını getiren herkesten sen de pasif gelir alırsın!");
-        }
-
-        function openWalletMenu() {
-            alert("💰 Cüzdan: Çekim yapabilmek için günlük görevleri tamamlaman ve reklam izleme sınırını doldurman gerekiyor.");
+        function triggerForcedAd() {
+            // Burası senin Telegram Adsgram veya reklam kodunu bağlayacağın yer.
+            // Kullanıcı buraya tıkladığında reklam açılacak, reklam oynatılırken hem senin 
+            // kasana para yazılacak hem de kullanıcının kazanç hızı katlanacak.
+            alert("📺 Reklam yükleniyor... (Bu reklam tetiklendiğinde senin reklam geliriniz hesabınıza işlenecektir.)");
+            hashrate += 15.0;
+            document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH/s";
+            alert("🚀 Reklam başarıyla izlendi! Hashrate artırıldı ve bakiye çekim kilidi esnetildi.");
         }
     </script>
 </body>
