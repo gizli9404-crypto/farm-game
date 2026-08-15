@@ -2,325 +2,365 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Miner Pro - Binance Terminal UI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sanal Miner Pro - Web3 Core Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         :root {
-            --binance-bg: #0b0e11;
-            --binance-card: #181a20;
-            --binance-card-sub: #23272e;
-            --binance-yellow: #fcd535;
-            --binance-green: #0ecb81;
-            --binance-red: #f6465d;
-            --binance-text: #eaecef;
-            --binance-muted: #848e9c;
-            --binance-border: #2b313a;
+            --bg-base: #090a0f;
+            --surface: #131722;
+            --surface-hover: #1b2030;
+            --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.25);
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.08);
         }
 
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; -webkit-tap-highlight-color: transparent; }
         body {
-            background: var(--binance-bg);
-            color: var(--binance-text);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            text-align: center;
+            background: var(--bg-base);
+            color: var(--text-main);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
-            padding: 10px;
-            padding-bottom: 90px;
-            min-height: 100vh;
-            overflow-x: hidden;
+            padding: 0;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        .terminal-container {
-            max-width: 410px;
+        /* Ana Uygulama Çerçevesi */
+        .app-container {
+            flex: 1;
+            max-width: 480px;
+            width: 100%;
             margin: 0 auto;
-            background: var(--binance-card);
-            padding: 14px;
-            border-radius: 16px;
-            border: 1px solid var(--binance-border);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
             position: relative;
+            overflow-hidden: hidden;
         }
 
-        /* Üst Header / Borsa Bant */
-        .exchange-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .exchange-brand { font-size: 15px; font-weight: 800; color: var(--binance-text); display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
-        .exchange-brand span { color: var(--binance-yellow); }
+        /* Üst Header */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+        }
+        .brand { font-size: 15px; font-weight: 800; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
+        .brand span { color: var(--primary); text-shadow: 0 0 12px var(--primary-glow); }
         
-        .profile-icon-btn {
-            background: var(--binance-card-sub);
-            border: 1px solid var(--binance-border);
-            color: var(--binance-text);
-            width: 34px;
-            height: 34px;
-            border-radius: 8px;
+        .profile-trigger-btn {
+            background: var(--bg-base);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            font-size: 15px;
+            font-size: 16px;
         }
 
-        .user-uid-pill {
-            font-size: 10px;
-            color: var(--binance-yellow);
-            background: rgba(252, 213, 53, 0.08);
-            border: 1px solid rgba(252, 213, 53, 0.2);
-            padding: 4px 10px;
-            border-radius: 6px;
-            display: inline-block;
-            margin-bottom: 12px;
+        /* İçerik Alanı */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px 100px 20px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .view-pane { display: none; animation: fadeIn 0.25s ease-in-out; }
+        .view-pane.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* UID Kimlik Rozeti */
+        .uid-pill {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 11px;
+            color: var(--accent);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
             cursor: pointer;
             font-weight: 600;
-            letter-spacing: 0.3px;
         }
 
-        /* Varlık Cüzdan Kartı */
-        .spot-wallet-card {
-            background: linear-gradient(135deg, #202630, #181a20);
-            border: 1px solid var(--binance-border);
-            border-radius: 14px;
-            padding: 16px;
-            margin-bottom: 12px;
+        /* Varlık Özet Kartı */
+        .balance-card {
+            background: linear-gradient(135deg, #181f2c, #11151f);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px 20px;
+            margin-bottom: 16px;
             text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
-        .spot-title { font-size: 11px; color: var(--binance-muted); font-weight: 600; text-transform: uppercase; }
-        .spot-balance { font-size: 26px; font-weight: 900; color: var(--binance-text); margin: 6px 0; letter-spacing: -0.5px; }
-        .spot-balance span { color: var(--binance-yellow); font-size: 16px; }
+        .balance-title { font-size: 11px; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .balance-amount { font-size: 32px; font-weight: 900; color: #fff; margin: 8px 0; letter-spacing: -1px; }
+        .balance-amount span { color: var(--primary); font-size: 18px; }
 
-        .spot-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--binance-border); }
-        .spot-stat-label { font-size: 10px; color: var(--binance-muted); }
-        .spot-stat-val { font-size: 12px; font-weight: 700; color: var(--binance-green); margin-top: 2px; }
+        .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+        .stat-box-title { font-size: 10px; color: var(--text-muted); font-weight: 600; }
+        .stat-box-val { font-size: 14px; font-weight: 800; color: var(--accent); margin-top: 2px; }
 
-        /* Kazım İşlem Paneli */
-        .trade-action-panel {
-            background: var(--binance-card-sub);
-            border: 1px solid var(--binance-border);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 12px;
+        /* Kazım Alanı */
+        .mining-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            text-align: center;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
-        .rig-symbol { font-size: 42px; margin-bottom: 8px; }
+        .rig-avatar { font-size: 56px; margin-bottom: 14px; filter: drop-shadow(0 0 16px var(--primary-glow)); }
 
-        /* Buton Standardı */
+        /* Buton Sistemleri */
         button {
-            background: var(--binance-yellow);
+            background: var(--primary);
             border: none;
-            color: #181a20;
-            padding: 12px;
-            font-size: 13px;
+            color: #090a0f;
+            padding: 14px;
+            font-size: 14px;
             font-weight: 800;
-            border-radius: 10px;
+            border-radius: 14px;
             cursor: pointer;
             width: 100%;
-            transition: opacity 0.15s;
+            transition: all 0.15s ease;
         }
-        button:active { opacity: 0.85; }
+        button:active { transform: scale(0.97); opacity: 0.9; }
 
-        #trade-mine-btn { background: var(--binance-yellow); font-size: 14px; box-shadow: 0 4px 12px rgba(252, 213, 53, 0.2); }
-        .utility-btn { background: #2b313a; color: var(--binance-text); margin-top: 8px; border: 1px solid var(--binance-border); font-weight: 700; }
-        .ad-boost-btn { background: #f0b90b; color: #181a20; margin-top: 8px; }
-
-        /* Market Kartları (Binance Listeleme Stili) */
-        .market-item-card { 
-            background: var(--binance-card-sub); 
-            padding: 12px; 
-            border-radius: 12px; 
-            margin: 8px 0; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            text-align: left; 
-            border: 1px solid var(--binance-border); 
+        #action-mine-btn {
+            background: linear-gradient(135deg, #00ff88, #00b359);
+            box-shadow: 0 6px 20px var(--primary-glow);
+            font-size: 16px;
+            margin-bottom: 10px;
         }
-        .market-buy-btn { width: auto; font-size: 11px; padding: 7px 12px; border-radius: 6px; background: var(--binance-yellow); color: #181a20; font-weight: 800; }
+        .sub-btn { background: var(--surface-hover); color: var(--text-main); border: 1px solid var(--border); font-weight: 700; margin-top: 8px; }
+        .ad-btn { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; box-shadow: 0 6px 20px rgba(245,158,11,0.25); }
 
-        /* Modaller */
-        .modal-screen {
+        /* Market Kartları */
+        .shop-item {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 16px;
+            border-radius: 18px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-align: left;
+        }
+        .shop-buy-btn { width: auto; font-size: 12px; padding: 8px 16px; border-radius: 10px; background: var(--primary); font-weight: 800; }
+
+        /* Modal Ekranları */
+        .modal-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 9999;
-            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.85); display: none; justify-content: center; align-items: center; z-index: 9999;
+            backdrop-filter: blur(8px); padding: 20px;
         }
-        .modal-inner {
-            background: var(--binance-card); border: 1px solid var(--binance-border); padding: 18px; border-radius: 16px; width: 85%; max-width: 310px; text-align: left;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+        .modal-content {
+            background: var(--surface); border: 1px solid var(--border); padding: 24px; border-radius: 24px; width: 100%; max-width: 360px; text-align: left;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.8);
         }
 
-        .user-profile-row { display: flex; align-items: center; gap: 10px; background: var(--binance-card-sub); padding: 10px; border-radius: 10px; margin-bottom: 12px; border: 1px solid var(--binance-border); }
-        .user-avatar-img { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; border: 2px solid var(--binance-yellow); }
-        .user-name-txt { font-size: 12px; font-weight: 700; color: #fff; margin: 0; }
-        .user-tag-txt { font-size: 10px; color: var(--binance-muted); margin: 2px 0 0 0; }
+        .user-info-row { display: flex; align-items: center; gap: 14px; background: var(--bg-base); padding: 14px; border-radius: 16px; margin-bottom: 16px; border: 1px solid var(--border); }
+        .user-avatar { width: 48px; height: 48px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        .user-name { font-size: 14px; font-weight: 800; color: #fff; margin: 0; }
+        .user-handle { font-size: 12px; color: var(--text-muted); margin: 3px 0 0 0; }
 
-        /* Alt Navigasyon Bar (Borsa Menüsü) */
-        .binance-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #121418; display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid var(--binance-border); z-index: 1000; }
-        .nav-link-item { color: var(--binance-muted); font-size: 10px; cursor: pointer; text-decoration: none; font-weight: 600; display: flex; flex-direction: column; align-items: center; gap: 3px; }
-        .nav-link-item.active { color: var(--binance-yellow); }
-        .nav-link-item span { font-size: 15px; }
+        /* Alt Navigasyon Çubuğu */
+        .bottom-nav {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: rgba(19, 23, 34, 0.95); backdrop-filter: blur(12px);
+            display: flex; justify-content: space-around; padding: 10px 6px 18px 6px;
+            border-top: 1px solid var(--border); z-index: 100;
+        }
+        .nav-item {
+            color: var(--text-muted); font-size: 11px; cursor: pointer; font-weight: 700;
+            display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1;
+            transition: color 0.2s;
+        }
+        .nav-item.active { color: var(--primary); }
+        .nav-item span { font-size: 18px; }
 
-        .app-view { display: none; }
-        .app-view.active { display: block; }
-
-        .float-number { position: absolute; color: var(--binance-yellow); font-weight: 900; font-size: 14px; pointer-events: none; animation: floatUpAnim 0.7s ease-out forwards; z-index: 99; text-shadow: 0 0 6px rgba(252,213,53,0.4); }
-        @keyframes floatUpAnim { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-30px) scale(1.1); } }
+        /* Uçan Değer Efekti */
+        .floating-num {
+            position: absolute; color: var(--primary); font-weight: 900; font-size: 18px;
+            pointer-events: none; animation: floatUp 0.6s cubic-bezier(0.1, 0.8, 0.3, 1) forwards; z-index: 1000;
+            text-shadow: 0 0 10px var(--primary-glow);
+        }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(0.8); } 100% { opacity: 0; transform: translateY(-50px) scale(1.2); } }
     </style>
 </head>
 <body>
 
-<div class="terminal-container" id="terminal-box">
-    <div class="exchange-header">
-        <div class="exchange-brand">🔶 BINANCE <span>MINER</span></div>
-        <div class="profile-icon-btn" onclick="openProfileModal()">⚙️</div>
-    </div>
-    
-    <div style="text-align: left;">
-        <div id="uid-badge" class="user-uid-pill" onclick="copyUid()">UID: Yükleniyor... 📋</div>
+<div class="app-container" id="main-container">
+    <div class="app-header">
+        <div class="brand">⚡ SANAL<span>MINER</span></div>
+        <div class="profile-trigger-btn" onclick="toggleProfileModal(true)">⚙️</div>
     </div>
 
-    <!-- 1. LOBİ & KAZIM -->
-    <div id="view-mine" class="app-view active">
-        <div class="spot-wallet-card">
-            <div class="spot-title">Spot Varlık Bakiyesi</div>
-            <div class="spot-balance"><span id="balance">0.0000</span> <span>PTS</span></div>
-            <div class="spot-stats-row">
-                <div>
-                    <div class="spot-stat-label">Saniyede Üretim</div>
-                    <div class="spot-stat-val">+<span id="passive-rate">0.0000</span> PTS</div>
+    <div class="content-area">
+        <div id="uid-badge" class="uid-pill" onclick="copyUid()">UID Yükleniyor... 📋</div>
+
+        <!-- 1. LOBİ SEKMESİ -->
+        <div id="view-mine" class="view-pane active">
+            <div class="balance-card">
+                <div class="balance-title">Toplam Varlık Bakiyesi</div>
+                <div class="balance-amount"><span id="balance">0.0000</span> <span>PTS</span></div>
+                <div class="stats-row">
+                    <div>
+                        <div class="stat-box-title">Saniyede Üretim</div>
+                        <div class="stat-box-val">+<span id="passive-rate">0.0000</span> PTS</div>
+                    </div>
+                    <div>
+                        <div class="stat-box-title">Donanım Hızı</div>
+                        <div class="stat-box-val"><span id="speed">1.0</span>x</div>
+                    </div>
                 </div>
+            </div>
+
+            <div class="mining-card">
+                <div class="rig-avatar">🖥️</div>
+                <button id="action-mine-btn" onclick="performMining(event)">⛏️ Kazım Yap (+<span id="click-power">0.0010</span>)</button>
+                <button class="sub-btn ad-btn" onclick="watchAdBoost()">📺 Reklam İzle (+15 PTS)</button>
+            </div>
+        </div>
+
+        <!-- 2. MARKET SEKMESİ -->
+        <div id="view-shop" class="view-pane">
+            <h3 style="text-align: left; color: var(--primary); font-size: 13px; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px;">💻 Donanım Marketi</h3>
+            
+            <div class="shop-item" style="border-color: rgba(245, 158, 11, 0.4);">
                 <div>
-                    <div class="spot-stat-label">GPU Multiplier</div>
-                    <div class="spot-stat-val" style="color:var(--binance-yellow);"><span id="speed">1.0</span>x</div>
+                    <b style="color:#fff;">⚡ GPU Overclock (BIOS)</b><br>
+                    <small style="color: var(--text-muted);">Genel kazanç çarpanını artırır</small><br>
+                    <small style="color: #f59e0b; font-weight: 800;">Fiyat: 1,000 PTS</small>
                 </div>
+                <button class="shop-buy-btn" style="background:#f59e0b; color:#090a0f;" onclick="buyOverclock()">Yükselt</button>
+            </div>
+
+            <div class="shop-item">
+                <div>
+                    <b style="color:#fff;">GT 730 Mini-Rig</b> <span style="color:var(--primary); font-size:11px;" id="count-gt730">(0)</span><br>
+                    <small style="color: var(--text-muted);">+0.0010 PTS/sn</small><br>
+                    <small style="color: #ef4444; font-weight: 800;">Fiyat: 150 PTS</small>
+                </div>
+                <button class="shop-buy-btn" onclick="buyGPU('gt730', 'GT 730', 150, 0.0010)">Satın Al</button>
+            </div>
+
+            <div class="shop-item">
+                <div>
+                    <b style="color:#fff;">GTX 1050 Ti Rig</b> <span style="color:var(--primary); font-size:11px;" id="count-gtx1050">(0)</span><br>
+                    <small style="color: var(--text-muted);">+0.0030 PTS/sn</small><br>
+                    <small style="color: #ef4444; font-weight: 800;">Fiyat: 600 PTS</small>
+                </div>
+                <button class="shop-buy-btn" onclick="buyGPU('gtx1050', 'GTX 1050 Ti', 600, 0.0030)">Satın Al</button>
+            </div>
+
+            <div class="shop-item">
+                <div>
+                    <b style="color:#fff;">RTX 3060 Ti Rig</b> <span style="color:var(--primary); font-size:11px;" id="count-rtx3060">(0)</span><br>
+                    <small style="color: var(--text-muted);">+0.0250 PTS/sn</small><br>
+                    <small style="color: #ef4444; font-weight: 800;">Fiyat: 10,000 PTS</small>
+                </div>
+                <button class="shop-buy-btn" onclick="buyGPU('rtx3060', 'RTX 3060 Ti', 10000, 0.0250)">Satın Al</button>
             </div>
         </div>
 
-        <div class="trade-action-panel">
-            <div class="rig-symbol">🖥️</div>
-            <button id="trade-mine-btn" onclick="executeMine(event)">⚡ Hızlı Kazım (+<span id="click-power">0.0010</span>)</button>
-            <button class="ad-boost-btn" onclick="watchAdBoost()">📺 Reklam İzle (+15 PTS)</button>
+        <!-- 3. DAVET SEKMESİ -->
+        <div id="view-ref" class="view-pane">
+            <h3 style="text-align: left; color: var(--primary); font-size: 13px; margin-bottom: 14px; text-transform: uppercase;">👥 Arkadaşını Davet Et</h3>
+            <div class="balance-card" style="text-align: center; padding: 28px 20px;">
+                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700;">Toplam Davet Edilen</div>
+                <div style="font-size: 32px; font-weight: 900; color: #fff; margin: 8px 0;"><span id="ref-count">0</span> Kişi</div>
+                <button class="sub-btn" style="background: var(--primary); color: #090a0f; margin-top: 14px;" onclick="copyRefLink()">🔗 Davet Linkini Kopyala</button>
+            </div>
+        </div>
+
+        <!-- 4. ÖDÜL SEKMESİ -->
+        <div id="view-rewards" class="view-pane">
+            <h3 style="text-align: left; color: var(--primary); font-size: 13px; margin-bottom: 14px; text-transform: uppercase;">🎁 Günlük Bonuslar</h3>
+            <div class="balance-card" style="text-align: left;">
+                <b style="color: #fff; font-size: 14px;">Günlük Giriş Serisi</b>
+                <p style="font-size: 11px; color: var(--text-muted); margin: 4px 0 16px 0;">Kesintisiz devam et, ödülünü katla (<span id="streak-days">1</span>. Gün)</p>
+                <button style="background: #10b981; color:#fff;" onclick="claimDailyReward()">🎁 Günlük Ödülü Topla (+25 PTS)</button>
+            </div>
+        </div>
+
+        <!-- 5. ÇEKİM SEKMESİ -->
+        <div id="view-withdraw" class="view-pane">
+            <h3 style="text-align: left; color: var(--primary); font-size: 13px; margin-bottom: 14px; text-transform: uppercase;">💸 Kripto Çekim Talebi</h3>
+            <div style="background: var(--surface); border: 1px solid var(--border); padding: 12px; border-radius: 12px; font-size: 11px; color: var(--text-muted); margin-bottom: 12px; display: flex; justify-content: space-between;">
+                <span>Parite Dönüşüm:</span><b style="color: var(--primary);">10.000 PTS = 1.00 USDT</b>
+            </div>
+            <div class="balance-card" style="text-align: left;">
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 700;">Ağ Seçimi</label>
+                    <select id="wd-network" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-base); color: #fff; font-size: 12px; outline: none;">
+                        <option value="TON">TON Network</option>
+                        <option value="TRC20">TRON (TRC20)</option>
+                        <option value="BEP20">BSC (BEP20)</option>
+                    </select>
+                </div>
+                <div style="margin-bottom: 10px;">
+                    <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 700;">Cüzdan Adresi</label>
+                    <input type="text" id="wd-address" placeholder="UQ... veya 0x..." style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-base); color: #fff; font-size: 12px; outline: none;">
+                </div>
+                <div style="margin-bottom: 14px;">
+                    <label style="font-size: 10px; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 700;">Miktar <span style="float: right; color: #ef4444;">Min: 10.000</span></label>
+                    <input type="number" id="wd-amount" placeholder="0" oninput="calcWithdraw()" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-base); color: #fff; font-size: 12px; outline: none;">
+                </div>
+                <div style="background: var(--bg-base); padding: 10px 14px; border-radius: 10px; display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 14px;">
+                    <span style="color: var(--text-muted);">Alınacak Tutar:</span><span id="wd-calc-result" style="color: var(--primary); font-weight: 800;">0.00 USDT</span>
+                </div>
+                <button onclick="submitWithdraw()">Çekim Talebi Gönder</button>
+            </div>
         </div>
     </div>
 
-    <!-- 2. MARKET (Sabit Kusursuz Tasarım) -->
-    <div id="view-shop" class="app-view">
-        <h3 style="text-align: left; color: var(--binance-yellow); font-size: 12px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;">💻 Donanım Marketi</h3>
-        
-        <div class="market-item-card" style="border-color: rgba(252, 213, 53, 0.3);">
-            <div>
-                <b>⚡ GPU Overclock (BIOS)</b><br>
-                <small style="color: var(--binance-muted);">Kazanç çarpanını artırır</small><br>
-                <small style="color: var(--binance-yellow); font-weight: 700;">Fiyat: 1,000 PTS</small>
-            </div>
-            <button class="market-buy-btn" onclick="buyOverclock()">Yükselt</button>
-        </div>
-
-        <div class="market-item-card">
-            <div>
-                <b>GT 730 Mini-Rig</b> <span style="color:var(--binance-yellow); font-size:10px;" id="count-gt730">(0)</span><br>
-                <small style="color: var(--binance-muted);">+0.0010 PTS/sn</small><br>
-                <small style="color: var(--binance-red); font-weight: 700;">Fiyat: 150 PTS</small>
-            </div>
-            <button class="market-buy-btn" onclick="buyGPU('gt730', 'GT 730', 150, 0.0010)">Satın Al</button>
-        </div>
-
-        <div class="market-item-card">
-            <div>
-                <b>GTX 1050 Ti Rig</b> <span style="color:var(--binance-yellow); font-size:10px;" id="count-gtx1050">(0)</span><br>
-                <small style="color: var(--binance-muted);">+0.0030 PTS/sn</small><br>
-                <small style="color: var(--binance-red); font-weight: 700;">Fiyat: 600 PTS</small>
-            </div>
-            <button class="market-buy-btn" onclick="buyGPU('gtx1050', 'GTX 1050 Ti', 600, 0.0030)">Satın Al</button>
-        </div>
-
-        <div class="market-item-card">
-            <div>
-                <b>RTX 3060 Ti Rig</b> <span style="color:var(--binance-yellow); font-size:10px;" id="count-rtx3060">(0)</span><br>
-                <small style="color: var(--binance-muted);">+0.0250 PTS/sn</small><br>
-                <small style="color: var(--binance-red); font-weight: 700;">Fiyat: 10,000 PTS</small>
-            </div>
-            <button class="market-buy-btn" onclick="buyGPU('rtx3060', 'RTX 3060 Ti', 10000, 0.0250)">Satın Al</button>
-        </div>
+    <!-- ALT NAVİGASYON -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('mine', this)"><span>⚡</span>Lobi</div>
+        <div class="nav-item" onclick="switchTab('shop', this)"><span>💻</span>Market</div>
+        <div class="nav-item" onclick="switchTab('ref', this)"><span>👥</span>Davet</div>
+        <div class="nav-item" onclick="switchTab('rewards', this)"><span>🎁</span>Ödül</div>
+        <div class="nav-item" onclick="switchTab('withdraw', this)"><span>💸</span>Çekim</div>
     </div>
-
-    <!-- 3. DAVET -->
-    <div id="view-ref" class="app-view">
-        <h3 style="text-align: left; color: var(--binance-yellow); font-size: 12px; margin-bottom: 10px; text-transform: uppercase;">👥 Referans Programı</h3>
-        <div class="spot-wallet-card" style="text-align: center; padding: 20px;">
-            <div style="font-size: 10px; color: var(--binance-muted);">Toplam Davet</div>
-            <div style="font-size: 26px; font-weight: 900; color: #fff; margin: 4px 0;"><span id="ref-count">0</span> Kişi</div>
-            <button class="utility-btn" style="background: var(--binance-yellow); color: #181a20; margin-top: 10px;" onclick="copyRefLink()">🔗 Davet Linkini Kopyala</button>
-        </div>
-    </div>
-
-    <!-- 4. ÖDÜL -->
-    <div id="view-rewards" class="app-view">
-        <h3 style="text-align: left; color: var(--binance-yellow); font-size: 12px; margin-bottom: 10px; text-transform: uppercase;">🎁 Günlük Ödül Havuzu</h3>
-        <div class="spot-wallet-card" style="text-align: left;">
-            <div style="font-size: 12px; font-weight: 700; color: #fff;">Günlük Giriş Serisi</div>
-            <div style="font-size: 10px; color: var(--binance-muted); margin: 3px 0 10px 0;">Her gün giriş yap, ödülünü katla (<span id="streak-days">1</span>. Gün)</div>
-            <button style="background: var(--binance-green); color:#fff;" onclick="claimDailyReward()">🎁 Ödülü Topla (+25 PTS)</button>
-        </div>
-    </div>
-
-    <!-- 5. ÇEKİM (Sabit Kusursuz Tasarım) -->
-    <div id="view-withdraw" class="app-view">
-        <h3 style="text-align: left; color: var(--binance-yellow); font-size: 12px; margin-bottom: 10px; text-transform: uppercase;">💸 Kripto Çekim Talebi</h3>
-        <div style="background: var(--binance-card-sub); border: 1px solid var(--binance-border); padding: 8px 10px; border-radius: 8px; font-size: 10px; color: var(--binance-muted); margin-bottom: 10px; display: flex; justify-content: space-between;">
-            <span>Parite:</span><b style="color: var(--binance-yellow);">10.000 PTS = 1.00 USDT</b>
-        </div>
-        <div class="spot-wallet-card" style="text-align: left;">
-            <div style="margin-bottom: 8px;">
-                <label style="font-size: 10px; color: var(--binance-muted); display: block; margin-bottom: 3px;">Ağ Seçimi</label>
-                <select id="wd-network" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--binance-border); background: var(--binance-bg); color: #fff; font-size: 11px; outline: none;">
-                    <option value="TON">TON Network</option>
-                    <option value="TRC20">TRON (TRC20)</option>
-                    <option value="BEP20">BSC (BEP20)</option>
-                </select>
-            </div>
-            <div style="margin-bottom: 8px;">
-                <label style="font-size: 10px; color: var(--binance-muted); display: block; margin-bottom: 3px;">Cüzdan Adresi</label>
-                <input type="text" id="wd-address" placeholder="UQ... veya 0x..." style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--binance-border); background: var(--binance-bg); color: #fff; font-size: 11px; outline: none;">
-            </div>
-            <div style="margin-bottom: 10px;">
-                <label style="font-size: 10px; color: var(--binance-muted); display: block; margin-bottom: 3px;">Miktar <span style="float: right; color: var(--binance-red);">Min: 10.000</span></label>
-                <input type="number" id="wd-amount" placeholder="0" oninput="calcWithdraw()" style="width: 100%; padding: 8px; border-radius: 6px; border: 1px solid var(--binance-border); background: var(--binance-bg); color: #fff; font-size: 11px; outline: none;">
-            </div>
-            <div style="background: var(--binance-bg); padding: 8px 10px; border-radius: 6px; display: flex; justify-content: space-between; font-size: 11px; margin-bottom: 10px;">
-                <span style="color: var(--binance-muted);">Alınacak Tutar:</span><span id="wd-calc-result" style="color: var(--binance-yellow); font-weight: 700;">0.00 USDT</span>
-            </div>
-            <button onclick="submitWithdraw()">Çekim Talebi Gönder</button>
-        </div>
-    </div>
-</div>
-
-<!-- ALT NAVİGASYON -->
-<div class="binance-nav">
-    <div class="nav-link-item active" onclick="switchTab('mine', this)"><span>⚡</span>Lobi</div>
-    <div class="nav-link-item" onclick="switchTab('shop', this)"><span>💻</span>Market</div>
-    <div class="nav-link-item" onclick="switchTab('ref', this)"><span>👥</span>Davet</div>
-    <div class="nav-link-item" onclick="switchTab('rewards', this)"><span>🎁</span>Ödül</div>
-    <div class="nav-link-item" onclick="switchTab('withdraw', this)"><span>💸</span>Çekim</div>
 </div>
 
 <!-- PROFİL MODALI -->
-<div id="profileModal" class="modal-screen">
-    <div class="modal-inner">
-        <div class="user-profile-row">
-            <img id="modal-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="user-avatar-img">
+<div id="profileModal" class="modal-backdrop">
+    <div class="modal-content">
+        <div class="user-info-row">
+            <img id="modal-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="user-avatar">
             <div>
-                <p id="modal-name" class="user-name-txt">Madenci</p>
-                <p id="modal-username" class="user-tag-txt">@sanalminer</p>
+                <p id="modal-name" class="user-name">Madenci</p>
+                <p id="modal-handle" class="user-handle">@sanalminer</p>
             </div>
         </div>
-        <button class="utility-btn" onclick="closeProfileModal()">Kapat</button>
+        <button class="sub-btn" onclick="toggleProfileModal(false)">Kapat</button>
     </div>
 </div>
 
 <!-- UYARI MODALI -->
-<div id="alertModal" class="modal-screen">
-    <div class="modal-inner" style="text-align: center;">
-        <div id="alertMsg" style="font-size: 12px; margin-bottom: 14px; color: #fff;">İşlem başarılı</div>
-        <button onclick="closeAlertModal()">Tamam</button>
+<div id="alertModal" class="modal-backdrop">
+    <div class="modal-content" style="text-align: center;">
+        <div id="alertMsg" style="font-size: 13px; margin-bottom: 18px; color: #fff; font-weight: 600;">İşlem başarılı</div>
+        <button onclick="toggleAlertModal(false)">Tamam</button>
     </div>
 </div>
 
@@ -336,7 +376,7 @@
     let gpus = JSON.parse(localStorage.getItem('sm_gpus')) || { gt730: 0, gtx1050: 0, rtx3060: 0 };
 
     let tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-    let userId = tgUser?.id ? String(tgUser.id) : "99887766";
+    let userId = tgUser?.id ? String(tgUser.id) : "555444333";
 
     window.onload = function() {
         if (window.Telegram?.WebApp) {
@@ -345,7 +385,7 @@
         }
         if (tgUser) {
             document.getElementById('modal-name').innerText = tgUser.first_name || "Madenci";
-            document.getElementById('modal-username').innerText = tgUser.username ? "@" + tgUser.username : "@miner";
+            document.getElementById('modal-handle').innerText = tgUser.username ? "@" + tgUser.username : "@miner";
             if (tgUser.photo_url) document.getElementById('modal-avatar').src = tgUser.photo_url;
         }
         document.getElementById('uid-badge').innerText = "UID: " + userId + " 📋";
@@ -377,23 +417,23 @@
         localStorage.setItem('sm_gpus', JSON.stringify(gpus));
     }
 
-    function executeMine(e) {
+    function performMining(e) {
         balance += clickPower;
         refreshUI();
         saveState();
-        showFloatNum(e, "+" + clickPower.toFixed(4));
+        showFloatNumber(e, "+" + clickPower.toFixed(4));
     }
 
-    function showFloatNum(e, text) {
-        let box = document.getElementById('terminal-box');
+    function showFloatNumber(e, text) {
+        let container = document.getElementById('main-container');
         let el = document.createElement('div');
-        el.className = 'float-number';
+        el.className = 'floating-num';
         el.innerText = text;
-        let rect = box.getBoundingClientRect();
+        let rect = container.getBoundingClientRect();
         el.style.left = ((e.clientX || 200) - rect.left) + 'px';
         el.style.top = ((e.clientY || 300) - rect.top) + 'px';
-        box.appendChild(el);
-        setTimeout(() => el.remove(), 700);
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 600);
     }
 
     function buyOverclock() {
@@ -416,7 +456,7 @@
             passiveRate += rate;
             refreshUI();
             saveState();
-            showAlert(`${name} satın alındı ve aktif edildi!`);
+            showAlert(`${name} satın alındı ve devreye sokuldu!`);
         } else {
             showAlert("Yetersiz bakiye!");
         }
@@ -425,14 +465,14 @@
     function watchAdBoost() {
         if (typeof Adsgram !== 'undefined' && Adsgram.init) {
             try {
-                Adsgram.init({ blockId: "42993" }).show().then(() => adRewardGiven()).catch(() => adRewardGiven());
-            } catch (err) { adRewardGiven(); }
+                Adsgram.init({ blockId: "42993" }).show().then(() => adRewardSuccess()).catch(() => adRewardSuccess());
+            } catch (err) { adRewardSuccess(); }
         } else {
-            adRewardGiven();
+            adRewardSuccess();
         }
     }
 
-    function adRewardGiven() {
+    function adRewardSuccess() {
         balance += 15;
         refreshUI();
         saveState();
@@ -447,7 +487,7 @@
         streakDays++;
         refreshUI();
         saveState();
-        showAlert("Günlük ödül başarıyla toplandı!");
+        showAlert("Günlük ödül cüzdana eklendi!");
     }
 
     function refreshUI() {
@@ -463,8 +503,8 @@
     }
 
     function switchTab(name, el) {
-        document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.nav-link-item').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.view-pane').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(t => t.classList.remove('active'));
         document.getElementById('view-' + name).classList.add('active');
         if (el) el.classList.add('active');
     }
@@ -485,12 +525,11 @@
         showAlert("Çekim talebi sıraya alındı.");
     }
 
-    function openProfileModal() { document.getElementById('profileModal').style.display = 'flex'; }
-    function closeProfileModal() { document.getElementById('profileModal').style.display = 'none'; }
+    function toggleProfileModal(show) { document.getElementById('profileModal').style.display = show ? 'flex' : 'none'; }
+    function showAlert(msg) { document.getElementById('alertMsg').innerText = msg; document.getElementById('alertModal').style.display = 'flex'; }
+    function toggleAlertModal(show) { document.getElementById('alertModal').style.display = show ? 'flex' : 'none'; }
     function copyUid() { navigator.clipboard.writeText(userId); showAlert("UID kopyalandı!"); }
     function copyRefLink() { navigator.clipboard.writeText(`https://t.me/SanalMinerProBot?start=ref_${userId}`); showAlert("Davet linki kopyalandı!"); }
-    function showAlert(msg) { document.getElementById('alertMsg').innerText = msg; document.getElementById('alertModal').style.display = 'flex'; }
-    function closeAlertModal() { document.getElementById('alertModal').style.display = 'none'; }
 </script>
 </body>
 </html>
