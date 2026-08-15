@@ -264,7 +264,7 @@
         <div id="user-id-display" class="user-id-badge" onclick="copyMyId()" title="ID'yi kopyalamak için tıkla">ID: Yükleniyor... 📋</div>
     </div>
 
-    <!-- Asistan Rehberi Kutusu -->
+    <!-- Yönlendirmeli Akıllı Asistan Kutusu -->
     <div class="assistant-box">
         <div class="assistant-icon">🤖</div>
         <div id="txt-assistant">
@@ -300,7 +300,7 @@
                 <b>GT 730 Mini-Rig</b> <span class="gpu-count" id="count-gt730">0 Adet</span><br>
                 <small style="color: #3b82f6;">+0.0010 PTS/sn (3 Gün)</small><br>
                 <span class="daily-earn">⚡ ~86 PTS / Gün</span><br>
-                <small style="color: #ff416c; font-weight: bold;"><span id="txt-price-lbl-1">Fiyat</span>: 150 PTS</small>
+                <small style="color: #ff416c; font-weight: bold;">Fiyat: 150 PTS</small>
             </div>
             <button class="buy-btn buy-text" onclick="buyGPU('gt730', 'GT 730 Mini', 150, 0.0010, 3)">Satın Al</button>
         </div>
@@ -311,7 +311,7 @@
                 <b>GTX 1050 Ti</b> <span class="gpu-count" id="count-gtx1050">0 Adet</span><br>
                 <small style="color: #10b981;">+0.0030 PTS/sn (5 Gün)</small><br>
                 <span class="daily-earn">⚡ ~259 PTS / Gün</span><br>
-                <small style="color: #ff416c; font-weight: bold;"><span id="txt-price-lbl-2">Fiyat</span>: 600 PTS</small>
+                <small style="color: #ff416c; font-weight: bold;">Fiyat: 600 PTS</small>
             </div>
             <button class="buy-btn buy-text" onclick="buyGPU('gtx1050', 'GTX 1050 Ti', 600, 0.0030, 5)">Satın Al</button>
         </div>
@@ -322,7 +322,7 @@
                 <b>GTX 1660 Super</b> <span class="gpu-count" id="count-gtx1660">0 Adet</span><br>
                 <small style="color: #f59e0b;">+0.0080 PTS/sn (7 Gün)</small><br>
                 <span class="daily-earn">⚡ ~691 PTS / Gün</span><br>
-                <small style="color: #ff416c; font-weight: bold;"><span id="txt-price-lbl-3">Fiyat</span>: 2,500 PTS</small>
+                <small style="color: #ff416c; font-weight: bold;">Fiyat: 2,500 PTS</small>
             </div>
             <button class="buy-btn buy-text" onclick="buyGPU('gtx1660', 'GTX 1660 Super', 2500, 0.0080, 7)">Satın Al</button>
         </div>
@@ -333,7 +333,7 @@
                 <b>RTX 3060 Ti Rig</b> <span class="gpu-count" id="count-rtx3060">0 Adet</span><br>
                 <small style="color: #8b5cf6;">+0.0250 PTS/sn (10 Gün)</small><br>
                 <span class="daily-earn">⚡ ~2,160 PTS / Gün</span><br>
-                <small style="color: #ff416c; font-weight: bold;"><span id="txt-price-lbl-4">Fiyat</span>: 10,000 PTS</small>
+                <small style="color: #ff416c; font-weight: bold;">Fiyat: 10,000 PTS</small>
             </div>
             <button class="buy-btn buy-text" onclick="buyGPU('rtx3060', 'RTX 3060 Ti', 10000, 0.0250, 10)">Satın Al</button>
         </div>
@@ -344,7 +344,7 @@
                 <b>RTX 4080 Pro-Rig</b> <span class="gpu-count" id="count-rtx4080">0 Adet</span><br>
                 <small style="color: #06b6d4;">+0.0800 PTS/sn (14 Gün)</small><br>
                 <span class="daily-earn">⚡ ~6,912 PTS / Gün</span><br>
-                <small style="color: #ff416c; font-weight: bold;"><span id="txt-price-lbl-5">Fiyat</span>: 35,000 PTS</small>
+                <small style="color: #ff416c; font-weight: bold;">Fiyat: 35,000 PTS</small>
             </div>
             <button class="buy-btn buy-text" onclick="buyGPU('rtx4080', 'RTX 4080 Pro', 35000, 0.0800, 14)">Satın Al</button>
         </div>
@@ -355,7 +355,7 @@
                 <b>RTX 4090 Cyber-Rig</b> <span class="gpu-count" id="count-rtx4090">0 Adet</span><br>
                 <small style="color: #ec4899;">+0.2000 PTS/sn (30 Gün)</small><br>
                 <span class="daily-earn">⚡ ~17,280 PTS / Gün</span><br>
-                <small style="color: #ff416c; font-weight: bold;"><span id="txt-price-lbl-6">Fiyat</span>: 100,000 PTS</small>
+                <small style="color: #ff416c; font-weight: bold;">Fiyat: 100,000 PTS</small>
             </div>
             <button class="buy-btn buy-text" onclick="buyGPU('rtx4090', 'RTX 4090 Cyber', 100000, 0.2000, 30)">Satın Al</button>
         </div>
@@ -377,25 +377,25 @@
         
         <div class="stat-box" style="text-align: left;">
             <div class="stat-title" id="txt-daily-bonus">Günlük Serili Bonus</div>
-            <div style="font-size: 10px; color: #aaa; margin: 2px 0 4px 0;"><span id="txt-streak-desc">Seriyi bozma, her gün ödülün katlansın!</span> (<span id="streak-days">1</span>. <span id="txt-day-lbl">Gün</span>)</div>
+            <div style="font-size: 10px; color: #aaa; margin: 2px 0 4px 0;">Seriyi bozma, her gün ödülün katlansın! (<span id="streak-days">1</span>. Gün)</div>
             <button class="reward-btn" onclick="claimDailyReward()" id="txt-claim-btn">🎁 Günlük Ödülü Al (25 PTS)</button>
         </div>
 
-        <h4 id="txt-ads-tasks-title" style="text-align: left; color: #ff9900; font-size: 11px; margin: 10px 0 4px 0;">🎯 Reklam İzleme Görevleri (Adsgram)</h4>
+        <h4 style="text-align: left; color: #ff9900; font-size: 11px; margin: 10px 0 4px 0;">🎯 Reklam İzleme Görevleri (Adsgram)</h4>
         
         <div class="task-card">
-            <div style="font-size: 10px;">📺 <b id="t1-title">5 Reklam İzle</b><br><span style="color:#00fff5;"><span id="txt-reward-lbl-1">Ödül</span>: +40 PTS</span><br><small id="task1-prog">İlerleme: 0/5</small></div>
-            <button class="buy-btn task-claim-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(1, 5, 40)" id="t1-btn">Al</button>
+            <div style="font-size: 10px;">📺 <b>5 Reklam İzle</b><br><span style="color:#00fff5;">Ödül: +40 PTS</span><br><small id="task1-prog">İlerleme: 0/5</small></div>
+            <button class="buy-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(1, 5, 40)" id="t1-btn">Al</button>
         </div>
 
         <div class="task-card">
-            <div style="font-size: 10px;">📺 <b id="t2-title">15 Reklam İzle</b><br><span style="color:#00fff5;"><span id="txt-reward-lbl-2">Ödül</span>: +150 PTS</span><br><small id="task2-prog">İlerleme: 0/15</small></div>
-            <button class="buy-btn task-claim-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(2, 15, 150)" id="t2-btn">Al</button>
+            <div style="font-size: 10px;">📺 <b>15 Reklam İzle</b><br><span style="color:#00fff5;">Ödül: +150 PTS</span><br><small id="task2-prog">İlerleme: 0/15</small></div>
+            <button class="buy-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(2, 15, 150)" id="t2-btn">Al</button>
         </div>
 
         <div class="task-card">
-            <div style="font-size: 10px;">📺 <b id="t3-title">40 Reklam İzle</b><br><span style="color:#00fff5;"><span id="txt-reward-lbl-3">Ödül</span>: +500 PTS</span><br><small id="task3-prog">İlerleme: 0/40</small></div>
-            <button class="buy-btn task-claim-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(3, 40, 500)" id="t3-btn">Al</button>
+            <div style="font-size: 10px;">📺 <b>40 Reklam İzle</b><br><span style="color:#00fff5;">Ödül: +500 PTS</span><br><small id="task3-prog">İlerleme: 0/40</small></div>
+            <button class="buy-btn" style="background:#ff9900; color:#fff;" onclick="completeTask(3, 40, 500)" id="t3-btn">Al</button>
         </div>
 
         <div class="stat-box" style="margin-top: 10px; text-align: left;">
@@ -429,47 +429,47 @@
 
     <!-- TAB 6: ÖDEMELER & LİDERLİK -->
     <div id="tab-payouts" class="tab-content">
-        <h3 id="txt-payouts-main-title" style="text-align: left; color: #00fff5; font-size: 14px; margin-bottom: 6px;">🏆 Liderlik Tablosu & Ödeme Kanıtları</h3>
-        <p id="txt-payouts-desc" style="font-size: 10px; color: #8a99ad; text-align: left; margin-bottom: 8px;">Uygulamamızda kullanıcılara başarıyla gönderilen son ödüller ve lider madenciler aşağıda listelenmiştir.</p>
+        <h3 style="text-align: left; color: #00fff5; font-size: 14px; margin-bottom: 6px;">🏆 Liderlik Tablosu & Ödeme Kanıtları</h3>
+        <p style="font-size: 10px; color: #8a99ad; text-align: left; margin-bottom: 8px;">Uygulamamızda kullanıcılara başarıyla gönderilen son ödüller ve lider madenciler aşağıda listelenmiştir.</p>
         
         <div style="background: rgba(15,52,96,0.6); border: 1px solid rgba(0,255,245,0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; text-align: left;">
-            <h4 id="txt-payouts-subtitle" style="color: #ff9900; font-size: 11px; margin: 0 0 6px 0;">⚡ Son Başarılı Ödemeler (Payout Proofs)</h4>
+            <h4 style="color: #ff9900; font-size: 11px; margin: 0 0 6px 0;">⚡ Son Başarılı Ödemeler (Payout Proofs)</h4>
             <div style="font-size: 10px; line-height: 1.6; color: #c0d6df;">
-                <div>✅ ID: ...8923 (TON Network) - <b>12.5 USDT</b> <span class="proof-paid-text">Ödendi</span></div>
-                <div>✅ ID: ...4410 (TRC20) - <b>5.0 USDT</b> <span class="proof-paid-text">Ödendi</span></div>
-                <div>✅ ID: ...7712 (BEP20) - <b>25.0 USDT</b> <span class="proof-paid-text">Ödendi</span></div>
-                <div>✅ ID: ...1093 (TON Network) - <b>10.0 USDT</b> <span class="proof-paid-text">Ödendi</span></div>
+                <div>✅ ID: ...8923 (TON Network) - <b>12.5 USDT</b> Ödendi</div>
+                <div>✅ ID: ...4410 (TRC20) - <b>5.0 USDT</b> Ödendi</div>
+                <div>✅ ID: ...7712 (BEP20) - <b>25.0 USDT</b> Ödendi</div>
+                <div>✅ ID: ...1093 (TON Network) - <b>10.0 USDT</b> Ödendi</div>
             </div>
         </div>
 
         <div style="background: rgba(15,52,96,0.6); border: 1px solid rgba(0,255,245,0.3); border-radius: 10px; padding: 8px; text-align: left;">
-            <h4 id="txt-leaderboard-subtitle" style="color: #00fff5; font-size: 11px; margin: 0 0 6px 0;">🌟 En İyi Madenciler Liderlik Tablosu</h4>
+            <h4 style="color: #00fff5; font-size: 11px; margin: 0 0 6px 0;">🌟 En İyi Madenciler Liderlik Tablosu</h4>
             <div id="public-leaderboard-list" style="font-size: 10px; color: #fff;">
-                <div class="player-row"><span class="ldr-1">1. Madenci (ID: ***341)</span><b style="color:#00fff5;">1,420,500 PTS</b></div>
-                <div class="player-row"><span class="ldr-2">2. Madenci (ID: ***982)</span><b style="color:#00fff5;">980,100 PTS</b></div>
-                <div class="player-row"><span class="ldr-3">3. Madenci (ID: ***551)</span><b style="color:#00fff5;">650,400 PTS</b></div>
+                <div class="player-row"><span>1. Madenci (ID: ***341)</span><b style="color:#00fff5;">1,420,500 PTS</b></div>
+                <div class="player-row"><span>2. Madenci (ID: ***982)</span><b style="color:#00fff5;">980,100 PTS</b></div>
+                <div class="player-row"><span>3. Madenci (ID: ***551)</span><b style="color:#00fff5;">650,400 PTS</b></div>
             </div>
         </div>
     </div>
 
     <!-- TAB 7: ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
-        <h3 id="txt-admin-title" style="text-align: left; color: #ff416c; font-size: 14px; margin-bottom: 8px;">👑 Admin Yönetim Paneli</h3>
+        <h3 style="text-align: left; color: #ff416c; font-size: 14px; margin-bottom: 8px;">👑 Admin Yönetim Paneli</h3>
         
         <div class="admin-section" style="background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(0, 255, 245, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left;">
-            <h4 id="txt-admin-players" style="color: #00fff5; font-size: 11px; margin: 0 0 6px 0;">👥 Tüm Kayıtlı Oyuncular (ID Kopyala)</h4>
+            <h4 style="color: #00fff5; font-size: 11px; margin: 0 0 6px 0;">👥 Tüm Kayıtlı Oyuncular (ID Kopyala)</h4>
             <div id="admin-players-list" style="max-height: 140px; overflow-y: auto; background: rgba(10,17,40,0.8); border-radius: 8px; padding: 6px; font-size: 10px;">
-                <p id="txt-no-players" style="color: #666; margin: 0;">Kayıtlı oyuncu bulunamadı.</p>
+                <p style="color: #666; margin: 0;">Kayıtlı oyuncu bulunamadı.</p>
             </div>
         </div>
 
         <div class="admin-section" style="background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left;">
-            <h4 id="txt-admin-danger" style="color: #ff416c; font-size: 11px; margin: 0 0 6px 0;">⚠️ Tehlikeli Bölge / Hard Reset</h4>
-            <button id="txt-admin-reset-btn" style="background: linear-gradient(135deg, #ff416c, #cc0000); color: #fff; padding: 7px; font-size: 11px; margin: 0;" onclick="adminHardReset()">💥 Tüm Verileri Sıfırla</button>
+            <h4 style="color: #ff416c; font-size: 11px; margin: 0 0 6px 0;">⚠️ Tehlikeli Bölge / Hard Reset</h4>
+            <button style="background: linear-gradient(135deg, #ff416c, #cc0000); color: #fff; padding: 7px; font-size: 11px; margin: 0;" onclick="adminHardReset()">💥 Tüm Verileri Sıfırla</button>
         </div>
 
         <div class="admin-section" style="background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left;">
-            <h4 id="txt-admin-balance" style="color: #00fff5; font-size: 11px; margin: 0 0 6px 0;">⚡ Hızlı Bakiye Ekle (Kendi Hesabına)</h4>
+            <h4 style="color: #00fff5; font-size: 11px; margin: 0 0 6px 0;">⚡ Hızlı Bakiye Ekle (Kendi Hesabına)</h4>
             <div style="display: flex; gap: 6px; margin-top: 4px;">
                 <button style="background: #00b894; color:#fff; font-size:10px; padding:6px; margin:0;" onclick="adminAddDirectBalance(10000)">+10 Bin</button>
                 <button style="background: #0088cc; color:#fff; font-size:10px; padding:6px; margin:0;" onclick="adminAddDirectBalance(100000)">+100 Bin</button>
@@ -502,7 +502,7 @@
         </div>
 
         <div class="settings-group">
-            <label class="settings-label" id="txt-lang-label">Dil Seçimi / Language</label>
+            <label class="settings-label">Dil Seçimi / Language</label>
             <div class="settings-row">
                 <button class="lang-btn active" id="btn-tr" onclick="setLanguage('tr')">🇹🇷 TR</button>
                 <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">🇬🇧 EN</button>
@@ -511,247 +511,453 @@
         </div>
 
         <div class="settings-group">
-            <button class="audio-toggle-btn" onclick="toggleAudio()">
-                <span id="txt-sound-lbl">🔊 Ses efektleri</span>
-                <span id="sound-status" style="color: #00fff5; font-weight: bold;">AÇIK</span>
+            <label class="settings-label">Ses ve Müzik Efektleri</label>
+            <button class="audio-toggle-btn" id="audio-toggle-btn" onclick="toggleMusic()">
+                <span>🔊 Ses Efektleri</span>
+                <b id="audio-status-text" style="color: #00fff5;">Açık</b>
             </button>
         </div>
 
-        <div id="user-id-badge-modal" class="user-id-badge" onclick="copyMyId()" style="width: 100%; justify-content: center; margin-bottom: 10px;">ID: Yükleniyor... 📋</div>
-
-        <button class="close-modal-btn" onclick="closeSettingsModal()" id="txt-close-btn">Kapat</button>
+        <button class="close-modal-btn" onclick="closeSettingsModal()">Tamam / Kapat</button>
     </div>
 </div>
 
-<!-- ÖZEL BİLDİRİM PENCERESİ (MODAL) -->
-<div id="customModal" class="custom-modal-overlay">
+<!-- GENEL UYARI MODALI -->
+<div id="customAlertModal" class="custom-modal-overlay">
     <div class="custom-modal-content">
-        <div id="customModalBody" class="custom-modal-body">Bildirim mesajı buraya gelecek.</div>
-        <button class="custom-modal-btn" onclick="closeCustomModal()" id="customModalBtn">Tamam</button>
+        <div class="custom-modal-body" id="customAlertMessage">Uyarı mesajı</div>
+        <button onclick="closeCustomAlert()" class="custom-modal-btn">Tamam</button>
     </div>
 </div>
 
 <script>
-    // --- TEMEL DEĞİŞKENLER VE OYUN MOTORU ---
-    let balance = 0;
-    let clickPower = 0.0010;
-    let speed = 1.0;
-    let passiveRate = 0.0;
-    let refCount = 0;
-    let streakDays = 1;
-    let lastClaimDate = "";
-    let myId = "USER_" + Math.floor(100000 + Math.random() * 900000);
-    let isAdmin = false;
-    let currentLang = 'tr';
-    let soundEnabled = true;
+    let balance = parseFloat(localStorage.getItem('sm_balance')) || 0.0;
+    let clickPower = parseFloat(localStorage.getItem('sm_clickPower')) || 0.0010;
+    let passiveRate = parseFloat(localStorage.getItem('sm_passiveRate')) || 0.0000;
+    let refCount = parseInt(localStorage.getItem('sm_refCount')) || 0;
+    let streakDays = parseInt(localStorage.getItem('sm_streakDays')) || 1;
+    let lastClaimDate = localStorage.getItem('sm_lastClaimDate') || "";
+    let gpus = JSON.parse(localStorage.getItem('sm_gpus')) || { gt730: 0, gtx1050: 0, gtx1660: 0, rtx3060: 0, rtx4080: 0, rtx4090: 0 };
+    let tasksProgress = JSON.parse(localStorage.getItem('sm_tasks')) || { 1: 0, 2: 0, 3: 0 };
+    let soundEnabled = localStorage.getItem('sm_sound') !== 'false';
+    let currentLang = localStorage.getItem('sm_lang') || 'tr';
 
-    // Rig Verileri
-    let rigs = {
-        gt730: { count: 0, rate: 0.0010 },
-        gtx1050: { count: 0, rate: 0.0030 },
-        gtx1660: { count: 0, rate: 0.0080 },
-        rtx3060: { count: 0, rate: 0.0250 },
-        rtx4080: { count: 0, rate: 0.0800 },
-        rtx4090: { count: 0, rate: 0.2000 }
+    let lastClickTime = 0;
+    let tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    let myUserId = tgUser?.id ? String(tgUser.id) : "999888777";
+    let adminIds = ["999888777", "123456789"];
+
+    // 🌐 ÇOKLU DİL SÖZLÜĞÜ (TAMAMEN AKTİF)
+    const translations = {
+        tr: {
+            logo: "🚀 SANAL MINER",
+            assistant: "<b>Asistan Rehberi:</b><br>👉 Puan kazanmak için <span class=\"guide-link\" onclick=\"switchTab('mine', document.getElementById('nav-mine'))\">Kazım Yap</span> butonuna tıkla.<br>👉 Pasif gelir için <span class=\"guide-link\" onclick=\"switchTab('shop', document.getElementById('nav-shop'))\">Market</span> bölümünden Rig kirala!<br>👉 Seri ödüllerini <span class=\"guide-link\" onclick=\"switchTab('rewards', document.getElementById('nav-reward'))\">Ödül</span> sekmesinden topla.",
+            totalBalance: "Toplam Bakiye",
+            speedTitle: "Mevcut Hız | Pasif Kazanç",
+            mineBtn: "⛏️ Kazım Yap",
+            adBtn: "📺 Reklam İzle (Hız +0.5x)",
+            shopTitle: "💻 Ekran Kartı Marketi (Rig Kiralama)",
+            buyText: "Satın Al",
+            refTitle: "👥 Arkadaşını Davet Et",
+            refSub: "Davet Edilen Kişi",
+            refBtn: "🔗 Davet Linkini Paylaş",
+            rewardTitle: "🎁 Günlük Ödül & Görevler",
+            dailyBonus: "Günlük Serili Bonus",
+            claimBtn: "🎁 Günlük Ödülü Al (25 PTS)",
+            supportTitle: "Topluluk & Destek",
+            supportBtn: "💬 Destek / Kanal",
+            wdTitle: "💸 Kripto Çekim Talebi",
+            rateLabel: "Dönüşüm Oranı:",
+            netLabel: "Çekim Ağı (Network)",
+            walletLabel: "Cüzdan Adresiniz",
+            amountLabel: "Çekilecek PTS Miktarı",
+            minLabel: "Min: 10.000",
+            estLabel: "Tahmini Alınacak:",
+            wdBtn: "💸 Çekim Talebini Onayla",
+            navMine: "⛏️ Kazım",
+            navShop: "💻 Market",
+            navRef: "👥 Davet",
+            navReward: "🎁 Ödül",
+            navWd: "💸 Çekim",
+            navPayouts: "🏆 Ödemeler",
+            navAdmin: "👑 Admin"
+        },
+        en: {
+            logo: "🚀 VIRTUAL MINER",
+            assistant: "<b>Assistant Guide:</b><br>👉 Click <span class=\"guide-link\" onclick=\"switchTab('mine', document.getElementById('nav-mine'))\">Mine</span> to earn points.<br>👉 Rent Rigs from <span class=\"guide-link\" onclick=\"switchTab('shop', document.getElementById('nav-shop'))\">Shop</span> for passive income!<br>👉 Collect daily rewards from <span class=\"guide-link\" onclick=\"switchTab('rewards', document.getElementById('nav-reward'))\">Rewards</span>.",
+            totalBalance: "Total Balance",
+            speedTitle: "Current Speed | Passive Income",
+            mineBtn: "⛏️ Start Mining",
+            adBtn: "📺 Watch Ad (Speed +0.5x)",
+            shopTitle: "💻 GPU Market (Rig Rental)",
+            buyText: "Buy",
+            refTitle: "👥 Invite Your Friend",
+            refSub: "Invited Friends",
+            refBtn: "🔗 Share Referral Link",
+            rewardTitle: "🎁 Daily Reward & Tasks",
+            dailyBonus: "Daily Streak Bonus",
+            claimBtn: "🎁 Claim Daily Reward (25 PTS)",
+            supportTitle: "Community & Support",
+            supportBtn: "💬 Support / Channel",
+            wdTitle: "💸 Crypto Withdrawal Request",
+            rateLabel: "Conversion Rate:",
+            netLabel: "Withdrawal Network",
+            walletLabel: "Your Wallet Address",
+            amountLabel: "PTS Amount to Withdraw",
+            minLabel: "Min: 10,000",
+            estLabel: "Estimated Receive:",
+            wdBtn: "💸 Confirm Withdrawal",
+            navMine: "⛏️ Mine",
+            navShop: "💻 Shop",
+            navRef: "👥 Invite",
+            navReward: "🎁 Rewards",
+            navWd: "💸 Withdraw",
+            navPayouts: "🏆 Payouts",
+            navAdmin: "👑 Admin"
+        },
+        ar: {
+            logo: "🚀 المنقب الافتراضي",
+            assistant: "<b>دليل المساعد:</b><br>👉 انقر فوق <span class=\"guide-link\" onclick=\"switchTab('mine', document.getElementById('nav-mine'))\">تعدين</span> لكسب النقاط.<br>👉 استأجر منصات من <span class=\"guide-link\" onclick=\"switchTab('shop', document.getElementById('nav-shop'))\">المتجر</span> للدخل السلبي!<br>👉 اجمع المكافآت اليومية من <span class=\"guide-link\" onclick=\"switchTab('rewards', document.getElementById('nav-reward'))\">المكافآت</span>.",
+            totalBalance: "إجمالي الرصيد",
+            speedTitle: "السرعة الحالية | الدخل السلبي",
+            mineBtn: "⛏️ ابدأ التعدين",
+            adBtn: "📺 مشاهدة إعلان (سرعة +0.5x)",
+            shopTitle: "💻 سوق كروت الشاشة (تأجير المنصات)",
+            buyText: "شراء",
+            refTitle: "👥 دعوة أصدقائك",
+            refSub: "الأصدقاء المدعوون",
+            refBtn: "🔗 مشاركة رابط الإحالة",
+            rewardTitle: "🎁 المكافآت اليومية والمهام",
+            dailyBonus: "مكافأة السلسلة اليومية",
+            claimBtn: "🎁 المطالبة بالمكافأة (25 نقطة)",
+            supportTitle: "المجتمع والدعم",
+            supportBtn: "💬 الدعم / القناة",
+            wdTitle: "💸 طلب سحب العملات الرقمية",
+            rateLabel: "سعر التحويل:",
+            netLabel: "شبكة السحب",
+            walletLabel: "عنوان محفظتك",
+            amountLabel: "كمية النقاط للسحب",
+            minLabel: "الحد الأدنى: 10,000",
+            estLabel: "المستلم التقديري:",
+            wdBtn: "💸 تأكيد طلب السحب",
+            navMine: "⛏️ تعدين",
+            navShop: "💻 المتجر",
+            navRef: "👥 الإحالة",
+            navReward: "🎁 المكافآت",
+            navWd: "💸 السحب",
+            navPayouts: "🏆 المدفوعات",
+            navAdmin: "👑 المشرف"
+        }
     };
 
-    // Telegram Entegrasyonu
-    try {
-        const tg = window.Telegram.WebApp;
-        tg.expand();
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            const user = tg.initDataUnsafe.user;
-            myId = "TG_" + user.id;
-            if (user.first_name) document.getElementById('user-profile-name').innerText = user.first_name;
-            if (user.username) document.getElementById('user-profile-username').innerText = "@" + user.username;
-            if (user.photo_url) document.getElementById('user-profile-pic').src = user.photo_url;
+    window.onload = function() {
+        if (window.Telegram?.WebApp) {
+            Telegram.WebApp.ready();
+            Telegram.WebApp.expand();
         }
-    } catch (e) {
-        console.log("Tarayıcı modunda çalışıyor.");
-    }
-
-    // Admin kontrolü (Örnek tanım: Kendi ID'ni buraya yazabilirsin)
-    if (myId.includes("TG_123456") || myId.startsWith("USER_")) {
-        // Test için herkes admin panelini görebilsin diye açık bırakıyoruz, dilersen kısıtlayabilirsin
-        isAdmin = true;
-        document.getElementById('nav-admin-btn').style.display = 'block';
-    }
-
-    document.getElementById('user-id-display').innerText = "ID: " + myId + " 📋";
-    document.getElementById('user-id-badge-modal').innerText = "ID: " + myId + " 📋";
-
-    // --- SEKME DEĞİŞTİRME ---
-    function switchTab(tabId, element) {
-        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
         
-        document.getElementById('tab-' + tabId).classList.add('active');
-        if (element) element.classList.add('active');
+        if (tgUser) {
+            document.getElementById('user-profile-name').innerText = tgUser.first_name || "Madenci";
+            document.getElementById('user-profile-username').innerText = tgUser.username ? "@" + tgUser.username : "@sanalminer";
+            if (tgUser.photo_url) document.getElementById('user-profile-pic').src = tgUser.photo_url;
+        }
+
+        document.getElementById('user-id-display').innerText = "ID: " + myUserId + " 📋";
+
+        if (adminIds.includes(myUserId)) {
+            document.getElementById('nav-admin-btn').style.display = 'block';
+            updateAdminPlayersList();
+        }
+
+        setLanguage(currentLang);
+        updateUI();
+
+        setInterval(() => {
+            if (passiveRate > 0) {
+                balance += passiveRate;
+                updateUI();
+                saveData();
+            }
+        }, 1000);
+    };
+
+    function saveData() {
+        localStorage.setItem('sm_balance', balance);
+        localStorage.setItem('sm_clickPower', clickPower);
+        localStorage.setItem('sm_passiveRate', passiveRate);
+        localStorage.setItem('sm_refCount', refCount);
+        localStorage.setItem('sm_streakDays', streakDays);
+        localStorage.setItem('sm_lastClaimDate', lastClaimDate);
+        localStorage.setItem('sm_gpus', JSON.stringify(gpus));
+        localStorage.setItem('sm_tasks', JSON.stringify(tasksProgress));
+        localStorage.setItem('sm_sound', soundEnabled);
+        localStorage.setItem('sm_lang', currentLang);
     }
 
-    // --- KAZIM FONKSİYONU ---
     function mine(event) {
-        balance += (clickPower * speed);
+        let now = Date.now();
+        if (now - lastClickTime < 80) return;
+        lastClickTime = now;
+
+        balance += clickPower;
         updateUI();
+        saveData();
+        showFloatingText(event, "+" + clickPower.toFixed(4));
+    }
+
+    function showFloatingText(event, text) {
+        let container = document.getElementById('main-container');
+        let el = document.createElement('div');
+        el.className = 'float-text';
+        el.innerText = text;
         
-        // Tıklama Efekti
-        if (event) {
-            let x = event.clientX;
-            let y = event.clientY;
-            let floatEl = document.createElement('div');
-            floatEl.className = 'float-text';
-            floatEl.innerText = "+" + (clickPower * speed).toFixed(4);
-            floatEl.style.left = (x - 15) + 'px';
-            floatEl.style.top = (y - 25) + 'px';
-            document.body.appendChild(floatEl);
-            setTimeout(() => floatEl.remove(), 800);
-        }
+        let rect = container.getBoundingClientRect();
+        let x = (event.clientX || (event.touches ? event.touches[0].clientX : 200)) - rect.left;
+        let y = (event.clientY || (event.touches ? event.touches[0].clientY : 300)) - rect.top;
+        
+        el.style.left = x + 'px';
+        el.style.top = y + 'px';
+        container.appendChild(el);
+        setTimeout(() => el.remove(), 800);
     }
 
-    // --- PASİF KAZANÇ DÖNGÜSÜ (Her 1 Saniyede Bir) ---
-    setInterval(() => {
-        calculatePassiveRate();
-        if (passiveRate > 0) {
-            balance += passiveRate;
-            updateUI();
-        }
-    }, 1000);
-
-    function calculatePassiveRate() {
-        let total = 0;
-        for (let key in rigs) {
-            total += rigs[key].count * rigs[key].rate;
-        }
-        passiveRate = total;
-    }
-
-    // --- MARKET / RIG SATIN ALMA ---
-    function buyGPU(key, name, price, rate, days) {
-        if (balance >= price) {
-            balance -= price;
-            rigs[key].count += 1;
-            calculatePassiveRate();
-            updateUI();
-            showCustomModal(`Tebrikler! Başarıyla 1 adet <b>${name}</b> kiraladınız.`);
-        } else {
-            showCustomModal("Yetersiz bakiye! Yeterli PTS puanına sahip değilsiniz.");
-        }
-    }
-
-    // --- ARAYÜZ GÜNCELLEME ---
-    function updateUI() {
-        document.getElementById('balance').innerText = balance.toFixed(4);
-        document.getElementById('speed').innerText = speed.toFixed(1);
-        document.getElementById('passive-rate').innerText = passiveRate.toFixed(4);
-        document.getElementById('click-power').innerText = clickPower.toFixed(4);
-        document.getElementById('ref-count').innerText = refCount;
-        document.getElementById('streak-days').innerText = streakDays;
-
-        // Rig Adetlerini Güncelle
-        for (let key in rigs) {
-            let el = document.getElementById('count-' + key);
-            if (el) el.innerText = rigs[key].count + " Adet";
-        }
-    }
-
-    // --- REKLAM VE GÖREVLER ---
+    // 📺 ADSGRAM REKLAM ENTEGRASYONU (HATA KORUMALI)
     function showAd() {
-        showCustomModal("Reklam simüle edildi! Hızınız geçici olarak artırıldı.");
-        speed += 0.5;
+        if (typeof Adsgram !== 'undefined' && Adsgram.init) {
+            try {
+                const adController = Adsgram.init({ blockId: "42993" });
+                adController.show().then(() => {
+                    rewardAdSuccess();
+                }).catch((result) => {
+                    showAlert("Reklam izlenemedi veya kapatıldı: " + (result.description || JSON.stringify(result)));
+                });
+            } catch (err) {
+                showAlert("Reklam yüklenirken hata oluştu, test modunda ödül verildi.");
+                rewardAdSuccess();
+            }
+        } else {
+            showAlert("Test Modu: Adsgram SDK yüklenemediği için reklam simüle edildi!");
+            rewardAdSuccess();
+        }
+    }
+
+    function rewardAdSuccess() {
+        balance += 10;
+        for (let key in tasksProgress) {
+            tasksProgress[key]++;
+        }
         updateUI();
+        saveData();
+        showAlert("Tebrikler! Reklam başarıyla izlendi ve hesabınıza puan eklendi.");
     }
 
     function claimDailyReward() {
-        balance += 25;
-        streakDays += 1;
+        let today = new Date().toDateString();
+        if (lastClaimDate === today) {
+            showAlert("Bugünkü günlük ödülünüzü zaten aldınız. Yarın tekrar gelin!");
+            return;
+        }
+
+        let rewardAmount = 25 * streakDays;
+        balance += rewardAmount;
+        lastClaimDate = today;
+        streakDays++;
+        
         updateUI();
-        showCustomModal("Günlük ödülünüz olan 25 PTS hesabınıza eklendi!");
+        saveData();
+        showAlert(`Tebrikler! Günlük seri ödülünüz olan ${rewardAmount} PTS hesabınıza eklendi!`);
     }
 
-    function completeTask(id, requiredCount, reward) {
-        showCustomModal(`Görev #${id} tamamlandı! +${reward} PTS kazandınız.`);
-        balance += reward;
-        updateUI();
+    function completeTask(taskId, targetCount, rewardPts) {
+        if (tasksProgress[taskId] >= targetCount) {
+            balance += rewardPts;
+            tasksProgress[taskId] = -999;
+            updateUI();
+            saveData();
+            showAlert(`Tebrikler! ${rewardPts} PTS ödülünüz eklendi.`);
+        } else {
+            showAlert(`Bu görev için yeterli reklam izleme ilerlemeniz yok!`);
+        }
     }
 
-    // --- ÇEKİM İŞLEMLERİ ---
-    function calculateEstimate() {
-        let amount = parseFloat(document.getElementById('withdraw-amount').value) || 0;
-        let usdt = amount / 10000;
-        document.getElementById('calc-result').innerText = usdt.toFixed(2) + " USDT";
+    function buyGPU(id, name, price, rate, days) {
+        if (balance >= price) {
+            balance -= price;
+            gpus[id]++;
+            passiveRate += rate;
+            updateUI();
+            saveData();
+            showAlert(`Başarıyla ${name} kiralandı! Pasif kazancınız arttı.`);
+        } else {
+            showAlert("Yetersiz bakiye! Daha fazla kazım yapmalı veya reklam izlemelisiniz.");
+        }
     }
 
     function setQuickAmount(percentage) {
-        let target = balance * percentage;
-        document.getElementById('withdraw-amount').value = target.toFixed(0);
+        let amt = balance * percentage;
+        document.getElementById('withdraw-amount').value = amt.toFixed(2);
         calculateEstimate();
     }
 
-    function requestWithdraw() {
-        let amount = parseFloat(document.getElementById('withdraw-amount').value) || 0;
-        let address = document.getElementById('wallet-address').value.trim();
-        if (amount < 10000) {
-            showCustomModal("Minimum çekim miktarı 10.000 PTS olmalıdır!");
-            return;
-        }
-        if (!address) {
-            showCustomModal("Lütfen geçerli bir cüzdan adresi giriniz!");
-            return;
-        }
-        balance -= amount;
-        updateUI();
-        showCustomModal("Çekim talebiniz başarıyla alındı! İnceleme sonrası cüzdanınıza gönderilecektir.");
+    function calculateEstimate() {
+        let amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+        let usdt = amt / 10000;
+        document.getElementById('calc-result').innerText = usdt.toFixed(2) + " USDT";
     }
 
-    // --- YARDIMCI MODAL VE AYAR FONKSİYONLARI ---
+    function requestWithdraw() {
+        let amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+        let address = document.getElementById('wallet-address').value.trim();
+        let net = document.getElementById('wallet-network').value;
+
+        if (amt < 10000) {
+            showAlert("Minimum çekim miktarı 10.000 PTS'dir.");
+            return;
+        }
+        if (address.length < 5) {
+            showAlert("Lütfen geçerli bir cüzdan adresi giriniz.");
+            return;
+        }
+        if (balance < amt) {
+            showAlert("Bakiyeniz bu işlem için yetersiz.");
+            return;
+        }
+
+        balance -= amt;
+        updateUI();
+        saveData();
+        showAlert(`Çekim talebiniz başarıyla alındı! (${net} - ${address})`);
+    }
+
+    function updateUI() {
+        document.getElementById('balance').innerText = balance.toFixed(4);
+        document.getElementById('speed').innerText = (1.0 + (passiveRate * 100)).toFixed(1);
+        document.getElementById('passive-rate').innerText = passiveRate.toFixed(4);
+        
+        for (let key in gpus) {
+            let el = document.getElementById('count-' + key);
+            if (el) el.innerText = gpus[key] + " Adet";
+        }
+
+        document.getElementById('streak-days').innerText = streakDays;
+        
+        for (let i = 1; i <= 3; i++) {
+            let targets = { 1: 5, 2: 15, 3: 40 };
+            let prog = tasksProgress[i] >= 0 ? tasksProgress[i] : targets[i];
+            let progEl = document.getElementById(`task${i}-prog`);
+            if (progEl) progEl.innerText = `İlerleme: ${Math.min(prog, targets[i])}/${targets[i]}`;
+        }
+    }
+
+    function switchTab(tabName, element) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+        document.getElementById('tab-' + tabName).classList.add('active');
+        if (element) element.classList.add('active');
+    }
+
     function openSettingsModal() { document.getElementById('settingsModal').style.display = 'flex'; }
     function closeSettingsModal() { document.getElementById('settingsModal').style.display = 'none'; }
-    
-    function showCustomModal(text) {
-        document.getElementById('customModalBody').innerHTML = text;
-        document.getElementById('customModal').style.display = 'flex';
-    }
-    function closeCustomModal() { document.getElementById('customModal').style.display = 'none'; }
 
-    function copyMyId() {
-        navigator.clipboard.writeText(myId);
-        showCustomModal("ID panoya kopyalandı: " + myId);
-    }
-
-    function shareRefLink() {
-        let refLink = "https://t.me/SanalMinerProBot?start=" + myId;
-        navigator.clipboard.writeText(refLink);
-        showCustomModal("Davet linkiniz kopyalandı! Arkadaşlarınızla paylaşabilirsiniz.");
-    }
-
-    function openSupport() {
-        showCustomModal("Destek kanalımız: @SanalMinerSupport");
-    }
-
-    function toggleAudio() {
-        soundEnabled = !soundEnabled;
-        document.getElementById('sound-status').innerText = soundEnabled ? "AÇIK" : "KAPALI";
-    }
-
+    // 🌐 DİL SEÇENEĞİ FONKSİYONU (METİNLERİ ANINDA ÇEVİRİR)
     function setLanguage(lang) {
         currentLang = lang;
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-' + lang).classList.add('active');
-        showCustomModal("Dil değiştirildi: " + lang.toUpperCase());
+        
+        const t = translations[lang];
+        if (!t) return;
+
+        document.getElementById('txt-logo').innerHTML = t.logo;
+        document.getElementById('txt-assistant').innerHTML = t.assistant;
+        document.getElementById('txt-total-balance').innerText = t.totalBalance;
+        document.getElementById('txt-speed-title').innerText = t.speedTitle;
+        document.getElementById('txt-mine-btn').innerHTML = t.mineBtn;
+        document.getElementById('txt-ad-btn').innerHTML = t.adBtn;
+        document.getElementById('txt-shop-title').innerText = t.shopTitle;
+        document.getElementById('txt-ref-title').innerText = t.refTitle;
+        document.getElementById('txt-ref-sub').innerText = t.refSub;
+        document.getElementById('txt-ref-btn').innerText = t.refBtn;
+        document.getElementById('txt-reward-title').innerText = t.rewardTitle;
+        document.getElementById('txt-daily-bonus').innerText = t.dailyBonus;
+        document.getElementById('txt-claim-btn').innerText = t.claimBtn;
+        document.getElementById('txt-support-title').innerText = t.supportTitle;
+        document.getElementById('txt-support-btn').innerText = t.supportBtn;
+        document.getElementById('txt-wd-title').innerText = t.wdTitle;
+        document.getElementById('txt-rate-label').innerText = t.rateLabel;
+        document.getElementById('txt-net-label').innerText = t.netLabel;
+        document.getElementById('txt-wallet-label').innerText = t.walletLabel;
+        document.getElementById('txt-amount-label').innerText = t.amountLabel;
+        document.getElementById('txt-min-label').innerText = t.minLabel;
+        document.getElementById('txt-est-label').innerText = t.estLabel;
+        document.getElementById('txt-wd-btn').innerText = t.wdBtn;
+        
+        document.getElementById('nav-mine').innerText = t.navMine;
+        document.getElementById('nav-shop').innerText = t.navShop;
+        document.getElementById('nav-ref').innerText = t.navRef;
+        document.getElementById('nav-reward').innerText = t.navReward;
+        document.getElementById('nav-wd').innerText = t.navWd;
+        document.getElementById('nav-payouts').innerText = t.navPayouts;
+        document.getElementById('nav-admin-btn').innerText = t.navAdmin;
+
+        document.querySelectorAll('.buy-text').forEach(btn => btn.innerText = t.buyText);
+        saveData();
     }
 
-    // --- ADMIN İŞLEMLERİ ---
-    function adminHardReset() {
-        if (confirm("Tüm veriler sıfırlansın mı?")) {
-            localStorage.clear();
-            location.reload();
+    function toggleMusic() {
+        soundEnabled = !soundEnabled;
+        document.getElementById('audio-status-text').innerText = soundEnabled ? "Açık" : "Kapalı";
+        document.getElementById('audio-status-text').style.color = soundEnabled ? "#00fff5" : "#ff416c";
+        saveData();
+    }
+
+    function copyMyId() {
+        navigator.clipboard.writeText(myUserId);
+        showAlert("Kullanıcı ID'niz panoya kopyalandı: " + myUserId);
+    }
+
+    function shareRefLink() {
+        let refLink = `https://t.me/SanalMinerProBot?start=ref_${myUserId}`;
+        navigator.clipboard.writeText(refLink);
+        showAlert("Davet linkiniz kopyalandı! Arkadaşlarınızla paylaşarak kazanın.");
+    }
+
+    // 🔗 KANALA / DESTEĞE YÖNLENDİRME
+    function openSupport() {
+        let channelUrl = "https://t.me/sanal_miner_duyuru";
+        if (window.Telegram?.WebApp?.openTelegramLink) {
+            Telegram.WebApp.openTelegramLink(channelUrl);
+        } else {
+            window.open(channelUrl, "_blank");
         }
+    }
+
+    function showAlert(msg) {
+        document.getElementById('customAlertMessage').innerText = msg;
+        document.getElementById('customAlertModal').style.display = 'flex';
+    }
+    function closeCustomAlert() {
+        document.getElementById('customAlertModal').style.display = 'none';
     }
 
     function adminAddDirectBalance(amount) {
         balance += amount;
         updateUI();
-        showCustomModal(`Admin yetkisiyle hesabınıza +${amount} PTS eklendi.`);
+        saveData();
+        showAlert(`Admin İşlemi: Hesabınıza ${amount} PTS eklendi!`);
+    }
+
+    function adminHardReset() {
+        if (confirm("DİKKAT: Tüm verileriniz sıfırlanacak. Emin misiniz?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    function updateAdminPlayersList() {
+        let listEl = document.getElementById('admin-players-list');
+        listEl.innerHTML = `<div class="player-row"><span>Oyuncu: ${myUserId}</span><b style="color:#00fff5;">Aktif</b></div>`;
     }
 </script>
 </body>
