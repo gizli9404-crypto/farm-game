@@ -69,17 +69,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             color: #fff; width: 30px; height: 30px; border-radius: 8px;
             display: flex; justify-content: center; align-items: center; cursor: pointer; font-size: 13px;
-            position: relative;
-        }
-
-        .settings-badge {
-            position: absolute;
-            top: 2px;
-            right: 2px;
-            width: 7px;
-            height: 7px;
-            background-color: #ff007f;
-            border-radius: 50%;
         }
 
         /* Bakiye Kartı */
@@ -97,25 +86,7 @@
         .balance-amount { font-size: 28px; font-weight: 800; color: #00f3ff; margin: 4px 0; text-shadow: 0 0 15px rgba(0,243,255,0.4); }
         .balance-usd { font-size: 11px; color: #00e676; font-weight: 600; }
 
-        /* Asistan Asistan Kutusu */
-        .assistant-box { 
-            background: linear-gradient(135deg, rgba(0, 243, 255, 0.08), rgba(15, 52, 96, 0.5)); 
-            border: 1px solid rgba(0, 243, 255, 0.4); 
-            border-radius: 12px; 
-            padding: 10px 12px; 
-            margin-bottom: 10px; 
-            font-size: 11px; 
-            color: #c0d6df; 
-            text-align: left; 
-            display: flex; 
-            gap: 8px; 
-            align-items: flex-start;
-            box-shadow: inset 0 0 10px rgba(0, 243, 255, 0.1);
-        }
-        .assistant-icon { font-size: 18px; filter: drop-shadow(0 0 5px #00f3ff); margin-top: 1px; }
-        .guide-link { color: #00f3ff; text-decoration: underline; cursor: pointer; font-weight: bold; }
-
-        /* ÜÇ FANLI EKRAN KARTI TASARIMI */
+        /* GÖNDERDİĞİN ÜÇ FANLI EKRAN KARTI TASARIMI */
         .gpu-lab-section {
             background: rgba(10, 15, 30, 0.8);
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -259,8 +230,6 @@
             border-radius: 8px; cursor: pointer;
         }
 
-        .player-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0, 243, 255, 0.04); border-bottom: 1px solid rgba(255, 255, 255, 0.05); padding: 5px 6px; border-radius: 6px; margin-bottom: 4px; font-size: 11px; text-align: left; }
-
         /* Sekmeler */
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
@@ -273,9 +242,9 @@
             display: flex; justify-content: space-around; align-items: center;
             border-top: 1px solid rgba(0, 243, 255, 0.2); z-index: 999; 
         }
-        .nav-item { color: #697a96; font-size: 9px; cursor: pointer; font-weight: 700; text-align: center; flex: 1; }
+        .nav-item { color: #697a96; font-size: 10px; cursor: pointer; font-weight: 700; text-align: center; flex: 1; }
         .nav-item.active { color: #00f3ff; text-shadow: 0 0 10px rgba(0,243,255,0.4); }
-        .nav-icon { font-size: 15px; display: block; margin-bottom: 2px; }
+        .nav-icon { font-size: 17px; display: block; margin-bottom: 2px; }
 
         /* Uçan Değer */
         .float-number {
@@ -301,105 +270,40 @@
             width: 100%; padding: 10px; border-radius: 8px; background: #03050a;
             border: 1px solid rgba(0,243,255,0.3); color: #fff; margin-bottom: 8px; outline: none; font-size: 12px;
         }
-
-        /* Ayarlar Stilleri Eklemeleri */
-        .profile-header {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: rgba(0, 243, 255, 0.05);
-            padding: 10px;
-            border-radius: 12px;
-            border: 1px solid rgba(0, 243, 255, 0.2);
-            margin-bottom: 15px;
-        }
-        .profile-pic {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            border: 2px solid #00f3ff;
-            object-fit: cover;
-            background-color: #04060b;
-        }
-        .settings-group { margin-bottom: 12px; }
-        .settings-label { font-size: 11px; color: #7f95b3; margin-bottom: 5px; display: block; font-weight: 600; }
-        .settings-row { display: flex; gap: 6px; }
-        .lang-btn { background: rgba(10, 15, 30, 0.9); border: 1px solid rgba(0, 243, 255, 0.3); color: #00f3ff; padding: 6px 10px; font-size: 11px; border-radius: 8px; cursor: pointer; flex: 1; text-align: center; }
-        .lang-btn.active { background: #00f3ff; color: #000; font-weight: bold; }
-        .audio-toggle-btn {
-            background: rgba(10, 15, 30, 0.9);
-            border: 1px solid rgba(0, 243, 255, 0.3);
-            color: #00f3ff;
-            padding: 8px 12px;
-            font-size: 11px;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 100%;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .user-id-badge { 
-            font-size: 10px; 
-            color: #00f3ff; 
-            background: rgba(0, 243, 255, 0.1);
-            border: 1px dashed rgba(0, 243, 255, 0.3);
-            padding: 3px 8px;
-            border-radius: 8px;
-            margin-top: 5px;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-        }
     </style>
 </head>
 <body>
 
-<div class="app-container" id="main-container">
+<div class="app-container">
     <!-- ÜST BAR -->
     <div class="header">
         <div class="user-pill">
-            <img class="user-avatar" id="userAvatarImg" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces" alt="Avatar">
+            <img class="user-avatar" id="userAvatarImg" src="" style="display: none;" alt="Avatar">
+            <div class="user-avatar" id="userInitial">U</div>
             <span id="userName">Rig Master</span>
         </div>
         <div style="display: flex; gap: 6px;">
             <div class="icon-btn" onclick="openModal('tasksModal')" title="Görevler">📋</div>
-            <div class="icon-btn" onclick="openModal('settingsModal')" title="Ayarlar">
-                ⚙️
-                <div class="settings-badge"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Asistan Rehber Kutusu -->
-    <div class="assistant-box">
-        <div class="assistant-icon">🤖</div>
-        <div id="txt-assistant">
-            <b>Asistan Rehberi:</b><br>
-            👉 Puan kazanmak için <span class="guide-link" onclick="switchTab('mine', document.querySelector('.navbar .nav-item:nth-child(1)'))">Kazım</span> kartına tıkla.<br>
-            👉 Pasif gelir için <span class="guide-link" onclick="switchTab('shop', document.querySelector('.navbar .nav-item:nth-child(2)'))">Market</span> bölümünden Rig kirala!<br>
-            👉 Seri ödüllerini <span class="guide-link" onclick="switchTab('rewards', document.querySelector('.navbar .nav-item:nth-child(4)'))">Ödül</span> sekmesinden topla.
+            <div class="icon-btn" onclick="openModal('settingsModal')" title="Ayarlar">⚙️</div>
         </div>
     </div>
 
     <!-- TAB 1: KAZIM & ÜÇ FANLI GPU -->
     <div id="tab-mine" class="tab-content active">
         <div class="balance-card">
-            <div class="balance-title" id="txt-total-balance">Toplam Varlık</div>
-            <div class="balance-amount"><span id="balance">4,350.0270</span> <span style="font-size: 16px; color:#fff;">PTS</span></div>
-            <div class="balance-usd">≈ $<span id="balanceUsd">0.44</span> USDT</div>
+            <div class="balance-title">Toplam Varlık</div>
+            <div class="balance-amount"><span id="balance">0.0000</span> <span style="font-size: 16px; color:#fff;">PTS</span></div>
+            <div class="balance-usd">≈ $<span id="balanceUsd">0.00</span> USDT</div>
         </div>
 
         <div class="gpu-lab-section">
-            <div style="font-size: 10px; color: #7f95b3; font-weight: 700;" id="txt-active-rig-title">AKTİF ÜÇ FANLI EKRAN KARTI RİG'İ</div>
+            <div style="font-size: 10px; color: #7f95b3; font-weight: 700;">AKTİF ÜÇ FANLI EKRAN KARTI RİG'İ</div>
             
-            <!-- Gönderdiğin Ekran Kartı Tasarımı -->
+            <!-- Ekran Kartı Tasarımı -->
             <div class="gpu-card-container" onclick="mineWithGPU(event)">
                 <div class="gpu-top-bar">
-                    <span id="gpuModelTitle">NVIDIA RTX 4090 OC</span>
-                    <span style="color: #00e676;">● <span id="txt-efficiency">98% Verim</span></span>
+                    <span id="gpuModelTitle">GT 730 Mini-Rig</span>
+                    <span style="color: #00e676;">● 98% Verim</span>
                 </div>
                 
                 <div class="fans-row">
@@ -409,237 +313,211 @@
                 </div>
 
                 <div class="gpu-bottom-bar">
-                    <span><span id="txt-temp-label">Sıcaklık</span>: <b style="color:#ffb700;">61°C</b></span>
+                    <span>Sıcaklık: <b style="color:#ffb700;">61°C</b></span>
                     <span>PCIe 4.0 x16</span>
                 </div>
             </div>
 
-            <div style="font-size: 10px; color: #00f3ff; font-weight: 600;" id="txt-click-guide">Hız Üretmek İçin Kartın Üzerine Dokun!</div>
+            <div style="font-size: 10px; color: #00f3ff; font-weight: 600;">Hız Üretmek İçin Kartın Üzerine Dokun!</div>
         </div>
 
         <div class="stat-grid">
             <div class="stat-box">
-                <div class="stat-title" id="txt-click-power-title">Tıklama Gücü</div>
-                <div class="stat-value">+<span id="click-power">0.0025</span> PTS</div>
+                <div class="stat-title">Tıklama Gücü</div>
+                <div class="stat-value">+<span id="click-power">0.0010</span> PTS</div>
             </div>
             <div class="stat-box">
-                <div class="stat-title" id="txt-passive-rate-title">Pasif Rig Hızı</div>
+                <div class="stat-title">Pasif Rig Hızı</div>
                 <div class="stat-value">+<span id="passive-rate">0.0000</span>/sn</div>
             </div>
         </div>
 
         <button class="btn-primary btn-ad" onclick="watchBonusAd()">
-            <span id="txt-ad-btn">📺 Reklam İzle & 2x Hızlandır (+0.5x)</span>
+            📺 Reklam İzle & 2x Hızlandır (+0.5x)
         </button>
     </div>
 
     <!-- TAB 2: MARKET -->
     <div id="tab-shop" class="tab-content">
-        <h3 id="txt-shop-title" style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">🖥️ Ekran Kartı Rig Pazarı</h3>
+        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">🖥️ Ekran Kartı Rig Pazarı</h3>
         
         <div class="item-card">
             <div class="item-info">
-                <b>AMD RX 580 8GB Rig</b>
-                <small>Pasif: +0.0020 PTS/sn</small>
-                <span class="item-price">Fiyat: 200 PTS</span>
+                <b>GT 730 Mini-Rig</b>
+                <small>Pasif: +0.0010 PTS/sn (3 Gün)</small>
+                <span class="item-price">Fiyat: 150 PTS</span>
             </div>
-            <button class="action-sm-btn buy-text" onclick="buyGPU('rx580', 200, 0.0020, 'AMD RX 580 8GB')">Satın Al</button>
+            <button class="action-sm-btn" onclick="buyGPU('gt730', 150, 0.0010, 'GT 730 Mini-Rig')">Satın Al</button>
         </div>
 
         <div class="item-card">
             <div class="item-info">
-                <b>NVIDIA GTX 1660 Super</b>
-                <small>Pasif: +0.0060 PTS/sn</small>
-                <span class="item-price">Fiyat: 800 PTS</span>
+                <b>GTX 1050 Ti</b>
+                <small>Pasif: +0.0030 PTS/sn (5 Gün)</small>
+                <span class="item-price">Fiyat: 600 PTS</span>
             </div>
-            <button class="action-sm-btn buy-text" onclick="buyGPU('gtx1660', 800, 0.0060, 'GTX 1660 Super')">Satın Al</button>
+            <button class="action-sm-btn" onclick="buyGPU('gtx1050', 600, 0.0030, 'GTX 1050 Ti')">Satın Al</button>
         </div>
 
         <div class="item-card">
             <div class="item-info">
-                <b>NVIDIA RTX 3060 Ti</b>
-                <small>Pasif: +0.0180 PTS/sn</small>
-                <span class="item-price">Fiyat: 3,000 PTS</span>
+                <b>GTX 1660 Super</b>
+                <small>Pasif: +0.0080 PTS/sn (7 Gün)</small>
+                <span class="item-price">Fiyat: 2,500 PTS</span>
             </div>
-            <button class="action-sm-btn buy-text" onclick="buyGPU('rtx3060', 3000, 0.0180, 'RTX 3060 Ti')">Satın Al</button>
+            <button class="action-sm-btn" onclick="buyGPU('gtx1660', 2500, 0.0080, 'GTX 1660 Super')">Satın Al</button>
         </div>
 
         <div class="item-card">
             <div class="item-info">
-                <b>NVIDIA RTX 4090 Monster</b>
-                <small>Pasif: +0.0600 PTS/sn</small>
+                <b>RTX 3060 Ti Rig</b>
+                <small>Pasif: +0.0250 PTS/sn (10 Gün)</small>
                 <span class="item-price">Fiyat: 10,000 PTS</span>
             </div>
-            <button class="action-sm-btn buy-text" onclick="buyGPU('rtx4090', 10000, 0.0600, 'RTX 4090 Monster')">Satın Al</button>
+            <button class="action-sm-btn" onclick="buyGPU('rtx3060', 10000, 0.0250, 'RTX 3060 Ti Rig')">Satın Al</button>
+        </div>
+
+        <div class="item-card">
+            <div class="item-info">
+                <b>RTX 4080 Pro-Rig</b>
+                <small>Pasif: +0.0800 PTS/sn (14 Gün)</small>
+                <span class="item-price">Fiyat: 35,000 PTS</span>
+            </div>
+            <button class="action-sm-btn" onclick="buyGPU('rtx4080', 35000, 0.0800, 'RTX 4080 Pro-Rig')">Satın Al</button>
+        </div>
+
+        <div class="item-card">
+            <div class="item-info">
+                <b>RTX 4090 Cyber-Rig</b>
+                <small>Pasif: +0.2000 PTS/sn (30 Gün)</small>
+                <span class="item-price">Fiyat: 100,000 PTS</span>
+            </div>
+            <button class="action-sm-btn" onclick="buyGPU('rtx4090', 100000, 0.2000, 'RTX 4090 Cyber-Rig')">Satın Al</button>
         </div>
     </div>
 
     <!-- TAB 3: DAVET -->
     <div id="tab-ref" class="tab-content">
-        <h3 id="txt-ref-title" style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">👥 Arkadaşını Davet Et</h3>
+        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">👥 Arkadaşını Davet Et</h3>
         <div class="balance-card" style="text-align: center; padding: 12px;">
-            <div style="font-size: 13px; font-weight: 800; color: #00f3ff;" id="txt-ref-reward-desc">Her Davete +2,500 PTS Kazan!</div>
-            <div style="font-size: 10px; color: #7f95b3; margin-top: 3px;"><span id="txt-ref-total">Toplam Davet</span>: <span id="ref-count" style="color:#fff; font-weight:bold;">0</span></div>
+            <div style="font-size: 13px; font-weight: 800; color: #00f3ff;">Arkadaşını Davet Et, Kazan!</div>
+            <div style="font-size: 10px; color: #7f95b3; margin-top: 3px;">Davet Edilen Kişi: <span id="ref-count" style="color:#fff; font-weight:bold;">0</span></div>
         </div>
-        <button class="btn-primary" onclick="shareRef()" id="txt-ref-btn">🔗 Davet Linkini Kopyala/Paylaş</button>
+        <button class="btn-primary" onclick="shareRef()">🔗 Davet Linkini Paylaş</button>
     </div>
 
     <!-- TAB 4: ÖDÜLLER -->
     <div id="tab-rewards" class="tab-content">
-        <h3 id="txt-reward-title" style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">🎁 Günlük Ödül & Bonuslar</h3>
+        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">🎁 Günlük Ödül & Görevler</h3>
         
         <div class="item-card">
             <div class="item-info">
-                <b id="txt-daily-bonus-title">Günlük Giriş Bonusu</b>
-                <small id="txt-daily-bonus-desc">24 saatte bir düzenli topla</small>
-                <span style="color: #00e676; font-size: 10px; font-weight: 700;">+2,000 PTS</span>
+                <b>Günlük Serili Bonus</b>
+                <small>Seriyi bozma, her gün ödülün katlansın! (<span id="streak-days">1</span>. Gün)</small>
+                <span style="color: #00e676; font-size: 10px; font-weight: 700;">+25 PTS (Katlana Katlana)</span>
             </div>
-            <button class="action-sm-btn" onclick="claimDailyBonus()" id="txt-claim-btn">Topla</button>
+            <button class="action-sm-btn" onclick="claimDailyBonus()">Topla</button>
         </div>
 
         <div class="item-card">
             <div class="item-info">
-                <b id="txt-task-channel-title">Telegram Kanal Takibi</b>
-                <small id="txt-task-channel-desc">Duyuru kanalına katıl</small>
-                <span style="color: #00e676; font-size: 10px; font-weight: 700;">+3,500 PTS</span>
+                <b>5 Reklam İzle</b>
+                <small>Adsgram Ödüllü Görev</small>
+                <span style="color: #00e676; font-size: 10px; font-weight: 700;">+40 PTS</span>
             </div>
-            <button class="action-sm-btn" onclick="claimTaskReward(3500, this)" id="txt-task-btn">Topla</button>
+            <button class="action-sm-btn" onclick="completeTask(1, 5, 40, this)">Topla</button>
+        </div>
+
+        <div class="item-card">
+            <div class="item-info">
+                <b>15 Reklam İzle</b>
+                <small>Adsgram Ödüllü Görev</small>
+                <span style="color: #00e676; font-size: 10px; font-weight: 700;">+150 PTS</span>
+            </div>
+            <button class="action-sm-btn" onclick="completeTask(2, 15, 150, this)">Topla</button>
         </div>
     </div>
 
     <!-- TAB 5: ÇEKİM MERKEZİ -->
     <div id="tab-withdraw" class="tab-content">
-        <h3 id="txt-wd-title" style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">💸 Kripto Çekim Merkezi</h3>
+        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">💸 Kripto Çekim Merkezi</h3>
         <div class="balance-card" style="padding: 10px; text-align: center; margin-bottom: 8px;">
-            <div style="font-size: 9px; color: #7f95b3;" id="txt-rate-label">DÖNÜŞÜM ORANI</div>
+            <div style="font-size: 9px; color: #7f95b3;">DÖNÜŞÜM ORANI</div>
             <div style="font-size: 12px; font-weight: 700; color: #00f3ff; margin-top: 2px;">10.000 PTS = 1.00 USDT</div>
         </div>
 
-        <div style="font-size: 10px; color: #7f95b3; margin-bottom: 3px; font-weight: 700;" id="txt-net-label">Çekim Ağı</div>
+        <div style="font-size: 10px; color: #7f95b3; margin-bottom: 3px; font-weight: 700;">Çekim Ağı</div>
         <select id="networkSelect" class="input-box">
             <option value="TON">TON Network (The Open Network)</option>
             <option value="TRC20">USDT (TRC20 - Tron Ağı)</option>
             <option value="BEP20">USDT (BEP20 - BSC)</option>
         </select>
 
-        <div style="font-size: 10px; color: #7f95b3; margin-bottom: 3px; font-weight: 700;" id="txt-wallet-label">Cüzdan Adresi</div>
+        <div style="font-size: 10px; color: #7f95b3; margin-bottom: 3px; font-weight: 700;">Cüzdan Adresi</div>
         <input type="text" id="walletInput" class="input-box" placeholder="Cüzdan adresinizi yapıştırın...">
 
-        <div style="font-size: 10px; color: #7f95b3; margin-bottom: 3px; font-weight: 700;" id="txt-amount-label">Miktar (PTS)</div>
-        <input type="number" id="withdrawAmount" class="input-box" placeholder="Min. Çekim: 10000 PTS">
-
-        <button class="btn-primary" onclick="requestWithdraw()" id="txt-wd-btn">Çekim Talebi Gönder</button>
-    </div>
-
-    <!-- TAB 6: ÖDEMELER -->
-    <div id="tab-payouts" class="tab-content">
-        <h3 style="text-align: left; color: #00f3ff; font-size: 14px; margin-bottom: 6px;">🏆 Liderlik Tablosu & Ödeme Kanıtları</h3>
-        <p style="font-size: 10px; color: #7f95b3; text-align: left; margin-bottom: 8px;">Uygulamamızda kullanıcılara başarıyla gönderilen son ödüller ve lider madenciler aşağıda listelenmiştir.</p>
+        <div style="font-size: 10px; color: #7f95b3; margin-bottom: 3px; font-weight: 700;">Miktar (PTS) <small style="float:right; color:#ff416c;">Min: 10000</small></div>
+        <input type="number" id="withdrawAmount" class="input-box" placeholder="0.00" oninput="calculateEstimate()">
         
-        <div style="background: rgba(10, 15, 30, 0.9); border: 1px solid rgba(0,243,255,0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; text-align: left;">
-            <h4 style="color: #ff9100; font-size: 11px; margin: 0 0 6px 0;">⚡ Son Başarılı Ödemeler (Payout Proofs)</h4>
-            <div style="font-size: 10px; line-height: 1.6; color: #c0d6df;">
-                <div>✅ ID: ...8923 (TON Network) - <b>12.5 USDT</b> Ödendi</div>
-                <div>✅ ID: ...4410 (TRC20) - <b>5.0 USDT</b> Ödendi</div>
-                <div>✅ ID: ...7712 (BEP20) - <b>25.0 USDT</b> Ödendi</div>
-                <div>✅ ID: ...1093 (TON Network) - <b>10.0 USDT</b> Ödendi</div>
-            </div>
+        <div style="background: rgba(10, 17, 40, 0.9); border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4);">
+            <span style="font-size: 10px; color: #8a99ad;">Tahmini Alınacak:</span>
+            <span id="calc-result" style="color: #00fff5; font-weight: bold;">0.00 USDT</span>
         </div>
 
-        <div style="background: rgba(10, 15, 30, 0.9); border: 1px solid rgba(0,243,255,0.3); border-radius: 10px; padding: 8px; text-align: left;">
-            <h4 style="color: #00f3ff; font-size: 11px; margin: 0 0 6px 0;">🌟 En İyi Madenciler Liderlik Tablosu</h4>
-            <div id="public-leaderboard-list" style="font-size: 10px; color: #fff;">
-                <div class="player-row"><span>1. Madenci (ID: ***341)</span><b style="color:#00f3ff;">1,420,500 PTS</b></div>
-                <div class="player-row"><span>2. Madenci (ID: ***982)</span><b style="color:#00f3ff;">980,100 PTS</b></div>
-                <div class="player-row"><span>3. Madenci (ID: ***551)</span><b style="color:#00f3ff;">650,400 PTS</b></div>
+        <button class="btn-primary" onclick="requestWithdraw()">Çekim Talebi Gönder</button>
+    </div>
+
+    <!-- TAB 6: ÖDEMELER & LİDERLİK -->
+    <div id="tab-payouts" class="tab-content">
+        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 6px;">🏆 Ödeme Kanıtları & Liderlik</h3>
+        <div style="background: rgba(15,52,96,0.6); border: 1px solid rgba(0,255,245,0.3); border-radius: 10px; padding: 8px; margin-bottom: 8px; text-align: left;">
+            <h4 style="color: #ff9900; font-size: 11px; margin: 0 0 4px 0;">⚡ Son Başarılı Ödemeler</h4>
+            <div style="font-size: 10px; line-height: 1.5; color: #c0d6df;">
+                <div>✅ ID: ...8923 (TON) - <b>12.5 USDT</b> Ödendi</div>
+                <div>✅ ID: ...4410 (TRC20) - <b>5.0 USDT</b> Ödendi</div>
+                <div>✅ ID: ...7712 (BEP20) - <b>25.0 USDT</b> Ödendi</div>
             </div>
         </div>
     </div>
 
     <!-- TAB 7: ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
-        <h3 style="text-align: left; color: #ff007f; font-size: 14px; margin-bottom: 8px;">👑 Admin Yönetim Paneli</h3>
-        
-        <div class="admin-section" style="background: rgba(10, 15, 30, 0.9); border: 1px solid rgba(0, 243, 255, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left;">
-            <h4 style="color: #00f3ff; font-size: 11px; margin: 0 0 6px 0;">👥 Tüm Kayıtlı Oyuncular (ID Kopyala)</h4>
-            <div id="admin-players-list" style="max-height: 140px; overflow-y: auto; background: #03050a; border-radius: 8px; padding: 6px; font-size: 10px;">
-                <p style="color: #666; margin: 0;">Kayıtlı oyuncu bulunamadı.</p>
-            </div>
-        </div>
-
-        <div class="admin-section" style="background: rgba(10, 15, 30, 0.9); border: 1px solid rgba(255, 0, 127, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left;">
-            <h4 style="color: #ff007f; font-size: 11px; margin: 0 0 6px 0;">⚠️ Tehlikeli Bölge / Hard Reset</h4>
-            <button style="background: linear-gradient(135deg, #ff007f, #cc0000); color: #fff; padding: 7px; font-size: 11px; margin: 0; border:none; border-radius:8px; font-weight:bold; cursor:pointer;" onclick="adminHardReset()">💥 Tüm Verileri Sıfırla</button>
-        </div>
-
-        <div class="admin-section" style="background: rgba(10, 15, 30, 0.9); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left;">
-            <h4 style="color: #00f3ff; font-size: 11px; margin: 0 0 6px 0;">⚡ Hızlı Bakiye Ekle (Kendi Hesabına)</h4>
-            <div style="display: flex; gap: 6px; margin-top: 4px;">
-                <button style="background: #00e676; color:#000; font-size:10px; padding:6px; margin:0; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="adminAddDirectBalance(10000)">+10 Bin</button>
-                <button style="background: #00f3ff; color:#000; font-size:10px; padding:6px; margin:0; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="adminAddDirectBalance(100000)">+100 Bin</button>
-                <button style="background: #ff9100; color:#fff; font-size:10px; padding:6px; margin:0; border:none; border-radius:6px; font-weight:bold; cursor:pointer;" onclick="adminAddDirectBalance(1000000)">+1 Milyon</button>
-            </div>
-        </div>
+        <h3 style="color: #ff416c; font-size: 13px; margin-bottom: 8px;">👑 Admin Yönetim Paneli</h3>
+        <button class="btn-primary" style="background:#00b894; color:#fff; margin-bottom:6px;" onclick="adminAddDirectBalance(10000)">+10.000 PTS Ekle</button>
+        <button class="btn-primary" style="background:#ff416c; color:#fff;" onclick="adminHardReset()">💥 Tüm Verileri Sıfırla</button>
     </div>
 </div>
 
 <!-- SABİT ALT MENÜ -->
 <div class="navbar">
-    <div class="nav-item active" onclick="switchTab('mine', this)" id="nav-mine"><span class="nav-icon">🖥️</span>Kazım</div>
-    <div class="nav-item" onclick="switchTab('shop', this)" id="nav-shop"><span class="nav-icon">🛒</span>Market</div>
-    <div class="nav-item" onclick="switchTab('ref', this)" id="nav-ref"><span class="nav-icon">👥</span>Davet</div>
-    <div class="nav-item" onclick="switchTab('rewards', this)" id="nav-reward"><span class="nav-icon">🎁</span>Ödül</div>
-    <div class="nav-item" onclick="switchTab('withdraw', this)" id="nav-wd"><span class="nav-icon">💸</span>Çekim</div>
-    <div class="nav-item" onclick="switchTab('payouts', this)" id="nav-payouts"><span class="nav-icon">🏆</span>Ödeme</div>
-    <div class="nav-item admin-nav-item" id="nav-admin-btn" style="display:none; color: #ff007f !important;" onclick="switchTab('admin', this)"><span class="nav-icon">👑</span>Admin</div>
+    <div class="nav-item active" onclick="switchTab('mine', this)"><span class="nav-icon">🖥️</span>Kazım</div>
+    <div class="nav-item" onclick="switchTab('shop', this)"><span class="nav-icon">🛒</span>Market</div>
+    <div class="nav-item" onclick="switchTab('ref', this)"><span class="nav-icon">👥</span>Davet</div>
+    <div class="nav-item" onclick="switchTab('rewards', this)"><span class="nav-icon">🎁</span>Ödül</div>
+    <div class="nav-item" onclick="switchTab('withdraw', this)"><span class="nav-icon">💸</span>Çekim</div>
+    <div class="nav-item" onclick="switchTab('payouts', this)"><span class="nav-icon">🏆</span>Ödeme</div>
+    <div class="nav-item" id="nav-admin-btn" style="display:none; color: #ff416c;" onclick="switchTab('admin', this)"><span class="nav-icon">👑</span>Admin</div>
 </div>
 
 <!-- GÖREVLER MODALI -->
 <div id="tasksModal" class="modal-overlay">
     <div class="modal-card">
-        <h3 style="color: #00f3ff; margin-top: 0; font-size: 14px;" id="txt-tasks-panel-title">📋 Görev Paneli</h3>
+        <h3 style="color: #00f3ff; margin-top: 0; font-size: 14px;">📋 Görev Paneli</h3>
         <div class="item-card">
-            <div class="item-info"><b id="txt-task-live">TikTok Canlı Yayınını İzle</b><small>+2.500 PTS</small></div>
-            <button class="action-sm-btn" onclick="claimTaskReward(2500, this)" id="txt-task-do-btn">Yap</button>
+            <div class="item-info"><b>Telegram Kanal Takibi</b><small>Duyuru kanalına katıl</small></div>
+            <button class="action-sm-btn" onclick="openSupport(); claimTaskReward(3500, this);">Katıl</button>
         </div>
-        <button class="btn-primary" style="margin-top: 8px;" onclick="closeModal('tasksModal')" id="txt-close-btn-1">Kapat</button>
+        <button class="btn-primary" style="margin-top: 8px;" onclick="closeModal('tasksModal')">Kapat</button>
     </div>
 </div>
 
 <!-- AYARLAR MODALI -->
 <div id="settingsModal" class="modal-overlay">
     <div class="modal-card">
-        <div class="profile-header">
-            <img id="user-profile-pic" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop&crop=faces" class="profile-pic" alt="Profil">
-            <div>
-                <p id="user-profile-name" class="profile-name" style="font-size: 13px; font-weight: bold; margin: 0;">Kullanıcı</p>
-                <p id="user-profile-username" class="profile-username" style="font-size: 10px; color: #00f3ff; margin: 2px 0 0 0;">@RigMaster</p>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label class="settings-label" id="txt-lang-label">Dil Seçimi / Language</label>
-            <div class="settings-row">
-                <button class="lang-btn active" id="btn-tr" onclick="setLanguage('tr')">🇹🇷 TR</button>
-                <button class="lang-btn" id="btn-en" onclick="setLanguage('en')">🇬🇧 EN</button>
-                <button class="lang-btn" id="btn-ar" onclick="setLanguage('ar')">🇸🇦 AR</button>
-            </div>
-        </div>
-
-        <div class="settings-group">
-            <label class="settings-label" id="txt-audio-label">Ses ve Müzik Efektleri</label>
-            <button class="audio-toggle-btn" id="audio-toggle-btn" onclick="toggleMusic()">
-                <span id="txt-audio-fx">🔊 Ses Efektleri</span>
-                <b id="audio-status-text" style="color: #00f3ff;">Açık</b>
-            </button>
-        </div>
-
-        <div style="text-align: center; margin-bottom: 8px;">
-            <div id="user-id-display" class="user-id-badge" onclick="copyMyId()" title="ID'yi kopyalamak için tıkla">ID: Yükleniyor... 📋</div>
-        </div>
-
-        <p style="font-size: 10px; color: #7f95b3; text-align: center; margin: 4px 0;">Sürüm: v7.0 Triple-Fan GPU Edition</p>
-        <button class="btn-primary" style="margin-top: 6px;" onclick="closeModal('settingsModal')" id="txt-close-btn-2">Kapat</button>
+        <h3 style="color: #00f3ff; margin-top: 0; font-size: 14px;">⚙️ Rig Ayarları</h3>
+        <p style="font-size: 11px; color: #7f95b3;" id="userIdText" onclick="copyMyId()" style="cursor:pointer;">Kullanıcı ID: Yükleniyor...</p>
+        <p style="font-size: 11px; color: #7f95b3;">Sürüm: v7.5 Triple-Fan GPU Edition</p>
+        <button class="btn-primary" style="margin-top: 10px;" onclick="closeModal('settingsModal')">Kapat</button>
     </div>
 </div>
 
@@ -661,167 +539,49 @@
 
     let gameData = {
         balance: parseFloat(localStorage.getItem('sm_balance')) || 4350.0270,
-        clickPower: parseFloat(localStorage.getItem('sm_clickPower')) || 0.0025,
-        speedMultiplier: parseFloat(localStorage.getItem('sm_speedMultiplier')) || 1.0,
-        gpuList: JSON.parse(localStorage.getItem('sm_gpuList')) || [],
-        activeGpuName: localStorage.getItem('sm_activeGpuName') || "NVIDIA RTX 4090 OC",
+        clickPower: parseFloat(localStorage.getItem('sm_clickPower')) || 0.0010,
+        speedMultiplier: 1.0,
+        gpuList: JSON.parse(localStorage.getItem('sm_gpus')) || [],
+        activeGpuName: localStorage.getItem('sm_activeGpuName') || "GT 730 Mini-Rig",
         refCount: parseInt(localStorage.getItem('sm_refCount')) || 0,
+        streakDays: parseInt(localStorage.getItem('sm_streakDays')) || 1,
+        lastClaimDate: localStorage.getItem('sm_lastClaimDate') || "",
+        tasksProgress: JSON.parse(localStorage.getItem('sm_tasks')) || { 1: 0, 2: 0 },
         userId: myUserId,
-        userName: tgUser?.first_name || localStorage.getItem('sm_userName') || "Rig Master",
-        soundEnabled: localStorage.getItem('sm_sound') !== 'false',
-        currentLang: localStorage.getItem('sm_lang') || 'tr'
+        userName: tgUser?.first_name || "Rig Master"
     };
 
-    if (tgUser) {
-        if (tgUser.first_name) gameData.userName = tgUser.first_name;
-        if (tgUser.photo_url) {
-            document.getElementById('userAvatarImg').src = tgUser.photo_url;
-            document.getElementById('user-profile-pic').src = tgUser.photo_url;
-        }
-        document.getElementById('user-profile-name').innerText = tgUser.first_name || "Madenci";
-        document.getElementById('user-profile-username').innerText = tgUser.username ? "@" + tgUser.username : "@sanalminer";
+    if (adminIds.includes(myUserId)) {
+        document.getElementById('nav-admin-btn').style.display = 'block';
     }
 
     document.getElementById('userName').innerText = gameData.userName;
-    document.getElementById('userAvatarImg').innerText = gameData.userName.charAt(0).toUpperCase();
-    document.getElementById('user-id-display').innerText = `ID: ${gameData.userId} 📋`;
-
-    if (adminIds.includes(String(gameData.userId))) {
-        document.getElementById('nav-admin-btn').style.display = 'block';
-        updateAdminPlayersList();
+    document.getElementById('userInitial').innerText = gameData.userName.charAt(0).toUpperCase();
+    if (tgUser?.photo_url) {
+        let avatarImg = document.getElementById('userAvatarImg');
+        avatarImg.src = tgUser.photo_url;
+        avatarImg.style.display = 'block';
+        document.getElementById('userInitial').style.display = 'none';
     }
-
-    // ÇOKLU DİL SÖZLÜĞÜ
-    const translations = {
-        tr: {
-            assistant: "<b>Asistan Rehberi:</b><br>👉 Puan kazanmak için <span class=\"guide-link\" onclick=\"switchTab('mine', document.querySelector('.navbar .nav-item:nth-child(1)'))\">Kazım</span> kartına tıkla.<br>👉 Pasif gelir için <span class=\"guide-link\" onclick=\"switchTab('shop', document.querySelector('.navbar .nav-item:nth-child(2)'))\">Market</span> bölümünden Rig kirala!<br>👉 Seri ödüllerini <span class=\"guide-link\" onclick=\"switchTab('rewards', document.querySelector('.navbar .nav-item:nth-child(4)'))\">Ödül</span> sekmesinden topla.",
-            totalBalance: "Toplam Varlık",
-            activeRigTitle: "AKTİF ÜÇ FANLI EKRAN KARTI RİG'İ",
-            efficiency: "98% Verim",
-            tempLabel: "Sıcaklık",
-            clickGuide: "Hız Üretmek İçin Kartın Üzerine Dokun!",
-            clickPowerTitle: "Tıklama Gücü",
-            passiveRateTitle: "Pasif Rig Hızı",
-            adBtn: "📺 Reklam İzle & 2x Hızlandır (+0.5x)",
-            shopTitle: "🖥️ Ekran Kartı Rig Pazarı",
-            buyText: "Satın Al",
-            refTitle: "👥 Arkadaşını Davet Et",
-            refRewardDesc: "Her Davete +2,500 PTS Kazan!",
-            refTotal: "Toplam Davet",
-            refBtn: "🔗 Davet Linkini Kopyala/Paylaş",
-            rewardTitle: "🎁 Günlük Ödül & Bonuslar",
-            dailyBonusTitle: "Günlük Giriş Bonusu",
-            dailyBonusDesc: "24 saatte bir düzenli topla",
-            claimBtn: "Topla",
-            taskChannelTitle: "Telegram Kanal Takibi",
-            taskChannelDesc: "Duyuru kanalına katıl",
-            wdTitle: "💸 Kripto Çekim Merkezi",
-            rateLabel: "DÖNÜŞÜM ORANI",
-            netLabel: "Çekim Ağı",
-            walletLabel: "Cüzdan Adresi",
-            amountLabel: "Miktar (PTS)",
-            wdBtn: "Çekim Talebi Gönder",
-            navMine: "Kazım",
-            navShop: "Market",
-            navRef: "Davet",
-            navReward: "Ödül",
-            navWd: "Çekim",
-            navPayouts: "Ödeme",
-            navAdmin: "Admin"
-        },
-        en: {
-            assistant: "<b>Assistant Guide:</b><br>👉 Click <span class=\"guide-link\" onclick=\"switchTab('mine', document.querySelector('.navbar .nav-item:nth-child(1)'))\">Mine</span> to earn points.<br>👉 Rent Rigs from <span class=\"guide-link\" onclick=\"switchTab('shop', document.querySelector('.navbar .nav-item:nth-child(2)'))\">Shop</span> for passive income!<br>👉 Collect rewards from <span class=\"guide-link\" onclick=\"switchTab('rewards', document.querySelector('.navbar .nav-item:nth-child(4)'))\">Rewards</span>.",
-            totalBalance: "Total Assets",
-            activeRigTitle: "ACTIVE TRIPLE-FAN GPU RIG",
-            efficiency: "98% Efficiency",
-            tempLabel: "Temperature",
-            clickGuide: "Tap on the card to generate speed!",
-            clickPowerTitle: "Click Power",
-            passiveRateTitle: "Passive Rig Speed",
-            adBtn: "📺 Watch Ad & 2x Boost (+0.5x)",
-            shopTitle: "🖥️ GPU Rig Marketplace",
-            buyText: "Buy",
-            refTitle: "👥 Invite Your Friend",
-            refRewardDesc: "Earn +2,500 PTS Per Invite!",
-            refTotal: "Total Invites",
-            refBtn: "🔗 Copy/Share Referral Link",
-            rewardTitle: "🎁 Daily Rewards & Bonuses",
-            dailyBonusTitle: "Daily Login Bonus",
-            dailyBonusDesc: "Collect regularly every 24h",
-            claimBtn: "Claim",
-            taskChannelTitle: "Telegram Channel Follow",
-            taskChannelDesc: "Join our announcement channel",
-            wdTitle: "💸 Crypto Withdrawal Center",
-            rateLabel: "CONVERSION RATE",
-            netLabel: "Network",
-            walletLabel: "Wallet Address",
-            amountLabel: "Amount (PTS)",
-            wdBtn: "Submit Withdrawal Request",
-            navMine: "Mine",
-            navShop: "Shop",
-            navRef: "Invite",
-            navReward: "Rewards",
-            navWd: "Withdraw",
-            navPayouts: "Payouts",
-            navAdmin: "Admin"
-        },
-        ar: {
-            assistant: "<b>دليل المساعد:</b><br>👉 انقر فوق <span class=\"guide-link\" onclick=\"switchTab('mine', document.querySelector('.navbar .nav-item:nth-child(1)'))\">التعدين</span> لكسب النقاط.<br>👉 استأجر منصات من <span class=\"guide-link\" onclick=\"switchTab('shop', document.querySelector('.navbar .nav-item:nth-child(2)'))\">المتجر</span> للدخل السلبي!<br>👉 اجمع المكافآت من <span class=\"guide-link\" onclick=\"switchTab('rewards', document.querySelector('.navbar .nav-item:nth-child(4)'))\">المكافآت</span>.",
-            totalBalance: "إجمالي الأصول",
-            activeRigTitle: "منصة كارت الشاشة الثلاثية النشطة",
-            efficiency: "98% كفاءة",
-            tempLabel: "درجة الحرارة",
-            clickGuide: "انقر فوق البطاقة لتوليد السرعة!",
-            clickPowerTitle: "قوة النقر",
-            passiveRateTitle: "سرعة التعدين السلبي",
-            adBtn: "📺 مشاهدة إعلان وزيادة السرعة (+0.5x)",
-            shopTitle: "🖥️ سوق منصات تعدين الكروت",
-            buyText: "شراء",
-            refTitle: "👥 دعوة أصدقائك",
-            refRewardDesc: "اربح +2,500 نقطة لكل دعوة!",
-            refTotal: "إجمالي الدعوات",
-            refBtn: "🔗 نسخ / مشاركة رابط الإحالة",
-            rewardTitle: "🎁 المكافآت اليومية",
-            dailyBonusTitle: "مكافأة الدخول اليومية",
-            dailyBonusDesc: "اجمع بانتظام كل 24 ساعة",
-            claimBtn: "اجمع",
-            taskChannelTitle: "متابعة قناة تلغرام",
-            taskChannelDesc: "انضم إلى قناة الإعلانات",
-            wdTitle: "💸 مركز السحب",
-            rateLabel: "سعر التحويل",
-            netLabel: "شبكة السحب",
-            walletLabel: "عنوان المحفظة",
-            amountLabel: "المبلغ (نقاط)",
-            wdBtn: "إرسال طلب السحب",
-            navMine: "تعدين",
-            navShop: "المتجر",
-            navRef: "دعوة",
-            navReward: "مكافأة",
-            navWd: "سحب",
-            navPayouts: "مدفوعات",
-            navAdmin: "مشرف"
-        }
-    };
-
-    setLanguage(gameData.currentLang);
+    document.getElementById('userIdText').innerText = `Kullanıcı ID: ${gameData.userId} (Kopyala)`;
     updateUI();
 
     function saveData() {
         localStorage.setItem('sm_balance', gameData.balance);
         localStorage.setItem('sm_clickPower', gameData.clickPower);
-        localStorage.setItem('sm_speedMultiplier', gameData.speedMultiplier);
-        localStorage.setItem('sm_gpuList', JSON.stringify(gameData.gpuList));
+        localStorage.setItem('sm_gpus', JSON.stringify(gameData.gpuList));
         localStorage.setItem('sm_activeGpuName', gameData.activeGpuName);
         localStorage.setItem('sm_refCount', gameData.refCount);
-        localStorage.setItem('sm_sound', gameData.soundEnabled);
-        localStorage.setItem('sm_lang', gameData.currentLang);
+        localStorage.setItem('sm_streakDays', gameData.streakDays);
+        localStorage.setItem('sm_lastClaimDate', gameData.lastClaimDate);
+        localStorage.setItem('sm_tasks', JSON.stringify(gameData.tasksProgress));
     }
 
     function switchTab(tabId, el) {
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
         document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
         document.getElementById('tab-' + tabId).classList.add('active');
-        if (el) el.classList.add('active');
+        el.classList.add('active');
         if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
     }
 
@@ -855,6 +615,7 @@
         document.getElementById('passive-rate').innerText = getPassiveRate().toFixed(4);
         document.getElementById('ref-count').innerText = gameData.refCount;
         document.getElementById('gpuModelTitle').innerText = gameData.activeGpuName;
+        document.getElementById('streak-days').innerText = gameData.streakDays;
     }
 
     function buyGPU(id, price, rate, name) {
@@ -862,6 +623,7 @@
             gameData.balance -= price;
             gameData.gpuList.push({ id, rate });
             gameData.activeGpuName = name;
+            gameData.clickPower += (rate * 0.2); // Her rig tıklama gücünü de artırır
             updateUI();
             saveData();
             showAlert(`Tebrikler! ${name} filonuza eklendi ve ana ekran kartınız güncellendi.`);
@@ -870,38 +632,55 @@
         }
     }
 
-    // 📺 ADSGRAM REKLAM ENTEGRASYONU (HATA KORUMALI)
+    // ADSGRAM REKLAM ENTEGRASYONU
     function watchBonusAd() {
         if (typeof Adsgram !== 'undefined' && Adsgram.init) {
             try {
                 const adController = Adsgram.init({ blockId: "42993" });[cite: 2]
                 adController.show().then(() => {
-                    rewardAdSuccess();
+                    gameData.speedMultiplier += 0.5;
+                    updateUI();
+                    showAlert("Reklam başarıyla izlendi! Hız 0.5x artırıldı.");
                 }).catch((result) => {
-                    showAlert("Reklam izlenemedi veya kapatıldı: " + (result.description || JSON.stringify(result)));
+                    showAlert("Reklam izlenemedi veya kapatıldı.");
                 });
             } catch (err) {
-                showAlert("Reklam yüklenirken hata oluştu, test modunda hız artırıldı.");
-                rewardAdSuccess();
+                gameData.speedMultiplier += 0.5;
+                updateUI();
+                showAlert("Test Modu: Reklam simüle edildi, hız artırıldı!");
             }
         } else {
-            showAlert("Test Modu: Adsgram SDK yüklenemediği için reklam simüle edildi ve hız artırıldı!");
-            rewardAdSuccess();
+            gameData.speedMultiplier += 0.5;
+            updateUI();
+            showAlert("Test Modu: Adsgram SDK yüklenemedi, hız artırıldı!");
         }
     }
 
-    function rewardAdSuccess() {
-        gameData.speedMultiplier += 0.5;
+    function claimDailyBonus() {
+        let today = new Date().toDateString();
+        if (gameData.lastClaimDate === today) {
+            showAlert("Bugünkü günlük ödülünüzü zaten aldınız. Yarın tekrar gelin!");
+            return;
+        }
+
+        let rewardAmount = 25 * gameData.streakDays;
+        gameData.balance += rewardAmount;
+        gameData.lastClaimDate = today;
+        gameData.streakDays++;
+        
         updateUI();
         saveData();
-        showAlert("Reklam başarıyla izlendi! Hız 2 katına çıkarıldı.");
+        showAlert(`Tebrikler! Günlük seri ödülünüz olan ${rewardAmount} PTS hesabınıza eklendi!`);
     }
 
-    function claimDailyBonus() {
-        gameData.balance += 2000;
+    function completeTask(taskId, targetCount, rewardPts, btn) {
+        gameData.balance += rewardPts;
         updateUI();
         saveData();
-        showAlert("Günlük 2,000 PTS ödülün hesabına eklendi!");
+        btn.innerText = "Alındı";
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        showAlert(`Ödül başarıyla eklendi: +${rewardPts} PTS`);
     }
 
     function claimTaskReward(amount, btn) {
@@ -914,9 +693,17 @@
         showAlert(`Ödül başarıyla eklendi: +${amount} PTS`);
     }
 
+    function calculateEstimate() {
+        let amt = parseFloat(document.getElementById('withdrawAmount').value) || 0;
+        let usdt = amt / 10000;
+        document.getElementById('calc-result').innerText = usdt.toFixed(2) + " USDT";
+    }
+
     function requestWithdraw() {
         let addr = document.getElementById('walletInput').value;
         let amount = parseFloat(document.getElementById('withdrawAmount').value);
+        let net = document.getElementById('networkSelect').value;
+
         if (!addr) { showAlert("Lütfen geçerli bir cüzdan adresi girin!"); return; }
         if (!amount || amount < 10000) { showAlert("Minimum çekim miktarı 10.000 PTS'dir!"); return; }
         if (gameData.balance < amount) { showAlert("Bakiyeniz bu işlem için yetersiz!"); return; }
@@ -924,7 +711,7 @@
         gameData.balance -= amount;
         updateUI();
         saveData();
-        showAlert("Çekim talebiniz başarıyla sıraya alındı.");
+        showAlert(`Çekim talebiniz (${net}) başarıyla sıraya alındı.`);
     }
 
     function shareRef() {
@@ -937,6 +724,20 @@
         }
     }
 
+    function openSupport() {
+        let channelUrl = "https://t.me/sanal_miner_duyuru";[cite: 2]
+        if (tg?.openTelegramLink) {
+            tg.openTelegramLink(channelUrl);
+        } else {
+            window.open(channelUrl, "_blank");
+        }
+    }
+
+    function copyMyId() {
+        navigator.clipboard.writeText(gameData.userId);
+        showAlert("Kullanıcı ID panoya kopyalandı: " + gameData.userId);
+    }
+
     function openModal(id) { document.getElementById(id).style.display = 'flex'; }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     function showAlert(text) {
@@ -944,71 +745,11 @@
         openModal('alertModal');
     }
 
-    function copyMyId() {
-        navigator.clipboard.writeText(gameData.userId);
-        showAlert("Kullanıcı ID'niz panoya kopyalandı: " + gameData.userId);
-    }
-
-    function setLanguage(lang) {
-        gameData.currentLang = lang;
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        let btn = document.getElementById('btn-' + lang);
-        if (btn) btn.classList.add('active');
-
-        const t = translations[lang];
-        if (!t) return;
-
-        document.getElementById('txt-assistant').innerHTML = t.assistant;
-        document.getElementById('txt-total-balance').innerText = t.totalBalance;
-        document.getElementById('txt-active-rig-title').innerText = t.activeRigTitle;
-        document.getElementById('txt-efficiency').innerText = t.efficiency;
-        document.getElementById('txt-temp-label').innerText = t.tempLabel;
-        document.getElementById('txt-click-guide').innerText = t.clickGuide;
-        document.getElementById('txt-click-power-title').innerText = t.clickPowerTitle;
-        document.getElementById('txt-passive-rate-title').innerText = t.passiveRateTitle;
-        document.getElementById('txt-ad-btn').innerHTML = t.adBtn;
-        document.getElementById('txt-shop-title').innerText = t.shopTitle;
-        document.getElementById('txt-ref-title').innerText = t.refTitle;
-        document.getElementById('txt-ref-reward-desc').innerText = t.refRewardDesc;
-        document.getElementById('txt-ref-total').innerText = t.refTotal;
-        document.getElementById('txt-ref-btn').innerText = t.refBtn;
-        document.getElementById('txt-reward-title').innerText = t.rewardTitle;
-        document.getElementById('txt-daily-bonus-title').innerText = t.dailyBonusTitle;
-        document.getElementById('txt-daily-bonus-desc').innerText = t.dailyBonusDesc;
-        document.getElementById('txt-claim-btn').innerText = t.claimBtn;
-        document.getElementById('txt-task-channel-title').innerText = t.taskChannelTitle;
-        document.getElementById('txt-task-channel-desc').innerText = t.taskChannelDesc;
-        document.getElementById('txt-wd-title').innerText = t.wdTitle;
-        document.getElementById('txt-rate-label').innerText = t.rateLabel;
-        document.getElementById('txt-net-label').innerText = t.netLabel;
-        document.getElementById('txt-wallet-label').innerText = t.walletLabel;
-        document.getElementById('txt-amount-label').innerText = t.amountLabel;
-        document.getElementById('txt-wd-btn').innerText = t.wdBtn;
-
-        document.querySelectorAll('.navbar .nav-item:nth-child(1)').forEach(el => el.childNodes[1].nodeValue = " " + t.navMine);
-        document.querySelectorAll('.navbar .nav-item:nth-child(2)').forEach(el => el.childNodes[1].nodeValue = " " + t.navShop);
-        document.querySelectorAll('.navbar .nav-item:nth-child(3)').forEach(el => el.childNodes[1].nodeValue = " " + t.navRef);
-        document.querySelectorAll('.navbar .nav-item:nth-child(4)').forEach(el => el.childNodes[1].nodeValue = " " + t.navReward);
-        document.querySelectorAll('.navbar .nav-item:nth-child(5)').forEach(el => el.childNodes[1].nodeValue = " " + t.navWd);
-        document.querySelectorAll('.navbar .nav-item:nth-child(6)').forEach(el => el.childNodes[1].nodeValue = " " + t.navPayouts);
-        document.querySelectorAll('.navbar .nav-item:nth-child(7)').forEach(el => el.childNodes[1].nodeValue = " " + t.navAdmin);
-
-        document.querySelectorAll('.buy-text').forEach(btn => btn.innerText = t.buyText);
-        saveData();
-    }
-
-    function toggleMusic() {
-        gameData.soundEnabled = !gameData.soundEnabled;
-        document.getElementById('audio-status-text').innerText = gameData.soundEnabled ? "Açık" : "Kapalı";
-        document.getElementById('audio-status-text').style.color = gameData.soundEnabled ? "#00f3ff" : "#ff007f";
-        saveData();
-    }
-
     function adminAddDirectBalance(amount) {
         gameData.balance += amount;
         updateUI();
         saveData();
-        showAlert(`Admin İşlemi: Hesabınıza ${amount} PTS eklendi!`);
+        showAlert(`Admin: Hesabınıza ${amount} PTS eklendi!`);
     }
 
     function adminHardReset() {
@@ -1016,11 +757,6 @@
             localStorage.clear();
             location.reload();
         }
-    }
-
-    function updateAdminPlayersList() {
-        let listEl = document.getElementById('admin-players-list');
-        listEl.innerHTML = `<div class="player-row"><span>Oyuncu: ${gameData.userId}</span><b style="color:#00f3ff;">Aktif</b></div>`;
     }
 
     // Pasif Kazanç Döngüsü
