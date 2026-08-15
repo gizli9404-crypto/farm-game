@@ -62,51 +62,69 @@
         .balance-card {
             background: linear-gradient(145deg, #131b2e, #0d121d);
             border: 1px solid var(--border-color); border-radius: 20px;
-            padding: 18px; text-align: center; margin-bottom: 16px;
+            padding: 16px; text-align: center; margin-bottom: 12px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
         .balance-title { font-size: 10px; color: var(--text-muted); text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
-        .balance-amount { font-size: 30px; font-weight: 800; color: #fff; margin: 4px 0; text-shadow: 0 0 20px rgba(0,255,102,0.2); }
+        .balance-amount { font-size: 28px; font-weight: 800; color: #fff; margin: 4px 0; text-shadow: 0 0 20px rgba(0,255,102,0.2); }
         .usd-badge {
             display: inline-block; background: rgba(0, 255, 102, 0.1);
-            border: 1px file rgba(0, 255, 102, 0.25); border: 1px solid rgba(0, 255, 102, 0.25);
+            border: 1px solid rgba(0, 255, 102, 0.25);
             color: var(--accent-green); padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700;
         }
 
-        /* TIKLA-KAZAN MERKEZİ (Yeni Nesil Büyük Coin Tasarımı) */
+        /* EKRAN KARTI TIKLAMA MERKEZİ (GPU Rig Tap Area) */
         .tap-center-container {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 10px 0 20px 0;
+            padding: 4px 0 14px 0;
         }
 
-        .clicker-circle {
-            width: 170px; height: 170px;
-            background: radial-gradient(circle at 30% 30%, #1e293b, #090d16);
-            border: 3px solid var(--accent-cyan);
-            border-radius: 50%;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            cursor: pointer; position: relative;
-            box-shadow: 0 0 40px rgba(0, 243, 255, 0.25), inset 0 0 20px rgba(0, 243, 255, 0.15);
-            transition: transform 0.08s ease, box-shadow 0.08s ease;
+        .gpu-rig-box {
+            width: 100%; height: 160px;
+            background: linear-gradient(135deg, #111827, #070a12);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 20px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 14px; cursor: pointer; position: relative;
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.2), inset 0 0 15px rgba(0, 243, 255, 0.1);
+            transition: transform 0.05s ease, border-color 0.2s;
         }
-        .clicker-circle:active {
-            transform: scale(0.93);
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.4), inset 0 0 10px rgba(0, 255, 102, 0.2);
+        .gpu-rig-box:active {
+            transform: scale(0.97);
             border-color: var(--accent-green);
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.4);
         }
 
-        .coin-icon-inner { font-size: 54px; filter: drop-shadow(0 0 10px rgba(0,243,255,0.5)); }
-        .coin-label-inner { font-size: 14px; font-weight: 800; color: var(--accent-cyan); margin-top: 4px; letter-spacing: 1px; }
+        .gpu-top-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: 800; color: var(--accent-cyan); }
+        
+        .fans-row {
+            display: flex; justify-content: space-around; align-items: center;
+        }
+        .rig-fan {
+            width: 44px; height: 44px; background: #04060a;
+            border: 2px solid rgba(255, 255, 255, 0.15); border-radius: 50%;
+            display: flex; align-items: center; justify-content: center; position: relative;
+        }
+        .fan-spin {
+            width: 100%; height: 100%; position: relative;
+            animation: spinRot 0.6s linear infinite;
+        }
+        @keyframes spinRot { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .fan-spin::before, .fan-spin::after { content: ''; position: absolute; background: var(--accent-cyan); }
+        .fan-spin::before { width: 3px; height: 100%; left: 20px; top: 0; border-radius: 2px; }
+        .fan-spin::after { width: 100%; height: 3px; left: 0; top: 20px; border-radius: 2px; }
+        .fan-core { position: absolute; width: 8px; height: 8px; background: var(--accent-green); border-radius: 50%; box-shadow: 0 0 6px var(--accent-green); }
 
-        .tap-instruction { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 16px; text-align: center; }
+        .gpu-bot-info { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: var(--text-muted); }
+        .tap-instruction { font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 12px; text-align: center; }
 
         /* Enerji / Limit Barı */
         .energy-bar-container {
             background: var(--card-bg); border: 1px solid var(--border-color);
-            padding: 12px 16px; border-radius: 16px; margin-bottom: 12px;
+            padding: 10px 14px; border-radius: 16px; margin-bottom: 10px;
         }
         .energy-info { display: flex; justify-content: space-between; font-size: 11px; font-weight: 700; margin-bottom: 6px; }
-        .progress-track { width: 100%; height: 8px; background: #070a12; border-radius: 4px; overflow: hidden; }
+        .progress-track { width: 100%; height: 7px; background: #070a12; border-radius: 4px; overflow: hidden; }
         .progress-fill { width: 100%; height: 100%; background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); border-radius: 4px; transition: width 0.2s; }
 
         /* Butonlar */
@@ -117,6 +135,29 @@
             box-shadow: 0 4px 20px rgba(0,255,102,0.25); transition: 0.2s; margin-bottom: 8px;
         }
         .btn-main:active { transform: scale(0.97); }
+
+        /* Market Kartları */
+        .market-card {
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            padding: 14px; border-radius: 16px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+            backdrop-filter: blur(10px);
+        }
+        .market-info b { font-size: 13px; color: #fff; display: block; }
+        .market-info small { font-size: 11px; color: var(--text-muted); display: block; margin-top: 2px; }
+        .btn-buy {
+            background: linear-gradient(135deg, var(--accent-cyan), #0066ff);
+            color: #0b0e14; border: none; padding: 8px 14px; font-size: 11px; font-weight: 800;
+            border-radius: 10px; cursor: pointer; box-shadow: 0 2px 10px rgba(0,243,255,0.2);
+        }
+
+        /* Çekim Alanı Butonları */
+        .quick-amounts { display: flex; gap: 8px; margin-bottom: 10px; }
+        .btn-quick {
+            flex: 1; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color);
+            color: var(--accent-cyan); padding: 8px; font-size: 11px; font-weight: 800;
+            border-radius: 10px; cursor: pointer; text-align: center;
+        }
 
         /* Sekme Panelleri */
         .pane { display: none; }
@@ -168,26 +209,41 @@
             <div class="avatar-box" id="userInitial">E</div>
             <div class="user-meta">
                 <b id="userName">Engin</b>
-                <span>VIP Status Active</span>
+                <span id="vipBadgeText" style="color: var(--accent-green);">VIP Status Active</span>
             </div>
         </div>
         <button class="btn-tasks-header" onclick="openModal('tasksModal')">📋 Görevler</button>
     </div>
 
-    <!-- 1. KAZIM EKRANI (YENİ NESİL TIKLA-KAZAN) -->
+    <!-- 1. KAZIM EKRANI -->
     <div id="pane-mine" class="pane active">
         <div class="balance-card">
             <div class="balance-title">Toplam Varlık</div>
-            <div class="balance-amount"><span id="balance">17,300.4240</span></div>
-            <div class="usd-badge">≈ $<span id="balanceUsd">1.73</span> USDT</div>
+            <div class="balance-amount"><span id="balance">14,304.4240</span></div>
+            <div class="usd-badge">≈ $<span id="balanceUsd">1.43</span> USDT</div>
         </div>
 
         <div class="tap-center-container">
-            <div class="clicker-circle" onclick="tapToEarn(event)">
-                <div class="coin-icon-inner">🪙</div>
-                <div class="coin-label-inner">NACKL</div>
+            <!-- Tıklanabilir Ekran Kartı Rig Görseli -->
+            <div class="gpu-rig-box" onclick="tapToEarn(event)">
+                <div class="gpu-top-info">
+                    <span id="gpuName">RX 580 8GB Rig</span>
+                    <span style="color: var(--accent-green);">PCIe 4.0</span>
+                </div>
+                
+                <div class="fans-row">
+                    <div class="rig-fan"><div class="fan-core"></div><div class="fan-spin"></div></div>
+                    <div class="rig-fan"><div class="fan-core"></div><div class="fan-spin"></div></div>
+                    <div class="rig-fan"><div class="fan-core"></div><div class="fan-spin"></div></div>
+                </div>
+
+                <div class="gpu-bot-info">
+                    <span>Sıcaklık: <b style="color:#ffaa00;">58°C</b></span>
+                    <span>Güç: x<span id="powerMultiplier">1.0</span></span>
+                </div>
             </div>
-            <div class="tap-instruction">⚡ Kazanmak için madeni paraya dokun!</div>
+            
+            <div class="tap-instruction">⚡ Madencilik yapmak için ekran kartına dokun!</div>
         </div>
 
         <div class="energy-bar-container">
@@ -201,26 +257,36 @@
         </div>
     </div>
 
-    <!-- 2. MARKET EKRANI (YENİLENMİŞ SADE TASARIM) -->
+    <!-- 2. MARKET EKRANI (VIP SATIŞI VE YÜKSELTMELER) -->
     <div id="pane-shop" class="pane">
-        <h3 style="color: var(--accent-cyan); font-size: 14px; margin-bottom: 12px;">🛒 Booster & Hız Market</h3>
-        <div class="balance-card" style="padding: 16px; margin-bottom: 10px; text-align: left; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <b style="font-size: 13px; color:#fff;">Tıklama Gücü (x2)</b>
-                <small style="display:block; color: var(--text-muted); font-size:11px; margin-top:2px;">Her dokunuşta 2 kat kazanç</small>
+        <h3 style="color: var(--accent-cyan); font-size: 14px; margin-bottom: 12px;">🛒 VIP & Donanım Market</h3>
+        
+        <div class="market-card">
+            <div class="market-info">
+                <b>👑 VIP Status Paket</b>
+                <small>2x Tıklama gücü kalıcı aktif olur</small>
             </div>
-            <button style="background: var(--accent-cyan); border:none; padding:8px 12px; border-radius:10px; font-weight:800; font-size:11px; color:#0b0e14; cursor:pointer;" onclick="buyUpgrade('click', 1000)">1,000 PTS</button>
+            <button class="btn-buy" onclick="buyVip()">5,000 PTS</button>
         </div>
-        <div class="balance-card" style="padding: 16px; margin-bottom: 10px; text-align: left; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <b style="font-size: 13px; color:#fff;">Otomatik Kazım Botu</b>
-                <small style="display:block; color: var(--text-muted); font-size:11px; margin-top:2px;">Siz yokken bile pasif biriktirir</small>
+
+        <div class="market-card">
+            <div class="market-info">
+                <b>🚀 Tıklama Gücü (+1.0)</b>
+                <small>Her dokunuşta daha fazla kazandırsın</small>
             </div>
-            <button style="background: var(--accent-cyan); border:none; padding:8px 12px; border-radius:10px; font-weight:800; font-size:11px; color:#0b0e14; cursor:pointer;" onclick="buyUpgrade('bot', 5000)">5,000 PTS</button>
+            <button class="btn-buy" onclick="buyUpgrade('click', 2500)">2,500 PTS</button>
+        </div>
+
+        <div class="market-card">
+            <div class="market-info">
+                <b>⚡ Otomatik Pasif Bot</b>
+                <small>Saniyede otomatik madencilik yapar</small>
+            </div>
+            <button class="btn-buy" onclick="buyUpgrade('bot', 7500)">7,500 PTS</button>
         </div>
     </div>
 
-    <!-- 3. DAVET EKRANI (ONAYLANAN FORMAT) -->
+    <!-- 3. DAVET EKRANI -->
     <div id="pane-ref" class="pane">
         <h3 style="color: var(--accent-cyan); font-size: 14px; margin-bottom: 12px;">👥 Arkadaşını Davet Et</h3>
         <div class="balance-card" style="padding: 16px; text-align: center;">
@@ -230,22 +296,22 @@
         <button class="btn-main" onclick="shareRef()">🔗 Davet Bağlantısını Paylaş</button>
     </div>
 
-    <!-- 4. ÖDÜL EKRANI (YENİLENMİŞ SADE TASARIM) -->
+    <!-- 4. ÖDÜL EKRANI -->
     <div id="pane-rewards" class="pane">
         <h3 style="color: var(--accent-cyan); font-size: 14px; margin-bottom: 12px;">🎁 Günlük Bonuslar</h3>
-        <div class="balance-card" style="padding: 16px; margin-bottom: 10px; text-align: left; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <b style="font-size: 13px; color:#fff;">Günlük Giriş Ödülü</b>
-                <small style="display:block; color: var(--accent-green); font-size:11px; margin-top:2px;">+3,000 PTS</small>
+        <div class="market-card">
+            <div class="market-info">
+                <b>Günlük Giriş Bonusu</b>
+                <small style="color: var(--accent-green);">+3,000 PTS Topla</small>
             </div>
-            <button style="background: var(--accent-green); border:none; padding:8px 14px; border-radius:10px; font-weight:800; font-size:11px; color:#0b0e14; cursor:pointer;" onclick="claimDaily()">Topla</button>
+            <button class="btn-buy" style="background:var(--accent-green); color:#0b0e14;" onclick="claimDaily()">Topla</button>
         </div>
     </div>
 
-    <!-- 5. ÇEKİM EKRANI (YENİLENMİŞ SADE TASARIM) -->
+    <!-- 5. ÇEKİM EKRANI (MAX VE %50 BUTONLARIYLA) -->
     <div id="pane-withdraw" class="pane">
         <h3 style="color: var(--accent-cyan); font-size: 14px; margin-bottom: 12px;">💸 Kripto Çekim Merkezi</h3>
-        <div class="balance-card" style="padding: 10px; margin-bottom: 12px; text-align: center;">
+        <div class="balance-card" style="padding: 10px; margin-bottom: 10px; text-align: center;">
             <div style="font-size: 10px; color: var(--text-muted);">DÖNÜŞÜM ORANI</div>
             <div style="font-size: 12px; font-weight: 800; color: var(--accent-cyan); margin-top: 2px;">10,000 PTS = 1.00 USDT</div>
         </div>
@@ -257,18 +323,24 @@
         </select>
 
         <label style="font-size: 11px; color: var(--text-muted); font-weight: 700; display:block; margin-bottom:4px;">Cüzdan Adresi</label>
-        <input type="text" id="walletAddress" placeholder="Cüzdan adresi..." style="width: 100%; padding: 10px; border-radius: 12px; background: #070a12; border: 1px solid var(--border-color); color: #fff; margin-bottom: 10px; font-size: 12px; outline:none;">
+        <input type="text" id="walletAddress" placeholder="Cüzdan adresi..." style="width: 100%; padding: 10px; border-radius: 12px; background: #070a12; border: 1px solid var(--border-color); color: #fff; margin-bottom: 8px; font-size: 12px; outline:none;">
 
-        <label style="font-size: 11px; color: var(--text-muted); font-weight: 700; display:block; margin-bottom:4px;">Miktar (Min: 10.000 PTS)</label>
-        <input type="number" id="withdrawAmount" placeholder="10000" style="width: 100%; padding: 10px; border-radius: 12px; background: #070a12; border: 1px solid var(--border-color); color: #fff; margin-bottom: 14px; font-size: 12px; outline:none;">
+        <label style="font-size: 11px; color: var(--text-muted); font-weight: 700; display:block; margin-bottom:4px;">Çekilecek Miktar (Min: 10.000 PTS)</label>
+        <input type="number" id="withdrawAmount" placeholder="10000" style="width: 100%; padding: 10px; border-radius: 12px; background: #070a12; border: 1px solid var(--border-color); color: #fff; margin-bottom: 6px; font-size: 12px; outline:none;">
 
-        <button class="btn-main" onclick="requestWithdraw()">Çekim Talebi Gönder</button>
+        <!-- Hızlı Oran Butonları (%50 ve Max) -->
+        <div class="quick-amounts">
+            <button class="btn-quick" onclick="setWithdrawAmount(0.5)">%50 Bakiye</button>
+            <button class="btn-quick" onclick="setWithdrawAmount(1.0)">MAX Bakiye</button>
+        </div>
+
+        <button class="btn-main" style="margin-top: 6px;" onclick="requestWithdraw()">Çekim Talebi Gönder</button>
     </div>
 </div>
 
 <!-- ALT DOCK MENÜ -->
 <div class="dock-menu">
-    <div class="dock-tab active" onclick="switchTab('mine', this)"><span class="dock-icon">🪙</span>Kazım</div>
+    <div class="dock-tab active" onclick="switchTab('mine', this)"><span class="dock-icon">🖥️</span>Kazım</div>
     <div class="dock-tab" onclick="switchTab('shop', this)"><span class="dock-icon">🛒</span>Market</div>
     <div class="dock-tab" onclick="switchTab('ref', this)"><span class="dock-icon">👥</span>Davet</div>
     <div class="dock-tab" onclick="switchTab('rewards', this)"><span class="dock-icon">🎁</span>Ödül</div>
@@ -280,7 +352,7 @@
     <div class="modal-content">
         <h3 style="color: var(--accent-cyan); margin-top: 0; font-size: 14px;">📋 Günlük Görevler</h3>
         <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-            <div><b style="font-size: 12px; color:#fff;">Telegram Kanalı Katıl</b><small style="display:block; color:var(--accent-green); font-size:10px;">+2,500 PTS</small></div>
+            <div><b style="font-size: 12px; color:#fff;">Kanalı Takip Et</b><small style="display:block; color:var(--accent-green); font-size:10px;">+2,500 PTS</small></div>
             <button style="background:var(--accent-cyan); border:none; padding:6px 10px; border-radius:8px; font-weight:800; font-size:10px; cursor:pointer;" onclick="claimTask(2500, this)">Yap</button>
         </div>
         <button class="btn-main" style="padding: 10px; margin-top: 6px;" onclick="closeModal('tasksModal')">Kapat</button>
@@ -300,8 +372,9 @@
     if (telegramApp) telegramApp.expand();
 
     let state = {
-        balance: 17300.4240,
+        balance: 14304.4240,
         clickPower: 1.0,
+        isVip: true,
         energy: 1500,
         maxEnergy: 1500,
         refCount: 0,
@@ -309,6 +382,25 @@
     };
 
     updateUI();
+
+    // Ses efekti için Web Audio API (Tıklama Sesi)
+    let audioCtx = null;
+    function playClickSound() {
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(150, audioCtx.currentTime + 0.05);
+            gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+            gain.gain.linearRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.start();
+            osc.stop(audioCtx.currentTime + 0.05);
+        } catch(e) {}
+    }
 
     function switchTab(tabId, tabElement) {
         document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
@@ -324,20 +416,22 @@
             return;
         }
 
+        let earned = state.clickPower * (state.isVip ? 2 : 1);
         state.energy -= 1;
-        state.balance += state.clickPower;
+        state.balance += earned;
         updateUI();
+        playClickSound();
 
-        // Uçan puan efekti
+        // Uçan yeşil puan efekti
         let fly = document.createElement('div');
         fly.className = 'floating-text';
-        fly.innerText = `+${state.clickPower}`;
+        fly.innerText = `+${earned.toFixed(1)}`;
         fly.style.left = (e.clientX || 180) + 'px';
         fly.style.top = (e.clientY || 250) + 'px';
         document.body.appendChild(fly);
         setTimeout(() => fly.remove(), 600);
 
-        if (telegramApp?.HapticFeedback) telegramApp.HapticFeedback.impactOccurred('light');
+        if (telegramApp?.HapticFeedback) telegramApp.HapticFeedback.impactOccurred('medium');
     }
 
     function updateUI() {
@@ -346,6 +440,19 @@
         document.getElementById('energyCount').innerText = state.energy;
         document.getElementById('energyBar').style.width = (state.energy / state.maxEnergy * 100) + '%';
         document.getElementById('refCount').innerText = state.refCount;
+        document.getElementById('powerMultiplier').innerText = state.isVip ? (state.clickPower * 2).toFixed(1) : state.clickPower.toFixed(1);
+    }
+
+    function buyVip() {
+        let cost = 5000;
+        if (state.balance >= cost) {
+            state.balance -= cost;
+            state.isVip = true;
+            updateUI();
+            showAlert("Tebrikler! VIP Statü aktif edildi (2x Kazanç).");
+        } else {
+            showAlert("Yetersiz bakiye!");
+        }
     }
 
     function buyUpgrade(type, cost) {
@@ -357,6 +464,11 @@
         } else {
             showAlert("Yetersiz bakiye!");
         }
+    }
+
+    function setWithdrawAmount(ratio) {
+        let target = Math.floor(state.balance * ratio);
+        document.getElementById('withdrawAmount').value = target;
     }
 
     function claimDaily() {
@@ -383,13 +495,13 @@
 
         state.balance -= amt;
         updateUI();
-        showAlert("Çekim talebiniz sıraya alındı.");
+        showAlert("Çekim talebiniz blokzincir sırasına alındı.");
     }
 
     function shareRef() {
         let link = `https://t.me/SanalMinerBot?start=ref_engin`;
         if (telegramApp && telegramApp.openTelegramLink) {
-            telegramApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=🚀 NACKL madenciliğine başla!`);
+            telegramApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=🚀 Ekran kartı rig'ini kur, madenciliğe başla!`);
         } else {
             navigator.clipboard.writeText(link);
             showAlert("Davet linki kopyalandı!");
