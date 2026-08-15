@@ -141,7 +141,7 @@
             margin-top: 2px;
         }
 
-        /* Ana Tıklama / Kazım Kartı (Görsel Alanı) */
+        /* Ana Tıklama Alanı */
         .mining-area {
             display: flex;
             flex-direction: column;
@@ -152,11 +152,10 @@
 
         .main-gpu-btn {
             width: 100%;
-            max-height: 220px;
             background: var(--card-bg);
             border: 2px solid var(--primary);
             border-radius: 20px;
-            padding: 15px;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -164,7 +163,6 @@
             cursor: pointer;
             box-shadow: 0 0 25px rgba(0, 255, 136, 0.15);
             transition: transform 0.05s;
-            position: relative;
         }
 
         .main-gpu-btn:active {
@@ -173,26 +171,35 @@
 
         .gpu-svg-art {
             width: 100%;
-            max-width: 260px;
+            max-width: 280px;
             height: auto;
             filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3));
         }
 
-        .spin-anim {
-            animation: pulseGpu 0.3s ease-in-out;
+        /* Fan Dönüş Animasyonları */
+        .fan-blade {
+            transform-origin: 202px 177px;
+            animation: spinFan 1.2s linear infinite;
+        }
+        .fan-blade-2 {
+            transform-origin: 500px 177px;
+            animation: spinFan 1.2s linear infinite;
+        }
+        .fan-blade-3 {
+            transform-origin: 698px 177px;
+            animation: spinFan 1.2s linear infinite;
         }
 
-        @keyframes pulseGpu {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.04); }
-            100% { transform: scale(1); }
+        @keyframes spinFan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
         }
 
         .click-hint {
             font-size: 11px;
             color: var(--primary);
             font-weight: 800;
-            margin-top: 10px;
+            margin-top: 12px;
             letter-spacing: 1px;
         }
 
@@ -226,8 +233,8 @@
         }
 
         .shop-thumb {
-            width: 55px;
-            height: 35px;
+            width: 65px;
+            height: 40px;
             background: #090d16;
             border-radius: 8px;
             padding: 4px;
@@ -251,7 +258,7 @@
             background: var(--primary);
             color: #000;
             border: none;
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-radius: 10px;
             font-weight: 800;
             font-size: 11px;
@@ -348,23 +355,35 @@
             </div>
 
             <div class="mining-area">
-                <div class="main-gpu-btn" id="main-gpu-card" onclick="mineClick(event)">
-                    <!-- Doğrudan Gömülü Ekran Kartı Görseli -->
+                <div class="main-gpu-btn" onclick="mineClick(event)">
+                    <!-- Ana Ekran Kartı SVG ve Dönen Fanlar -->
                     <svg class="gpu-svg-art" viewBox="0 0 800 354" xmlns="http://www.w3.org/2000/svg">
                         <rect width="800" height="354" rx="40" fill="#151622"/>
                         <path d="M22 52H57V302H22r0-250z" fill="#272a18"/>
+                        
+                        <!-- 1. Fan -->
                         <circle cx="202" cy="177" r="90" fill="#121620" stroke="#38bdf8" stroke-width="6"/>
-                        <circle cx="202" cy="177" r="27" fill="#f59e0b"/>
-                        <path d="M202 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                        <path d="M202 177l50 50c36-36 36-95 0-131s-95-36-131 0z" fill="#4a050e"/>
+                        <g class="fan-blade">
+                            <circle cx="202" cy="177" r="27" fill="#f59e0b"/>
+                            <path d="M202 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                            <path d="M202 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+                        </g>
+
+                        <!-- 2. Fan -->
                         <circle cx="500" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
-                        <circle cx="500" cy="177" r="27" fill="#f5ce0b"/>
-                        <path d="M500 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                        <path d="M500 177l50 50c36-36 36-95 0-131s-95-36-131 0z" fill="#4a050e"/>
+                        <g class="fan-blade-2">
+                            <circle cx="500" cy="177" r="27" fill="#f5ce0b"/>
+                            <path d="M500 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                            <path d="M500 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+                        </g>
+
+                        <!-- 3. Fan -->
                         <circle cx="698" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
-                        <circle cx="698" cy="177" r="27" fill="#f5ce0b"/>
-                        <path d="M698 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                        <path d="M698 177l50 50c36-36 36-95 0-131s-95-36-131 0z" fill="#4a050e"/>
+                        <g class="fan-blade-3">
+                            <circle cx="698" cy="177" r="27" fill="#f5ce0b"/>
+                            <path d="M698 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                            <path d="M698 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+                        </g>
                     </svg>
                     <div class="click-hint">HİSSE ÇÖZMEK İÇİN DOKUN</div>
                 </div>
@@ -470,21 +489,33 @@
     </div>
 </div>
 
-<!-- SVG Şablonu Gizli Alan -->
+<!-- Market ve Rig İçin Ortak SVG Şablonu (Dönen Fanlar Dahil) -->
 <svg style="display:none;">
     <defs>
         <g id="gpu-template">
             <rect width="800" height="354" rx="40" fill="#151622"/>
             <path d="M22 52H57V302H22r0-250z" fill="#272a18"/>
+            
             <circle cx="202" cy="177" r="90" fill="#121620" stroke="#38bdf8" stroke-width="6"/>
-            <circle cx="202" cy="177" r="27" fill="#f59e0b"/>
-            <path d="M202 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+            <g class="fan-blade">
+                <circle cx="202" cy="177" r="27" fill="#f59e0b"/>
+                <path d="M202 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                <path d="M202 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+            </g>
+
             <circle cx="500" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
-            <circle cx="500" cy="177" r="27" fill="#f5ce0b"/>
-            <path d="M500 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+            <g class="fan-blade-2">
+                <circle cx="500" cy="177" r="27" fill="#f5ce0b"/>
+                <path d="M500 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                <path d="M500 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+            </g>
+
             <circle cx="698" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
-            <circle cx="698" cy="177" r="27" fill="#f5ce0b"/>
-            <path d="M698 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+            <g class="fan-blade-3">
+                <circle cx="698" cy="177" r="27" fill="#f5ce0b"/>
+                <path d="M698 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                <path d="M698 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+            </g>
         </g>
     </defs>
 </svg>
@@ -528,10 +559,6 @@
         balance += clickPower;
         updateUI();
         saveData();
-
-        let card = document.getElementById('main-gpu-card');
-        card.classList.add('spin-anim');
-        setTimeout(() => card.classList.remove('spin-anim'), 300);
 
         let wrapper = document.getElementById('app-wrapper');
         let rect = wrapper.getBoundingClientRect();
