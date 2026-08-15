@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanal Miner Pro - Pro GPU Edition</title>
+    <title>Sanal Miner Pro - Rig Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -144,7 +144,7 @@
             width: 100%;
             height: 100%;
             position: relative;
-            animation: spinFan 1.5s linear infinite;
+            animation: spinFan 1.2s linear infinite;
         }
         @keyframes spinFan {
             0% { transform: rotate(0deg); }
@@ -204,25 +204,60 @@
             margin-bottom: 6px;
         }
 
-        .item-card {
+        /* MARKET RIG KARTLARI (İstediğin Gibi Fanlı) */
+        .market-card {
             background: rgba(10, 15, 30, 0.85);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            padding: 10px 12px;
-            border-radius: 12px;
-            margin-bottom: 8px;
+            border: 1px solid rgba(0, 243, 255, 0.25);
+            border-radius: 14px;
+            padding: 12px;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .market-card-top {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            text-align: left;
+            margin-bottom: 8px;
         }
-        .item-info b { font-size: 12px; color: #fff; }
-        .item-info small { font-size: 10px; color: #00f3ff; display: block; margin-top: 1px; }
-        .item-earnings { font-size: 9px; color: #ffb700; font-weight: 700; display: block; margin-top: 2px; }
-        .item-price { font-size: 10px; color: #ff3366; font-weight: 700; display: block; margin-top: 1px; }
+        .market-mini-fans {
+            display: flex;
+            gap: 5px;
+        }
+        .mini-fan {
+            width: 26px; height: 26px;
+            background: #04060b;
+            border: 1px solid rgba(0, 243, 255, 0.5);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .mini-fan-blade {
+            width: 100%; height: 100%; position: relative;
+            animation: spinFan 1s linear infinite;
+        }
+        .mini-fan-blade::before, .mini-fan-blade::after {
+            content: ''; position: absolute; background: #00f3ff; opacity: 0.8;
+        }
+        .mini-fan-blade::before { width: 3px; height: 100%; left: 11px; top: 0; border-radius: 2px; }
+        .mini-fan-blade::after { width: 100%; height: 3px; left: 0; top: 11px; border-radius: 2px; }
+        .mini-fan-center { position: absolute; width: 8px; height: 8px; background: #ff007f; border-radius: 50%; z-index: 2; }
+
+        .market-details b { font-size: 13px; color: #fff; display: block; }
+        .market-details small { font-size: 10px; color: #00f3ff; display: block; margin-top: 2px; }
+        .market-earnings { font-size: 10px; color: #ffb700; font-weight: 700; display: block; margin-top: 3px; }
+        .market-price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .market-price { font-size: 13px; color: #ff3366; font-weight: 800; }
 
         .action-sm-btn {
             background: linear-gradient(135deg, #00f3ff, #0066ff);
-            color: #000; border: none; padding: 7px 12px; font-size: 11px; font-weight: 800;
+            color: #000; border: none; padding: 7px 14px; font-size: 11px; font-weight: 800;
             border-radius: 8px; cursor: pointer;
         }
 
@@ -331,59 +366,106 @@
         </button>
     </div>
 
-    <!-- TAB 2: MARKET -->
+    <!-- TAB 2: MARKET (İstediğin Gibi Fanlı Ekran Kartı Kartları) -->
     <div id="tab-shop" class="tab-content">
-        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">🖥️ Ekran Kartı Rig Pazarı</h3>
+        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">🖥️ Ekran Kartı Marketi (Rig Kiralama)</h3>
         
-        <div class="item-card">
-            <div class="item-info">
-                <b>GT 730 Mini-Rig</b> <span id="count-gt730" style="font-size:9px; background:rgba(0,243,255,0.15); color:#00f3ff; padding:1px 5px; border-radius:4px;">0 Adet</span>
-                <small>Pasif: +0.0010 PTS/sn (3 Gün)</small>
-                <span class="item-earnings">⚡ ~86 PTS / Gün</span>
-                <span class="item-price">Fiyat: 150 PTS</span>
+        <!-- GT 730 -->
+        <div class="market-card">
+            <div class="market-card-top">
+                <div class="market-mini-fans">
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                </div>
+                <span id="count-gt730" style="font-size:9px; background:rgba(0,243,255,0.15); color:#00f3ff; padding:2px 6px; border-radius:4px; font-weight:700;">0 Adet</span>
             </div>
-            <button class="action-sm-btn" onclick="buyGPU('gt730', 150, 0.0010, 'GT 730 Mini-Rig', 3)">Satın Al</button>
+            <div class="market-details">
+                <b>GT 730 Mini-Rig</b>
+                <small>+0.0010 PTS/sn (3 Gün)</small>
+                <span class="market-earnings">⚡ ~86 PTS / Gün</span>
+            </div>
+            <div class="market-price-row">
+                <span class="market-price">Fiyat: 150 PTS</span>
+                <button class="action-sm-btn" onclick="buyGPU('gt730', 150, 0.0010, 'GT 730 Mini-Rig', 3)">Satın Al</button>
+            </div>
         </div>
 
-        <div class="item-card">
-            <div class="item-info">
-                <b>GTX 1050 Ti</b> <span id="count-gtx1050" style="font-size:9px; background:rgba(0,243,255,0.15); color:#00f3ff; padding:1px 5px; border-radius:4px;">0 Adet</span>
-                <small>Pasif: +0.0030 PTS/sn (5 Gün)</small>
-                <span class="item-earnings">⚡ ~259 PTS / Gün</span>
-                <span class="item-price">Fiyat: 600 PTS</span>
+        <!-- GTX 1050 Ti -->
+        <div class="market-card">
+            <div class="market-card-top">
+                <div class="market-mini-fans">
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                </div>
+                <span id="count-gtx1050" style="font-size:9px; background:rgba(0,243,255,0.15); color:#00f3ff; padding:2px 6px; border-radius:4px; font-weight:700;">0 Adet</span>
             </div>
-            <button class="action-sm-btn" onclick="buyGPU('gtx1050', 600, 0.0030, 'GTX 1050 Ti', 5)">Satın Al</button>
+            <div class="market-details">
+                <b>GTX 1050 Ti</b>
+                <small>+0.0030 PTS/sn (5 Gün)</small>
+                <span class="market-earnings">⚡ ~259 PTS / Gün</span>
+            </div>
+            <div class="market-price-row">
+                <span class="market-price">Fiyat: 600 PTS</span>
+                <button class="action-sm-btn" onclick="buyGPU('gtx1050', 600, 0.0030, 'GTX 1050 Ti', 5)">Satın Al</button>
+            </div>
         </div>
 
-        <div class="item-card">
-            <div class="item-info">
-                <b>GTX 1660 Super</b> <span id="count-gtx1660" style="font-size:9px; background:rgba(0,243,255,0.15); color:#00f3ff; padding:1px 5px; border-radius:4px;">0 Adet</span>
-                <small>Pasif: +0.0080 PTS/sn (7 Gün)</small>
-                <span class="item-earnings">⚡ ~691 PTS / Gün</span>
-                <span class="item-price">Fiyat: 2,500 PTS</span>
+        <!-- GTX 1660 Super -->
+        <div class="market-card">
+            <div class="market-card-top">
+                <div class="market-mini-fans">
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                </div>
+                <span id="count-gtx1660" style="font-size:9px; background:rgba(0,243,255,0.15); color:#00f3ff; padding:2px 6px; border-radius:4px; font-weight:700;">0 Adet</span>
             </div>
-            <button class="action-sm-btn" onclick="buyGPU('gtx1660', 2500, 0.0080, 'GTX 1660 Super', 7)">Satın Al</button>
+            <div class="market-details">
+                <b>GTX 1660 Super</b>
+                <small>+0.0080 PTS/sn (7 Gün)</small>
+                <span class="market-earnings">⚡ ~691 PTS / Gün</span>
+            </div>
+            <div class="market-price-row">
+                <span class="market-price">Fiyat: 2,500 PTS</span>
+                <button class="action-sm-btn" onclick="buyGPU('gtx1660', 2500, 0.0080, 'GTX 1660 Super', 7)">Satın Al</button>
+            </div>
         </div>
 
-        <div class="item-card">
-            <div class="item-info">
-                <b>RTX 3060 Ti Rig</b> <span id="count-rtx3060" style="font-size:9px; background:rgba(0,243,255,0.15); color:#00f3ff; padding:1px 5px; border-radius:4px;">0 Adet</span>
-                <small>Pasif: +0.0250 PTS/sn (10 Gün)</small>
-                <span class="item-earnings">⚡ ~2,160 PTS / Gün</span>
-                <span class="item-price">Fiyat: 10,000 PTS</span>
+        <!-- RTX 3060 Ti Rig -->
+        <div class="market-card">
+            <div class="market-card-top">
+                <div class="market-mini-fans">
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                    <div class="mini-fan"><div class="mini-fan-center"></div><div class="mini-fan-blade"></div></div>
+                </div>
+                <span id="count-rtx3060" style="font-size:9px; background:rgba(0,243,255,0.15); color:#00f3ff; padding:2px 6px; border-radius:4px; font-weight:700;">0 Adet</span>
             </div>
-            <button class="action-sm-btn" onclick="buyGPU('rtx3060', 10000, 0.0250, 'RTX 3060 Ti Rig', 10)">Satın Al</button>
+            <div class="market-details">
+                <b>RTX 3060 Ti Rig</b>
+                <small>+0.0250 PTS/sn (10 Gün)</small>
+                <span class="market-earnings">⚡ ~2,160 PTS / Gün</span>
+            </div>
+            <div class="market-price-row">
+                <span class="market-price">Fiyat: 10,000 PTS</span>
+                <button class="action-sm-btn" onclick="buyGPU('rtx3060', 10000, 0.0250, 'RTX 3060 Ti Rig', 10)">Satın Al</button>
+            </div>
         </div>
     </div>
 
-    <!-- TAB 3: DAVET -->
+    <!-- TAB 3: DAVET (Telegram Entegrasyonlu) -->
     <div id="tab-ref" class="tab-content">
-        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">👥 Arkadaşını Davet Et</h3>
-        <div class="balance-card" style="text-align: center; padding: 12px;">
-            <div style="font-size: 12px; font-weight: 800; color: #00f3ff;">Arkadaşını Davet Et, Kazan!</div>
-            <div style="font-size: 10px; color: #7f95b3; margin-top: 3px;">Davet Edilen Kişi: <span id="ref-count" style="color:#fff; font-weight:bold;">0</span></div>
+        <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 8px;">👥 Telegram Davet Merkezi</h3>
+        <div class="balance-card" style="text-align: center; padding: 14px;">
+            <div style="font-size: 13px; font-weight: 800; color: #00f3ff;">Arkadaşını Davet Et, Kazan!</div>
+            <div style="font-size: 11px; color: #7f95b3; margin-top: 4px;">Her aktif davet için <b style="color:#00e676;">+500 PTS</b> kazanın.</div>
+            <div style="font-size: 11px; color: #fff; margin-top: 8px;">Toplam Davet Edilen: <span id="ref-count" style="color:#00f3ff; font-weight:bold;">0</span> Kişi</div>
         </div>
-        <button class="btn-primary" onclick="shareRef()">🔗 Davet Linkini Paylaş</button>
+        
+        <div style="display: flex; gap: 8px;">
+            <button class="btn-primary" style="flex: 1;" onclick="shareTelegramRef()">✈️ Telegram'da Paylaş</button>
+            <button class="btn-primary" style="flex: 1; background: linear-gradient(135deg, #00b894, #00cec9); color:#fff;" onclick="copyRefLink()">🔗 Linki Kopyala</button>
+        </div>
     </div>
 
     <!-- TAB 4: ÖDÜLLER -->
@@ -392,36 +474,30 @@
         
         <div class="balance-card" style="text-align: left; padding: 12px; margin-bottom: 10px;">
             <div style="font-size: 10px; color: #7f95b3; font-weight: 700;">GÜNLÜK SERİLİ BONUS</div>
-            <div style="font-size: 11px; color: #fff; margin: 2px 0 8px 0;">Seriyi bozma, her gün ödülün katlansın! (1. Gün)</div>
+            <div style="font-size: 11px; color: #fff; margin: 2px 0 8px 0;">Seriyi bozma, her gün ödülün katlansın!</div>
             <button class="btn-primary" style="background: linear-gradient(135deg, #00b894, #00cec9); color:#fff;" onclick="claimDailyBonus()">🎁 Günlük Ödülü Al (25 PTS)</button>
         </div>
 
-        <div style="font-size: 11px; color: #00f3ff; font-weight: 700; margin-bottom: 6px;">🎯 Reklam İzleme Görevleri (Adsgram)</div>
+        <div style="font-size: 11px; color: #00f3ff; font-weight: 700; margin-bottom: 6px;">🎯 Reklam İzleme Görevleri</div>
         
-        <div class="item-card">
-            <div class="item-info">
-                <b>5 Reklam İzle</b>
-                <small>Ödül: +40 PTS</small>
-                <span style="color:#7f95b3; font-size:9px;">İlerleme: 0/5</span>
+        <div class="market-card" style="margin-bottom: 8px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <b style="font-size: 12px;">5 Reklam İzle</b>
+                    <small style="color: #00f3ff;">Ödül: +40 PTS</small>
+                </div>
+                <button class="action-sm-btn" style="background:#ff9100; color:#fff;" onclick="doTask(1)">Ödülü Al</button>
             </div>
-            <button class="action-sm-btn" style="background:#ff9100; color:#fff;" onclick="doTask(1)">Al</button>
         </div>
 
-        <div class="item-card">
-            <div class="item-info">
-                <b>15 Reklam İzle</b>
-                <small>Ödül: +150 PTS</small>
-                <span style="color:#7f95b3; font-size:9px;">İlerleme: 0/15</span>
+        <div class="market-card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <b style="font-size: 12px;">15 Reklam İzle</b>
+                    <small style="color: #00f3ff;">Ödül: +150 PTS</small>
+                </div>
+                <button class="action-sm-btn" style="background:#ff9100; color:#fff;" onclick="doTask(2)">Ödülü Al</button>
             </div>
-            <button class="action-sm-btn" style="background:#ff9100; color:#fff;" onclick="doTask(2)">Al</button>
-        </div>
-        
-        <div class="item-card">
-            <div class="item-info">
-                <b>TOPLULUK & DESTEK</b>
-                <small>Resmi Duyuru Kanalımız</small>
-            </div>
-            <button class="action-sm-btn" onclick="window.open('https://t.me/sanal_miner_test_bot')">Destek</button>
         </div>
     </div>
 
@@ -463,17 +539,16 @@
     <div id="tab-payouts" class="tab-content">
         <h3 style="color: #00f3ff; font-size: 13px; margin-bottom: 6px;">🏆 Liderlik Tablosu & Ödeme Kanıtları</h3>
         
-        <div style="background: rgba(10,15,30,0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px; margin-bottom: 10px;">
-            <div style="font-size: 10px; color: #ffb700; font-weight: 700; margin-bottom: 6px;">⚡ Son Başarılı Ödemeler (Payout Proofs)</div>
+        <div class="market-card" style="margin-bottom: 10px;">
+            <div style="font-size: 10px; color: #ffb700; font-weight: 700; margin-bottom: 6px;">⚡ Son Başarılı Ödemeler</div>
             <div style="font-size: 10px; color: #c0d6df; line-height: 1.5;">
                 <div>✅ ID: ...8923 (TON Network) - <b>12.5 USDT</b> Ödendi</div>
                 <div>✅ ID: ...4410 (TRC20) - <b>5.0 USDT</b> Ödendi</div>
                 <div>✅ ID: ...7712 (BEP20) - <b>25.0 USDT</b> Ödendi</div>
-                <div>✅ ID: ...1093 (TON Network) - <b>10.0 USDT</b> Ödendi</div>
             </div>
         </div>
 
-        <div style="background: rgba(10,15,30,0.85); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 10px;">
+        <div class="market-card">
             <div style="font-size: 10px; color: #ffb700; font-weight: 700; margin-bottom: 6px;">🌟 En İyi Madenciler Liderlik Tablosu</div>
             <div style="font-size: 10px; color: #c0d6df; line-height: 1.6;">
                 <div style="display:flex; justify-content:space-between;"><span>1. Madenci (ID: ***341)</span><b style="color:#00f3ff;">1,420,500 PTS</b></div>
@@ -611,7 +686,6 @@
         document.getElementById('ref-count').innerText = gameData.refCount;
         document.getElementById('gpuModelTitle').innerText = gameData.activeGpuName;
 
-        // Market sayaçlarını güncelle
         let counts = { gt730: 0, gtx1050: 0, gtx1660: 0, rtx3060: 0 };
         gameData.gpuList.forEach(g => { if(counts[g.id] !== undefined) counts[g.id]++; });
         for (let key in counts) {
@@ -684,10 +758,22 @@
         showAlert("Çekim talebiniz alındı.");
     }
 
-    function shareRef() {
+    function copyRefLink() {
         let link = `https://t.me/SanalMinerProBot?start=ref_${gameData.userId}`;
         navigator.clipboard.writeText(link);
-        showAlert("Davet linki kopyalandı!");
+        showAlert("Davet linki panoya kopyalandı!");
+    }
+
+    function shareTelegramRef() {
+        let link = `https://t.me/SanalMinerProBot?start=ref_${gameData.userId}`;
+        let text = encodeURIComponent("🚀 Sanal Miner Pro dünyasına katıl, ekran kartlarıyla pasif gelir elde et ve USDT kazan! Hemen başla:");
+        let tgShareUrl = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
+        
+        if (tg?.openTelegramLink) {
+            tg.openTelegramLink(tgShareUrl);
+        } else {
+            window.open(tgShareUrl, '_blank');
+        }
     }
 
     function openModal(modalId) { document.getElementById(modalId).style.display = 'flex'; }
