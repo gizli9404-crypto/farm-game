@@ -55,8 +55,8 @@
         .lang-btn.active { background: #00fff5; color: #000; font-weight: bold; }
 
         .assistant-box { 
-            background: linear-gradient(135deg, rgba(0, 255, 245, 0.05), rgba(15, 52, 96, 0.4)); 
-            border: 1px solid rgba(0, 255, 245, 0.25); 
+            background: linear-gradient(135deg, rgba(0, 255, 245, 0.08), rgba(15, 52, 96, 0.5)); 
+            border: 1px solid rgba(0, 255, 245, 0.4); 
             border-radius: 12px; 
             padding: 10px 12px; 
             margin: 10px 0; 
@@ -66,9 +66,12 @@
             display: flex; 
             gap: 8px; 
             align-items: center;
-            box-shadow: inset 0 0 10px rgba(0, 255, 245, 0.05);
+            cursor: pointer;
+            box-shadow: inset 0 0 10px rgba(0, 255, 245, 0.1);
+            transition: all 0.2s;
         }
-        .assistant-icon { font-size: 16px; filter: drop-shadow(0 0 5px #00fff5); }
+        .assistant-box:active { transform: scale(0.98); border-color: #00fff5; }
+        .assistant-icon { font-size: 18px; filter: drop-shadow(0 0 5px #00fff5); }
 
         .rig-container { margin: 8px 0; position: relative; display: inline-block; }
         .rig-icon { font-size: 45px; filter: drop-shadow(0 0 12px rgba(0, 255, 245, 0.6)); animation: pulse 2s infinite alternate; }
@@ -260,9 +263,13 @@
         <div id="user-id-display" class="user-id-badge" onclick="copyMyId()" title="ID'yi kopyalamak için tıkla">ID: Yükleniyor... 📋</div>
     </div>
 
-    <div class="assistant-box">
+    <!-- İnteraktif Asistan Kutusu -->
+    <div class="assistant-box" onclick="handleAssistantClick()">
         <div class="assistant-icon">🤖</div>
-        <div id="txt-assistant">Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Reklam izleyerek görevleri tamamla ve büyük ödüller kazan!</div>
+        <div>
+            <b style="color: #00fff5; font-size: 11px;">Asistan Mia:</b>
+            <div id="txt-assistant">Nasıl para kazanacağını öğrenmek için buraya tıkla! 🚀</div>
+        </div>
     </div>
 
     <!-- TAB 1: KAZIM -->
@@ -510,6 +517,11 @@
         document.getElementById('customAlertModal').style.display = 'none';
     });
 
+    // İnteraktif Asistan Tıklama Fonksiyonu
+    function handleAssistantClick() {
+        showCustomAlert("🤖 Asistan Mia İpuçları:\n\n1️⃣ 'Kazım Yap' butonuna dokunarak PTS topla.\n2️⃣ 'Market' sekmesinden ekran kartı (Rig) kiralayarak pasif gelir elde et.\n3️⃣ 'Ödül' sekmesinden günlük bonusunu al ve reklam izleyerek ekstra puanlar kazan!");
+    }
+
     function openSupport() {
         const channelUrl = "https://t.me/sanal_miner_duyuru";
         if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
@@ -522,19 +534,16 @@
     const DEFAULT_ADMIN_IDS = ["8256539395"];
     let adminList = JSON.parse(localStorage.getItem('sanal_miner_admins')) || DEFAULT_ADMIN_IDS;
     
-    // Telegram Kullanıcı ve ID Entegrasyonu
-    let myTelegramId = "8256539395"; // Varsayılan test ID
+    let myTelegramId = "8256539395";
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
         myTelegramId = String(window.Telegram.WebApp.initDataUnsafe.user.id);
     }
     document.getElementById('user-id-display').innerText = "ID: " + myTelegramId + " 📋";
 
-    // Admin Kontrolü
     if (adminList.includes(myTelegramId)) {
         document.getElementById('nav-admin-btn').style.display = 'block';
     }
 
-    // AdsGram Reklam Gösterme Fonksiyonu (ID: 42993)
     const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "42993" }) : null;
 
     let balance = parseFloat(localStorage.getItem('sanal_miner_balance')) || 0.0000;
@@ -561,7 +570,6 @@
 
     function showAd() {
         if (!adsgramController) {
-            // Simüle edilmiş reklam izleme (test ve tarayıcı ortamı için)
             handleAdSuccess();
             return;
         }
@@ -583,7 +591,7 @@
 
     const dict = {
         tr: {
-            assistant: "Nasıl oynanır? 1️⃣ Kazım yap, 2️⃣ Reklam izleyerek görevleri tamamla ve büyük ödüller kazan!",
+            assistant: "Nasıl para kazanacağını öğrenmek için buraya tıkla! 🚀",
             totalBalance: "Toplam Bakiye",
             speedTitle: "Mevcut Hız | Pasif Kazanç",
             mineBtn: "⛏️ Kazım Yap",
@@ -614,7 +622,7 @@
             navPayouts: "🏆 Ödemeler"
         },
         en: {
-            assistant: "How to play? 1️⃣ Mine, 2️⃣ Watch ads to complete tasks and win big rewards!",
+            assistant: "Click here to learn how to earn money! 🚀",
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
@@ -645,7 +653,7 @@
             navPayouts: "🏆 Payouts"
         },
         ar: {
-            assistant: "كيف تلعب؟ 1️⃣ التعدين، 2️⃣ شاهد الإعلانات لإكمال المهام واربح جوائز كبرى!",
+            assistant: "انقر هنا لتتعلم كيف تربح المال! 🚀",
             totalBalance: "الرصيد الإجمالي",
             speedTitle: "السرعة الحالية | الدخل السلبي",
             mineBtn: "⛏️ اضغط للتعدين",
@@ -753,13 +761,11 @@
         document.getElementById('passive-rate').innerText = passiveRate.toFixed(4);
         document.getElementById('ref-count').innerText = refCount;
 
-        // GPU adetleri güncelleme
         for (let key in gpuCounts) {
             const el = document.getElementById('count-' + key);
             if (el) el.innerText = gpuCounts[key] + " Adet";
         }
 
-        // Görev ilerlemeleri güncelleme
         document.getElementById('task1-prog').innerText = "İlerleme: " + Math.min(adWatchCount, 5) + "/5";
         document.getElementById('task2-prog').innerText = "İlerleme: " + Math.min(adWatchCount, 15) + "/15";
         document.getElementById('task3-prog').innerText = "İlerleme: " + Math.min(adWatchCount, 40) + "/40";
@@ -875,11 +881,9 @@
     }
 
     function loadAdminPanelData() {
-        // Oyuncular Listesi
         const playersDiv = document.getElementById('admin-players-list');
         playersDiv.innerHTML = `<div class="player-row"><span>ID: ${myTelegramId} (Aktif)</span><b style="color:#00fff5;">${balance.toFixed(2)} PTS</b></div>`;
 
-        // Bekleyen Çekimler Listesi
         const reqDiv = document.getElementById('admin-requests-list');
         let requests = JSON.parse(localStorage.getItem('sanal_miner_withdrawals')) || [];
         if (requests.length === 0) {
@@ -938,7 +942,6 @@
         }
     }
 
-    // Pasif kazanç döngüsü
     setInterval(() => {
         if (passiveRate > 0) {
             balance += passiveRate;
@@ -954,7 +957,6 @@
         }
     }, 1000);
 
-    // İlk açılış UI senkronizasyonu
     updateUI();
 </script>
 
