@@ -54,24 +54,26 @@
         .lang-btn { background: rgba(15, 52, 96, 0.8); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 3px 6px; font-size: 10px; border-radius: 6px; cursor: pointer; width: auto; margin: 0; }
         .lang-btn.active { background: #00fff5; color: #000; font-weight: bold; }
 
+        /* Gelişmiş Asistan Kutusu */
         .assistant-box { 
-            background: linear-gradient(135deg, rgba(0, 255, 245, 0.08), rgba(15, 52, 96, 0.5)); 
-            border: 1px solid rgba(0, 255, 245, 0.4); 
-            border-radius: 12px; 
-            padding: 10px 12px; 
-            margin: 10px 0; 
+            background: linear-gradient(135deg, rgba(0, 255, 245, 0.12), rgba(15, 52, 96, 0.7)); 
+            border: 1px solid rgba(0, 255, 245, 0.5); 
+            border-radius: 14px; 
+            padding: 12px; 
+            margin: 12px 0; 
             font-size: 11px; 
             color: #c0d6df; 
             text-align: left; 
             display: flex; 
-            gap: 8px; 
+            gap: 10px; 
             align-items: center;
             cursor: pointer;
-            box-shadow: inset 0 0 10px rgba(0, 255, 245, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 255, 245, 0.15);
             transition: all 0.2s;
         }
         .assistant-box:active { transform: scale(0.98); border-color: #00fff5; }
-        .assistant-icon { font-size: 18px; filter: drop-shadow(0 0 5px #00fff5); }
+        .assistant-icon { font-size: 24px; filter: drop-shadow(0 0 8px #00fff5); animation: floatIcon 2s ease-in-out infinite alternate; }
+        @keyframes floatIcon { 0% { transform: translateY(0); } 100% { transform: translateY(-3px); } }
 
         .rig-container { margin: 8px 0; position: relative; display: inline-block; }
         .rig-icon { font-size: 45px; filter: drop-shadow(0 0 12px rgba(0, 255, 245, 0.6)); animation: pulse 2s infinite alternate; }
@@ -83,15 +85,15 @@
         
         .shop-card { 
             background: linear-gradient(135deg, rgba(15, 52, 96, 0.9), rgba(26, 11, 46, 0.9)); 
-            padding: 10px 12px; 
-            border-radius: 12px; 
-            margin: 8px 0; 
+            padding: 12px; 
+            border-radius: 14px; 
+            margin: 10px 0; 
             display: flex; 
             justify-content: space-between; 
             align-items: center; 
             text-align: left; 
             border: 1px solid rgba(0, 255, 245, 0.3); 
-            box-shadow: 0 0 10px rgba(0, 255, 245, 0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
         }
 
         .mini-gpu-graphic {
@@ -155,7 +157,7 @@
 
         button { background: linear-gradient(135deg, #00fff5, #0088cc); border: none; color: #000; padding: 9px 12px; font-size: 13px; font-weight: 800; border-radius: 10px; cursor: pointer; width: 100%; margin-top: 6px; }
         #mine-btn { background: linear-gradient(135deg, #00fff5, #00b894); font-size: 14px; padding: 12px; border-radius: 12px; box-shadow: 0 0 12px rgba(0,255,245,0.3); }
-        .buy-btn { width: auto; font-size: 10px; padding: 6px 10px; border-radius: 8px; z-index: 2; position: relative; }
+        .buy-btn { width: auto; font-size: 10px; padding: 6px 12px; border-radius: 8px; z-index: 2; position: relative; }
         .ad-btn { background: linear-gradient(135deg, #ff9900, #ff5500); color: #fff; box-shadow: 0 0 10px rgba(255,153,0,0.3); }
         .reward-btn { background: linear-gradient(135deg, #00b09b, #96c93d); color: #fff; }
         .support-btn { background: rgba(15, 52, 96, 0.9); color: #00fff5; border: 1px solid #00fff5; }
@@ -188,33 +190,47 @@
             text-align: left;
         }
 
+        /* Modernized Modal */
         .custom-modal-overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.75);
+            background: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 99999;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(8px);
         }
         .custom-modal-content {
-            background: #16213e;
+            background: linear-gradient(135deg, #16213e, #0b0c10);
             border: 1px solid #00fff5;
-            padding: 20px;
-            border-radius: 16px;
-            width: 85%;
-            max-width: 320px;
-            text-align: center;
-            box-shadow: 0 0 25px rgba(0, 255, 245, 0.3);
-            animation: modalScaleUp 0.2s ease-in-out;
+            padding: 22px;
+            border-radius: 18px;
+            width: 90%;
+            max-width: 340px;
+            text-align: left;
+            box-shadow: 0 0 30px rgba(0, 255, 245, 0.35);
+            animation: modalScaleUp 0.25s ease-in-out;
+        }
+        .custom-modal-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #00fff5;
+            font-size: 15px;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(0,255,245,0.2);
+            padding-bottom: 8px;
         }
         .custom-modal-body {
-            color: #ffffff;
-            font-size: 13px;
-            line-height: 1.5;
-            margin-bottom: 20px;
+            color: #d1d5db;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-bottom: 18px;
+            max-height: 220px;
+            overflow-y: auto;
         }
         .custom-modal-btn {
             background: linear-gradient(135deg, #00fff5, #0088cc);
@@ -226,10 +242,10 @@
             border-radius: 10px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 0 10px rgba(0, 255, 245, 0.4);
+            box-shadow: 0 0 12px rgba(0, 255, 245, 0.4);
         }
         @keyframes modalScaleUp {
-            from { transform: scale(0.8); opacity: 0; }
+            from { transform: scale(0.85); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
@@ -255,7 +271,7 @@
     </div>
 
     <div class="top-bar">
-        <h1 id="txt-logo">🚀 SANAL MINER</h1>
+        <h1 id="txt-logo">🚀 SANAL MINER PRO</h1>
         <button class="music-btn" id="music-toggle-btn" onclick="toggleMusic()">🔊 Müzik</button>
     </div>
     
@@ -263,12 +279,12 @@
         <div id="user-id-display" class="user-id-badge" onclick="copyMyId()" title="ID'yi kopyalamak için tıkla">ID: Yükleniyor... 📋</div>
     </div>
 
-    <!-- İnteraktif Asistan Kutusu -->
-    <div class="assistant-box" onclick="handleAssistantClick()">
+    <!-- Detaylı İnteraktif Asistan Kutusu -->
+    <div class="assistant-box" onclick="openDetailedAssistant()">
         <div class="assistant-icon">🤖</div>
         <div>
-            <b style="color: #00fff5; font-size: 11px;">Asistan Mia:</b>
-            <div id="txt-assistant">Nasıl para kazanacağını öğrenmek için buraya tıkla! 🚀</div>
+            <b style="color: #00fff5; font-size: 11px;">Asistan Mia (Kılavuz):</b>
+            <div id="txt-assistant">Nasıl hızlı kazanılır? Öğrenmek için dokun! 🚀</div>
         </div>
     </div>
 
@@ -299,7 +315,7 @@
                 <span class="daily-earn">⚡ ~86 PTS / Gün</span><br>
                 <small style="color: #ff416c; font-weight: bold;">Fiyat: 150 PTS</small>
             </div>
-            <button class="buy-btn buy-text" onclick="buyGPU('gt730', 'GT 730 Mini', 150, 0.0010, 3)">Satın Al</button>
+            <button class="buy-btn" onclick="buyGPU('gt730', 'GT 730 Mini', 150, 0.0010, 3)">Satın Al</button>
         </div>
 
         <div class="shop-card gpu-gtx1050">
@@ -310,7 +326,7 @@
                 <span class="daily-earn">⚡ ~259 PTS / Gün</span><br>
                 <small style="color: #ff416c; font-weight: bold;">Fiyat: 600 PTS</small>
             </div>
-            <button class="buy-btn buy-text" onclick="buyGPU('gtx1050', 'GTX 1050 Ti', 600, 0.0030, 5)">Satın Al</button>
+            <button class="buy-btn" onclick="buyGPU('gtx1050', 'GTX 1050 Ti', 600, 0.0030, 5)">Satın Al</button>
         </div>
 
         <div class="shop-card gpu-gtx1660">
@@ -321,7 +337,7 @@
                 <span class="daily-earn">⚡ ~691 PTS / Gün</span><br>
                 <small style="color: #ff416c; font-weight: bold;">Fiyat: 2,500 PTS</small>
             </div>
-            <button class="buy-btn buy-text" onclick="buyGPU('gtx1660', 'GTX 1660 Super', 2500, 0.0080, 7)">Satın Al</button>
+            <button class="buy-btn" onclick="buyGPU('gtx1660', 'GTX 1660 Super', 2500, 0.0080, 7)">Satın Al</button>
         </div>
 
         <div class="shop-card gpu-rtx3060">
@@ -332,7 +348,7 @@
                 <span class="daily-earn">⚡ ~2,160 PTS / Gün</span><br>
                 <small style="color: #ff416c; font-weight: bold;">Fiyat: 10,000 PTS</small>
             </div>
-            <button class="buy-btn buy-text" onclick="buyGPU('rtx3060', 'RTX 3060 Ti', 10000, 0.0250, 10)">Satın Al</button>
+            <button class="buy-btn" onclick="buyGPU('rtx3060', 'RTX 3060 Ti', 10000, 0.0250, 10)">Satın Al</button>
         </div>
 
         <div class="shop-card gpu-rtx4080">
@@ -343,7 +359,7 @@
                 <span class="daily-earn">⚡ ~6,912 PTS / Gün</span><br>
                 <small style="color: #ff416c; font-weight: bold;">Fiyat: 35,000 PTS</small>
             </div>
-            <button class="buy-btn buy-text" onclick="buyGPU('rtx4080', 'RTX 4080 Pro', 35000, 0.0800, 14)">Satın Al</button>
+            <button class="buy-btn" onclick="buyGPU('rtx4080', 'RTX 4080 Pro', 35000, 0.0800, 14)">Satın Al</button>
         </div>
 
         <div class="shop-card gpu-rtx4090">
@@ -354,7 +370,7 @@
                 <span class="daily-earn">⚡ ~17,280 PTS / Gün</span><br>
                 <small style="color: #ff416c; font-weight: bold;">Fiyat: 100,000 PTS</small>
             </div>
-            <button class="buy-btn buy-text" onclick="buyGPU('rtx4090', 'RTX 4090 Cyber', 100000, 0.2000, 30)">Satın Al</button>
+            <button class="buy-btn" onclick="buyGPU('rtx4090', 'RTX 4090 Cyber', 100000, 0.2000, 30)">Satın Al</button>
         </div>
     </div>
 
@@ -412,7 +428,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label" id="txt-wallet-label">Cüzdan Adresiniz</label>
-                <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... atau 0x..."></div>
+                <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... veya 0x..."></div>
             </div>
             <div class="form-group">
                 <label class="form-label"><span id="txt-amount-label">Çekilecek PTS Miktarı</span> <small style="color:#ff416c; float:right;" id="txt-min-label">Min: 10.000</small></label>
@@ -500,16 +516,21 @@
     <div class="nav-item admin-nav-item" id="nav-admin-btn" onclick="switchTab('admin', this)">👑 Admin</div>
 </div>
 
+<!-- Gelişmiş Detaylı Asistan Modal Penceresi -->
 <div id="customAlertModal" class="custom-modal-overlay" style="display: none;">
     <div class="custom-modal-content">
-        <div class="custom-modal-body" id="customAlertMessage">Uyarı mesajı buraya gelecek</div>
-        <button id="customAlertBtn" class="custom-modal-btn">Tamam</button>
+        <div class="custom-modal-header" id="customAlertTitle">
+            <span>🤖 Asistan Mia Rehberi</span>
+        </div>
+        <div class="custom-modal-body" id="customAlertMessage">Asistan rehber metni buraya gelecek...</div>
+        <button id="customAlertBtn" class="custom-modal-btn">Harika, Anladım! 🚀</button>
     </div>
 </div>
 
 <script>
-    function showCustomAlert(message) {
-        document.getElementById('customAlertMessage').innerText = message;
+    function showCustomAlert(title, message) {
+        document.getElementById('customAlertTitle').innerHTML = `<span>${title}</span>`;
+        document.getElementById('customAlertMessage').innerHTML = message;
         document.getElementById('customAlertModal').style.display = 'flex';
     }
 
@@ -517,14 +538,23 @@
         document.getElementById('customAlertModal').style.display = 'none';
     });
 
-    // Güncellenmiş Asistan Yönlendirme Fonksiyonu
-    function handleAssistantClick() {
-        showCustomAlert("🤖 Asistan Mia:\n\nSeni hemen ekran kartı kiralayabileceğin Market sekmesine yönlendiriyorum! Pasif gelir elde etmeye başla! 🚀");
-        
-        setTimeout(() => {
-            const shopNavItem = document.getElementById('nav-shop');
-            switchTab('shop', shopNavItem);
-        }, 1500);
+    // Detaylı Asistan Rehberi Fonksiyonu
+    function openDetailedAssistant() {
+        const guideContent = `
+            <b>👋 Merhaba Madenci! Ben Asistan Mia. Sana Sanal Miner Pro'da nasıl köşe döneceğini anlatayım:</b><br><br>
+            
+            <b>1️⃣ Manuel & Pasif Kazanç:</b><br>
+            • Ana ekrandaki kazım butonuna basarak anlık PTS biriktir.<br>
+            • <b>Market</b> sekmesinden ekran kartı (Rig) kiralayarak uygulamayı kapatsan bile saniyelik pasif gelir elde et!<br><br>
+            
+            <b>2️⃣ Hız ve Reklam Bonusları:</b><br>
+            • Reklam izle butonunu kullanarak kazım hızını geçici olarak katla (+0.5x).<br>
+            • Ödül sekmesinden günlük serili bonusunu asla kaçırma!<br><br>
+            
+            <b>3️⃣ Kripto Çekimleri:</b><br>
+            • 10.000 PTS biriktirdiğinde <b>Çekim</b> sekmesinden cüzdan adresini (TON, TRC20, BEP20) girerek USDT ödülünü cüzdanına iste! 🚀
+        `;
+        showCustomAlert("🤖 Asistan Mia - Detaylı Rehber", guideContent);
     }
 
     function openSupport() {
@@ -562,18 +592,6 @@
         gt730: 0, gtx1050: 0, gtx1660: 0, rtx3060: 0, rtx4080: 0, rtx4090: 0
     };
 
-    let tasksCompleted = JSON.parse(localStorage.getItem('sanal_miner_tasks')) || { 1: false, 2: false };
-
-    function switchTab(tabId, element) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        
-        document.getElementById('tab-' + tabId).classList.add('active');
-        if (element) {
-            element.classList.add('active');
-        }
-    }
-
     function updateUI() {
         document.getElementById('balance').innerText = balance.toFixed(4);
         document.getElementById('speed').innerText = currentSpeed.toFixed(1);
@@ -581,41 +599,125 @@
         document.getElementById('ref-count').innerText = refCount;
         
         for (let key in gpuCounts) {
-            const countEl = document.getElementById('count-' + key);
-            if (countEl) {
-                countEl.innerText = gpuCounts[key] + " Adet";
-            }
+            const el = document.getElementById('count-' + key);
+            if (el) el.innerText = gpuCounts[key] + " Adet";
         }
     }
 
-    function mine(event) {
-        let clickPower = 0.0010 * currentSpeed;
-        balance += clickPower;
-        updateUI();
+    function switchTab(tabId, element) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.navbar .nav-item').forEach(nav => nav.classList.remove('active'));
         
+        document.getElementById('tab-' + tabId).classList.add('active');
+        if (element) element.classList.add('active');
+    }
+
+    function mine(e) {
+        let power = 0.0010 * currentSpeed;
+        balance += power;
+        saveData();
+        updateUI();
+
         // Tıklama efekti
-        const x = event.clientX;
-        const y = event.clientY;
         const floatEl = document.createElement('div');
         floatEl.className = 'float-text';
-        floatEl.innerText = "+" + clickPower.toFixed(4);
-        floatEl.style.left = (x ? x : 200) + 'px';
-        floatEl.style.top = (y ? y : 300) + 'px';
+        floatEl.innerText = "+" + power.toFixed(4);
+        floatEl.style.left = (e.clientX || 150) + 'px';
+        floatEl.style.top = (e.clientY || 250) + 'px';
         document.body.appendChild(floatEl);
         setTimeout(() => floatEl.remove(), 800);
     }
 
-    function buyGPU(key, name, price, rate, days) {
+    function buyGPU(type, name, price, rate, days) {
         if (balance >= price) {
             balance -= price;
-            gpuCounts[key]++;
+            gpuCounts[type]++;
             passiveRate += rate;
-            updateUI();
             saveData();
-            showCustomAlert(name + " başarıyla kiralandı! Pasif kazancın arttı. 🚀");
+            updateUI();
+            showCustomAlert("💻 Başarılı İşlem", `Tebrikler! ${name} kiraladın. Artık arka planda saniyede +${rate} PTS pasif gelir kazanıyorsun! ⚡`);
         } else {
-            showCustomAlert("Yetersiz bakiye! Daha fazla PTS kazanmalısın.");
+            showCustomAlert("⚠️ Yetersiz Bakiye", `Bu rigi kiralayabilmek için yeterli PTS bakiyen yok. Lütfen kazım yap, görevleri tamamla ya da reklam izle!`);
         }
+    }
+
+    function showAd() {
+        if (adsgramController) {
+            adsgramController.show().then(() => {
+                currentSpeed += 0.5;
+                adWatchCount++;
+                saveData();
+                updateUI();
+                showCustomAlert("📺 Reklam Ödülü", "Reklam başarıyla izlendi! Hızın +0.5x artırıldı! 🚀");
+            }).catch((err) => {
+                showCustomAlert("⚠️ Bilgi", "Reklam yüklenemedi veya kapatıldı.");
+            });
+        } else {
+            // Test ortamı simülasyonu
+            currentSpeed += 0.5;
+            adWatchCount++;
+            updateUI();
+            showCustomAlert("📺 Test Modu Reklam", "Simüle Edildi: Hızına +0.5x eklendi! 🚀");
+        }
+    }
+
+    function claimDailyReward() {
+        balance += 25;
+        saveData();
+        updateUI();
+        showCustomAlert("🎁 Günlük Ödül", "Tebrikler! Günlük 25 PTS bonusun hesabına eklendi! ⚡");
+    }
+
+    function completeTask(taskId, target, reward) {
+        showCustomAlert("🎯 Görev Durumu", `Bu görevi tamamlamak için toplam ${target} reklam izlemen gerekiyor.`);
+    }
+
+    function calculateEstimate() {
+        let amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+        let usdt = amt / 10000;
+        document.getElementById('calc-result').innerText = usdt.toFixed(2) + " USDT";
+    }
+
+    function setQuickAmount(pct) {
+        let targetAmt = balance * pct;
+        document.getElementById('withdraw-amount').value = targetAmt.toFixed(2);
+        calculateEstimate();
+    }
+
+    function requestWithdraw() {
+        let amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+        let addr = document.getElementById('wallet-address').value.trim();
+        if (amt < 10000) {
+            showCustomAlert("⚠️ Uyarı", "Minimum çekim miktarı 10.000 PTS'dir.");
+            return;
+        }
+        if (!addr) {
+            showCustomAlert("⚠️ Uyarı", "Lütfen geçerli bir cüzdan adresi giriniz.");
+            return;
+        }
+        balance -= amt;
+        saveData();
+        updateUI();
+        showCustomAlert("💸 Talep Alındı", "Çekim talebiniz başarıyla kuyruğa eklendi. En kısa sürede cüzdanınıza gönderilecektir.");
+    }
+
+    function copyMyId() {
+        navigator.clipboard.writeText(myTelegramId);
+        showCustomAlert("📋 Kopyalandı", "Telegram ID'niz panoya kopyalandı: " + myTelegramId);
+    }
+
+    function shareRefLink() {
+        let refUrl = `https://t.me/sanal_miner_test_bot?start=ref_${myTelegramId}`;
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+            window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${encodeURIComponent("🚀 Sanal Miner Pro ile kendi maden rigini kur, pasif kripto kazan!")}`);
+        } else {
+            navigator.clipboard.writeText(refUrl);
+            showCustomAlert("🔗 Link Kopyalandı", "Referans bağlantınız panoya kopyalandı! Arkadaşlarınızla paylaşabilirsiniz.");
+        }
+    }
+
+    function toggleMusic() {
+        showCustomAlert("🎵 Ses Modu", "Arka plan ses efektleri ve müzik modu aktif.");
     }
 
     function saveData() {
@@ -626,7 +728,31 @@
         localStorage.setItem('sanal_miner_gpus', JSON.stringify(gpuCounts));
     }
 
-    // Saniyede bir pasif kazanç döngüsü
+    // Admin fonksiyonları
+    function adminAddDirectBalance(amount) {
+        balance += amount;
+        saveData();
+        updateUI();
+        showCustomAlert("👑 Admin İşlemi", `Hesabınıza başarılı bir şekilde +${amount.toLocaleString()} PTS eklendi!`);
+    }
+
+    function adminHardReset() {
+        if (confirm("Tüm verileri sıfırlamak istediğinize emin misiniz?")) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    function adminAddNewAdmin() {
+        let newId = document.getElementById('new-admin-id').value.trim();
+        if (newId) {
+            adminList.push(newId);
+            localStorage.setItem('sanal_miner_admins', JSON.stringify(adminList));
+            showCustomAlert("👑 Başarılı", `${newId} ID'li kullanıcı artık Admin yetkisine sahip!`);
+        }
+    }
+
+    // Pasif Kazanç Döngüsü (Her saniye çalışır)
     setInterval(() => {
         if (passiveRate > 0) {
             balance += passiveRate;
