@@ -3,242 +3,284 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MinerStat v2.4 - Dashboard</title>
+    <title>Pro Mining Hub</title>
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Courier, monospace; /* Terminal / Rig Havası */
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: #050505;
-            color: #00ff66;
+            background-color: #0f111a;
+            color: #ffffff;
             padding: 10px;
             display: flex;
             justify-content: center;
         }
 
-        .rig-container {
+        .container {
             width: 100%;
             max-width: 420px;
-            background: #111216;
-            border: 2px solid #222634;
-            border-radius: 6px;
+            background: #161b22;
+            border-radius: 12px;
+            border: 1px solid #30363d;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.05);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
         }
 
-        /* Top Bar */
-        .terminal-header {
-            background: #1a1e29;
-            padding: 8px 12px;
+        .header {
+            padding: 15px;
+            background: #1f242d;
+            border-bottom: 1px solid #30363d;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid #2f354a;
+        }
+
+        .user-box h4 {
+            font-size: 14px;
+            color: #58a6ff;
+        }
+
+        .user-box span {
             font-size: 11px;
-            color: #8ab4f8;
+            color: #8b949e;
         }
 
-        .status-dot {
-            height: 8px;
-            width: 8px;
-            background-color: #00ff66;
-            border-radius: 50%;
-            display: inline-block;
-            box-shadow: 0 0 8px #00ff66;
+        .pool-status {
+            font-size: 10px;
+            background: rgba(235, 158, 52, 0.15);
+            color: #f0883e;
+            padding: 4px 8px;
+            border-radius: 6px;
+            border: 1px solid rgba(235, 158, 52, 0.3);
         }
 
-        /* Main Console Panel */
-        .console-panel {
-            padding: 15px;
-            background: #0d0f12;
-            border-bottom: 1px solid #2f354a;
+        .main-board {
+            padding: 20px;
+            text-align: center;
+            background: radial-gradient(circle, rgba(22,27,34,1) 0%, rgba(13,17,23,1) 100%);
         }
 
-        .console-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 8px;
-            font-size: 12px;
+        .balance-label {
+            font-size: 11px;
+            color: #8b949e;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
         }
 
-        .label {
-            color: #8c92a4;
+        .balance-value {
+            font-size: 26px;
+            font-weight: 700;
+            color: #3fb950;
+            margin-bottom: 15px;
         }
 
-        .value {
-            color: #ffffff;
-            font-weight: bold;
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
         }
 
-        .balance-box {
-            margin-top: 12px;
+        .info-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #30363d;
             padding: 10px;
-            background: #161a23;
-            border: 1px dashed #3f4863;
+            border-radius: 8px;
             text-align: center;
         }
 
-        .balance-title {
+        .info-card .label {
             font-size: 10px;
-            color: #8c92a4;
+            color: #8b949e;
         }
 
-        .balance-val {
-            font-size: 22px;
-            color: #00ff66;
-            margin-top: 4px;
+        .info-card .val {
+            font-size: 12px;
+            font-weight: 600;
+            color: #c9d1d9;
+            margin-top: 3px;
         }
 
-        /* Hardware List */
-        .hw-section-title {
-            padding: 10px 15px;
+        /* Reklam / Zorluk Sistemi Butonları */
+        .ad-wall-box {
+            background: #21262d;
+            border: 1px dashed #f0883e;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .ad-wall-box p {
             font-size: 11px;
-            background: #161a23;
-            color: #e2e8f0;
-            border-bottom: 1px solid #2f354a;
-            text-transform: uppercase;
-            letter-spacing: 1px;
+            color: #f0883e;
+            margin-bottom: 10px;
+            line-height: 1.4;
         }
 
-        .hw-list {
-            padding: 10px;
+        .ad-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #f0883e 0%, #d16922 100%);
+            color: #fff;
+            border: none;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(240, 136, 62, 0.3);
+            transition: 0.2s;
+        }
+
+        .ad-btn:active {
+            transform: scale(0.98);
+        }
+
+        .mine-action-btn {
+            width: 100%;
+            background: #238636;
+            color: #fff;
+            border: none;
+            padding: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .sec-title {
+            font-size: 11px;
+            color: #8b949e;
+            padding: 10px 15px 5px 15px;
+            text-transform: uppercase;
+        }
+
+        .tasks-list {
+            padding: 0 15px 15px 15px;
             display: flex;
             flex-direction: column;
             gap: 8px;
-            max-height: 180px;
-            overflow-y: auto;
         }
 
-        .hw-card {
-            background: #161a23;
-            border: 1px solid #272d3d;
-            padding: 8px 10px;
+        .task-item {
+            background: #21262d;
+            border: 1px solid #30363d;
+            padding: 10px;
+            border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-radius: 4px;
         }
 
-        .hw-info h5 {
+        .task-desc h5 {
             font-size: 11px;
-            color: #ffffff;
+            color: #c9d1d9;
         }
 
-        .hw-info p {
+        .task-desc p {
             font-size: 9px;
-            color: #00ff66;
+            color: #8b949e;
             margin-top: 2px;
         }
 
-        .action-btn {
-            background: #1f2937;
-            color: #00ff66;
-            border: 1px solid #00ff66;
-            padding: 4px 8px;
-            font-size: 10px;
+        .do-btn {
+            background: #30363d;
+            color: #58a6ff;
+            border: 1px solid #484f58;
+            padding: 5px 10px;
+            font-size: 11px;
+            border-radius: 4px;
             cursor: pointer;
-            border-radius: 3px;
-        }
-
-        .action-btn:active {
-            background: #00ff66;
-            color: #000;
-        }
-
-        /* Logs Console */
-        .log-box {
-            background: #08090c;
-            padding: 8px 12px;
-            font-size: 9px;
-            color: #a0aec0;
-            height: 50px;
-            overflow-y: hidden;
-            border-top: 1px solid #2f354a;
         }
     </style>
 </head>
 <body>
 
-    <div class="rig-container">
-        <!-- Terminal Header -->
-        <div class="terminal-header">
-            <div><span class="status-dot"></span> RIG_ID: #8256</div>
-            <div>ETHW / POOL_ACTIVE</div>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="user-box">
+                <h4>Miner #9482</h4>
+                <span>Tier 1: Ham Madenci</span>
+            </div>
+            <div class="pool-status">⚠️ Düşük Hashrate</div>
         </div>
 
-        <!-- Main Console Panel -->
-        <div class="console-panel">
-            <div class="console-row">
-                <span class="label">Toplam Hashrate:</span>
-                <span class="value" id="hashrate">64.2 MH/s</span>
-            </div>
-            <div class="console-row">
-                <span class="label">GPU Sıcaklığı / Fan:</span>
-                <span class="value">64 °C / %68</span>
-            </div>
-            <div class="console-row">
-                <span class="label">Reddedilen Pay (Stale):</span>
-                <span class="value" style="color: #ff4d4d;">0 %</span>
-            </div>
+        <!-- Main Dashboard -->
+        <div class="main-board">
+            <div class="balance-label">BİRİKEN KAZANÇ (Çok Yavaş Mod)</div>
+            <div class="balance-value" id="balance">0.000014 USDT</div>
 
-            <div class="balance-box">
-                <div class="balance-title">AKTİF HAVUZ BAKİYESİ</div>
-                <div class="balance-val" id="balance">0.04289 ETH</div>
-            </div>
-        </div>
-
-        <!-- Hardware List -->
-        <div class="hw-section-title">Aktif Donanım Listesi</div>
-        <div class="hw-list">
-            <div class="hw-card">
-                <div class="hw-info">
-                    <h5>AMD RX 470 4GB</h5>
-                    <p>+24.5 MH/s - 95W</p>
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="label">Pasif Hız</div>
+                    <div class="val">0.0001 MH/s</div>
                 </div>
-                <button class="action-btn" onclick="toggleRig(this)">AKTİF</button>
-            </div>
-            <div class="hw-card">
-                <div class="hw-info">
-                    <h5>AMD RX 590 8GB</h5>
-                    <p>+39.7 MH/s - 135W</p>
+                <div class="info-card">
+                    <div class="label">Reklam Çarpanı</div>
+                    <div class="val" id="multiplier">1.0x (Pasif)</div>
                 </div>
-                <button class="action-btn" onclick="toggleRig(this)">AKTİF</button>
+            </div>
+
+            <!-- Reklam İzlemeden Çekim Yapılamaz / Zorlaştırılmış Alan -->
+            <div class="ad-wall-box">
+                <p>💡 <b>Sistem Kuralı:</b> Havuz havadislerinin güncellenmesi ve kazancın cüzdana yansıması için reklam vererek gücü tetiklemen şart!</p>
+                <button class="ad-btn" onclick="watchAdForBoost()">📺 REKLAM İZLE & HIZI AÇ (0.5x Bonus)</button>
             </div>
         </div>
 
-        <!-- Log Output -->
-        <div class="log-box" id="logs">
-            [18:16:02] Pool connected successfully.<br>
-            [18:16:04] Share accepted by nanopool (58ms).
+        <!-- Görevler ve Reklam Gelir Alanı -->
+        <div class="sec-title">Sponsorlu Havuz Görevleri (Zorunlu)</div>
+        <div class="tasks-list">
+            <div class="task-item">
+                <div class="task-desc">
+                    <h5>Sponsor Reklamı Görüntüle</h5>
+                    <p>Günlük havuz payı için tıkla (10 sn bekle)</p>
+                </div>
+                <button class="do-btn" onclick="watchSponsorAd()">İzle (+0.001)</button>
+            </div>
+            <div class="task-item">
+                <div class="task-desc">
+                    <h5>Ağ Doğrulama Görevi</h5>
+                    <p>Blok onaylama simülasyonu</p>
+                </div>
+                <button class="do-btn" onclick="verifyNetwork()">Doğrula</button>
+            </div>
         </div>
     </div>
 
     <script>
-        let balance = 0.04289;
-        let hashrate = 64.2;
+        let balance = 0.000014;
+        let speedMultiplier = 1.0;
 
+        // Çok yavaş artış (Kullanıcı hemen para kazanamasın, zorlansın)
         setInterval(() => {
-            balance += 0.000001;
-            document.getElementById("balance").innerText = balance.toFixed(5) + " ETH";
+            let increment = 0.0000001 * speedMultiplier;
+            balance += increment;
+            document.getElementById("balance").innerText = balance.toFixed(6) + " USDT";
         }, 1000);
 
-        function toggleRig(btn) {
-            if(btn.innerText === "AKTİF") {
-                btn.innerText = "PASİF";
-                btn.style.borderColor = "#ff4d4d";
-                btn.style.color = "#ff4d4d";
-                hashrate -= 24.5;
-            } else {
-                btn.innerText = "AKTİF";
-                btn.style.borderColor = "#00ff66";
-                btn.style.color = "#00ff66";
-                hashrate += 24.5;
-            }
-            document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH/s";
+        function watchAdForBoost() {
+            // Buraya Telegram Adsgram veya harici reklam kodunu entegre edeceksin.
+            // Reklam izlendiğinde hem senin reklam kazancın olacak hem kullanıcı hız kazanacak.
+            alert("📺 Reklam simülasyonu oynatılıyor... (Reklam bittiğinde senin kasana gelir yazıldı!)");
+            speedMultiplier += 0.5;
+            document.getElementById("multiplier").innerText = speedMultiplier.toFixed(1) + "x (Aktif)";
+            alert("🎉 Havuz hızı artırıldı! Şimdi biraz daha hızlı kazanıyorsun.");
+        }
+
+        function watchSponsorAd() {
+            alert("📺 Sponsor reklam yüklendi. İzleme tamamlandıktan sonra havuza katkın eklenecek.");
+            balance += 0.001000;
+            document.getElementById("balance").innerText = balance.toFixed(6) + " USDT";
+        }
+
+        function verifyNetwork() {
+            alert("🔍 Blok zinciri doğrulanıyor... (Minimum çekim sınırına ulaşmak için daha çok reklam izlemelisin!)");
         }
     </script>
 </body>
