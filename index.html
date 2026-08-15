@@ -3,317 +3,242 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CryptoRig Pro - Mining Dashboard</title>
+    <title>MinerStat v2.4 - Dashboard</title>
     <style>
-        :root {
-            --bg-color: #0b0e14;
-            --card-bg: #151b22;
-            --accent-green: #00ff88;
-            --accent-blue: #00d2ff;
-            --text-main: #ffffff;
-            --text-muted: #8b949e;
-            --border: #30363d;
-        }
-
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Courier New', Courier, monospace; /* Terminal / Rig Havası */
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            padding: 15px;
+            background-color: #050505;
+            color: #00ff66;
+            padding: 10px;
             display: flex;
             justify-content: center;
         }
 
-        .container {
+        .rig-container {
             width: 100%;
             max-width: 420px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            border: 1px solid var(--border);
+            background: #111216;
+            border: 2px solid #222634;
+            border-radius: 6px;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            box-shadow: 0 0 20px rgba(0, 255, 102, 0.05);
         }
 
-        /* Header */
-        .header {
-            padding: 15px 20px;
+        /* Top Bar */
+        .terminal-header {
+            background: #1a1e29;
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .user-info h3 {
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .user-info span {
-            font-size: 12px;
-            color: var(--accent-green);
-            background: rgba(0, 255, 136, 0.1);
-            padding: 2px 8px;
-            border-radius: 10px;
-        }
-
-        .status-badge {
+            border-bottom: 1px solid #2f354a;
             font-size: 11px;
-            color: var(--accent-blue);
-            background: rgba(0, 210, 255, 0.1);
-            padding: 4px 8px;
-            border-radius: 6px;
+            color: #8ab4f8;
         }
 
-        /* Dashboard Main Stats */
-        .dashboard {
-            padding: 20px;
+        .status-dot {
+            height: 8px;
+            width: 8px;
+            background-color: #00ff66;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 8px #00ff66;
+        }
+
+        /* Main Console Panel */
+        .console-panel {
+            padding: 15px;
+            background: #0d0f12;
+            border-bottom: 1px solid #2f354a;
+        }
+
+        .console-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .label {
+            color: #8c92a4;
+        }
+
+        .value {
+            color: #ffffff;
+            font-weight: bold;
+        }
+
+        .balance-box {
+            margin-top: 12px;
+            padding: 10px;
+            background: #161a23;
+            border: 1px dashed #3f4863;
             text-align: center;
-            background: linear-gradient(180deg, rgba(21,27,34,0.8) 0%, rgba(11,14,20,1) 100%);
         }
 
         .balance-title {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-bottom: 5px;
-        }
-
-        .balance-amount {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-bottom: 15px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-        }
-
-        .stat-card .label {
             font-size: 10px;
-            color: var(--text-muted);
-            margin-bottom: 4px;
+            color: #8c92a4;
         }
 
-        .stat-card .value {
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-main);
+        .balance-val {
+            font-size: 22px;
+            color: #00ff66;
+            margin-top: 4px;
         }
 
-        /* Action Button (Start/Stop Mining) */
-        .mine-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #00ff88 0%, #00b4d8 100%);
-            color: #0b0e14;
-            border: none;
-            padding: 14px;
-            font-size: 15px;
-            font-weight: 700;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: 0.2s;
-            box-shadow: 0 4px 15px rgba(0,255,136,0.3);
+        /* Hardware List */
+        .hw-section-title {
+            padding: 10px 15px;
+            font-size: 11px;
+            background: #161a23;
+            color: #e2e8f0;
+            border-bottom: 1px solid #2f354a;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .mine-btn:active {
-            transform: scale(0.98);
-        }
-
-        /* Rig Market Section */
-        .section-title {
-            font-size: 14px;
-            font-weight: 600;
-            margin: 20px 20px 10px 20px;
-            color: var(--text-muted);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .market-list {
-            padding: 0 20px 20px 20px;
+        .hw-list {
+            padding: 10px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
+            max-height: 180px;
+            overflow-y: auto;
         }
 
-        .market-item {
+        .hw-card {
+            background: #161a23;
+            border: 1px solid #272d3d;
+            padding: 8px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border);
-            padding: 12px;
-            border-radius: 10px;
+            border-radius: 4px;
         }
 
-        .item-details h4 {
-            font-size: 13px;
-            font-weight: 600;
-            margin-bottom: 2px;
-        }
-
-        .item-details p {
+        .hw-info h5 {
             font-size: 11px;
-            color: var(--accent-green);
+            color: #ffffff;
         }
 
-        .buy-btn {
-            background: var(--border);
-            color: var(--text-main);
-            border: none;
-            padding: 6px 12px;
-            font-size: 12px;
-            font-weight: 600;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: 0.2s;
+        .hw-info p {
+            font-size: 9px;
+            color: #00ff66;
+            margin-top: 2px;
         }
 
-        .buy-btn:hover {
-            background: var(--accent-green);
-            color: #0b0e14;
-        }
-
-        /* Bottom Nav */
-        .nav-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            background: #11161d;
-            border-top: 1px solid var(--border);
-            padding: 10px 0;
-        }
-
-        .nav-item {
-            text-align: center;
-            color: var(--text-muted);
+        .action-btn {
+            background: #1f2937;
+            color: #00ff66;
+            border: 1px solid #00ff66;
+            padding: 4px 8px;
             font-size: 10px;
             cursor: pointer;
-            transition: 0.2s;
+            border-radius: 3px;
         }
 
-        .nav-item.active {
-            color: var(--accent-green);
+        .action-btn:active {
+            background: #00ff66;
+            color: #000;
+        }
+
+        /* Logs Console */
+        .log-box {
+            background: #08090c;
+            padding: 8px 12px;
+            font-size: 9px;
+            color: #a0aec0;
+            height: 50px;
+            overflow-y: hidden;
+            border-top: 1px solid #2f354a;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Header -->
-        <div class="header">
-            <div class="user-info">
-                <h3>Mining Worker #1</h3>
-                <span>Online</span>
-            </div>
-            <div class="status-badge">Pool: ⚡ Auto</div>
+    <div class="rig-container">
+        <!-- Terminal Header -->
+        <div class="terminal-header">
+            <div><span class="status-dot"></span> RIG_ID: #8256</div>
+            <div>ETHW / POOL_ACTIVE</div>
         </div>
 
-        <!-- Dashboard Stats -->
-        <div class="dashboard">
-            <div class="balance-title">TOPLAM KAZANÇ (USDT)</div>
-            <div class="balance-amount" id="balance">14.8520</div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="label">Hashrate</div>
-                    <div class="value" id="hashrate">45.5 MH/s</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">Sıcaklık</div>
-                    <div class="value">62 °C</div>
-                </div>
-                <div class="stat-card">
-                    <div class="label">Günlük Verim</div>
-                    <div class="value">+2.40 $</div>
-                </div>
+        <!-- Main Console Panel -->
+        <div class="console-panel">
+            <div class="console-row">
+                <span class="label">Toplam Hashrate:</span>
+                <span class="value" id="hashrate">64.2 MH/s</span>
+            </div>
+            <div class="console-row">
+                <span class="label">GPU Sıcaklığı / Fan:</span>
+                <span class="value">64 °C / %68</span>
+            </div>
+            <div class="console-row">
+                <span class="label">Reddedilen Pay (Stale):</span>
+                <span class="value" style="color: #ff4d4d;">0 %</span>
             </div>
 
-            <button class="mine-btn" onclick="boostMining()">🚀 HIZLANDIRCIYI AKTİFLEŞTİR</button>
-        </div>
-
-        <!-- Rig Market -->
-        <div class="section-title">
-            <span>Donanım & Rig Mağazası</span>
-            <span>💎</span>
-        </div>
-        <div class="market-list">
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>AMD RX 470 4GB</h4>
-                    <p>+12.5 MH/s Kazanç</p>
-                </div>
-                <button class="buy-btn" onclick="buyRig(50, 12.5)">50 USDT</button>
-            </div>
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>AMD RX 590 8GB</h4>
-                    <p>+28.0 MH/s Kazanç</p>
-                </div>
-                <button class="buy-btn" onclick="buyRig(110, 28.0)">110 USDT</button>
-            </div>
-            <div class="market-item">
-                <div class="item-details">
-                    <h4>NVIDIA RTX 3060</h4>
-                    <p>+55.0 MH/s Kazanç</p>
-                </div>
-                <button class="buy-btn" onclick="buyRig(220, 55.0)">220 USDT</button>
+            <div class="balance-box">
+                <div class="balance-title">AKTİF HAVUZ BAKİYESİ</div>
+                <div class="balance-val" id="balance">0.04289 ETH</div>
             </div>
         </div>
 
-        <!-- Navigation -->
-        <div class="nav-bar">
-            <div class="nav-item active">💻 Kazım</div>
-            <div class="nav-item">🛒 Market</div>
-            <div class="nav-item">👥 Takım</div>
-            <div class="nav-item">💳 Cüzdan</div>
+        <!-- Hardware List -->
+        <div class="hw-section-title">Aktif Donanım Listesi</div>
+        <div class="hw-list">
+            <div class="hw-card">
+                <div class="hw-info">
+                    <h5>AMD RX 470 4GB</h5>
+                    <p>+24.5 MH/s - 95W</p>
+                </div>
+                <button class="action-btn" onclick="toggleRig(this)">AKTİF</button>
+            </div>
+            <div class="hw-card">
+                <div class="hw-info">
+                    <h5>AMD RX 590 8GB</h5>
+                    <p>+39.7 MH/s - 135W</p>
+                </div>
+                <button class="action-btn" onclick="toggleRig(this)">AKTİF</button>
+            </div>
+        </div>
+
+        <!-- Log Output -->
+        <div class="log-box" id="logs">
+            [18:16:02] Pool connected successfully.<br>
+            [18:16:04] Share accepted by nanopool (58ms).
         </div>
     </div>
 
     <script>
-        let balance = 14.8520;
-        let hashrate = 45.5;
+        let balance = 0.04289;
+        let hashrate = 64.2;
 
-        // Her saniye aktif hashrate'e göre bakiye artışı simülasyonu
         setInterval(() => {
-            let earningsPerSecond = (hashrate * 0.000001);
-            balance += earningsPerSecond;
-            document.getElementById("balance").innerText = balance.toFixed(4);
+            balance += 0.000001;
+            document.getElementById("balance").innerText = balance.toFixed(5) + " ETH";
         }, 1000);
 
-        function boostMining() {
-            hashrate += 5.0;
-            document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH/s";
-            alert("🚀 Donanım overclock edildi! Hashrate artırıldı.");
-        }
-
-        function buyRig(price, power) {
-            if (balance >= price) {
-                balance -= price;
-                hashrate += power;
-                document.getElementById("balance").innerText = balance.toFixed(4);
-                document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH/s";
-                alert("🎉 Rig başarıyla sisteme eklendi ve kazanca başladı!");
+        function toggleRig(btn) {
+            if(btn.innerText === "AKTİF") {
+                btn.innerText = "PASİF";
+                btn.style.borderColor = "#ff4d4d";
+                btn.style.color = "#ff4d4d";
+                hashrate -= 24.5;
             } else {
-                alert("❌ Yetersiz bakiye! Önce biraz daha kaz ya da cüzdanı doldur.");
+                btn.innerText = "AKTİF";
+                btn.style.borderColor = "#00ff66";
+                btn.style.color = "#00ff66";
+                hashrate += 24.5;
             }
+            document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH/s";
         }
     </script>
 </body>
