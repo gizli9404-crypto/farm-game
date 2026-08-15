@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HertzCore Ultimate | Web3 Mini App Ecosystem</title>
+    <title>HertzCore Apex | Web3 Mining Ecosystem</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -13,8 +13,9 @@
         body {
             background: #020201;
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(212, 160, 23, 0.25) 0%, transparent 60%),
-                radial-gradient(circle at 50% 100%, rgba(0, 230, 118, 0.08) 0%, transparent 50%);
+                radial-gradient(circle at 50% 0%, rgba(212, 160, 23, 0.28) 0%, transparent 60%),
+                radial-gradient(circle at 20% 90%, rgba(0, 230, 118, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 90%, rgba(0, 176, 255, 0.1) 0%, transparent 50%);
             color: #ffffff;
             margin: 0;
             padding: 0;
@@ -65,13 +66,15 @@
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 10px; font-weight: 700;
         }
 
-        /* STAMİNA */
+        /* STAMİNA & XP */
+        .progress-box-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
         .stamina-wrapper {
-            background: #0d0904; border: 1px solid rgba(212, 160, 23, 0.3); border-radius: 12px; padding: 10px 14px; margin-bottom: 10px;
+            background: #0d0904; border: 1px solid rgba(212, 160, 23, 0.3); border-radius: 12px; padding: 8px 12px;
         }
-        .stamina-info { display: flex; justify-content: space-between; font-size: 10px; font-weight: 700; color: #b39b7f; margin-bottom: 5px; }
-        .stamina-bar-bg { width: 100%; height: 7px; background: #030201; border-radius: 4px; overflow: hidden; border: 1px solid rgba(212,160,23,0.2); }
+        .stamina-info { display: flex; justify-content: space-between; font-size: 9px; font-weight: 700; color: #b39b7f; margin-bottom: 4px; }
+        .stamina-bar-bg { width: 100%; height: 6px; background: #030201; border-radius: 4px; overflow: hidden; border: 1px solid rgba(212,160,23,0.2); }
         .stamina-bar-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #d4a017, #00e676); border-radius: 4px; transition: width 0.1s linear; }
+        .xp-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00b0ff, #00e676); border-radius: 4px; transition: width 0.2s ease; }
 
         @keyframes numberBounce {
             0% { transform: scale(1); } 50% { transform: scale(1.06); color: #00e676; } 100% { transform: scale(1); }
@@ -102,7 +105,7 @@
             width: 46px; height: 46px; background: #030201; border: 2px solid rgba(212, 160, 23, 0.5);
             border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative;
         }
-        .fan-spin-layer { width: 100%; height: 100%; position: relative; animation: fanRotate 0.3s linear infinite; }
+        .fan-spin-layer { width: 100%; height: 100%; position: relative; animation: fanRotate 0.25s linear infinite; }
         @keyframes fanRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .fan-spin-layer::before, .fan-spin-layer::after { content: ''; position: absolute; background: #d4a017; }
         .fan-spin-layer::before { width: 3px; height: 100%; left: 21px; top: 0; border-radius: 2px; }
@@ -110,13 +113,27 @@
         .fan-core-dot { position: absolute; width: 12px; height: 12px; background: radial-gradient(circle, #fff, #00e676); border-radius: 50%; z-index: 2; }
         .rig-bottom-info { display: flex; justify-content: space-between; font-size: 9px; color: #b39b7f; font-weight: 700; border-top: 1px solid rgba(212, 160, 23, 0.2); padding-top: 8px; }
 
-        /* GÖREV, REKLAM VE ÇARK KARTLARI */
+        /* UPGRADE & MAĞAZA KARTLARI */
+        .upgrade-card {
+            background: linear-gradient(145deg, #120e06, #050402); border: 1px solid rgba(212, 160, 23, 0.4);
+            border-radius: 14px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .upgrade-info b { font-size: 11px; color: #fff; display: block; margin-bottom: 2px; }
+        .upgrade-info small { font-size: 9px; color: #00e676; font-weight: 700; }
+        
+        .btn-gold-sm {
+            background: linear-gradient(135deg, #d4a017, #aa7c11); color: #050402; border: none;
+            padding: 8px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; cursor: pointer;
+        }
+        .btn-gold-sm:disabled { background: #332915; color: #665542; cursor: not-allowed; }
+
+        /* ÇARK & GÖREVLER */
         .wheel-container {
             background: linear-gradient(145deg, #120e06, #050402); border: 1px solid rgba(212, 160, 23, 0.4);
             border-radius: 18px; padding: 14px; text-align: center; margin-bottom: 10px;
         }
         .wheel-box {
-            width: 150px; height: 150px; border-radius: 50%; border: 4px solid #d4a017; margin: 10px auto; position: relative;
+            width: 140px; height: 140px; border-radius: 50%; border: 4px solid #d4a017; margin: 10px auto; position: relative;
             background: conic-gradient(#d4a017 0deg 60deg, #120e06 60deg 120deg, #00e676 120deg 180deg, #171107 180deg 240deg, #aa7c11 240deg 300deg, #030201 300deg 360deg);
             transition: transform 3.5s cubic-bezier(0.15, 0.85, 0.15, 1); box-shadow: 0 0 20px rgba(212,160,23,0.3);
         }
@@ -125,21 +142,9 @@
             border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 14px solid #00e676; z-index: 10;
         }
 
-        .task-card {
-            background: linear-gradient(145deg, #120e06, #050402); border: 1px solid rgba(212, 160, 23, 0.3);
-            border-radius: 14px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;
-        }
-        .task-info b { font-size: 11px; color: #fff; display: block; margin-bottom: 2px; }
-        .task-info small { font-size: 9px; color: #00e676; font-weight: 700; }
-        .btn-action-sm {
-            background: linear-gradient(135deg, #d4a017, #aa7c11); color: #050402; border: none;
-            padding: 8px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; cursor: pointer;
-        }
-
-        /* STREAK (SERİ) GÜNLÜK ÖDÜL KUTUSU */
         .streak-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
         .streak-box {
-            background: #0d0904; border: 1px solid rgba(212,160,23,0.3); border-radius: 10px; padding: 8px 4px; text-align: center;
+            background: #0d0904; border: 1px solid rgba(212,160,23,0.3); border-radius: 10px; padding: 8px 4px; text-align: center; cursor: pointer;
         }
         .streak-box.claimed { border-color: #00e676; background: rgba(0,230,118,0.06); }
         .streak-box b { font-size: 10px; color: #d4a017; display: block; }
@@ -207,7 +212,7 @@
 
     <!-- ÜST BAR -->
     <div class="header-box">
-        <div class="brand-logo">⚡ HERTZCORE ULTIMATE</div>
+        <div class="brand-logo">⚡ HERTZCORE APEX</div>
         <div class="live-badge">🔒 MAINNET SECURE</div>
     </div>
 
@@ -223,16 +228,28 @@
             <div class="balance-number" id="balanceNumBox">
                 <span id="mainBalanceVal">50.00</span> <span style="font-size: 12px; color:#fff;">HRT</span>
             </div>
-            <div class="node-rank" id="nodeRankText">Rütbe: Elite Validator</div>
+            <div class="node-rank" id="nodeRankText">Seviye 1 • Elite Validator</div>
         </div>
 
-        <div class="stamina-wrapper">
-            <div class="stamina-info">
-                <span>⚡ HASH STAMINA (ENERJİ)</span>
-                <span id="staminaNum">100 / 100</span>
+        <div class="progress-box-group">
+            <div class="stamina-wrapper">
+                <div class="stamina-info">
+                    <span>⚡ HASH STAMINA (ENERJİ)</span>
+                    <span id="staminaNum">100 / 100</span>
+                </div>
+                <div class="stamina-bar-bg">
+                    <div class="stamina-bar-fill" id="staminaFillBar" style="width: 100%;"></div>
+                </div>
             </div>
-            <div class="stamina-bar-bg">
-                <div class="stamina-bar-fill" id="staminaFillBar" style="width: 100%;"></div>
+
+            <div class="stamina-wrapper">
+                <div class="stamina-info">
+                    <span>📈 SEVİYE İLERLEMESİ (XP)</span>
+                    <span id="xpNumText">0 / 500 XP</span>
+                </div>
+                <div class="stamina-bar-bg">
+                    <div class="xp-bar-fill" id="xpBarFill"></div>
+                </div>
             </div>
         </div>
 
@@ -241,7 +258,7 @@
         <div class="mining-rig-box" id="rigBox" onclick="executeMiningTap(event)">
             <div class="rig-top-info">
                 <span id="rigNameDisplay">Enterprise Rig #H-99X</span>
-                <span style="color: #00e676;">85.2 MH/s</span>
+                <span style="color: #00e676;" id="hashrateDisplay">85.2 MH/s</span>
             </div>
             <div class="fans-row-box">
                 <div class="rig-fan-item"><div class="fan-core-dot"></div><div class="fan-spin-layer"></div></div>
@@ -250,50 +267,48 @@
             </div>
             <div class="rig-bottom-info">
                 <span>Ethash-V3 Protokolü</span>
-                <span>Verimlilik: <b style="color:#00e676;">99.9%</b></span>
+                <span>Pasif Gelir: <b style="color:#00e676;" id="idleRateDisplay">+0.5 HRT/dk</b></span>
             </div>
         </div>
     </div>
 
-    <!-- 2. TAB: GÖREVLER, SERİ & ÇARK (REKLAM & KAZANÇ MERKEZİ) -->
-    <div id="tab-earn" class="tab-section">
-        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px;">🔥 Günlük Seri (Streak) Ödülleri</h3>
-        <div class="streak-grid" id="streakGridBox">
-            <!-- Dinamik doldurulur -->
+    <!-- 2. TAB: UPGRADE & MAĞAZA (GELİŞTİRME MERKEZİ) -->
+    <div id="tab-upgrade" class="tab-section">
+        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px;">⚙️ Donanım & Rig Yükseltmeleri</h3>
+        <p style="font-size: 9px; color: #8c7355; margin-bottom: 10px;">Donanımlarını güçlendirerek dokunma başına kazancını ve saniyelik pasif gelirini artır.</p>
+
+        <div class="upgrade-card">
+            <div class="upgrade-info">
+                <b id="upg1Title">ASIC Soğutma Fanı (Seviye 0)</b>
+                <small id="upg1Desc">Dokunma Başına: +0.005 HRT</small>
+            </div>
+            <button class="btn-gold-sm" id="btnUpg1" onclick="buyUpgrade(1)">25.00 HRT</button>
         </div>
 
-        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px; margin-top: 10px;">🎰 Şans Çarkı (Lucky Wheel)</h3>
-        <div class="wheel-container">
+        <div class="upgrade-card">
+            <div class="upgrade-info">
+                <b id="upg2Title">Bulut Madencilik Modülü (Seviye 0)</b>
+                <small id="upg2Desc">Pasif Gelir: +0.5 HRT / dk</small>
+            </div>
+            <button class="btn-gold-sm" id="btnUpg2" onclick="buyUpgrade(2)">50.00 HRT</button>
+        </div>
+
+        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px; margin-top: 14px;">🔥 Günlük Seri & Şans Çarkı</h3>
+        <div class="streak-grid" id="streakGridBox"></div>
+
+        <div class="wheel-container" style="margin-top: 10px;">
             <div style="position: relative;">
                 <div class="wheel-pointer"></div>
                 <div class="wheel-box" id="luckyWheel"></div>
             </div>
             <button class="btn-gold-main" style="margin-top: 8px; padding: 9px;" onclick="spinLuckyWheel()">🎁 REKLAM İZLE & ÇARKI ÇEVİR</button>
         </div>
-
-        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px; margin-top: 12px;">🎯 Sponsorlu Görev & Reklam Duvarı</h3>
-        
-        <div class="task-card">
-            <div class="task-info">
-                <b>🎬 AdsGram Video Reklamı</b>
-                <small>+15.00 HRT + Tam Enerji</small>
-            </div>
-            <button class="btn-action-sm" onclick="completeTaskAd('AdsGram Video', 15.0)">İZLE</button>
-        </div>
-
-        <div class="task-card">
-            <div class="task-info">
-                <b>📌 Telegram Kanalına Katıl</b>
-                <small>+10.00 HRT Ödül</small>
-            </div>
-            <button class="btn-action-sm" onclick="completeTaskAd('Telegram Katılım', 10.0)">KATIL</button>
-        </div>
     </div>
 
     <!-- 3. TAB: ARKADAŞINI GETİR (REFERRAL) -->
     <div id="tab-ref" class="tab-section">
         <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px;">👥 Arkadaşını Davet Et & Kazan</h3>
-        <p style="font-size: 9px; color: #8c7355; margin-bottom: 12px;">Davet ettiğin her aktif madenci başına anında <b>+25.00 HRT</b> kazan ve onların kazancından %10 komisyon al!</p>
+        <p style="font-size: 9px; color: #8c7355; margin-bottom: 12px;">Davet ettiğin her aktif madenci başına anında <b>+25.00 HRT</b> kazan ve pasif gelir havuzuna ortak et!</p>
 
         <div class="wallet-card-box" style="text-align: center;">
             <div style="font-size: 10px; color: #b39b7f; margin-bottom: 6px; font-weight: 700;">Özel Davet Bağlantın</div>
@@ -343,7 +358,7 @@
 <!-- ALT NAVİGASYON -->
 <div class="bottom-nav">
     <div class="nav-item-btn active" onclick="switchTab('home', this)"><span class="nav-ico">🏠</span>MERKEZ</div>
-    <div class="nav-item-btn" onclick="switchTab('earn', this)"><span class="nav-ico">🎯</span>GÖREV & ÇARK</div>
+    <div class="nav-item-btn" onclick="switchTab('upgrade', this)"><span class="nav-ico">⚙️</span>YÜKSELT</div>
     <div class="nav-item-btn" onclick="switchTab('ref', this)"><span class="nav-ico">👥</span>DAVET ET</div>
     <div class="nav-item-btn" onclick="switchTab('wallet', this)"><span class="nav-ico">💼</span>CÜZDAN</div>
 </div>
@@ -361,11 +376,16 @@
     if (tg) tg.expand();
 
     let appState = {
-        balance: parseFloat(localStorage.getItem('hrt_ultimate_bal')) || 50.00,
+        balance: parseFloat(localStorage.getItem('apex_bal')) || 50.00,
         energy: 100,
-        tapReward: 0.005,
-        streakDay: parseInt(localStorage.getItem('hrt_streak_day')) || 1,
-        streakClaimed: localStorage.getItem('hrt_streak_claimed') === 'true' || false,
+        level: parseInt(localStorage.getItem('apex_lvl')) || 1,
+        xp: parseInt(localStorage.getItem('apex_xp')) || 0,
+        tapReward: parseFloat(localStorage.getItem('apex_tap')) || 0.005,
+        idleRate: parseFloat(localStorage.getItem('apex_idle')) || 0.5,
+        upg1Level: parseInt(localStorage.getItem('apex_u1')) || 0,
+        upg2Level: parseInt(localStorage.getItem('apex_u2')) || 0,
+        streakDay: parseInt(localStorage.getItem('apex_streak_day')) || 1,
+        streakClaimed: localStorage.getItem('apex_streak_claimed') === 'true' || false,
         network: "TON"
     };
 
@@ -374,10 +394,42 @@
     let wheelDeg = 0;
     let isSpinning = false;
 
+    // Web Audio API Sound Generator
+    let audioCtx = null;
+    function playSound(type) {
+        try {
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            let now = audioCtx.currentTime;
+            if (type === 'tap') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+                gain.gain.setValueAtTime(0.08, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
+                osc.start(now);
+                osc.stop(now + 0.08);
+            } else if (type === 'success') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
+                osc.start(now);
+                osc.stop(now + 0.3);
+            }
+        } catch (e) {}
+    }
+
     renderStreakUI();
     refreshAllUI();
 
-    // Enerji dolum döngüsü
+    // Enerji ve Pasif Gelir (Idle) Döngüsü
     setInterval(() => {
         if (appState.energy < 100) {
             appState.energy = Math.min(100, appState.energy + 2);
@@ -385,10 +437,26 @@
         }
     }, 1000);
 
+    // Her saniye pasif madencilik kazancı (idleRate dakikalıktır, saniyeye bölünür)
+    setInterval(() => {
+        if (appState.idleRate > 0) {
+            let addVal = appState.idleRate / 60;
+            appState.balance += addVal;
+            refreshAllUI();
+            persistState();
+        }
+    }, 1000);
+
     function persistState() {
-        localStorage.setItem('hrt_ultimate_bal', appState.balance);
-        localStorage.setItem('hrt_streak_day', appState.streakDay);
-        localStorage.setItem('hrt_streak_claimed', appState.streakClaimed);
+        localStorage.setItem('apex_bal', appState.balance);
+        localStorage.setItem('apex_lvl', appState.level);
+        localStorage.setItem('apex_xp', appState.xp);
+        localStorage.setItem('apex_tap', appState.tapReward);
+        localStorage.setItem('apex_idle', appState.idleRate);
+        localStorage.setItem('apex_u1', appState.upg1Level);
+        localStorage.setItem('apex_u2', appState.upg2Level);
+        localStorage.setItem('apex_streak_day', appState.streakDay);
+        localStorage.setItem('apex_streak_claimed', appState.streakClaimed);
     }
 
     function switchTab(tabId, el) {
@@ -397,6 +465,7 @@
         document.getElementById('tab-' + tabId).classList.add('active');
         el.classList.add('active');
         if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
+        playSound('tap');
     }
 
     function refreshAllUI() {
@@ -407,16 +476,58 @@
         document.getElementById('walletBalDisplay').innerText = balFormatted + " HRT";
         document.getElementById('usdValDisplay').innerText = `≈ $` + usdVal;
         document.getElementById('tapPowerLabel').innerText = `👇 Blok Çöz (+${appState.tapReward.toFixed(3)} HRT / Dokunuş)`;
+        document.getElementById('idleRateDisplay').innerText = `+${appState.idleRate.toFixed(1)} HRT/dk`;
 
-        let rankTitle = "Elite Validator";
-        if (appState.balance >= 150) rankTitle = "Master Cluster Rig";
-        if (appState.balance >= 400) rankTitle = "Core Network Lead";
-        document.getElementById('nodeRankText').innerText = `Rütbe: ${rankTitle}`;
+        let xpNeeded = appState.level * 500;
+        if (appState.xp >= xpNeeded) {
+            appState.level++;
+            appState.xp = 0;
+            showModalMessage(`Tebrikler! Seviye ${appState.level}'e atlarsın! Kazanç çarpanların yükseldi.`);
+        }
+        document.getElementById('xpNumText').innerText = `${appState.xp} / ${xpNeeded} XP`;
+        document.getElementById('xpBarFill').style.width = `${Math.min(100, (appState.xp / xpNeeded) * 100)}%`;
+
+        document.getElementById('nodeRankText').innerText = `Seviye ${appState.level} • Apex Cluster Node`;
+
+        // Yükseltme kartları güncelleme
+        let cost1 = 25 * Math.pow(1.6, appState.upg1Level);
+        document.getElementById('upg1Title').innerText = `ASIC Soğutma Fanı (Seviye ${appState.upg1Level})`;
+        document.getElementById('upg1Desc').innerText = `Dokunma Başına: +${appState.tapReward.toFixed(3)} HRT`;
+        let btn1 = document.getElementById('btnUpg1');
+        btn1.innerText = `${cost1.toFixed(1)} HRT`;
+        btn1.disabled = appState.balance < cost1;
+
+        let cost2 = 50 * Math.pow(1.8, appState.upg2Level);
+        document.getElementById('upg2Title').innerText = `Bulut Madencilik Modülü (Seviye ${appState.upg2Level})`;
+        document.getElementById('upg2Desc').innerText = `Pasif Gelir: +${appState.idleRate.toFixed(1)} HRT / dk`;
+        let btn2 = document.getElementById('btnUpg2');
+        btn2.innerText = `${cost2.toFixed(1)} HRT`;
+        btn2.disabled = appState.balance < cost2;
     }
 
     function refreshEnergyUI() {
         document.getElementById('staminaNum').innerText = `${appState.energy} / 100`;
         document.getElementById('staminaFillBar').style.width = `${appState.energy}%`;
+    }
+
+    function buyUpgrade(type) {
+        if (type === 1) {
+            let cost = 25 * Math.pow(1.6, appState.upg1Level);
+            if (appState.balance < cost) return;
+            appState.balance -= cost;
+            appState.upg1Level++;
+            appState.tapReward += 0.005;
+        } else if (type === 2) {
+            let cost = 50 * Math.pow(1.8, appState.upg2Level);
+            if (appState.balance < cost) return;
+            appState.balance -= cost;
+            appState.upg2Level++;
+            appState.idleRate += 0.5;
+        }
+        refreshAllUI();
+        persistState();
+        playSound('success');
+        showModalMessage("Donanım başarıyla yükseltildi ve devreye alındı!");
     }
 
     function renderStreakUI() {
@@ -436,7 +547,7 @@
 
     function claimStreak(day) {
         if (day !== appState.streakDay || appState.streakClaimed) {
-            showModalMessage("Bu seri ödülünü şu an alamazsınız ya da zaten daha önce alındı!");
+            showModalMessage("Bu seri ödülünü şu an alamazsınız ya da zaten alındı!");
             return;
         }
         let rewardsList = [5, 10, 20, 50];
@@ -446,20 +557,23 @@
         refreshAllUI();
         renderStreakUI();
         persistState();
+        playSound('success');
         showModalMessage(`Tebrikler! Gün ${day} seri ödülü olarak +${reward} HRT cüzdanınıza eklendi.`);
     }
 
     function executeMiningTap(event) {
         if (appState.energy < 4) {
-            showModalMessage("Enerjiniz tükendi! Görevler sekmesinden reklam izleyerek anında enerji doldurabilirsiniz.");
+            showModalMessage("Enerjiniz tükendi! Yükselt sekmesinden şans çarkını çevirerek anında enerji doldurabilirsiniz.");
             return;
         }
 
         appState.energy -= 4;
         appState.balance += appState.tapReward;
+        appState.xp += 10;
         refreshAllUI();
         refreshEnergyUI();
         persistState();
+        playSound('tap');
 
         let numBox = document.getElementById('balanceNumBox');
         numBox.classList.remove('bounce-anim');
@@ -511,23 +625,16 @@
             refreshAllUI();
             refreshEnergyUI();
             persistState();
+            playSound('success');
             showModalMessage(`🎉 Çark Sonucu: +${selectedReward} HRT kazandınız ve enerji tam doluluğa ulaştı!`);
         }, 3600);
-    }
-
-    function completeTaskAd(title, rewardValue) {
-        appState.balance += rewardValue;
-        appState.energy = Math.min(100, appState.energy + 50);
-        refreshAllUI();
-        refreshEnergyUI();
-        persistState();
-        showModalMessage(`${title} başarıyla tamamlandı!\n+${rewardValue.toFixed(2)} HRT cüzdanınıza eklendi.`);
     }
 
     function copyReferralLink() {
         let inputEl = document.getElementById('refLinkInput');
         inputEl.select();
         navigator.clipboard.writeText(inputEl.value);
+        playSound('success');
         showModalMessage("Davet bağlantınız panoya kopyalandı! Arkadaşlarınızla paylaşarak kazancınızı katlayın.");
     }
 
@@ -536,6 +643,7 @@
         el.classList.add('active');
         appState.network = netName;
         document.getElementById('addrLabel').innerText = netName === 'TON' ? "TON Cüzdan Adresi (EQ... / UQ...)" : "BEP-20 Cüzdan Adresi (0x...)";
+        playSound('tap');
     }
 
     function executeWithdrawalRequest() {
@@ -553,6 +661,7 @@
             return;
         }
 
+        playSound('success');
         showModalMessage(`Çekim talebiniz ${appState.network} ana ağına başarıyla iletildi! ${appState.balance.toFixed(2)} HRT transfer ediliyor.`);
         appState.balance = 0;
         refreshAllUI();
