@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Crypto Miner Pro - Ultimate Edition</title>
+    <title>Crypto Miner Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
@@ -153,7 +153,7 @@
             font-weight: 700;
         }
 
-        /* Aktif 3 Fanlı Ekran Kartı Rig Paneli */
+        /* Aktif 3 Fanlı Ekran Kartı Rig Paneli (İlk Fotoğraftaki Gibi) */
         .rig-panel {
             width: 100%;
             background: linear-gradient(160deg, #111a2e, #0a0f1d);
@@ -350,7 +350,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Market & Görev Kartları */
+        /* Market Kartları (İçinde 3 Fanlı Ekran Kartı Görseliyle) */
         .section-title {
             width: 100%;
             font-size: 10px;
@@ -361,25 +361,32 @@
             margin-bottom: 4px;
         }
 
-        .item-card {
+        .market-item-card {
             width: 100%;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 12px;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .market-item-header {
+            display: flex;
             justify-content: space-between;
-            margin-bottom: 8px;
+            align-items: center;
         }
 
-        .item-info h4 {
-            margin: 0 0 3px 0;
+        .market-item-info h4 {
+            margin: 0 0 2px 0;
             font-size: 12px;
-            font-weight: 800;
+            font-weight: 900;
         }
 
-        .item-info p {
+        .market-item-info p {
             margin: 0;
             font-size: 10px;
             color: var(--text-muted);
@@ -396,6 +403,66 @@
             font-size: 10px;
             cursor: pointer;
             box-shadow: 0 0 12px var(--primary-glow);
+        }
+
+        /* Küçük Boyutlu 3 Fanlı Görsel (Market İçin) */
+        .gpu-shroud-mini {
+            width: 100%;
+            height: 65px;
+            background: #060913;
+            border-radius: 10px;
+            border: 1px solid #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding: 0 10px;
+            position: relative;
+        }
+
+        .fan-box-mini {
+            width: 40px;
+            height: 40px;
+            background: #04060b;
+            border: 1.5px solid #334155;
+            border-radius: 50%;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fan-blade-set-mini {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: spinFans 0.5s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bm {
+            position: absolute;
+            width: 6px;
+            height: 18px;
+            background: linear-gradient(180deg, #475569, #cbd5e1);
+            border-radius: 3px;
+        }
+
+        .bm:nth-child(1) { transform: rotate(0deg) translateY(-1px); }
+        .bm:nth-child(2) { transform: rotate(60deg) translateY(-1px); }
+        .bm:nth-child(3) { transform: rotate(120deg) translateY(-1px); }
+        .bm:nth-child(4) { transform: rotate(180deg) translateY(-1px); }
+        .bm:nth-child(5) { transform: rotate(240deg) translateY(-1px); }
+        .bm:nth-child(6) { transform: rotate(300deg) translateY(-1px); }
+
+        .fan-center-cap-mini {
+            width: 10px;
+            height: 10px;
+            background: #0f172a;
+            border: 1.5px solid var(--accent);
+            border-radius: 50%;
+            z-index: 5;
         }
 
         /* Alt Navigasyon Barı */
@@ -434,7 +501,7 @@
             font-size: 16px;
         }
 
-        /* Tıklama Uçan Numara Efekti */
+        /* Tıklama Efekti */
         .float-text {
             position: absolute;
             color: var(--primary);
@@ -477,7 +544,7 @@
                 <div class="balance-usd">≈ $<span id="balance-usd">0.69</span> USDT</div>
             </div>
 
-            <!-- 3 Fanlı Ekran Kartı Rig Alanı -->
+            <!-- İlk Fotoğraftaki Birebir 3 Fanlı Ekran Kartı Rig Alanı -->
             <div class="rig-panel" onclick="mineClick(event)">
                 <div class="rig-header">
                     <span class="rig-title" id="gpu-title">NVIDIA RTX 4090 OC</span>
@@ -486,7 +553,6 @@
 
                 <div class="gpu-shroud-triple">
                     <div class="heat-pipe"></div>
-                    
                     <!-- Fan 1 -->
                     <div class="fan-box">
                         <div class="fan-blade-set">
@@ -537,40 +603,72 @@
             </button>
         </div>
 
-        <!-- 2. MARKET PANELİ -->
+        <!-- 2. MARKET PANELİ (Üstlerinde 3 Fanlı Ekran Kartı Görseliyle) -->
         <div id="pane-market" class="pane">
             <div class="section-title">Donanım Yükseltmeleri</div>
 
-            <div class="item-card">
-                <div class="item-info">
-                    <h4>RX 470 8GB <span id="cnt-rx470" style="color:var(--primary);">(0)</span></h4>
-                    <p>+0.05 PTS/sn • <span id="prc-rx470">10.00</span> PTS</p>
+            <!-- RX 470 -->
+            <div class="market-item-card">
+                <div class="market-item-header">
+                    <div class="market-item-info">
+                        <h4>RX 470 8GB <span id="cnt-rx470" style="color:var(--primary);">(0)</span></h4>
+                        <p>+0.05 PTS/sn • <span id="prc-rx470">10.00</span> PTS</p>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('rx470', 10, 0.05)">Satın Al</button>
                 </div>
-                <button class="buy-btn" onclick="buyItem('rx470', 10, 0.05)">Satın Al</button>
+                <div class="gpu-shroud-mini">
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                </div>
             </div>
 
-            <div class="item-card">
-                <div class="item-info">
-                    <h4>RX 590 8GB <span id="cnt-rx590" style="color:var(--primary);">(0)</span></h4>
-                    <p>+0.15 PTS/sn • <span id="prc-rx590">45.00</span> PTS</p>
+            <!-- RX 590 -->
+            <div class="market-item-card">
+                <div class="market-item-header">
+                    <div class="market-item-info">
+                        <h4>RX 590 8GB <span id="cnt-rx590" style="color:var(--primary);">(0)</span></h4>
+                        <p>+0.15 PTS/sn • <span id="prc-rx590">45.00</span> PTS</p>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('rx590', 45, 0.15)">Satın Al</button>
                 </div>
-                <button class="buy-btn" onclick="buyItem('rx590', 45, 0.15)">Satın Al</button>
+                <div class="gpu-shroud-mini">
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                </div>
             </div>
 
-            <div class="item-card">
-                <div class="item-info">
-                    <h4>RTX 3060 Ti <span id="cnt-rtx3060" style="color:var(--primary);">(0)</span></h4>
-                    <p>+0.50 PTS/sn • <span id="prc-rtx3060">150.00</span> PTS</p>
+            <!-- RTX 3060 Ti -->
+            <div class="market-item-card">
+                <div class="market-item-header">
+                    <div class="market-item-info">
+                        <h4>RTX 3060 Ti <span id="cnt-rtx3060" style="color:var(--primary);">(0)</span></h4>
+                        <p>+0.50 PTS/sn • <span id="prc-rtx3060">150.00</span> PTS</p>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('rtx3060', 150, 0.50)">Satın Al</button>
                 </div>
-                <button class="buy-btn" onclick="buyItem('rtx3060', 150, 0.50)">Satın Al</button>
+                <div class="gpu-shroud-mini">
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                </div>
             </div>
 
-            <div class="item-card">
-                <div class="item-info">
-                    <h4>ASIC Antminer <span id="cnt-asic" style="color:var(--primary);">(0)</span></h4>
-                    <p>+2.00 PTS/sn • <span id="prc-asic">600.00</span> PTS</p>
+            <!-- ASIC Antminer -->
+            <div class="market-item-card">
+                <div class="market-item-header">
+                    <div class="market-item-info">
+                        <h4>ASIC Antminer <span id="cnt-asic" style="color:var(--primary);">(0)</span></h4>
+                        <p>+2.00 PTS/sn • <span id="prc-asic">600.00</span> PTS</p>
+                    </div>
+                    <button class="buy-btn" onclick="buyItem('asic', 600, 2.00)">Satın Al</button>
                 </div>
-                <button class="buy-btn" onclick="buyItem('asic', 600, 2.00)">Satın Al</button>
+                <div class="gpu-shroud-mini">
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
+                </div>
             </div>
         </div>
 
@@ -589,12 +687,14 @@
         <!-- 4. ÖDÜL PANELİ -->
         <div id="pane-odul" class="pane">
             <div class="section-title">Günlük Görevler</div>
-            <div class="item-card">
-                <div class="item-info">
-                    <h4>Telegram Kanalı Katılımı</h4>
-                    <p>+50.00 PTS Ödül</p>
+            <div class="market-item-card">
+                <div class="market-item-header">
+                    <div class="market-item-info">
+                        <h4>Telegram Kanalı Katılımı</h4>
+                        <p>+50.00 PTS Ödül</p>
+                    </div>
+                    <button class="buy-btn" onclick="claimReward(50)">Al</button>
                 </div>
-                <button class="buy-btn" onclick="claimReward(50)">Al</button>
             </div>
         </div>
 
@@ -647,14 +747,11 @@
     };
 
     let soundEnabled = true;
-
-    // Web Audio API ile Ses Efektleri Üreteci (Harici dosya gerektirmez)
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
     function playSound(type) {
         if (!soundEnabled) return;
-        if (audioCtx.state === 'suspended') {
-            audioCtx.resume();
-        }
+        if (audioCtx.state === 'suspended') { audioCtx.resume(); }
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
@@ -668,9 +765,9 @@
             osc.start();
             osc.stop(audioCtx.currentTime + 0.08);
         } else if (type === 'buy') {
-            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1); // E5
-            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2); // G5
+            osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.1);
+            osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.2);
             gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
             gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
             osc.start();
@@ -683,7 +780,6 @@
         alert(soundEnabled ? "Ses efektleri açıldı 🔊" : "Ses efektleri kapatıldı 🔇");
     }
 
-    // Telegram Kullanıcı Adı
     const tg = window.Telegram?.WebApp;
     if (tg && tg.initDataUnsafe?.user) {
         let name = tg.initDataUnsafe.user.first_name;
@@ -691,7 +787,6 @@
         document.getElementById('user-initial').innerText = name.charAt(0).toUpperCase();
     }
 
-    // Pasif Kazanç Döngüsü (100ms)
     setInterval(() => {
         if (passiveSpeed > 0) {
             balance += (passiveSpeed / 10);
@@ -706,7 +801,6 @@
         updateUI();
         saveData();
 
-        // Uçan Numara Efekti
         let wrapper = document.getElementById('app-wrapper');
         let rect = wrapper.getBoundingClientRect();
         let x = (e.clientX || 200) - rect.left;
