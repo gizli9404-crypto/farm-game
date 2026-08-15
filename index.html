@@ -31,9 +31,9 @@
             position: relative;
             z-index: 10;
         }
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; position: relative; z-index: 20; }
         h1 { color: #00fff5; font-size: 19px; margin: 0; text-shadow: 0 0 12px rgba(0, 255, 245, 0.8); display: flex; align-items: center; gap: 5px; }
-        .music-btn { background: rgba(15, 52, 96, 0.8); border: 1px solid rgba(0, 255, 245, 0.4); color: #00fff5; padding: 4px 10px; border-radius: 15px; font-size: 11px; cursor: pointer; position: relative; z-index: 20; }
+        .music-btn { background: rgba(15, 52, 96, 0.8); border: 1px solid rgba(0, 255, 245, 0.4); color: #00fff5; padding: 4px 10px; border-radius: 15px; font-size: 11px; cursor: pointer; position: relative; z-index: 30; }
         
         .user-profile-card {
             background: rgba(0, 255, 245, 0.06);
@@ -51,7 +51,7 @@
         .user-avatar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #00fff5; object-fit: cover; background: #0f3460; }
         .user-name { font-size: 12px; font-weight: bold; color: #fff; }
         .user-handle { font-size: 10px; color: #00fff5; }
-        .settings-icon-btn { background: none; border: none; font-size: 16px; cursor: pointer; color: #00fff5; padding: 0; width: auto; margin: 0; position: relative; z-index: 20; }
+        .settings-icon-btn { background: none; border: none; font-size: 16px; cursor: pointer; color: #00fff5; padding: 0; width: auto; margin: 0; position: relative; z-index: 30; }
 
         /* Kadın Asistan / Yönlendirme Alanı */
         .assistant-box { 
@@ -80,7 +80,7 @@
             box-shadow: 0 0 10px rgba(0,255,245,0.4);
         }
 
-        .rig-container { margin: 8px 0; position: relative; display: inline-block; }
+        .rig-container { margin: 8px 0; position: relative; display: inline-block; z-index: 15; }
         .rig-icon { font-size: 45px; filter: drop-shadow(0 0 12px rgba(0, 255, 245, 0.6)); animation: pulse 2s infinite alternate; }
         @keyframes pulse { 0% { transform: scale(1); } 100% { transform: scale(1.05); } }
         
@@ -146,7 +146,21 @@
         .gpu-rtx4090 .mini-gpu-graphic { border-color: #ec4899; }
         .gpu-rtx4090 .mini-fan { animation-duration: 0.3s; }
 
-        button { background: linear-gradient(135deg, #00fff5, #0088cc); border: none; color: #000; padding: 9px 12px; font-size: 13px; font-weight: 800; border-radius: 10px; cursor: pointer; width: 100%; margin-top: 6px; position: relative; z-index: 20; }
+        button { 
+            background: linear-gradient(135deg, #00fff5, #0088cc); 
+            border: none; 
+            color: #000; 
+            padding: 9px 12px; 
+            font-size: 13px; 
+            font-weight: 800; 
+            border-radius: 10px; 
+            cursor: pointer; 
+            width: 100%; 
+            margin-top: 6px; 
+            position: relative; 
+            z-index: 30; /* Butonların tıklanabilirliği için z-index artırıldı */
+            pointer-events: auto; 
+        }
         #mine-btn { background: linear-gradient(135deg, #00fff5, #00b894); font-size: 14px; padding: 12px; border-radius: 12px; box-shadow: 0 0 12px rgba(0,255,245,0.3); }
         .buy-btn { width: auto; font-size: 10px; padding: 6px 10px; border-radius: 8px; }
         .ad-btn { background: linear-gradient(135deg, #ff9900, #ff5500); color: #fff; }
@@ -154,18 +168,18 @@
         .support-btn { background: rgba(15, 52, 96, 0.9); color: #00fff5; border: 1px solid #00fff5; }
         .admin-nav-item { display: none; color: #ff416c !important; font-weight: bold; }
         
-        .rate-badge { background: rgba(10, 17, 40, 0.85); border: 1px dashed #00fff5; padding: 8px 10px; border-radius: 10px; font-size: 11px; color: #00fff5; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .withdraw-card { background: rgba(15, 52, 96, 0.5); border: 1px solid rgba(0, 255, 245, 0.2); border-radius: 12px; padding: 10px; margin-top: 6px; text-align: left; }
+        .rate-badge { background: rgba(10, 17, 40, 0.85); border: 1px dashed #00fff5; padding: 8px 10px; border-radius: 10px; font-size: 11px; color: #00fff5; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 20; }
+        .withdraw-card { background: rgba(15, 52, 96, 0.5); border: 1px solid rgba(0, 255, 245, 0.2); border-radius: 12px; padding: 10px; margin-top: 6px; text-align: left; position: relative; z-index: 20; }
         .form-group { margin-bottom: 8px; text-align: left; }
         .form-label { font-size: 10px; color: #8a99ad; margin-bottom: 3px; display: block; font-weight: 600; }
-        .form-input-container select, .form-input-container input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(0, 255, 245, 0.3); background: #0a1128; color: #fff; font-size: 11px; outline: none; }
-        .quick-btn-group { display: flex; gap: 4px; margin-top: 4px; }
+        .form-input-container select, .form-input-container input { width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(0, 255, 245, 0.3); background: #0a1128; color: #fff; font-size: 11px; outline: none; position: relative; z-index: 30; }
+        .quick-btn-group { display: flex; gap: 4px; margin-top: 4px; position: relative; z-index: 30; }
         .quick-btn { background: rgba(0, 255, 245, 0.1); border: 1px solid rgba(0, 255, 245, 0.3); color: #00fff5; padding: 2px 5px; font-size: 9px; border-radius: 5px; cursor: pointer; width: auto; margin: 0; }
-        .calc-preview-card { background: rgba(10, 17, 40, 0.9); border-radius: 8px; padding: 6px 10px; margin-top: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4); }
+        .calc-preview-card { background: rgba(10, 17, 40, 0.9); border-radius: 8px; padding: 6px 10px; margin-top: 6px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(255, 153, 0, 0.4); position: relative; z-index: 20; }
 
-        .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left; }
+        .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left; position: relative; z-index: 20; }
         .admin-section h4 { color: #00fff5; font-size: 11px; margin: 0 0 6px 0; }
-        .task-card { background: rgba(15, 52, 96, 0.7); border: 1px solid rgba(255, 153, 0, 0.3); border-radius: 8px; padding: 8px; margin: 6px 0; display: flex; justify-content: space-between; align-items: center; text-align: left; }
+        .task-card { background: rgba(15, 52, 96, 0.7); border: 1px solid rgba(255, 153, 0, 0.3); border-radius: 8px; padding: 8px; margin: 6px 0; display: flex; justify-content: space-between; align-items: center; text-align: left; position: relative; z-index: 20; }
         .player-row { display: flex; justify-content: space-between; align-items: center; background: rgba(0, 255, 245, 0.04); border-bottom: 1px solid rgba(255, 255, 245, 0.05); padding: 5px 6px; border-radius: 6px; margin-bottom: 4px; font-size: 11px; text-align: left; }
 
         /* Modal ve Yönlendirme Katmanı */
@@ -209,22 +223,22 @@
             width: 100%;
         }
 
-        /* Yeni Kullanıcı Rehber Ok Stilleri */
+        /* Yeni Kullanıcı Rehber Ok Stilleri (Tıklamayı engellememesi için pointer-events: none) */
         .guide-arrow {
             position: absolute;
             color: #00fff5;
-            font-size: 24px;
+            font-size: 22px;
             animation: bounceArrow 1s infinite alternate;
-            z-index: 30;
+            z-index: 5;
             pointer-events: none;
         }
         @keyframes bounceArrow {
             0% { transform: translateY(0); }
-            100% { transform: translateY(6px); }
+            100% { transform: translateY(5px); }
         }
 
         .navbar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 52, 96, 0.98); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(0, 255, 245, 0.3); z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { color: #8a99ad; font-size: 9px; cursor: pointer; text-decoration: none; font-weight: 600; padding: 4px; }
+        .nav-item { color: #8a99ad; font-size: 9px; cursor: pointer; text-decoration: none; font-weight: 600; padding: 4px; pointer-events: auto; }
         .nav-item.active { color: #00fff5; font-weight: bold; text-shadow: 0 0 8px rgba(0,255,245,0.6); }
         
         .tab-content { display: none; }
@@ -275,11 +289,13 @@
             <div class="stat-title" id="txt-speed-title">Mevcut Hız | Pasif Kazanç</div>
             <div class="stat-value" style="color: #00fff5;"><span id="speed">1.0</span>x | +<span id="passive-rate">0.0000</span>/sn</div>
         </div>
-        <!-- Yeni Başlayanlar İçin Yönlendirme Oku -->
-        <div style="position: relative;">
-            <div class="guide-arrow" style="top: -28px; left: 50%; transform: translateX(-50%);">⬇️</div>
+        
+        <!-- Buton ve Rehber Alanı (Tıklamayı engellemeyecek şekilde düzenlendi) -->
+        <div style="position: relative; margin-top: 5px;">
+            <div class="guide-arrow" style="top: -24px; left: 50%; transform: translateX(-50%);">⬇️</div>
             <button id="mine-btn" onclick="mine(event)"><span id="txt-mine-btn">⛏️ Kazım Yap</span> (+<span id="click-power">0.0010</span>)</button>
         </div>
+        
         <button class="ad-btn" id="ad-btn" onclick="showAd()"><span id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</span></button>
     </div>
 
@@ -496,11 +512,11 @@
     <div class="custom-modal-content" style="text-align: left;">
         <h3 style="color: #00fff5; margin-top: 0; font-size: 15px; border-bottom: 1px solid rgba(0,255,245,0.3); padding-bottom: 8px;">⚙️ Ayarlar & Menü</h3>
         <div style="font-size: 12px; margin: 12px 0; display: flex; flex-direction: column; gap: 10px;">
-            <div style="display: flex; justify-content: space-between; align-items: center;" onclick="openGuideModal(); closeSettingsModal();">
+            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="openGuideModal(); closeSettingsModal();">
                 <span>📖 Nasıl Oynanır? (Asistan Mia)</span>
                 <span style="color:#00fff5;">→</span>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;" onclick="openSupport(); closeSettingsModal();">
+            <div style="display: flex; justify-content: space-between; align-items: center; cursor: pointer;" onclick="openSupport(); closeSettingsModal();">
                 <span>💬 Destek Kanalı</span>
                 <span style="color:#00fff5;">→</span>
             </div>
