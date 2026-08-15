@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Crypto Miner Pro</title>
+    <title>Crypto Miner Pro - Animated Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Lottie Script for Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie_min.js"></script>
     <style>
         :root {
             --bg: #07090e;
@@ -153,7 +155,7 @@
             font-weight: 700;
         }
 
-        /* Aktif 3 Fanlı Ekran Kartı Rig Paneli (İlk Fotoğraftaki Gibi) */
+        /* Animasyonlu GPU Rig Paneli */
         .rig-panel {
             width: 100%;
             background: linear-gradient(160deg, #111a2e, #0a0f1d);
@@ -178,7 +180,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            margin-bottom: 6px;
             font-size: 11px;
             font-weight: 900;
         }
@@ -196,85 +198,12 @@
             border: 1px solid rgba(16, 185, 129, 0.2);
         }
 
-        /* 3'lü Fan Kasası */
-        .gpu-shroud-triple {
+        .lottie-container {
             width: 100%;
-            height: 115px;
-            background: #080d1a;
-            border-radius: 12px;
-            border: 1px solid #1e293b;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 0 8px;
-            position: relative;
-            box-shadow: inset 0 0 25px rgba(0,0,0,0.9);
-        }
-
-        .heat-pipe {
-            position: absolute;
-            top: 50%;
-            left: 5%;
-            right: 5%;
-            height: 4px;
-            background: linear-gradient(90deg, #d97706, #fbbf24, #d97706, #fbbf24, #d97706);
-            transform: translateY(-50%);
-            border-radius: 2px;
-            opacity: 0.7;
-        }
-
-        .fan-box {
-            width: 68px;
-            height: 68px;
-            background: #04060b;
-            border: 2px solid #334155;
-            border-radius: 50%;
-            position: relative;
+            height: 140px;
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 2;
-            box-shadow: 0 0 12px rgba(6, 182, 212, 0.25);
-        }
-
-        .fan-blade-set {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            animation: spinFans 0.4s linear infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .b {
-            position: absolute;
-            width: 10px;
-            height: 32px;
-            background: linear-gradient(180deg, #475569, #cbd5e1);
-            border-radius: 5px;
-        }
-
-        .b:nth-child(1) { transform: rotate(0deg) translateY(-2px); }
-        .b:nth-child(2) { transform: rotate(60deg) translateY(-2px); }
-        .b:nth-child(3) { transform: rotate(120deg) translateY(-2px); }
-        .b:nth-child(4) { transform: rotate(180deg) translateY(-2px); }
-        .b:nth-child(5) { transform: rotate(240deg) translateY(-2px); }
-        .b:nth-child(6) { transform: rotate(300deg) translateY(-2px); }
-
-        .fan-center-cap {
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle, #0f172a, #020617);
-            border: 2px solid var(--accent);
-            border-radius: 50%;
-            z-index: 5;
-            box-shadow: 0 0 6px var(--accent);
-        }
-
-        @keyframes spinFans {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
         }
 
         .rig-footer {
@@ -282,7 +211,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-top: 10px;
+            margin-top: 4px;
             font-size: 10px;
             font-weight: 800;
             color: var(--text-muted);
@@ -296,7 +225,7 @@
             font-size: 10px;
             color: var(--accent);
             font-weight: 900;
-            margin-top: 8px;
+            margin-top: 6px;
             letter-spacing: 1px;
             text-shadow: 0 0 8px var(--accent-glow);
         }
@@ -331,7 +260,7 @@
             margin-top: 4px;
         }
 
-        /* Reklam / Boost Butonu */
+        /* Boost Butonu */
         .boost-btn {
             width: 100%;
             background: linear-gradient(135deg, #f97316, #ea580c);
@@ -350,7 +279,7 @@
             letter-spacing: 0.5px;
         }
 
-        /* Market Kartları (İçinde 3 Fanlı Ekran Kartı Görseliyle) */
+        /* Market Kartları */
         .section-title {
             width: 100%;
             font-size: 10px;
@@ -369,7 +298,7 @@
             padding: 12px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
             margin-bottom: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
         }
@@ -405,64 +334,12 @@
             box-shadow: 0 0 12px var(--primary-glow);
         }
 
-        /* Küçük Boyutlu 3 Fanlı Görsel (Market İçin) */
-        .gpu-shroud-mini {
+        .lottie-mini {
             width: 100%;
-            height: 65px;
-            background: #060913;
-            border-radius: 10px;
-            border: 1px solid #1e293b;
-            display: flex;
-            align-items: center;
-            justify-content: space-around;
-            padding: 0 10px;
-            position: relative;
-        }
-
-        .fan-box-mini {
-            width: 40px;
-            height: 40px;
-            background: #04060b;
-            border: 1.5px solid #334155;
-            border-radius: 50%;
-            position: relative;
+            height: 70px;
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .fan-blade-set-mini {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            animation: spinFans 0.5s linear infinite;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .bm {
-            position: absolute;
-            width: 6px;
-            height: 18px;
-            background: linear-gradient(180deg, #475569, #cbd5e1);
-            border-radius: 3px;
-        }
-
-        .bm:nth-child(1) { transform: rotate(0deg) translateY(-1px); }
-        .bm:nth-child(2) { transform: rotate(60deg) translateY(-1px); }
-        .bm:nth-child(3) { transform: rotate(120deg) translateY(-1px); }
-        .bm:nth-child(4) { transform: rotate(180deg) translateY(-1px); }
-        .bm:nth-child(5) { transform: rotate(240deg) translateY(-1px); }
-        .bm:nth-child(6) { transform: rotate(300deg) translateY(-1px); }
-
-        .fan-center-cap-mini {
-            width: 10px;
-            height: 10px;
-            background: #0f172a;
-            border: 1.5px solid var(--accent);
-            border-radius: 50%;
-            z-index: 5;
         }
 
         /* Alt Navigasyon Barı */
@@ -544,40 +421,14 @@
                 <div class="balance-usd">≈ $<span id="balance-usd">0.69</span> USDT</div>
             </div>
 
-            <!-- İlk Fotoğraftaki Birebir 3 Fanlı Ekran Kartı Rig Alanı -->
+            <!-- Animasyonlu Ana GPU Rig Kartı -->
             <div class="rig-panel" onclick="mineClick(event)">
                 <div class="rig-header">
-                    <span class="rig-title" id="gpu-title">NVIDIA RTX 4090 OC</span>
+                    <span class="rig-title">NVIDIA RTX 4090 OC</span>
                     <span class="rig-efficiency">⚡ 98% Verim</span>
                 </div>
 
-                <div class="gpu-shroud-triple">
-                    <div class="heat-pipe"></div>
-                    <!-- Fan 1 -->
-                    <div class="fan-box">
-                        <div class="fan-blade-set">
-                            <div class="b"></div><div class="b"></div><div class="b"></div>
-                            <div class="b"></div><div class="b"></div><div class="b"></div>
-                            <div class="fan-center-cap"></div>
-                        </div>
-                    </div>
-                    <!-- Fan 2 -->
-                    <div class="fan-box">
-                        <div class="fan-blade-set">
-                            <div class="b"></div><div class="b"></div><div class="b"></div>
-                            <div class="b"></div><div class="b"></div><div class="b"></div>
-                            <div class="fan-center-cap"></div>
-                        </div>
-                    </div>
-                    <!-- Fan 3 -->
-                    <div class="fan-box">
-                        <div class="fan-blade-set">
-                            <div class="b"></div><div class="b"></div><div class="b"></div>
-                            <div class="b"></div><div class="b"></div><div class="b"></div>
-                            <div class="fan-center-cap"></div>
-                        </div>
-                    </div>
-                </div>
+                <div class="lottie-container" id="lottie-main-gpu"></div>
 
                 <div class="rig-footer">
                     <span>Sıcaklık: <span class="temp-val">61°C</span></span>
@@ -603,7 +454,7 @@
             </button>
         </div>
 
-        <!-- 2. MARKET PANELİ (Üstlerinde 3 Fanlı Ekran Kartı Görseliyle) -->
+        <!-- 2. MARKET PANELİ (Animasyonlu GPU'larla) -->
         <div id="pane-market" class="pane">
             <div class="section-title">Donanım Yükseltmeleri</div>
 
@@ -616,11 +467,7 @@
                     </div>
                     <button class="buy-btn" onclick="buyItem('rx470', 10, 0.05)">Satın Al</button>
                 </div>
-                <div class="gpu-shroud-mini">
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                </div>
+                <div class="lottie-mini" id="lottie-rx470"></div>
             </div>
 
             <!-- RX 590 -->
@@ -632,11 +479,7 @@
                     </div>
                     <button class="buy-btn" onclick="buyItem('rx590', 45, 0.15)">Satın Al</button>
                 </div>
-                <div class="gpu-shroud-mini">
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                </div>
+                <div class="lottie-mini" id="lottie-rx590"></div>
             </div>
 
             <!-- RTX 3060 Ti -->
@@ -648,11 +491,7 @@
                     </div>
                     <button class="buy-btn" onclick="buyItem('rtx3060', 150, 0.50)">Satın Al</button>
                 </div>
-                <div class="gpu-shroud-mini">
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                </div>
+                <div class="lottie-mini" id="lottie-rtx3060"></div>
             </div>
 
             <!-- ASIC Antminer -->
@@ -664,11 +503,7 @@
                     </div>
                     <button class="buy-btn" onclick="buyItem('asic', 600, 2.00)">Satın Al</button>
                 </div>
-                <div class="gpu-shroud-mini">
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                    <div class="fan-box-mini"><div class="fan-blade-set-mini"><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="bm"></div><div class="fan-center-cap-mini"></div></div></div>
-                </div>
+                <div class="lottie-mini" id="lottie-asic"></div>
             </div>
         </div>
 
@@ -735,6 +570,20 @@
 </div>
 
 <script>
+    // Lottie Animasyonlarını Yükleme
+    lottie.loadAnimation({
+        container: document.getElementById('lottie-main-gpu'),
+        renderer: 'svg',
+        loop: true,
+        autoplay: true,
+        path: 'https://assets2.lottiefiles.com/packages/lf20_1pxqjqps.json' // Kripto / Donanım Madencilik Animasyonu
+    });
+
+    lottie.loadAnimation({ container: document.getElementById('lottie-rx470'), renderer: 'svg', loop: true, autoplay: true, path: 'https://assets5.lottiefiles.com/packages/lf20_qp1q7mct.json' });
+    lottie.loadAnimation({ container: document.getElementById('lottie-rx590'), renderer: 'svg', loop: true, autoplay: true, path: 'https://assets2.lottiefiles.com/packages/lf20_1pxqjqps.json' });
+    lottie.loadAnimation({ container: document.getElementById('lottie-rtx3060'), renderer: 'svg', loop: true, autoplay: true, path: 'https://assets5.lottiefiles.com/packages/lf20_qp1q7mct.json' });
+    lottie.loadAnimation({ container: document.getElementById('lottie-asic'), renderer: 'svg', loop: true, autoplay: true, path: 'https://assets2.lottiefiles.com/packages/lf20_1pxqjqps.json' });
+
     let balance = parseFloat(localStorage.getItem('cm_bal')) || 6850.1157;
     let clickPower = parseFloat(localStorage.getItem('cm_cp')) || 0.0025;
     let passiveSpeed = parseFloat(localStorage.getItem('cm_ps')) || 0.0;
