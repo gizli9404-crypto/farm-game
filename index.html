@@ -515,7 +515,7 @@
 <div id="settingsModal" class="modal-overlay">
     <div class="modal-card">
         <h3 style="color: #00f3ff; margin-top: 0; font-size: 14px;">⚙️ Rig Ayarları</h3>
-        <p style="font-size: 11px; color: #7f95b3;" id="userIdText" onclick="copyMyId()" style="cursor:pointer;">Kullanıcı ID: Yükleniyor...</p>
+        <p style="font-size: 11px; color: #7f95b3; cursor:pointer;" id="userIdText" onclick="copyMyId()">Kullanıcı ID: Yükleniyor...</p>
         <p style="font-size: 11px; color: #7f95b3;">Sürüm: v7.5 Triple-Fan GPU Edition</p>
         <button class="btn-primary" style="margin-top: 10px;" onclick="closeModal('settingsModal')">Kapat</button>
     </div>
@@ -623,7 +623,7 @@
             gameData.balance -= price;
             gameData.gpuList.push({ id, rate });
             gameData.activeGpuName = name;
-            gameData.clickPower += (rate * 0.2); // Her rig tıklama gücünü de artırır
+            gameData.clickPower += (rate * 0.2); 
             updateUI();
             saveData();
             showAlert(`Tebrikler! ${name} filonuza eklendi ve ana ekran kartınız güncellendi.`);
@@ -735,11 +735,17 @@
 
     function copyMyId() {
         navigator.clipboard.writeText(gameData.userId);
-        showAlert("Kullanıcı ID panoya kopyalandı: " + gameData.userId);
+        showAlert("Kullanıcı ID panoya kopyalandı!");
     }
 
-    function openModal(id) { document.getElementById(id).style.display = 'flex'; }
-    function closeModal(id) { document.getElementById(id).style.display = 'none'; }
+    function openModal(modalId) {
+        document.getElementById(modalId).style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
     function showAlert(text) {
         document.getElementById('alertText').innerText = text;
         openModal('alertModal');
@@ -749,17 +755,17 @@
         gameData.balance += amount;
         updateUI();
         saveData();
-        showAlert(`Admin: Hesabınıza ${amount} PTS eklendi!`);
+        showAlert(`Admin: +${amount} PTS başarıyla eklendi!`);
     }
 
     function adminHardReset() {
-        if (confirm("DİKKAT: Tüm verileriniz sıfırlanacak. Emin misiniz?")) {
+        if (confirm("Tüm oyun verilerini sıfırlamak istediğinize emin misiniz?")) {
             localStorage.clear();
             location.reload();
         }
     }
 
-    // Pasif Kazanç Döngüsü
+    // Pasif Kazım Döngüsü (Her saniye çalışır)
     setInterval(() => {
         let passive = getPassiveRate();
         if (passive > 0) {
@@ -769,5 +775,6 @@
         }
     }, 1000);
 </script>
+
 </body>
 </html>
