@@ -36,7 +36,7 @@
             position: relative;
         }
 
-        /* ÜST BAR VE MARKA */
+        /* --- ÜST BAR VE MARKA --- */
         .header-box {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 16px; border-bottom: 1px solid rgba(212,160,23,0.4); padding-bottom: 10px;
@@ -45,12 +45,13 @@
             font-size: 13px; font-weight: 900; color: #d4a017; letter-spacing: 1.8px;
             display: flex; align-items: center; gap: 8px; text-transform: uppercase;
         }
+        .brand-logo i { font-size: 18px;}
         .live-badge {
             background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.5);
             color: #00e676; padding: 3px 9px; border-radius: 8px; font-size: 9px; font-weight: 900; text-transform: uppercase;
         }
 
-        /* ANA BİLANÇO VE TİCKER */
+        /* --- ANA BİLANÇO VE TİCKER --- */
         .main-balance-card {
             background: linear-gradient(145deg, #171107 0%, #060402 100%);
             border: 1px solid rgba(212, 160, 23, 0.6); border-radius: 24px;
@@ -62,22 +63,23 @@
             background: radial-gradient(circle, rgba(212,160,23,0.05) 0%, transparent 60%); transform: rotate(15deg);
         }
         .balance-title { font-size: 10px; color: #8c7355; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;}
-        .balance-number { font-size: 38px; font-weight: 800; color: #d4a017; margin: 0; line-height: 1; }
+        .balance-number { font-size: 38px; font-weight: 800; color: #d4a017; margin: 0; line-height: 1; text-shadow: 0 0 20px rgba(212, 160, 23, 0.4); }
         .balance-number span { font-size: 16px; color: #fff; font-weight: 700; }
         .balance-usd { font-size: 11px; color: #00e676; font-weight: 700; margin-top: 6px;}
         .node-rank { font-size: 11px; color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(212,160,23,0.15); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 12px; border: 1px solid rgba(212,160,23,0.3);}
 
-        /* CANLI BORSATİCKER */
+        /* --- CANLI BORSATİCKER --- */
         .ticker-card {
             background: #0d0904; border: 1px solid rgba(212,160,23,0.4); border-radius: 14px; padding: 10px 14px;
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
         }
         .ticker-pair { font-size: 11px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px;}
+        .ticker-pair i { color: #d4a017;}
         .ticker-price { font-size: 11px; font-weight: 800; color: #d4a017; }
         .ticker-change { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
         .change-pos { color: #00e676; background: rgba(0,230,118,0.1); }
 
-        /* STAMİNA & XP GELİŞMİŞ BARLARI */
+        /* --- STAMİNA & XP GELİŞMİŞ BARLARI --- */
         .progress-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
         .p-bar-box { background: #0d0904; border: 1px solid rgba(212,160,23,0.4); border-radius: 16px; padding: 10px 14px; }
         .p-info { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; color: #b39b7f; margin-bottom: 6px; }
@@ -93,7 +95,7 @@
         }
         .bounce-anim { animation: numberBounce 0.2s ease-in-out; }
 
-        /* DOKUNMA EFEKTİ */
+        /* --- DOKUNMA EFEKTİ --- */
         .tap-effect {
             position: absolute; font-size: 16px; font-weight: 900; color: #00e676;
             text-shadow: 0 0 15px rgba(0,230,118,0.9); pointer-events: none; z-index: 999;
@@ -104,7 +106,7 @@
             100% { transform: translate(var(--tx), -95px) scale(1.4) rotate(var(--trot)); opacity: 0; }
         }
 
-        /* MADENCİLİK RIG KARTI (GELİŞTİRİLMİŞ) */
+        /* --- MADENCİLİK RIG KARTI (GELİŞTİRİLMİŞ) --- */
         .mining-rig-box {
             width: 100%; background: linear-gradient(145deg, #1a1408, #060402);
             border: 3px solid rgba(212, 160, 23, 0.8); border-radius: 22px; margin-bottom: 14px; padding: 18px;
@@ -127,18 +129,11 @@
         .rig-bottom-info { display: flex; justify-content: space-between; font-size: 11px; color: #b39b7f; font-weight: 800; border-top: 1px solid rgba(212, 160, 23, 0.4); padding-top: 12px; }
         .tap-power-label { text-align: center; font-size: 11px; color: #00e676; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
 
-        /* SEKMELER VE GENEL KARTLAR */
+        /* --- SEKMELER VE GENEL KARTLAR --- */
+        .tab-section { display: none; }
+        .tab-section.active { display: block; animation: fadeInSec 0.3s ease-out; }
+        @keyframes fadeInSec { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
         .section-title { color: #d4a017; font-size: 14px; font-weight: 900; margin-bottom: 14px; margin-top: 6px; letter-spacing: 0.5px; text-transform: uppercase; border-left: 3px solid #d4a017; padding-left: 8px;}
         
-        .generic-card { background: linear-gradient(135deg, #171107 0%, #050402 100%); border: 1px solid rgba(212,160,23,0.5); border-radius: 20px; padding: 18px; margin-bottom: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);}
-        
-        /* STANDART YÜKSELTME KARTLARI */
-        .upg-item-card {
-            background: #0d0904; border: 1px solid rgba(212, 160, 23, 0.5);
-            border-radius: 16px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
-        }
-        .upg-info b { font-size: 12px; color: #fff; display: block; margin-bottom: 4px; font-weight: 800;}
-        .upg-info small { font-size: 10px; color: #00e676; font-weight: 800; }
-        
-        .btn-action-gold {
-            background: linear-gradient(135deg, #
+        .generic-card { background: linear-gradient(135deg, #171107 0%, #050402 100%); border: 1px solid rgba(2
