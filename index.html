@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Speed Kick Pro</title>
+    <title>Sanal Miner Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -33,7 +33,7 @@
             overflow-y: auto;
         }
 
-        /* PROFİL & KART YAPISI (Görseldeki birebir lüks tasarım) */
+        /* PROFİL & CÜZDAN KARTI */
         .profile-card {
             background: linear-gradient(145deg, #18140b 0%, #0d0b06 100%);
             border: 1px solid rgba(212, 160, 23, 0.35);
@@ -106,6 +106,91 @@
         .stat-info span { display: block; font-size: 9px; color: #8c7355; text-transform: uppercase; font-weight: 700; }
         .stat-info b { font-size: 15px; color: #ffffff; font-weight: 800; }
 
+        /* EKRAN KARTI / RIG TASARIMI (ANA SAYFA) */
+        .gpu-card-container {
+            width: 100%;
+            height: 145px;
+            background: linear-gradient(145deg, #1e170a, #0c0a04);
+            border: 2px solid rgba(212, 160, 23, 0.6);
+            border-radius: 18px;
+            margin-bottom: 10px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 12px;
+            cursor: pointer;
+            box-shadow: inset 0 0 30px rgba(212,160,23,0.15), 0 8px 25px rgba(0,0,0,0.8);
+            transition: transform 0.05s ease;
+        }
+        .gpu-card-container:active { transform: scale(0.97); border-color: #ff3366; }
+
+        .gpu-top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            font-weight: 800;
+            color: #d4a017;
+        }
+
+        .fans-row {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .gpu-fan {
+            width: 50px;
+            height: 50px;
+            background: #040302;
+            border: 2px solid rgba(212, 160, 23, 0.5);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            box-shadow: 0 0 12px rgba(212,160,23,0.3);
+        }
+
+        .fan-blade {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            animation: spinFan 0.8s linear infinite;
+        }
+        @keyframes spinFan {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .fan-blade::before, .fan-blade::after {
+            content: '';
+            position: absolute;
+            background: #d4a017;
+            opacity: 0.85;
+        }
+        .fan-blade::before { width: 5px; height: 100%; left: 22.5px; top: 0; border-radius: 2px; }
+        .fan-blade::after { width: 100%; height: 5px; left: 0; top: 22.5px; border-radius: 2px; }
+        
+        .fan-center {
+            position: absolute;
+            width: 14px; height: 14px;
+            background: #ff3366;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 8px #ff3366;
+        }
+
+        .gpu-bottom-bar {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #b39b7f;
+            font-weight: 700;
+        }
+
         /* BÜYÜK AKSİYON BUTONLARI */
         .btn-gold-action {
             background: linear-gradient(135deg, #d4a017 0%, #aa7c11 100%);
@@ -134,7 +219,7 @@
         }
         .btn-outline-box:active { background: rgba(212, 160, 23, 0.1); }
 
-        /* TABLOSUZ GEÇMİŞ ALANI */
+        /* GEÇMİŞ ALANI */
         .history-section {
             background: linear-gradient(145deg, #141008, #0a0804);
             border: 1px solid rgba(212, 160, 23, 0.2);
@@ -162,12 +247,10 @@
             text-align: center; padding: 25px 10px; color: #73624d; font-size: 11px;
         }
 
-        /* DİĞER SAYFALAR İÇİN GENEL STİLLER */
         .tab-content { display: none; }
         .tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* MARKET / RIG SEKMESİ (Ekran Kartı Mantığı) */
         .market-card {
             background: linear-gradient(145deg, #141008, #0a0804);
             border: 1px solid rgba(212, 160, 23, 0.3);
@@ -190,7 +273,6 @@
         .nav-item.active { color: #d4a017; text-shadow: 0 0 10px rgba(212,160,23,0.4); }
         .nav-icon { font-size: 16px; display: block; margin-bottom: 2px; }
 
-        /* ÖZEL ORTA MENÜ İKONU */
         .nav-item.middle-icon .nav-icon {
             width: 38px; height: 38px; background: linear-gradient(135deg, #d4a017, #ff7700);
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -206,25 +288,46 @@
             background: #141008; border: 1px solid rgba(212,160,23,0.4); padding: 20px;
             border-radius: 18px; width: 85%; max-width: 320px; text-align: center;
         }
+
+        .float-number {
+            position: absolute; color: #d4a017; font-weight: 900; font-size: 16px;
+            pointer-events: none; animation: floatUp 0.6s ease-out forwards; z-index: 9999;
+        }
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-45px) scale(1.2); }
+        }
     </style>
 </head>
 <body>
 
 <div class="app-container">
 
-    <!-- 1. TAB: HOME (KAZIM & FUTBOL TOPU DOKUNMA) -->
-    <div id="tab-home" class="tab-content">
+    <!-- 1. TAB: HOME (MADENCİLİK / EKRAN KARTI RIG) -->
+    <div id="tab-home" class="tab-content active">
         <div class="profile-card" style="padding: 12px; margin-bottom: 10px;">
-            <div style="font-size: 10px; color: #8c7355; font-weight: 700; text-transform: uppercase;">🚀 HIZLI MADENCİLİK & SKOR</div>
-            <div style="font-size: 26px; font-weight: 800; color: #d4a017; margin: 6px 0;"><span id="homeBalance">45.00</span> <span style="font-size: 14px; color:#fff;">GOAL</span></div>
-            <div style="font-size: 11px; color: #00e676; font-weight: 600;">Reklam Gücü: Aktif (AdsGram)</div>
+            <div style="font-size: 10px; color: #8c7355; font-weight: 700; text-transform: uppercase;">🚀 SANAL KAZIM HIZI</div>
+            <div style="font-size: 26px; font-weight: 800; color: #d4a017; margin: 6px 0;"><span id="homeBalance">135.19</span> <span style="font-size: 14px; color:#fff;">GOAL</span></div>
+            <div style="font-size: 11px; color: #00e676; font-weight: 600;">AdsGram Verim: %100 Aktif</div>
         </div>
 
-        <!-- Tıklama Alanı (Futbol Topu / Donanım) -->
-        <div style="background: linear-gradient(145deg, #141008, #0a0804); border: 2px solid rgba(212,160,23,0.4); border-radius: 20px; padding: 30px; text-align: center; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.6); margin-bottom: 10px;" onclick="tapAction(event)">
-            <div style="font-size: 50px; margin-bottom: 10px;">⚽</div>
-            <div style="font-size: 14px; font-weight: 800; color: #ffffff;">Şut At & GOAL Kazan!</div>
-            <div style="font-size: 11px; color: #d4a017; margin-top: 4px;">Dokunma başına: +0.0100</div>
+        <!-- EKRAN KARTI / RIG DOKUNMA ALANI -->
+        <div class="gpu-card-container" onclick="mineWithRig(event)">
+            <div class="gpu-top-bar">
+                <span>ASUS Mining Rig Pro</span>
+                <span style="color: #00e676;">● Aktif</span>
+            </div>
+            
+            <div class="fans-row">
+                <div class="gpu-fan"><div class="fan-center"></div><div class="fan-blade"></div></div>
+                <div class="gpu-fan"><div class="fan-center"></div><div class="fan-blade"></div></div>
+                <div class="gpu-fan"><div class="fan-center"></div><div class="fan-blade"></div></div>
+            </div>
+
+            <div class="gpu-bottom-bar">
+                <span>Dokunarak Kaz: <b style="color:#d4a017;">+0.0100</b></span>
+                <span>Donanım: Çalışıyor</span>
+            </div>
         </div>
 
         <!-- Promosyon Kodu -->
@@ -237,14 +340,14 @@
         </div>
     </div>
 
-    <!-- 2. TAB: EARN (REKLAMLAR & GÖREVLER - SENİN PARA KAZANMAN İÇİN) -->
+    <!-- 2. TAB: EARN (REKLAMLAR & GÖREVLER - SENİN KAZANCIN İÇİN) -->
     <div id="tab-earn" class="tab-content">
-        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;">📺 Reklam İzle & Kazan</h3>
+        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;">📺 Sponsorlu Reklamlar & Görevler</h3>
         
         <div class="market-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <b style="font-size: 12px; display: block;">AdsGram Sponsorlu Reklam</b>
+                    <b style="font-size: 12px; display: block;">AdsGram Ödüllü Reklam</b>
                     <small style="color: #00e676; font-weight: 700;">Ödül: +25 GOAL</small>
                 </div>
                 <button class="btn-gold-action" style="width: 110px; padding: 10px; margin: 0;" onclick="watchAd()">Reklam İzle</button>
@@ -254,7 +357,7 @@
         <div class="market-card">
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
-                    <b style="font-size: 12px; display: block;">Özel Görev: Kanalı Takip Et</b>
+                    <b style="font-size: 12px; display: block;">Telegram Kanalına Katıl</b>
                     <small style="color: #d4a017; font-weight: 700;">Ödül: +50 GOAL</small>
                 </div>
                 <button class="btn-gold-action" style="width: 110px; padding: 10px; margin: 0;" onclick="completeTask(50)">Katıl</button>
@@ -262,14 +365,14 @@
         </div>
     </div>
 
-    <!-- 3. TAB: FIFA WORLD / MARKET (EKRAN KARTI & RIG KİRALAMA) -->
+    <!-- 3. TAB: MARKET (EKRAN KARTI & RIG KİRALAMA) -->
     <div id="tab-market" class="tab-content">
-        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;">🛒 Donanım & Madenci Rigleri</h3>
-        <div style="font-size: 11px; color: #8c7355; margin-bottom: 12px;">Ekran kartı kiralayarak uygulamaya girmesen bile pasif GOAL kazan!</div>
+        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;">🛒 Donanım & Rig Marketi</h3>
+        <div style="font-size: 11px; color: #8c7355; margin-bottom: 12px;">Ekran kartı kiralayarak saniyede pasif GOAL üretin!</div>
 
         <div class="market-card">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <b style="font-size: 13px;">ASUS Mining Rig Pro</b>
+                <b style="font-size: 13px;">RTX 4090 Mining Rig</b>
                 <span style="font-size: 9px; background: rgba(212,160,23,0.15); color: #d4a017; padding: 3px 8px; border-radius: 6px; font-weight: 700;">Pasif Güç</span>
             </div>
             <div style="font-size: 11px; color: #00e676; margin-bottom: 10px;">Kazanç: <b>+0.0050 GOAL / sn</b></div>
@@ -286,7 +389,7 @@
         
         <div class="profile-card" style="text-align: center; padding: 16px;">
             <div style="font-size: 14px; font-weight: 800; color: #d4a017;">Her Arkadaş İçin +100 GOAL</div>
-            <div style="font-size: 11px; color: #8c7355; margin-top: 4px;">Ayrıca arkadaşının kazancından ömür boyu %10 komisyon al!</div>
+            <div style="font-size: 11px; color: #8c7355; margin-top: 4px;">Arkadaşının kazancından ömür boyu %10 komisyon al!</div>
             <div style="font-size: 12px; color: #fff; margin-top: 10px;">Toplam Davet: <span id="refCountText" style="color:#d4a017; font-weight:bold;">0</span> Kişi</div>
         </div>
 
@@ -296,10 +399,9 @@
         </div>
     </div>
 
-    <!-- 5. TAB: WALLET (GÖNDERDİĞİN RESİMDEKİ BİREBİR LÜKS CÜZDAN TASARIMI) -->
-    <div id="tab-wallet" class="tab-content active">
+    <!-- 5. TAB: WALLET (LÜKS PROFİL VE ÇEKİM MERKEZİ) -->
+    <div id="tab-wallet" class="tab-content">
         
-        <!-- Kullanıcı Bilgi Kartı -->
         <div class="profile-card">
             <div class="profile-avatar-box">
                 <img id="userAvatarImg" class="profile-avatar" src="" style="display:none;" alt="">
@@ -311,13 +413,12 @@
             <div class="rank-badge">⭐ Sıra —</div>
         </div>
 
-        <!-- İkili Özet Kutuları -->
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-icon">💼</div>
                 <div class="stat-info">
                     <span>Bakiye</span>
-                    <b id="walletBalance">45</b>
+                    <b id="walletBalance">135.19</b>
                 </div>
             </div>
             <div class="stat-box">
@@ -329,18 +430,15 @@
             </div>
         </div>
 
-        <!-- Büyük Çekim Butonu -->
         <button class="btn-gold-action" onclick="openWithdrawModal()">
-            📦 GOLLERİ ÇEK
+            📦 BAKİYEYİ ÇEK
         </button>
 
-        <!-- İkili Küçük Butonlar (Dil & Yönetici) -->
         <div class="btn-row">
             <div class="btn-outline-box" onclick="showAlert('Dil Türkçe olarak ayarlandı.')">🌐 TURKISH</div>
             <div class="btn-outline-box" onclick="openSupport()">💬 YÖNETİCİ İLE İLETİŞİME GEÇ</div>
         </div>
 
-        <!-- Tablosuz Geçmiş Alanı -->
         <div class="history-section">
             <div class="history-title">💳 PARA ÇEKİMLERİ</div>
             <div class="filter-tabs">
@@ -359,11 +457,11 @@
 
 </div>
 
-<!-- ALT MENÜ (Gönderdiğin görseldeki yerleşime tam uyumlu) -->
+<!-- ALT MENÜ -->
 <div class="navbar">
-    <div class="nav-item" onclick="switchTab('home', this)"><span class="nav-icon">🏠</span>HOME</div>
+    <div class="nav-item active" onclick="switchTab('home', this)"><span class="nav-icon">🏠</span>HOME</div>
     <div class="nav-item" onclick="switchTab('earn', this)"><span class="nav-icon">🪙</span>EARN</div>
-    <div class="nav-item middle-icon active" onclick="switchTab('wallet', this)"><span class="nav-icon">⚽</span>FIFA World</div>
+    <div class="nav-item middle-icon" onclick="switchTab('market', this)"><span class="nav-icon">🛒</span>MARKET</div>
     <div class="nav-item" onclick="switchTab('invite', this)"><span class="nav-icon">👥</span>INVITE</div>
     <div class="nav-item" onclick="switchTab('wallet', this)"><span class="nav-icon">💼</span>WALLET</div>
 </div>
@@ -395,14 +493,14 @@
 
     let tgUser = tg?.initDataUnsafe?.user;
     let gameData = {
-        balance: parseFloat(localStorage.getItem('sk_balance')) || 45.00,
-        refCount: parseInt(localStorage.getItem('sk_ref')) || 0,
-        usedPromo: localStorage.getItem('sk_promo') === 'true',
+        balance: parseFloat(localStorage.getItem('sm_balance')) || 135.19,
+        passiveRate: parseFloat(localStorage.getItem('sm_passive')) || 0.0,
+        refCount: parseInt(localStorage.getItem('sm_ref')) || 0,
+        usedPromo: localStorage.getItem('sm_promo') === 'true',
         userName: tgUser?.first_name || "ENGİN GÜVEN",
         userHandle: tgUser?.username ? "@" + tgUser.username : "@Jacker_lord"
     };
 
-    // Profil bilgilerini arayüze işleme
     document.getElementById('userName').innerText = gameData.userName;
     document.getElementById('userHandle').innerText = gameData.userHandle;
     document.getElementById('userInitial').innerText = gameData.userName.charAt(0).toUpperCase();
@@ -415,9 +513,10 @@
     updateUI();
 
     function saveData() {
-        localStorage.setItem('sk_balance', gameData.balance);
-        localStorage.setItem('sk_ref', gameData.refCount);
-        localStorage.setItem('sk_promo', gameData.usedPromo);
+        localStorage.setItem('sm_balance', gameData.balance);
+        localStorage.setItem('sm_passive', gameData.passiveRate);
+        localStorage.setItem('sm_ref', gameData.refCount);
+        localStorage.setItem('sm_promo', gameData.usedPromo);
     }
 
     function switchTab(tabId, el) {
@@ -435,17 +534,26 @@
         document.getElementById('walletRefCount').innerText = gameData.refCount;
     }
 
-    function tapAction(e) {
+    function mineWithRig(e) {
         gameData.balance += 0.01;
         updateUI();
         saveData();
-        if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
+
+        let floatEl = document.createElement('div');
+        floatEl.className = 'float-number';
+        floatEl.innerText = `+0.01`;
+        floatEl.style.left = (e.clientX || 180) + 'px';
+        floatEl.style.top = (e.clientY || 250) + 'px';
+        document.body.appendChild(floatEl);
+        setTimeout(() => floatEl.remove(), 600);
+
+        if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     }
 
     function usePromoCode() {
         let code = document.getElementById('promoInput').value.trim().toUpperCase();
         if (gameData.usedPromo) { showAlert("Bu kodu zaten kullandınız!"); return; }
-        if (code === "SPEEDGRAM") {
+        if (code === "MINERPRO") {
             gameData.balance += 50;
             gameData.usedPromo = true;
             updateUI();
@@ -457,7 +565,6 @@
     }
 
     function watchAd() {
-        // Senin reklam gelirini artıracak AdsGram tetikleyicisi buraya bağlanacak
         gameData.balance += 25;
         updateUI();
         saveData();
@@ -474,6 +581,7 @@
     function buyRig(price, rate) {
         if (gameData.balance >= price) {
             gameData.balance -= price;
+            gameData.passiveRate += rate;
             updateUI();
             saveData();
             showAlert("Madencilik rigi başarıyla kiralandı!");
@@ -497,20 +605,20 @@
     }
 
     function openSupport() {
-        let url = "https://t.me/Jacker_lord"; // Kendi kullanıcı adını buraya yazabilirsin
+        let url = "https://t.me/Jacker_lord";
         if (tg?.openTelegramLink) tg.openTelegramLink(url);
         else window.open(url, '_blank');
     }
 
     function copyRef() {
-        let link = `https://t.me/SpeedKickBot?start=ref_${tgUser?.id || 12345}`;
+        let link = `https://t.me/SanalMinerBot?start=ref_${tgUser?.id || 12345}`;
         navigator.clipboard.writeText(link);
         showAlert("Davet linki kopyalandı!");
     }
 
     function shareTelegram() {
-        let link = `https://t.me/SpeedKickBot?start=ref_${tgUser?.id || 12345}`;
-        let text = encodeURIComponent("⚽ SpeedKick ile gol at, USDT kazanmaya başla!");
+        let link = `https://t.me/SanalMinerBot?start=ref_${tgUser?.id || 12345}`;
+        let text = encodeURIComponent("💻 Sanal Miner Pro ile ekran kartı çalıştır, kripto kazanmaya başla!");
         let url = `https://t.me/share/url?url=${encodeURIComponent(link)}&text=${text}`;
         if (tg?.openTelegramLink) tg.openTelegramLink(url);
         else window.open(url, '_blank');
@@ -528,6 +636,14 @@
     function closeModal() {
         document.getElementById('alertModal').style.display = 'none';
     }
+
+    setInterval(() => {
+        if (gameData.passiveRate > 0) {
+            gameData.balance += gameData.passiveRate;
+            updateUI();
+            saveData();
+        }
+    }, 1000);
 </script>
 </body>
 </html>
