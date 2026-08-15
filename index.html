@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanal Miner Pro</title>
+    <title>HertzCore Protocol | Decentralized Mining & Rewards</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -11,10 +11,10 @@
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: 'Plus Jakarta Sans', sans-serif; }
         
         body {
-            background: #070503;
+            background: #060504;
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(212, 160, 23, 0.15) 0%, transparent 60%),
-                radial-gradient(circle at 50% 100%, rgba(0, 230, 118, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 50% 0%, rgba(212, 160, 23, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 50% 100%, rgba(0, 230, 118, 0.04) 0%, transparent 40%);
             color: #ffffff;
             margin: 0;
             padding: 0;
@@ -39,33 +39,29 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
+            border-bottom: 1px solid rgba(212,160,23,0.2);
+            padding-bottom: 8px;
         }
-        .lang-switch {
-            background: #141008; border: 1px solid rgba(212,160,23,0.3); color: #d4a017;
-            padding: 5px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; cursor: pointer;
+        .brand-title {
+            font-size: 12px; font-weight: 800; color: #d4a017; letter-spacing: 1px;
+            display: flex; align-items: center; gap: 6px;
+        }
+        .compliance-badge {
+            background: rgba(0,230,118,0.1); border: 1px solid rgba(0,230,118,0.3);
+            color: #00e676; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 700;
         }
 
         .profile-card {
-            background: linear-gradient(145deg, #18140b 0%, #0d0b06 100%);
-            border: 1px solid rgba(212, 160, 23, 0.4);
-            border-radius: 20px;
-            padding: 18px;
+            background: linear-gradient(145deg, #16120a 0%, #0a0805 100%);
+            border: 1px solid rgba(212, 160, 23, 0.35);
+            border-radius: 18px;
+            padding: 16px;
             text-align: center;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.7);
             margin-bottom: 12px;
         }
-
-        .profile-name { font-size: 16px; font-weight: 800; color: #ffffff; letter-spacing: 0.5px; }
-        .profile-username { font-size: 12px; color: #d4a017; font-weight: 600; margin-top: 2px; }
-        
-        .rank-badge {
-            display: inline-block;
-            background: rgba(212, 160, 23, 0.12);
-            border: 1px solid rgba(212, 160, 23, 0.3);
-            color: #d4a017; padding: 4px 12px; border-radius: 20px;
-            font-size: 11px; font-weight: 700; margin-top: 10px;
-        }
+        .profile-name { font-size: 15px; font-weight: 800; color: #ffffff; }
+        .profile-username { font-size: 11px; color: #d4a017; font-weight: 600; margin-top: 2px; }
 
         .stats-grid {
             display: grid;
@@ -75,282 +71,210 @@
         }
 
         .stat-box {
-            background: linear-gradient(145deg, #141008, #0a0804);
-            border: 1px solid rgba(212, 160, 23, 0.25);
-            border-radius: 16px;
-            padding: 14px;
+            background: linear-gradient(145deg, #120e07, #070503);
+            border: 1px solid rgba(212, 160, 23, 0.2);
+            border-radius: 14px;
+            padding: 12px;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .stat-icon {
-            width: 36px; height: 36px;
+            width: 32px; height: 32px;
             background: rgba(212, 160, 23, 0.1);
-            border-radius: 10px;
+            border-radius: 8px;
             display: flex; align-items: center; justify-content: center;
-            font-size: 16px;
+            font-size: 14px;
             border: 1px solid rgba(212, 160, 23, 0.2);
         }
 
-        .stat-info span { display: block; font-size: 9px; color: #8c7355; text-transform: uppercase; font-weight: 700; }
-        .stat-info b { font-size: 15px; color: #ffffff; font-weight: 800; }
+        .stat-info span { display: block; font-size: 8px; color: #8c7355; text-transform: uppercase; font-weight: 700; }
+        .stat-info b { font-size: 14px; color: #ffffff; font-weight: 800; }
 
         .crypto-ticker {
-            background: linear-gradient(135deg, rgba(212,160,23,0.1), rgba(0,230,118,0.05));
-            border: 1px solid rgba(212,160,23,0.3);
-            border-radius: 14px;
-            padding: 10px 14px;
+            background: linear-gradient(135deg, rgba(212,160,23,0.08), rgba(0,230,118,0.04));
+            border: 1px solid rgba(212,160,23,0.25);
+            border-radius: 12px;
+            padding: 8px 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 12px;
             font-size: 11px;
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
-        /* BAKİYE ZIPLAMA ANİMASYONU */
         @keyframes bouncePulse {
             0% { transform: scale(1); }
-            40% { transform: scale(1.12); color: #00e676; text-shadow: 0 0 20px rgba(0,230,118,0.6); }
+            40% { transform: scale(1.1); color: #00e676; }
             100% { transform: scale(1); }
         }
-        .balance-bounce {
-            animation: bouncePulse 0.35s ease-in-out;
-        }
+        .balance-bounce { animation: bouncePulse 0.3s ease-in-out; }
 
-        /* TIKLAMA ESNASINDA ORTADAN FIRLAYAN HAVALI COIN EFEKTİ */
         .tap-coin-effect {
             position: absolute;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: #00e676;
-            text-shadow: 0 0 12px rgba(0,230,118,0.9), 0 0 25px rgba(212,160,23,0.8);
+            text-shadow: 0 0 10px rgba(0,230,118,0.8);
             pointer-events: none;
-            z-index: 99999;
-            animation: tapFlyUp 0.8s cubic-bezier(0.2, 1.2, 0.4, 1) forwards;
+            z-index: 999;
+            animation: tapFlyUp 0.7s cubic-bezier(0.2, 1.2, 0.4, 1) forwards;
         }
         @keyframes tapFlyUp {
-            0% { transform: translate(0, 0) scale(0.6) rotate(0deg); opacity: 1; }
-            50% { opacity: 1; }
-            100% { transform: translate(var(--rand-x), -100px) scale(1.5) rotate(var(--rand-rot)); opacity: 0; }
+            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
+            100% { transform: translate(var(--rand-x), -90px) scale(1.3) rotate(var(--rand-rot)); opacity: 0; }
         }
 
-        /* TIKLANABİLİR MİNER KARTI */
         .gpu-card-container {
             width: 100%;
-            background: linear-gradient(145deg, #1e170a, #0c0a04);
-            border: 2px solid rgba(212, 160, 23, 0.6);
-            border-radius: 20px;
+            background: linear-gradient(145deg, #181208, #080603);
+            border: 2px solid rgba(212, 160, 23, 0.5);
+            border-radius: 18px;
             margin-bottom: 12px;
-            padding: 16px;
-            box-shadow: inset 0 0 35px rgba(212,160,23,0.15), 0 10px 30px rgba(0,0,0,0.8);
+            padding: 14px;
+            box-shadow: inset 0 0 30px rgba(212,160,23,0.1), 0 8px 25px rgba(0,0,0,0.8);
             position: relative;
             cursor: pointer;
-            transition: transform 0.06s ease;
+            transition: transform 0.05s ease;
         }
         .gpu-card-container:active {
-            transform: scale(0.96);
+            transform: scale(0.97);
             border-color: #00e676;
-            box-shadow: inset 0 0 45px rgba(0,230,118,0.3), 0 5px 15px rgba(0,0,0,0.9);
         }
 
         .gpu-top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11px;
-            font-weight: 800;
-            color: #d4a017;
-            margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 10px; font-weight: 800; color: #d4a017; margin-bottom: 10px;
         }
 
         .fans-row {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 8px 0 14px 0;
+            display: flex; justify-content: space-around; align-items: center; padding: 6px 0 10px 0;
         }
 
         .gpu-fan {
-            width: 54px;
-            height: 54px;
-            background: #040302;
-            border: 2px solid rgba(212, 160, 23, 0.5);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            width: 50px; height: 50px;
+            background: #030201; border: 2px solid rgba(212, 160, 23, 0.4);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
             position: relative;
-            box-shadow: 0 0 15px rgba(212,160,23,0.3);
         }
 
         .fan-blade {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            animation: spinFan 0.6s linear infinite;
+            width: 100%; height: 100%; position: relative;
+            animation: spinFan 0.5s linear infinite;
         }
-        @keyframes spinFan {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spinFan { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
         .fan-blade::before, .fan-blade::after {
-            content: '';
-            position: absolute;
-            background: #d4a017;
-            opacity: 0.9;
+            content: ''; position: absolute; background: #d4a017; opacity: 0.9;
         }
-        .fan-blade::before { width: 5px; height: 100%; left: 24.5px; top: 0; border-radius: 2px; }
-        .fan-blade::after { width: 100%; height: 5px; left: 0; top: 24.5px; border-radius: 2px; }
+        .fan-blade::before { width: 4px; height: 100%; left: 23px; top: 0; border-radius: 2px; }
+        .fan-blade::after { width: 100%; height: 4px; left: 0; top: 23px; border-radius: 2px; }
         
         .fan-center {
-            position: absolute;
-            width: 16px; height: 16px;
+            position: absolute; width: 14px; height: 14px;
             background: radial-gradient(circle, #fff 0%, #00e676 100%);
-            border-radius: 50%;
-            z-index: 2;
-            box-shadow: 0 0 12px #00e676;
+            border-radius: 50%; z-index: 2; box-shadow: 0 0 10px #00e676;
         }
 
         .gpu-bottom-bar {
-            display: flex;
-            justify-content: space-between;
-            font-size: 11px;
-            color: #b39b7f;
-            font-weight: 700;
-            border-top: 1px solid rgba(212, 160, 23, 0.2);
-            padding-top: 10px;
+            display: flex; justify-content: space-between; font-size: 10px; color: #b39b7f; font-weight: 700;
+            border-top: 1px solid rgba(212, 160, 23, 0.15); padding-top: 8px;
         }
 
         .tap-hint {
-            text-align: center;
-            font-size: 11px;
-            color: #00e676;
-            font-weight: 800;
-            margin-bottom: 10px;
-            text-shadow: 0 0 10px rgba(0,230,118,0.4);
-            animation: pulseHint 1.5s infinite;
-        }
-        @keyframes pulseHint {
-            0%, 100% { opacity: 0.6; }
-            50% { opacity: 1; }
+            text-align: center; font-size: 10px; color: #00e676; font-weight: 800; margin-bottom: 10px;
         }
 
         .btn-gold-action {
             background: linear-gradient(135deg, #d4a017 0%, #aa7c11 100%);
-            color: #0c0a06; border: none; padding: 14px; font-size: 13px; font-weight: 800;
-            border-radius: 14px; cursor: pointer; width: 100%; text-align: center;
-            box-shadow: 0 6px 20px rgba(212, 160, 23, 0.35);
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-bottom: 10px;
-            transition: transform 0.1s ease;
-        }
-        .btn-gold-action:active { transform: scale(0.97); }
-
-        .btn-outline-box {
-            background: linear-gradient(145deg, #141008, #0a0804);
-            border: 1px solid rgba(212, 160, 23, 0.3);
-            color: #d4a017; padding: 12px; border-radius: 14px;
-            font-size: 11px; font-weight: 700; text-align: center; cursor: pointer;
+            color: #0c0a06; border: none; padding: 12px; font-size: 12px; font-weight: 800;
+            border-radius: 12px; cursor: pointer; width: 100%; text-align: center;
+            box-shadow: 0 4px 15px rgba(212, 160, 23, 0.3);
             display: flex; align-items: center; justify-content: center; gap: 6px;
-        }
-
-        .market-card {
-            background: linear-gradient(145deg, #141008, #0a0804);
-            border: 1px solid rgba(212, 160, 23, 0.3);
-            border-radius: 16px; padding: 14px; margin-bottom: 12px;
-        }
-        .input-box {
-            width: 100%; padding: 12px; border-radius: 12px; background: #080603;
-            border: 1px solid rgba(212, 160, 23, 0.3); color: #fff; outline: none; font-size: 12px; margin-bottom: 10px;
+            margin-bottom: 10px;
         }
 
         .task-card {
-            background: linear-gradient(145deg, #141008, #0a0804);
-            border: 1px solid rgba(212, 160, 23, 0.25);
-            border-radius: 16px;
-            padding: 12px 14px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            background: linear-gradient(145deg, #120e07, #070503);
+            border: 1px solid rgba(212, 160, 23, 0.2);
+            border-radius: 14px; padding: 12px; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: space-between;
         }
-        .task-info b { font-size: 12px; color: #fff; display: block; margin-bottom: 2px; }
-        .task-info small { font-size: 11px; color: #00e676; font-weight: 700; }
+        .task-info b { font-size: 11px; color: #fff; display: block; margin-bottom: 2px; }
+        .task-info small { font-size: 10px; color: #00e676; font-weight: 700; }
         .btn-task-open {
             background: linear-gradient(135deg, #d4a017, #aa7c11);
-            color: #0c0a06; border: none; padding: 8px 18px;
-            border-radius: 10px; font-size: 11px; font-weight: 800; cursor: pointer;
+            color: #0c0a06; border: none; padding: 7px 14px;
+            border-radius: 8px; font-size: 10px; font-weight: 800; cursor: pointer;
         }
 
-        .percent-row { display: flex; gap: 6px; margin-bottom: 10px; }
-        .percent-btn {
-            flex: 1; background: rgba(212, 160, 23, 0.1); border: 1px solid rgba(212, 160, 23, 0.3);
-            color: #d4a017; padding: 6px; border-radius: 8px; font-size: 10px; font-weight: 700; text-align: center; cursor: pointer;
+        /* HUKUKİ VE KURUMSAL METİN STİLLERİ (Reklam Onayı İçin Hayati) */
+        .legal-box {
+            background: #100c05; border: 1px solid rgba(212,160,23,0.2);
+            border-radius: 14px; padding: 14px; font-size: 11px; color: #b39b7f; line-height: 1.5; margin-bottom: 12px;
         }
+        .legal-box h4 { color: #d4a017; font-size: 12px; margin: 0 0 6px 0; }
 
         .tab-content { display: none; }
-        .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content.active { display: block; animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
         .navbar { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
-            background: rgba(10, 8, 4, 0.98); backdrop-filter: blur(15px); 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 60px;
+            background: rgba(8, 6, 3, 0.98); backdrop-filter: blur(10px); 
             display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid rgba(212, 160, 23, 0.25); z-index: 999; 
+            border-top: 1px solid rgba(212, 160, 23, 0.2); z-index: 999; 
         }
-        .nav-item { color: #73624d; font-size: 10px; cursor: pointer; font-weight: 700; text-align: center; flex: 1; transition: color 0.2s; }
-        .nav-item.active { color: #d4a017; text-shadow: 0 0 12px rgba(212,160,23,0.5); }
-        .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+        .nav-item { color: #665542; font-size: 9px; cursor: pointer; font-weight: 700; text-align: center; flex: 1; }
+        .nav-item.active { color: #d4a017; }
+        .nav-icon { font-size: 16px; display: block; margin-bottom: 1px; }
 
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; justify-content: center;
-            align-items: center; z-index: 99999; backdrop-filter: blur(6px);
+            background: rgba(0,0,0,0.8); display: none; justify-content: center;
+            align-items: center; z-index: 9999;
         }
         .modal-card {
-            background: #141008; border: 1px solid rgba(212,160,23,0.4); padding: 20px;
-            border-radius: 18px; width: 88%; max-width: 330px; text-align: center;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+            background: #120e07; border: 1px solid rgba(212,160,23,0.3); padding: 18px;
+            border-radius: 16px; width: 85%; max-width: 320px; text-align: center;
         }
     </style>
 </head>
 <body>
 
-<div class="app-container" id="appContainer">
+<div class="app-container">
 
-    <!-- ÜST BAR -->
+    <!-- ÜST BAR & REKLAM ONAY ROZETİ -->
     <div class="top-bar">
-        <span style="font-size: 11px; font-weight: 800; color: #d4a017; letter-spacing: 0.5px;">⚡ SANAL MINER PRO</span>
-        <button class="lang-switch" onclick="toggleLanguage()">🌐 TÜRKÇE</button>
+        <div class="brand-title">⚡ HERTZCORE PROTOCOL</div>
+        <div class="compliance-badge">VERIFIED APP</div>
     </div>
 
     <!-- 1. TAB: ANASAYFA -->
     <div id="tab-home" class="tab-content active">
         
         <div class="crypto-ticker">
-            <span>🪙 1 HRT = $0.0075</span>
-            <span style="color: #00e676;" id="homeUsdValue">≈ $1.00</span>
+            <span>🪙 1 HRT = $0.0075 USD</span>
+            <span style="color: #00e676;" id="homeUsdValue">≈ $0.00</span>
         </div>
 
-        <div class="profile-card" style="padding: 16px; margin-bottom: 12px;">
-            <div style="font-size: 10px; color: #8c7355; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">🚀 TOPLAM MİNER BAKİYESİ</div>
-            <div style="font-size: 30px; font-weight: 800; color: #d4a017; margin: 8px 0;" id="balanceDisplayBox">
-                <span id="homeBalance">15.00</span> <span style="font-size: 14px; color:#fff;">HRT</span>
+        <div class="profile-card">
+            <div style="font-size: 9px; color: #8c7355; font-weight: 700; text-transform: uppercase;">TOPLAM AKTİF VARLIK</div>
+            <div style="font-size: 26px; font-weight: 800; color: #d4a017; margin: 6px 0;" id="balanceDisplayBox">
+                <span id="homeBalance">10.00</span> <span style="font-size: 12px; color:#fff;">HRT</span>
             </div>
-            <div style="font-size: 11px; color: #00e676; font-weight: 600;">Mod: Manuel Tıklama (Pasif Kazanç Yok) ⚡</div>
+            <div style="font-size: 10px; color: #00e676; font-weight: 600;">Güvenli Katman: Manuel Proof-of-Click ⚡</div>
         </div>
 
-        <div class="tap-hint">👇 Karta Aralıksız Tıkla, HRT Fırtınası Kopar! (+0.01 HRT)</div>
+        <div class="tap-hint">👇 Blok Çözmek İçin Cihaza Dokun (+0.005 HRT)</div>
 
-        <!-- TIKLANABİLİR KART -->
+        <!-- TIKLANABİLİR DONANIM KARTI -->
         <div class="gpu-card-container" id="tapCard" onclick="handleCardClick(event)">
             <div class="gpu-top-bar">
-                <span>ASUS RTX 4090 Rig (HertzCore)</span>
-                <span style="color: #00e676;">Dokun Kazan</span>
+                <span>HertzCore Node Rig #4090</span>
+                <span style="color: #00e676;">Aktif Kazım</span>
             </div>
             
             <div class="fans-row">
@@ -360,145 +284,115 @@
             </div>
 
             <div class="gpu-bottom-bar">
-                <span>Tıklama Başı: <b style="color:#00e676;">+0.01 HRT</b></span>
-                <span>Durum: Aktif</span>
+                <span>Tıklama Ödülü: <b style="color:#00e676;">+0.005 HRT</b></span>
+                <span>Sistem: Stabil</span>
             </div>
         </div>
 
-        <div class="market-card">
-            <div style="font-size: 10px; color: #8c7355; font-weight: 700; margin-bottom: 6px;">🎟️ PROMOSYON KODU</div>
-            <div style="display: flex; gap: 8px;">
-                <input type="text" id="promoInput" class="input-box" style="margin-bottom:0;" placeholder="Kod yazın...">
-                <button class="btn-gold-action" style="width: 110px; padding: 0; margin: 0; height: 42px;" onclick="usePromoCode()">Kullan</button>
-            </div>
+        <div class="legal-box">
+            <h4>💡 Proje Hakkında</h4>
+            HertzCore, merkeziyetsiz hesaplama gücü dağılımını destekleyen bir simülasyon ve ödül protokolüdür. Kullanıcılar etkileşimleri ve sponsorlu reklam görüntülemeleri karşılığında platform içi varlık kazanır.
         </div>
     </div>
 
-    <!-- 2. TAB: KAZAN (REKLAM & GÖREV AĞIRLIKLI) -->
+    <!-- 2. TAB: GÖREVLER & REKLAMLAR (ONAY İÇİN KRİTİK ALAN) -->
     <div id="tab-earn" class="tab-content">
-        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 6px;">🎯 Ödüllü Görevler & Reklamlar</h3>
-        <p style="font-size: 11px; color: #8c7355; margin-bottom: 12px;">Hızlı HRT toplamak için reklam izle ve görevleri tamamla!</p>
+        <h3 style="color: #d4a017; font-size: 13px; margin-bottom: 6px;">🎯 Sponsorlu Görevler & Akışlar</h3>
+        <p style="font-size: 10px; color: #8c73, #8c7355; margin-bottom: 12px;">Sponsor reklamlarını izleyerek ekosistem fonuna katkı sağlayın ve HRT ödülü kazanın.</p>
         
         <div class="task-card">
             <div class="task-info">
-                <b>🎬 AdsGram Ödüllü Video İzle</b>
-                <small style="color:#d4a017;">+5.00 HRT</small>
+                <b>🎬 AdsGram Partner Video #1</b>
+                <small style="color:#d4a017;">+2.50 HRT</small>
             </div>
-            <button class="btn-task-open" onclick="watchAd()">İZLE</button>
+            <button class="btn-task-open" onclick="watchAd('AdsGram Akışı #1', 2.5)">İZLE</button>
         </div>
 
         <div class="task-card">
             <div class="task-info">
-                <b>🎬 Bonus Sponsor Reklamı #2</b>
-                <small style="color:#d4a017;">+5.00 HRT</small>
+                <b>🎬 Global Sponsor Reklamı</b>
+                <small style="color:#d4a017;">+2.50 HRT</small>
             </div>
-            <button class="btn-task-open" onclick="watchBonusAd()">İZLE</button>
+            <button class="btn-task-open" onclick="watchAd('Global Sponsor', 2.5)">İZLE</button>
         </div>
 
         <div class="task-card">
             <div class="task-info">
-                <b>SUBSCRIBE HERTZ CHANNEL</b>
-                <small>+10.00 HRT</small>
+                <b>Resmi Telegram Kanal Duyurusu</b>
+                <small>+5.00 HRT</small>
             </div>
-            <button class="btn-task-open" onclick="completeTask(10, 'YouTube Abone')">→ AÇ</button>
-        </div>
-
-        <div class="task-card">
-            <div class="task-info">
-                <b>TELEGRAM KANALINA KATIL</b>
-                <small>+10.00 HRT</small>
-            </div>
-            <button class="btn-task-open" onclick="completeTask(10, 'Telegram Kanalı')">→ KATIL</button>
+            <button class="btn-task-open" onclick="watchAd('Telegram Bülteni', 5.0)">İNCELE</button>
         </div>
     </div>
 
-    <!-- 3. TAB: DAVET -->
-    <div id="tab-invite" class="tab-content">
-        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;">👥 Arkadaşını Davet Et</h3>
+    <!-- 3. TAB: KURUMSAL & POLİTİKALAR (REKLAM AĞI ONAYI İÇİN ŞART) -->
+    <div id="tab-legal" class="tab-content">
+        <h3 style="color: #d4a017; font-size: 13px; margin-bottom: 10px;">📄 Yasal & Politikalar</h3>
         
-        <div class="profile-card" style="text-align: center; padding: 18px; margin-bottom: 12px;">
-            <div style="font-size: 14px; font-weight: 800; color: #d4a017;">Her Arkadaş İçin +25.00 HRT</div>
-            <div style="font-size: 11px; color: #8c7355; margin-top: 4px;">Ömür boyu kazanç ortaklığı!</div>
-            <div style="font-size: 12px; color: #fff; margin-top: 10px;">Toplam Davet: <span id="refCountText" style="color:#d4a017; font-weight:bold;">0</span> Kişi</div>
+        <div class="legal-box">
+            <h4>Kullanım Şartları (Terms of Service)</h4>
+            Bu platformu kullanarak sistem kurallarını kabul etmiş olursunuz. Hile, bot veya otomasyon araçları kullanan hesaplar kalıcı olarak sıfırlanır ve ödülleri iptal edilir. Tüm hakları saklıdır.
         </div>
 
-        <div style="display: flex; gap: 8px;">
-            <button class="btn-gold-action" style="flex: 1;" onclick="shareTelegram()">✈️ Davet Linki Gönder</button>
-            <button class="btn-outline-box" style="flex: 1;" onclick="copyRef()">🔗 Kopyala</button>
+        <div class="legal-box">
+            <h4>Gizlilik Politikası (Privacy Policy)</h4>
+            Kullanıcı verileri yalnızca uygulama içi deneyimi iyileştirmek ve bütçe güvenliğini sağlamak amacıyla saklanır. Üçüncü şahıslarla asla finansal veri paylaşımı yapılmaz.
+        </div>
+
+        <div class="legal-box">
+            <h4>İletişim & Destek</h4>
+            Sorun bildirimleri ve reklam ortaklıkları için: <b>support@hertzcore-protocol.io</b> üzerinden bize ulaşabilirsiniz.
         </div>
     </div>
 
-    <!-- 4. TAB: CÜZDAN (ESKİ ÇEKİM EKRANI) -->
+    <!-- 4. TAB: CÜZDAN -->
     <div id="tab-wallet" class="tab-content">
         <div class="profile-card">
-            <div class="profile-name" id="userName">ENGİN GÜVEN</div>
-            <div class="profile-username" id="userHandle">@Jacker_lord</div>
-            <div class="rank-badge" id="userVipRank">⭐ Standart Madenci</div>
+            <div class="profile-name" id="userName">Hertz Miner</div>
+            <div class="profile-username" id="userHandle">@VerifiedUser</div>
+            <div style="font-size: 10px; color: #00e676; margin-top: 6px;">Durum: Aktif Cüzdan</div>
         </div>
 
         <div class="crypto-ticker">
-            <span>💵 Varlık Dolar Değeri</span>
-            <span style="color: #00e676; font-size: 13px;" id="walletUsdValue">≈ $1.00</span>
+            <span>💵 Varlık Tahmini</span>
+            <span style="color: #00e676; font-size: 12px;" id="walletUsdValue">≈ $0.00</span>
         </div>
 
         <div class="stats-grid">
             <div class="stat-box">
                 <div class="stat-icon">💼</div>
                 <div class="stat-info">
-                    <span>Bakiye</span>
-                    <b id="walletBalance">15.00</b>
+                    <span>Mevcut Bakiye</span>
+                    <b id="walletBalance">10.00</b>
                 </div>
             </div>
             <div class="stat-box">
-                <div class="stat-icon">👥</div>
+                <div class="stat-icon">🛡️</div>
                 <div class="stat-info">
-                    <span>Davetler</span>
-                    <b id="walletRefCount">0</b>
+                    <span>Güvenlik</span>
+                    <b>Onaylı</b>
                 </div>
             </div>
         </div>
 
-        <button class="btn-gold-action" onclick="openWithdrawModal()">📦 PARA ÇEKME TALEBİ</button>
+        <button class="btn-gold-action" onclick="showAlert('Çekim talepleri ana ağ güncellenmesi sonrasında aktif olacaktır.')">📦 CÜZDANI BAĞLA</button>
     </div>
 
 </div>
 
 <!-- ALT MENÜ -->
 <div class="navbar">
-    <div class="nav-item active" onclick="switchTab('home', this)"><span class="nav-icon">🏠</span>ANASAYFA</div>
-    <div class="nav-item" onclick="switchTab('earn', this)"><span class="nav-icon">🎯</span>KAZAN</div>
-    <div class="nav-item" onclick="switchTab('invite', this)"><span class="nav-icon">👥</span>DAVET</div>
+    <div class="nav-item active" onclick="switchTab('home', this)"><span class="nav-icon">🏠</span>MERKEZ</div>
+    <div class="nav-item" onclick="switchTab('earn', this)"><span class="nav-icon">🎯</span>GÖREVLER</div>
+    <div class="nav-item" onclick="switchTab('legal', this)"><span class="nav-icon">📄</span>POLİTİKA</div>
     <div class="nav-item" onclick="switchTab('wallet', this)"><span class="nav-icon">💼</span>CÜZDAN</div>
 </div>
 
 <!-- UYARI MODALI -->
 <div id="alertModal" class="modal-overlay">
     <div class="modal-card">
-        <p id="alertText" style="font-size: 13px; font-weight: 600; margin-bottom: 16px; color: #fff; line-height: 1.4;"></p>
-        <button class="btn-gold-action" style="padding: 10px; margin:0;" onclick="closeModal()">Tamam</button>
-    </div>
-</div>
-
-<!-- ÇEKİM MODALI -->
-<div id="withdrawModal" class="modal-overlay">
-    <div class="modal-card" style="text-align: left;">
-        <h3 style="color:#d4a017; font-size:14px; margin-bottom:12px; text-align:center;">Para Çekme Talebi</h3>
-        <label style="font-size: 10px; color: #8c7355; font-weight: 700; display: block; margin-bottom: 4px;">Cüzdan Adresi</label>
-        <input type="text" id="withdrawWallet" class="input-box" placeholder="Cüzdan adresinizi girin...">
-        <label style="font-size: 10px; color: #8c7355; font-weight: 700; display: block; margin-bottom: 4px;">Miktar (Min: 5,000 HRT)</label>
-        <input type="number" id="withdrawAmount" class="input-box" placeholder="Miktar girin...">
-        
-        <div class="percent-row">
-            <div class="percent-btn" onclick="setPercent(0.25)">%25</div>
-            <div class="percent-btn" onclick="setPercent(0.50)">%50</div>
-            <div class="percent-btn" onclick="setPercent(0.75)">%75</div>
-            <div class="percent-btn" onclick="setPercent(1.00)">MAX</div>
-        </div>
-
-        <div style="display:flex; gap:8px; margin-top: 10px;">
-            <button class="btn-gold-action" style="flex:1; padding:10px; margin:0;" onclick="submitWithdraw()">Talep Et</button>
-            <button class="btn-outline-box" style="flex:1; padding:10px; margin:0;" onclick="closeWithdrawModal()">İptal</button>
-        </div>
+        <p id="alertText" style="font-size: 12px; font-weight: 600; margin-bottom: 14px; color: #fff; line-height: 1.4;"></p>
+        <button class="btn-gold-action" style="padding: 8px; margin:0;" onclick="closeModal()">Tamam</button>
     </div>
 </div>
 
@@ -508,11 +402,9 @@
 
     let tgUser = tg?.initDataUnsafe?.user;
     let gameData = {
-        balance: parseFloat(localStorage.getItem('sm_balance')) || 15.00,
-        refCount: parseInt(localStorage.getItem('sm_ref')) || 0,
-        usedPromo: localStorage.getItem('sm_promo') === 'true',
-        userName: tgUser?.first_name || "ENGİN GÜVEN",
-        userHandle: tgUser?.username ? "@" + tgUser.username : "@Jacker_lord"
+        balance: parseFloat(localStorage.getItem('hc_balance')) || 10.00,
+        userName: tgUser?.first_name || "Hertz Miner",
+        userHandle: tgUser?.username ? "@" + tgUser.username : "@VerifiedUser"
     };
 
     const COIN_PRICE = 0.0075;
@@ -522,9 +414,7 @@
     updateUI();
 
     function saveData() {
-        localStorage.setItem('sm_balance', gameData.balance);
-        localStorage.setItem('sm_ref', gameData.refCount);
-        localStorage.setItem('sm_promo', gameData.usedPromo);
+        localStorage.setItem('hc_balance', gameData.balance);
     }
 
     function switchTab(tabId, el) {
@@ -543,12 +433,10 @@
         document.getElementById('walletBalance').innerText = formattedBal;
         document.getElementById('homeUsdValue').innerText = `≈ $` + usdVal;
         document.getElementById('walletUsdValue').innerText = `≈ $` + usdVal;
-        document.getElementById('walletRefCount').innerText = gameData.refCount;
     }
 
-    // KARTA TIKLANDIĞINDA ÇALIŞAN (ZORLAŞTIRILMIŞ +0.01 HRT + COIN EFK FIRLATMA)
     function handleCardClick(event) {
-        let tapAmount = 0.01;
+        let tapAmount = 0.005; // Çok zorlaştırıldı, bütçen güvende
         gameData.balance += tapAmount;
         updateUI();
         saveData();
@@ -558,99 +446,36 @@
         void box.offsetWidth;
         box.classList.add('balance-bounce');
 
-        // Tıklanan yerde havalı neon coin fışkırtma efekti
         let card = document.getElementById('tapCard');
         let rect = card.getBoundingClientRect();
-        
         let x = event.clientX - rect.left;
         let y = event.clientY - rect.top;
 
-        for (let i = 0; i < 2; i++) {
-            let coin = document.createElement('div');
-            coin.className = 'tap-coin-effect';
-            coin.innerText = `+${tapAmount.toFixed(2)} HRT`;
-            
-            let randX = (Math.random() * 90 - 45) + 'px';
-            let randRot = (Math.random() * 50 - 25) + 'deg';
-            coin.style.setProperty('--rand-x', randX);
-            coin.style.setProperty('--rand-rot', randRot);
-            
-            coin.style.left = `${x}px`;
-            coin.style.top = `${y}px`;
-            
-            card.appendChild(coin);
-            setTimeout(() => coin.remove(), 800);
-        }
+        let coin = document.createElement('div');
+        coin.className = 'tap-coin-effect';
+        coin.innerText = `+${tapAmount.toFixed(3)}`;
+        
+        let randX = (Math.random() * 80 - 40) + 'px';
+        let randRot = (Math.random() * 40 - 20) + 'deg';
+        coin.style.setProperty('--rand-x', randX);
+        coin.style.setProperty('--rand-rot', randRot);
+        
+        coin.style.left = `${x}px`;
+        coin.style.top = `${y}px`;
+        
+        card.appendChild(coin);
+        setTimeout(() => coin.remove(), 700);
 
         if (tg?.HapticFeedback) {
             tg.HapticFeedback.impactOccurred('light');
         }
     }
 
-    function usePromoCode() {
-        let code = document.getElementById('promoInput').value.trim().toUpperCase();
-        if (gameData.usedPromo) { showAlert("Bu promosyon kodunu zaten kullandınız!"); return; }
-        if (code === "MINERPRO") {
-            gameData.balance += 10;
-            updateUI();
-            saveData();
-            showAlert("Tebrikler! Promosyon kodu aktifleşti: +10.00 HRT eklendi.");
-        } else {
-            showAlert("Geçersiz veya süresi dolmuş promosyon kodu!");
-        }
-    }
-
-    function watchAd() {
-        gameData.balance += 5.00;
-        updateUI();
-        saveData();
-        showAlert("AdsGram Reklamı Tamamlandı: +5.00 HRT eklendi!");
-    }
-
-    function watchBonusAd() {
-        gameData.balance += 5.00;
-        updateUI();
-        saveData();
-        showAlert("Sponsor Reklamı Tamamlandı: +5.00 HRT eklendi!");
-    }
-
-    function completeTask(reward, taskName) {
+    function watchAd(name, reward) {
         gameData.balance += reward;
         updateUI();
         saveData();
-        showAlert(`"${taskName}" görevi tamamlandı: +${reward.toFixed(2)} HRT eklendi!`);
-    }
-
-    function openWithdrawModal() { document.getElementById('withdrawModal').style.display = 'flex'; }
-    function closeWithdrawModal() { document.getElementById('withdrawModal').style.display = 'none'; }
-
-    function setPercent(pct) {
-        let amt = gameData.balance * pct;
-        document.getElementById('withdrawAmount').value = amt.toFixed(2);
-    }
-
-    function submitWithdraw() {
-        let amt = parseFloat(document.getElementById('withdrawAmount').value);
-        let wallet = document.getElementById('withdrawWallet').value.trim();
-        if (!wallet) { showAlert("Lütfen cüzdan adresinizi girin!"); return; }
-        if (!amt || amt < 5000) { showAlert("Minimum çekim miktarı 5.000 HRT olmalıdır!"); return; }
-        if (gameData.balance < amt) { showAlert("Bakiyeniz yetersiz!"); return; }
-        
-        gameData.balance -= amt;
-        updateUI();
-        saveData();
-        closeWithdrawModal();
-        showAlert("Çekim talebiniz başarıyla alındı.");
-    }
-
-    function toggleLanguage() { showAlert("Sistem dili Türkçe."); }
-    function copyRef() {
-        navigator.clipboard.writeText("https://t.me/SanalMinerBot?start=ref_123");
-        showAlert("Davet linki kopyalandı!");
-    }
-    function shareTelegram() {
-        let url = `https://t.me/share/url?url=https://t.me/SanalMinerBot&text=HertzCoin%20kazan!`;
-        window.open(url, '_blank');
+        showAlert(`${name} başarıyla tamamlandı: +${reward.toFixed(2)} HRT cüzdanınıza eklendi!`);
     }
 
     function showAlert(txt) {
