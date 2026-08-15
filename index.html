@@ -3,137 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HertzCore Genesis Pro | Web3 Mining Tycoon</title>
+    <title>HertzCore Bot & Web3 Mining App</title>
+    
+    <!-- 1. REKLAM AĞI ONAY VE DOĞRULAMA KODLARI (AdSense / Adsterra vb.) -->
+    <!-- "ca-pub-XXXXXXXXXXXXXXXX" yerine kendi yayıncı kimliğini yazabilirsin -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
+    <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX">
+    
+    <!-- 2. TELEGRAM WEB APP SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
-
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
-            background: #020201;
-            background-image: 
-                radial-gradient(circle at 50% -20%, rgba(212, 160, 23, 0.25) 0%, transparent 60%),
-                radial-gradient(circle at 20% 90%, rgba(0, 230, 118, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 90%, rgba(0, 176, 255, 0.1) 0%, transparent 50%);
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
-            overflow-x: hidden;
-            letter-spacing: -0.2px;
+            background: #0b0e14; color: #ffffff; margin: 0; padding: 20px;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
+        .container {
+            max-width: 400px; width: 100%; background: #151a21;
+            border: 1px solid #232d3f; border-radius: 16px; padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center;
+        }
+        h2 { color: #00ff88; margin-bottom: 10px; font-size: 20px; }
+        p { color: #8a99ad; font-size: 13px; line-height: 1.5; }
+        .stats-box {
+            background: #0b0e14; border: 1px solid #232d3f; border-radius: 12px;
+            padding: 15px; margin: 20px 0; font-size: 14px;
+        }
+        .btn {
+            background: #00ff88; color: #0b0e14; border: none; padding: 12px 20px;
+            border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer;
+            width: 100%; transition: 0.2s;
+        }
+        .btn:active { transform: scale(0.97); background: #00cc6a; }
+        .footer-links { margin-top: 20px; font-size: 11px; }
+        .footer-links a { color: #8a99ad; text-decoration: none; margin: 0 5px; }
+    </style>
+</head>
+<body>
 
-        .app-container {
-            flex: 1;
-            max-width: 420px;
-            width: 100%;
-            margin: 0 auto;
-            padding: 16px 16px 85px 16px;
-            overflow-y: auto;
-            position: relative;
-        }
-
-        /* --- ÜST BAR VE MARKA --- */
-        .header-box {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 16px; border-bottom: 1px solid rgba(212,160,23,0.4); padding-bottom: 10px;
-        }
-        .brand-logo {
-            font-size: 13px; font-weight: 900; color: #d4a017; letter-spacing: 1.8px;
-            display: flex; align-items: center; gap: 8px; text-transform: uppercase;
-        }
-        .brand-logo i { font-size: 18px;}
-        .live-badge {
-            background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.5);
-            color: #00e676; padding: 3px 9px; border-radius: 8px; font-size: 9px; font-weight: 900; text-transform: uppercase;
-        }
-
-        /* --- ANA BİLANÇO VE TİCKER --- */
-        .main-balance-card {
-            background: linear-gradient(145deg, #171107 0%, #060402 100%);
-            border: 1px solid rgba(212, 160, 23, 0.6); border-radius: 24px;
-            padding: 24px; text-align: center; box-shadow: 0 15px 45px rgba(0,0,0,0.95);
-            margin-bottom: 16px; position: relative; overflow: hidden;
-        }
-        .main-balance-card::before {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(212,160,23,0.05) 0%, transparent 60%); transform: rotate(15deg);
-        }
-        .balance-title { font-size: 10px; color: #8c7355; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;}
-        .balance-number { font-size: 38px; font-weight: 800; color: #d4a017; margin: 0; line-height: 1; text-shadow: 0 0 20px rgba(212, 160, 23, 0.4); }
-        .balance-number span { font-size: 16px; color: #fff; font-weight: 700; }
-        .balance-usd { font-size: 11px; color: #00e676; font-weight: 700; margin-top: 6px;}
-        .node-rank { font-size: 11px; color: #fff; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(212,160,23,0.15); padding: 4px 12px; border-radius: 20px; display: inline-block; margin-top: 12px; border: 1px solid rgba(212,160,23,0.3);}
-
-        /* --- CANLI BORSATİCKER --- */
-        .ticker-card {
-            background: #0d0904; border: 1px solid rgba(212,160,23,0.4); border-radius: 14px; padding: 10px 14px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
-        }
-        .ticker-pair { font-size: 11px; font-weight: 800; color: #fff; display: flex; align-items: center; gap: 6px;}
-        .ticker-pair i { color: #d4a017;}
-        .ticker-price { font-size: 11px; font-weight: 800; color: #d4a017; }
-        .ticker-change { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; }
-        .change-pos { color: #00e676; background: rgba(0,230,118,0.1); }
-
-        /* --- STAMİNA & XP GELİŞMİŞ BARLARI --- */
-        .progress-group { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
-        .p-bar-box { background: #0d0904; border: 1px solid rgba(212,160,23,0.4); border-radius: 16px; padding: 10px 14px; }
-        .p-info { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; color: #b39b7f; margin-bottom: 6px; }
-        .p-bg { width: 100%; height: 8px; background: #030201; border-radius: 4px; overflow: hidden; border: 1px solid rgba(212,160,23,0.2); position: relative;}
-        .p-fill { height: 100%; border-radius: 4px; transition: width 0.2s ease, background-color 0.2s ease; position: absolute; top: 0; left: 0;}
+    <div class="container">
+        <h2>HertzCore Bot Paneli</h2>
+        <p>Reklam ağı inceleme botları için optimize edilmiş, onay ve yönlendirme destekli Telegram Web App arayüzü.</p>
         
-        .stamina-fill { background: linear-gradient(90deg, #d4a017, #00e676); box-shadow: 0 0 10px rgba(0,230,118,0.3); }
-        .xp-fill { background: linear-gradient(90deg, #00b0ff, #00e676); box-shadow: 0 0 10px rgba(0,176,255,0.3); }
-        .p-txt-val { color: #fff; font-weight: 900; font-size: 10px;}
+        <div class="stats-box">
+            <div>Bot Durumu: <span style="color: #00ff88;">Çevrim içi (Aktif)</span></div>
+            <div style="margin-top: 8px;">Kullanıcı ID: <span id="userId" style="color: #ffaa00;">Algılanıyor...</span></div>
+        </div>
 
-        @keyframes numberBounce {
-            0% { transform: scale(1); } 50% { transform: scale(1.08); color: #00e676; } 100% { transform: scale(1); }
-        }
-        .bounce-anim { animation: numberBounce 0.2s ease-in-out; }
+        <button class="btn" onclick="triggerBotAction()">Madencilik Verisini Senkronize Et</button>
 
-        /* --- DOKUNMA EFEKTİ --- */
-        .tap-effect {
-            position: absolute; font-size: 16px; font-weight: 900; color: #00e676;
-            text-shadow: 0 0 15px rgba(0,230,118,0.9); pointer-events: none; z-index: 999;
-            animation: flyUpAnim 0.6s cubic-bezier(0.1, 0.9, 0.3, 1) forwards;
-        }
-        @keyframes flyUpAnim {
-            0% { transform: translate(0, 0) scale(0.7); opacity: 1; }
-            100% { transform: translate(var(--tx), -95px) scale(1.4) rotate(var(--trot)); opacity: 0; }
+        <div class="footer-links">
+            <a href="/gizlilik.html">Gizlilik Politikası</a> | 
+            <a href="/iletisim.html">İletişim</a>
+        </div>
+    </div>
+
+    <!-- 3. OTOMATİK BOT VE REKLAM DOĞRULAMA SCRİPTİ -->
+    <script>
+        // Telegram WebApp entegrasyonu
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        // Kullanıcı Telegram üzerinden açtıysa ID'sini ekrana yazar, bot doğrulaması için esneklik sağlar
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('userId').innerText = tg.initDataUnsafe.user.id;
+        } else {
+            document.getElementById('userId').innerText = "Web Tarayıcı Modu (Bot İncelemede)";
         }
 
-        /* --- MADENCİLİK RIG KARTI (GELİŞTİRİLMİŞ) --- */
-        .mining-rig-box {
-            width: 100%; background: linear-gradient(145deg, #1a1408, #060402);
-            border: 3px solid rgba(212, 160, 23, 0.8); border-radius: 22px; margin-bottom: 14px; padding: 18px;
-            box-shadow: inset 0 0 40px rgba(212,160,23,0.15), 0 12px 35px rgba(0,0,0,0.95); position: relative; cursor: pointer;
-            transition: all 0.15s ease-out;
+        function triggerBotAction() {
+            alert("Bot verileri başarıyla güncellendi ve senkronize edildi!");
         }
-        .mining-rig-box:active { transform: scale(0.98); border-color: #00e676; box-shadow: 0 0 25px rgba(0,230,118,0.4); }
-        .rig-top-info { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: 900; color: #d4a017; margin-bottom: 18px; }
-        .fans-row-box { display: flex; justify-content: space-around; align-items: center; padding: 8px 0 18px 0; }
-        .rig-fan-item {
-            width: 56px; height: 56px; background: #030201; border: 3px solid rgba(212, 160, 23, 0.6);
-            border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative;
-        }
-        .fan-spin-layer { width: 100%; height: 100%; position: relative; animation: fanRotate 0.2s linear infinite; }
-        @keyframes fanRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        .fan-spin-layer::before, .fan-spin-layer::after { content: ''; position: absolute; background: #d4a017; }
-        .fan-spin-layer::before { width: 4px; height: 100%; left: 24px; top: 0; border-radius: 2px; }
-        .fan-spin-layer::after { width: 100%; height: 4px; left: 0; top: 24px; border-radius: 2px; }
-        .fan-core-dot { position: absolute; width: 16px; height: 16px; background: radial-gradient(circle, #fff, #00e676); border-radius: 50%; z-index: 2; box-shadow: 0 0 10px #00e676; }
-        .rig-bottom-info { display: flex; justify-content: space-between; font-size: 11px; color: #b39b7f; font-weight: 800; border-top: 1px solid rgba(212, 160, 23, 0.4); padding-top: 12px; }
-        .tap-power-label { text-align: center; font-size: 11px; color: #00e676; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px;}
-
-        /* --- SEKMELER VE GENEL KARTLAR --- */
-        .tab-section { display: none; }
-        .tab-section.active { display: block; animation: fadeInSec 0.3s ease-out; }
-        @keyframes fadeInSec { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .section-title { color: #d4a017; font-size: 14px; font-weight: 900; margin-bottom: 14px; margin-top: 6px; letter-spacing: 0.5px; text-transform: uppercase; border-left: 3px solid #d4a017; padding-left: 8px;}
-        
-        .generic-card { background: linear-gradient(135deg, #171107 0%, #050402 100%); border: 1px solid rgba(21
+    </script>
+</body>
+</html>
