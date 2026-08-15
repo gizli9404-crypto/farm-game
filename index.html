@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanal Miner - Web3 Tap App</title>
+    <title>RigMaster - Web3 Mining Sim</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #0f121b;
-            --surface: #171b26;
-            --surface-card: #1e2433;
-            --primary: #00ffcc;
-            --primary-glow: rgba(0, 255, 204, 0.3);
-            --accent: #f59e0b;
+            --bg-dark: #090b10;
+            --surface: #121620;
+            --surface-card: #181f2d;
+            --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.25);
+            --accent: #38bdf8;
             --text-main: #ffffff;
-            --text-muted: #8e9bae;
+            --text-muted: #64748b;
             --border: rgba(255, 255, 255, 0.08);
         }
 
@@ -48,12 +48,12 @@
             overflow: hidden;
         }
 
-        /* Üst Bilgi Alanı */
+        /* Üst Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px;
+            padding: 14px 20px;
             background: var(--surface);
             border-bottom: 1px solid var(--border);
         }
@@ -86,17 +86,17 @@
             font-weight: 700;
         }
 
-        .squad-badge {
-            background: rgba(0, 255, 204, 0.1);
+        .rig-status-badge {
+            background: rgba(0, 255, 136, 0.1);
             color: var(--primary);
-            border: 1px solid rgba(0, 255, 204, 0.3);
+            border: 1px solid rgba(0, 255, 136, 0.3);
             padding: 6px 12px;
             border-radius: 20px;
-            font-size: 12px;
-            font-weight: 700;
+            font-size: 11px;
+            font-weight: 800;
         }
 
-        /* İçerik Ekranları */
+        /* İçerik Alanı */
         .content {
             flex: 1;
             overflow-y: auto;
@@ -107,13 +107,13 @@
 
         .pane {
             display: none;
+            flex-direction: column;
+            align-items: center;
             animation: fadeIn 0.2s ease-in-out;
         }
 
         .pane.active {
             display: flex;
-            flex-direction: column;
-            align-items: center;
         }
 
         @keyframes fadeIn {
@@ -121,110 +121,110 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Skor / Bakiye Paneli */
-        .score-box {
+        /* Bakiye ve İstatistik Kartı */
+        .stats-card {
+            width: 100%;
+            background: linear-gradient(135deg, #151c2a, #0f141f);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
-        .score-title {
-            font-size: 12px;
+        .stats-title {
+            font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 700;
         }
 
-        .score-value {
-            font-size: 40px;
+        .stats-value {
+            font-size: 32px;
             font-weight: 900;
             color: #fff;
             margin: 6px 0;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 8px;
-            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+            gap: 6px;
         }
 
-        .score-value span {
+        .stats-value span {
             color: var(--primary);
         }
 
-        /* Tıklama / Kazım Alanı (Hamster/Notcoin Tarzı) */
-        .tap-section {
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border);
+            text-align: left;
+        }
+
+        .stat-item-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            font-weight: 700;
+        }
+
+        .stat-item-val {
+            font-size: 14px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-top: 2px;
+        }
+
+        /* Ana Kazım Rig Butonu (Notcoin Stili) */
+        .mining-section {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-top: 10px;
         }
 
-        .coin-target {
-            width: 220px;
-            height: 220px;
+        .gpu-rig-btn {
+            width: 200px;
+            height: 200px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #1e293b, #090d16);
             border: 4px solid var(--primary);
-            box-shadow: 0 0 40px var(--primary-glow), inset 0 0 30px rgba(0, 255, 204, 0.2);
+            box-shadow: 0 0 35px var(--primary-glow), inset 0 0 25px rgba(0, 255, 136, 0.15);
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             position: relative;
             transition: transform 0.05s ease;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
-        .coin-target:active {
-            transform: scale(0.94);
+        .gpu-rig-btn:active {
+            transform: scale(0.95);
         }
 
-        .coin-icon {
-            font-size: 80px;
-            filter: drop-shadow(0 0 15px var(--primary-glow));
+        .gpu-rig-icon {
+            font-size: 64px;
+            filter: drop-shadow(0 0 12px var(--primary-glow));
         }
 
-        /* Enerji Barı */
-        .energy-container {
-            width: 100%;
-            max-width: 320px;
-            background: var(--surface);
-            padding: 12px 16px;
-            border-radius: 16px;
-            border: 1px solid var(--border);
-            margin-top: 15px;
+        .gpu-rig-text {
+            font-size: 11px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-top: 6px;
+            letter-spacing: 0.5px;
         }
 
-        .energy-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            color: var(--text-muted);
-        }
-
-        .energy-bar-bg {
-            width: 100%;
-            height: 10px;
-            background: #090d16;
-            border-radius: 6px;
-            overflow: hidden;
-            border: 1px solid var(--border);
-        }
-
-        .energy-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #00ffcc, #3b82f6);
-            width: 100%;
-            transition: width 0.1s linear;
-        }
-
-        /* Kart Listeleri ve Mağaza (Blum/Hamster Boost Tarzı) */
+        /* Market ve Donanım Kartları */
         .section-title {
             width: 100%;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
@@ -233,7 +233,7 @@
             text-align: left;
         }
 
-        .boost-card, .task-card {
+        .shop-card {
             width: 100%;
             background: var(--surface);
             border: 1px solid var(--border);
@@ -245,18 +245,18 @@
             margin-bottom: 10px;
         }
 
-        .boost-info, .task-info {
+        .shop-info {
             display: flex;
             align-items: center;
             gap: 12px;
             text-align: left;
         }
 
-        .boost-icon, .task-icon {
-            font-size: 28px;
+        .shop-icon {
+            font-size: 26px;
             background: var(--surface-card);
-            width: 44px;
-            height: 44px;
+            width: 42px;
+            height: 42px;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -264,50 +264,43 @@
             border: 1px solid var(--border);
         }
 
-        .boost-title, .task-title {
-            font-size: 14px;
+        .shop-name {
+            font-size: 13px;
             font-weight: 800;
             color: #fff;
             margin: 0 0 2px 0;
         }
 
-        .boost-desc, .task-desc {
+        .shop-desc {
             font-size: 11px;
             color: var(--text-muted);
             margin: 0;
         }
 
-        .action-btn {
+        .buy-btn {
             background: var(--primary);
             color: #000;
             border: none;
             padding: 8px 14px;
             border-radius: 10px;
             font-weight: 800;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             transition: opacity 0.2s;
         }
 
-        .action-btn:active {
+        .buy-btn:active {
             opacity: 0.8;
             transform: scale(0.96);
         }
 
-        .action-btn.completed {
-            background: var(--surface-card);
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            pointer-events: none;
-        }
-
-        /* Alt Navigasyon Çubuğu (Telegram Mini App Standart) */
+        /* Alt Navigasyon Çubuğu */
         .bottom-nav {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(23, 27, 38, 0.95);
+            background: rgba(18, 22, 32, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
@@ -337,12 +330,12 @@
             font-size: 20px;
         }
 
-        /* Uçan Skor Animasyonu */
+        /* Uçan Değer Animasyonu */
         .floating-text {
             position: absolute;
             color: var(--primary);
             font-weight: 900;
-            font-size: 20px;
+            font-size: 18px;
             pointer-events: none;
             animation: floatUp 0.6s ease-out forwards;
             z-index: 1000;
@@ -351,7 +344,7 @@
 
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(0.8); }
-            100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
+            100% { opacity: 0; transform: translateY(-50px) scale(1.2); }
         }
     </style>
 </head>
@@ -364,99 +357,92 @@
             <div class="user-avatar" id="user-initial">M</div>
             <div class="user-name" id="user-fullname">Madenci</div>
         </div>
-        <div class="squad-badge">⚡ VIP SQUAD</div>
+        <div class="rig-status-badge">🟢 AKTİF RIG</div>
     </div>
 
-    <!-- Ana İçerik Alanları -->
+    <!-- Ana İçerik Ekranları -->
     <div class="content">
         
-        <!-- 1. TIKLAMA / KAZIM EKRANI (NOTCOIN TARZI) -->
-        <div id="pane-tap" class="pane active">
-            <div class="score-box">
-                <div class="score-title">Toplam Kazanç</div>
-                <div class="score-value">💎 <span id="balance">0</span></div>
+        <!-- 1. KAZIM MERKEZİ (LOBİ) -->
+        <div id="pane-mine" class="pane active" style="width: 100%;">
+            <div class="stats-card">
+                <div class="stats-title">Toplam Biriken Balans</div>
+                <div class="stats-value"><span id="balance">0.00</span> <span>PTS</span></div>
+                
+                <div class="stats-grid">
+                    <div>
+                        <div class="stat-item-label">Saniyede Üretim (Hash)</div>
+                        <div class="stat-item-val">+<span id="hashrate">0.00</span> PTS/sn</div>
+                    </div>
+                    <div>
+                        <div class="stat-item-label">Tıklama Gücü</div>
+                        <div class="stat-item-val">+<span id="click-power">0.10</span> PTS</div>
+                    </div>
+                </div>
             </div>
 
-            <div class="tap-section">
-                <div class="coin-target" id="tap-coin" onclick="handleTap(event)">
-                    <div class="coin-icon">⛏️</div>
+            <div class="mining-section">
+                <div class="gpu-rig-btn" onclick="performManualMining(event)">
+                    <div class="gpu-rig-icon">🖥️</div>
+                    <div class="gpu-rig-text">HİSSE KAZ</div>
                 </div>
-
-                <div class="energy-container">
-                    <div class="energy-info">
-                        <span>⚡ Enerji</span>
-                        <span><span id="energy-current">1000</span> / <span id="energy-max">1000</span></span>
-                    </div>
-                    <div class="energy-bar-bg">
-                        <div class="energy-bar-fill" id="energy-fill"></div>
-                    </div>
+                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 10px;">
+                    Donanımların saniyede otomatik kazmaya devam ediyor.
                 </div>
             </div>
         </div>
 
-        <!-- 2. GÖREVLER / TASKS EKRANI (HAMSTER / BLUM TARZI) -->
+        <!-- 2. DONANIM MARKETİ (GPU & OVERCLOCK) -->
+        <div id="pane-shop" class="pane" style="width: 100%;">
+            <div class="section-title">💻 Donanım ve Ekran Kartları</div>
+
+            <div class="shop-card">
+                <div class="shop-info">
+                    <div class="shop-icon">⚡</div>
+                    <div>
+                        <div class="shop-name">RX 470 8GB <span style="color:var(--primary); font-size:11px;" id="count-rx470">(0)</span></div>
+                        <div class="shop-desc">+0.05 PTS/sn | Fiyat: <span id="price-rx470">15.00</span> PTS</div>
+                    </div>
+                </div>
+                <button class="buy-btn" onclick="buyRig('rx470', 15.00, 0.05)">Satın Al</button>
+            </div>
+
+            <div class="shop-card">
+                <div class="shop-info">
+                    <div class="shop-icon">🔥</div>
+                    <div>
+                        <div class="shop-name">RX 590 8GB <span style="color:var(--primary); font-size:11px;" id="count-rx590">(0)</span></div>
+                        <div class="shop-desc">+0.25 PTS/sn | Fiyat: <span id="price-rx590">75.00</span> PTS</div>
+                    </div>
+                </div>
+                <button class="buy-btn" onclick="buyRig('rx590', 75.00, 0.25)">Satın Al</button>
+            </div>
+
+            <div class="shop-card">
+                <div class="shop-info">
+                    <div class="shop-icon">🚀</div>
+                    <div>
+                        <div class="shop-name">RTX 3060 Ti <span style="color:var(--primary); font-size:11px;" id="count-rtx3060">(0)</span></div>
+                        <div class="shop-desc">+1.20 PTS/sn | Fiyat: <span id="price-rtx3060">350.00</span> PTS</div>
+                    </div>
+                </div>
+                <button class="buy-btn" onclick="buyRig('rtx3060', 350.00, 1.20)">Satın Al</button>
+            </div>
+        </div>
+
+        <!-- 3. GÖREVLER / BOOTSTRAP -->
         <div id="pane-tasks" class="pane" style="width: 100%;">
-            <div class="section-title">🌟 Günlük Görevler</div>
-            
-            <div class="task-card">
-                <div class="task-info">
-                    <div class="task-icon">📢</div>
+            <div class="section-title">🛠️ Servis ve Görevler</div>
+
+            <div class="shop-card">
+                <div class="shop-info">
+                    <div class="shop-icon">🔧</div>
                     <div>
-                        <div class="task-title">Telegram Kanalına Katıl</div>
-                        <div class="task-desc">+5,000 Puan Kazan</div>
+                        <div class="shop-name">BIOS Mod / Overclock</div>
+                        <div class="shop-desc">Tıklama gücünü artırır (+0.10)</div>
                     </div>
                 </div>
-                <button class="action-btn" id="task-tg" onclick="completeTask('tg', 5000)">Yap</button>
-            </div>
-
-            <div class="task-card">
-                <div class="task-info">
-                    <div class="task-icon">📺</div>
-                    <div>
-                        <div class="task-title">Tanıtım Videosunu İzle</div>
-                        <div class="task-desc">+2,500 Puan Kazan</div>
-                    </div>
-                </div>
-                <button class="action-btn" id="task-ad" onclick="completeTask('ad', 2500)">İzle</button>
-            </div>
-
-            <div class="section-title" style="margin-top: 20px;">👥 Arkadaşını Davet Et</div>
-            <div class="task-card">
-                <div class="task-info">
-                    <div class="task-icon">🤝</div>
-                    <div>
-                        <div class="task-title">Her Arkadaş İçin</div>
-                        <div class="task-desc">+10,000 Puan Kazan</div>
-                    </div>
-                </div>
-                <button class="action-btn" style="background:#3b82f6; color:#fff;" onclick="copyRef()">Davet Et</button>
-            </div>
-        </div>
-
-        <!-- 3. BOOST / MARKET EKRANI -->
-        <div id="pane-boost" class="pane" style="width: 100%;">
-            <div class="section-title">🚀 Donanım ve Hızlandırıcılar</div>
-
-            <div class="boost-card">
-                <div class="boost-info">
-                    <div class="boost-icon">👆</div>
-                    <div>
-                        <div class="boost-title">Çoklu Tıklama (+1)</div>
-                        <div class="boost-desc">Seviye: <span id="lvl-mult">1</span> | Fiyat: <span id="price-mult">1000</span></div>
-                    </div>
-                </div>
-                <button class="action-btn" onclick="buyUpgrade('mult')">Yükselt</button>
-            </div>
-
-            <div class="boost-card">
-                <div class="boost-info">
-                    <div class="boost-icon">🔋</div>
-                    <div>
-                        <div class="boost-title">Max Enerji Kapasitesi</div>
-                        <div class="boost-desc">Seviye: <span id="lvl-energy">1</span> | Fiyat: <span id="price-energy">500</span></div>
-                    </div>
-                </div>
-                <button class="action-btn" onclick="buyUpgrade('energy')">Yükselt</button>
+                <button class="buy-btn" id="btn-oc" onclick="buyOverclock()">50.00 PTS</button>
             </div>
         </div>
 
@@ -464,35 +450,34 @@
 
     <!-- Alt Navigasyon Çubuğu -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPane('tap', this)">
-            <span>🪙</span>
-            <span>Kazı</span>
+        <div class="nav-item active" onclick="switchPane('mine', this)">
+            <span>🖥️</span>
+            <span>Rig</span>
+        </div>
+        <div class="nav-item" onclick="switchPane('shop', this)">
+            <span>🛒</span>
+            <span>Market</span>
         </div>
         <div class="nav-item" onclick="switchPane('tasks', this)">
-            <span>📋</span>
-            <span>Görevler</span>
-        </div>
-        <div class="nav-item" onclick="switchPane('boost', this)">
-            <span>🚀</span>
-            <span>Boost</span>
+            <span>⚡</span>
+            <span>Atölye</span>
         </div>
     </div>
 </div>
 
 <script>
-    // Oyun Verileri ve Durumları
-    let balance = parseInt(localStorage.getItem('wb_balance')) || 0;
-    let energy = parseInt(localStorage.getItem('wb_energy')) || 1000;
-    let maxEnergy = parseInt(localStorage.getItem('wb_maxEnergy')) || 1000;
-    let tapPower = parseInt(localStorage.getItem('wb_tapPower')) || 1;
+    // Oyun Değişkenleri
+    let balance = parseFloat(localStorage.getItem('rm_balance')) || 0.0;
+    let clickPower = parseFloat(localStorage.getItem('rm_clickPower')) || 0.10;
+    let hashrate = parseFloat(localStorage.getItem('rm_hashrate')) || 0.00;
     
-    let multLevel = parseInt(localStorage.getItem('wb_multLvl')) || 1;
-    let multCost = parseInt(localStorage.getItem('wb_multCost')) || 1000;
-    
-    let energyLevel = parseInt(localStorage.getItem('wb_energyLvl')) || 1;
-    let energyCost = parseInt(localStorage.getItem('wb_energyCost')) || 500;
-    
-    let tasksCompleted = JSON.parse(localStorage.getItem('wb_tasks')) || { tg: false, ad: false };
+    let rigs = JSON.parse(localStorage.getItem('rm_rigs')) || {
+        rx470: { count: 0, rate: 0.05, price: 15.00 },
+        rx590: { count: 0, rate: 0.25, price: 75.00 },
+        rtx3060: { count: 0, rate: 1.20, price: 350.00 }
+    };
+
+    let ocCost = parseFloat(localStorage.getItem('rm_ocCost')) || 50.00;
 
     // Telegram Entegrasyonu
     const tg = window.Telegram?.WebApp;
@@ -506,49 +491,71 @@
         }
     }
 
-    // Periyodik Enerji Yenilenmesi (Saniyede 10 Enerji)
+    // Saniyede Otomatik Kazım Döngüsü (Passive Mining)
     setInterval(() => {
-        if (energy < maxEnergy) {
-            energy = Math.min(maxEnergy, energy + 10);
+        if (hashrate > 0) {
+            balance += hashrate / 10; // 100ms hassasiyetle akıcı artış
             updateUI();
+            saveState();
         }
-    }, 1000);
+    }, 100);
 
     function saveState() {
-        localStorage.setItem('wb_balance', balance);
-        localStorage.setItem('wb_energy', energy);
-        localStorage.setItem('wb_maxEnergy', maxEnergy);
-        localStorage.setItem('wb_tapPower', tapPower);
-        localStorage.setItem('wb_multLvl', multLevel);
-        localStorage.setItem('wb_multCost', multCost);
-        localStorage.setItem('wb_energyLvl', energyLevel);
-        localStorage.setItem('wb_energyCost', energyCost);
-        localStorage.setItem('wb_tasks', JSON.stringify(tasksCompleted));
+        localStorage.setItem('rm_balance', balance);
+        localStorage.setItem('rm_clickPower', clickPower);
+        localStorage.setItem('rm_hashrate', hashrate);
+        localStorage.setItem('rm_rigs', JSON.stringify(rigs));
+        localStorage.setItem('rm_ocCost', ocCost);
     }
 
-    // Tıklama Mekaniği (Notcoin / Hamster Tarzı Uçan Sayı Efekti)
-    function handleTap(e) {
-        if (energy < tapPower) return;
-
-        energy -= tapPower;
-        balance += tapPower;
-        saveState();
+    // Manuel Tıklama ile Hisseli Kazım
+    function performManualMining(e) {
+        balance += clickPower;
         updateUI();
+        saveState();
 
-        // Dokunulan Noktada Uçan Sayı Efekti
+        // Uçan Sayı Efekti
         let container = document.getElementById('main-container');
         let rect = container.getBoundingClientRect();
-        let x = (e.clientX || (e.touches && e.touches[0].clientX) || 200) - rect.left;
-        let y = (e.clientY || (e.touches && e.touches[0].clientY) || 300) - rect.top;
+        let x = (e.clientX || 200) - rect.left;
+        let y = (e.clientY || 300) - rect.top;
 
         let el = document.createElement('div');
         el.className = 'floating-text';
-        el.innerText = "+" + tapPower;
+        el.innerText = "+" + clickPower.toFixed(2);
         el.style.left = x + 'px';
         el.style.top = y + 'px';
         container.appendChild(el);
 
         setTimeout(() => el.remove(), 600);
+    }
+
+    // Donanım (Rig) Satın Alma
+    function buyRig(id, basePrice, rateIncrement) {
+        let rig = rigs[id];
+        if (balance >= rig.price) {
+            balance -= rig.price;
+            rig.count++;
+            hashrate += rateIncrement;
+            rig.price = Math.round(rig.price * 1.15 * 100) / 100; // Fiyat artış mekanizması
+            updateUI();
+            saveState();
+        } else {
+            alert("Yetersiz bakiye!");
+        }
+    }
+
+    // Overclock Yükseltmesi
+    function buyOverclock() {
+        if (balance >= ocCost) {
+            balance -= ocCost;
+            clickPower += 0.05;
+            ocCost = Math.round(ocCost * 1.5 * 100) / 100;
+            updateUI();
+            saveState();
+        } else {
+            alert("Yetersiz bakiye!");
+        }
     }
 
     // Sekme Değiştirme
@@ -560,84 +567,21 @@
         element.classList.add('active');
     }
 
-    // Görev Tamamlama
-    function completeTask(id, reward) {
-        if (tasksCompleted[id]) return;
-        tasksCompleted[id] = true;
-        balance += reward;
-        
-        let btn = document.getElementById('task-' + id);
-        if (btn) {
-            btn.innerText = "Tamamlandı";
-            btn.classList.add('completed');
-        }
-        saveState();
-        updateUI();
-        alert(`Tebrikler! +${reward} puan cüzdana eklendi.`);
-    }
-
-    // Boost / Yükseltme Satın Alma
-    function buyUpgrade(type) {
-        if (type === 'mult') {
-            if (balance >= multCost) {
-                balance -= multCost;
-                tapPower += 1;
-                multLevel++;
-                multCost = Math.floor(multCost * 1.8);
-                saveState();
-                updateUI();
-            } else {
-                alert("Yetersiz puan!");
-            }
-        } else if (type === 'energy') {
-            if (balance >= energyCost) {
-                balance -= energyCost;
-                maxEnergy += 500;
-                energy = maxEnergy;
-                energyLevel++;
-                energyCost = Math.floor(energyCost * 1.8);
-                saveState();
-                updateUI();
-            } else {
-                alert("Yetersiz puan!");
-            }
-        }
-    }
-
-    function copyRef() {
-        let refId = tg?.initDataUnsafe?.user?.id || "555444";
-        navigator.clipboard.writeText(`https://t.me/SanalMinerBot?start=ref_${refId}`);
-        alert("Davet linki panoya kopyalandı!");
-    }
-
-    // Arayüzü Güncelleme
+    // Arayüzü Yenile
     function updateUI() {
-        document.getElementById('balance').innerText = balance.toLocaleString();
-        document.getElementById('energy-current').innerText = energy;
-        document.getElementById('energy-max').innerText = maxEnergy;
-        
-        let energyPercent = (energy / maxEnergy) * 100;
-        document.getElementById('energy-fill').style.width = energyPercent + '%';
+        document.getElementById('balance').innerText = balance.toFixed(2);
+        document.getElementById('hashrate').innerText = hashrate.toFixed(2);
+        document.getElementById('click-power').innerText = clickPower.toFixed(2);
 
-        document.getElementById('lvl-mult').innerText = multLevel;
-        document.getElementById('price-mult').innerText = multCost.toLocaleString();
-        
-        document.getElementById('lvl-energy').innerText = energyLevel;
-        document.getElementById('price-energy').innerText = energyCost.toLocaleString();
-
-        // Görev buton durumları
-        for (let id in tasksCompleted) {
-            if (tasksCompleted[id]) {
-                let btn = document.getElementById('task-' + id);
-                if (btn) {
-                    btn.innerText = "Tamamlandı";
-                    btn.classList.add('completed');
-                }
-            }
+        // Rig verilerini güncelle
+        for (let id in rigs) {
+            document.getElementById('count-' + id).innerText = `(${rigs[id].count})`;
+            document.getElementById('price-' + id).innerText = rigs[id].price.toFixed(2);
         }
+
+        document.getElementById('btn-oc').innerText = ocCost.toFixed(2) + " PTS";
     }
 
-    // Sayfa Yüklendiğinde
     window.onload = function() {
         updateUI();
     };
