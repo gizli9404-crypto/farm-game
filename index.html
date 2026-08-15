@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HertzCore Apex | Web3 Mining Ecosystem</title>
+    <title>HertzCore Genesis Pro | Web3 Mining Tycoon</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
@@ -13,9 +13,9 @@
         body {
             background: #020201;
             background-image: 
-                radial-gradient(circle at 50% 0%, rgba(212, 160, 23, 0.28) 0%, transparent 60%),
-                radial-gradient(circle at 20% 90%, rgba(0, 230, 118, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 90%, rgba(0, 176, 255, 0.1) 0%, transparent 50%);
+                radial-gradient(circle at 50% 0%, rgba(0, 176, 255, 0.1) 0%, transparent 70%),
+                radial-gradient(circle at 20% 90%, rgba(212, 160, 23, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 90%, rgba(0, 230, 118, 0.15) 0%, transparent 50%);
             color: #ffffff;
             margin: 0;
             padding: 0;
@@ -35,644 +35,123 @@
             position: relative;
         }
 
-        /* ÜST BAR */
+        /* ÜST BAR VE MARKA */
         .header-box {
             display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px; border-bottom: 1px solid rgba(212,160,23,0.3); padding-bottom: 8px;
+            margin-bottom: 12px; border-bottom: 1px solid rgba(212,160,23,0.4); padding-bottom: 10px;
         }
         .brand-logo {
-            font-size: 11px; font-weight: 800; color: #d4a017; letter-spacing: 1.5px;
-            display: flex; align-items: center; gap: 6px;
+            font-size: 12px; font-weight: 900; color: #d4a017; letter-spacing: 1.8px;
+            display: flex; align-items: center; gap: 8px; text-transform: uppercase;
         }
         .live-badge {
-            background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.4);
-            color: #00e676; padding: 3px 8px; border-radius: 6px; font-size: 9px; font-weight: 800;
+            background: rgba(0,230,118,0.15); border: 1px solid rgba(0,230,118,0.5);
+            color: #00e676; padding: 3px 9px; border-radius: 8px; font-size: 9px; font-weight: 900; text-transform: uppercase;
         }
 
-        /* BİLANÇO KARTI */
+        /* ANA BİLANÇO VE TİCKER */
         .main-balance-card {
-            background: linear-gradient(145deg, #120e06 0%, #050402 100%);
-            border: 1px solid rgba(212, 160, 23, 0.5); border-radius: 20px;
-            padding: 16px; text-align: center; box-shadow: 0 12px 35px rgba(0,0,0,0.9);
-            margin-bottom: 10px; position: relative;
+            background: linear-gradient(135deg, #171107 0%, #060402 100%);
+            border: 1px solid rgba(212, 160, 23, 0.6); border-radius: 24px;
+            padding: 18px; text-align: center; box-shadow: 0 15px 40px rgba(0,0,0,0.95);
+            margin-bottom: 12px; position: relative;
         }
-        .balance-number { font-size: 26px; font-weight: 800; color: #d4a017; margin: 4px 0; }
-        .node-rank { font-size: 10px; color: #00e676; font-weight: 700; text-transform: uppercase; }
+        .balance-number { font-size: 32px; font-weight: 800; color: #d4a017; margin: 6px 0; }
+        .node-rank { font-size: 11px; color: #00e676; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* TICKER */
         .ticker-card {
-            background: linear-gradient(135deg, rgba(212,160,23,0.1), rgba(0,230,118,0.05));
-            border: 1px solid rgba(212,160,23,0.3); border-radius: 12px; padding: 8px 12px;
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 10px; font-weight: 700;
+            background: linear-gradient(90deg, rgba(212,160,23,0.15), rgba(0,230,118,0.05));
+            border: 1px solid rgba(212,160,23,0.4); border-radius: 14px; padding: 8px 12px;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;
+            font-size: 11px; font-weight: 700; color: #b39b7f;
         }
 
-        /* STAMİNA & XP */
-        .progress-box-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 10px; }
-        .stamina-wrapper {
-            background: #0d0904; border: 1px solid rgba(212, 160, 23, 0.3); border-radius: 12px; padding: 8px 12px;
+        /* STAMİNA, İLERLEME VE GÜNLÜK SERİ */
+        .progress-box-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px; }
+        .info-card {
+            background: #0d0904; border: 1px solid rgba(212, 160, 23, 0.4); border-radius: 16px; padding: 10px 14px;
         }
-        .stamina-info { display: flex; justify-content: space-between; font-size: 9px; font-weight: 700; color: #b39b7f; margin-bottom: 4px; }
-        .stamina-bar-bg { width: 100%; height: 6px; background: #030201; border-radius: 4px; overflow: hidden; border: 1px solid rgba(212,160,23,0.2); }
-        .stamina-bar-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #d4a017, #00e676); border-radius: 4px; transition: width 0.1s linear; }
-        .xp-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #00b0ff, #00e676); border-radius: 4px; transition: width 0.2s ease; }
+        .info-row { display: flex; justify-content: space-between; font-size: 10px; font-weight: 800; color: #b39b7f; margin-bottom: 6px; }
+        .progress-bg { width: 100%; height: 7px; background: #030201; border-radius: 4px; overflow: hidden; border: 1px solid rgba(212,160,23,0.2); }
+        .bar-fill { width: 100%; height: 100%; border-radius: 4px; transition: width 0.1s linear; }
+        .stamina-fill { background: linear-gradient(90deg, #d4a017, #00e676); }
+        .xp-fill { background: linear-gradient(90deg, #00b0ff, #00e676); }
 
         @keyframes numberBounce {
-            0% { transform: scale(1); } 50% { transform: scale(1.06); color: #00e676; } 100% { transform: scale(1); }
+            0% { transform: scale(1); } 50% { transform: scale(1.08); color: #00e676; } 100% { transform: scale(1); }
         }
         .bounce-anim { animation: numberBounce 0.2s ease-in-out; }
 
         /* DOKUNMA EFEKTİ */
         .tap-effect {
-            position: absolute; font-size: 15px; font-weight: 800; color: #00e676;
-            text-shadow: 0 0 10px rgba(0,230,118,0.8); pointer-events: none; z-index: 999;
-            animation: flyUpAnim 0.55s cubic-bezier(0.2, 1.2, 0.4, 1) forwards;
+            position: absolute; font-size: 16px; font-weight: 900; color: #00e676;
+            text-shadow: 0 0 15px rgba(0,230,118,0.9); pointer-events: none; z-index: 999;
+            animation: flyUpAnim 0.6s cubic-bezier(0.1, 0.9, 0.3, 1) forwards;
         }
         @keyframes flyUpAnim {
-            0% { transform: translate(0, 0) scale(0.6); opacity: 1; }
-            100% { transform: translate(var(--tx), -85px) scale(1.2) rotate(var(--trot)); opacity: 0; }
+            0% { transform: translate(0, 0) scale(0.7); opacity: 1; }
+            100% { transform: translate(var(--tx), -95px) scale(1.4) rotate(var(--trot)); opacity: 0; }
         }
 
         /* MADENCİLİK RIG KARTI */
         .mining-rig-box {
-            width: 100%; background: linear-gradient(145deg, #171107, #060402);
-            border: 2px solid rgba(212, 160, 23, 0.7); border-radius: 18px; margin-bottom: 10px; padding: 16px;
-            box-shadow: inset 0 0 30px rgba(212,160,23,0.1), 0 8px 25px rgba(0,0,0,0.9); position: relative; cursor: pointer;
+            width: 100%; background: linear-gradient(145deg, #1a1408, #060402);
+            border: 3px solid rgba(212, 160, 23, 0.8); border-radius: 20px; margin-bottom: 12px; padding: 18px;
+            box-shadow: inset 0 0 40px rgba(212,160,23,0.15), 0 10px 30px rgba(0,0,0,0.95); position: relative; cursor: pointer;
+            transition: all 0.1s ease-out;
         }
-        .mining-rig-box:active { transform: scale(0.97); border-color: #00e676; }
-        .rig-top-info { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: #d4a017; margin-bottom: 10px; }
-        .fans-row-box { display: flex; justify-content: space-around; align-items: center; padding: 4px 0 10px 0; }
+        .mining-rig-box:active { transform: scale(0.98); border-color: #00e676; box-shadow: 0 0 25px rgba(0,230,118,0.4); }
+        .rig-top-info { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 900; color: #d4a017; margin-bottom: 14px; }
+        .fans-row-box { display: flex; justify-content: space-around; align-items: center; padding: 6px 0 14px 0; }
         .rig-fan-item {
-            width: 46px; height: 46px; background: #030201; border: 2px solid rgba(212, 160, 23, 0.5);
+            width: 52px; height: 52px; background: #030201; border: 2px solid rgba(212, 160, 23, 0.6);
             border-radius: 50%; display: flex; justify-content: center; align-items: center; position: relative;
         }
-        .fan-spin-layer { width: 100%; height: 100%; position: relative; animation: fanRotate 0.25s linear infinite; }
+        .fan-spin-layer { width: 100%; height: 100%; position: relative; animation: fanRotate 0.2s linear infinite; }
         @keyframes fanRotate { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         .fan-spin-layer::before, .fan-spin-layer::after { content: ''; position: absolute; background: #d4a017; }
-        .fan-spin-layer::before { width: 3px; height: 100%; left: 21px; top: 0; border-radius: 2px; }
-        .fan-spin-layer::after { width: 100%; height: 3px; left: 0; top: 21px; border-radius: 2px; }
-        .fan-core-dot { position: absolute; width: 12px; height: 12px; background: radial-gradient(circle, #fff, #00e676); border-radius: 50%; z-index: 2; }
-        .rig-bottom-info { display: flex; justify-content: space-between; font-size: 9px; color: #b39b7f; font-weight: 700; border-top: 1px solid rgba(212, 160, 23, 0.2); padding-top: 8px; }
+        .fan-spin-layer::before { width: 3px; height: 100%; left: 23.5px; top: 0; border-radius: 2px; }
+        .fan-spin-layer::after { width: 100%; height: 3px; left: 0; top: 23.5px; border-radius: 2px; }
+        .fan-core-dot { position: absolute; width: 14px; height: 14px; background: radial-gradient(circle, #fff, #00e676); border-radius: 50%; z-index: 2; box-shadow: 0 0 10px #00e676; }
+        .rig-bottom-info { display: flex; justify-content: space-between; font-size: 10px; color: #b39b7f; font-weight: 800; border-top: 1px solid rgba(212, 160, 23, 0.3); padding-top: 10px; }
 
-        /* UPGRADE & MAĞAZA KARTLARI */
-        .upgrade-card {
-            background: linear-gradient(145deg, #120e06, #050402); border: 1px solid rgba(212, 160, 23, 0.4);
-            border-radius: 14px; padding: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;
+        /* MAĞAZA VE YÜKSELTME KARTLARI */
+        .shop-header { color: #d4a017; font-size: 13px; font-weight: 800; margin-bottom: 8px; margin-top: 4px; }
+        .shop-item-card {
+            background: linear-gradient(135deg, #171107 0%, #050402 100%); border: 1px solid rgba(212, 160, 23, 0.5);
+            border-radius: 18px; padding: 14px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
         }
-        .upgrade-info b { font-size: 11px; color: #fff; display: block; margin-bottom: 2px; }
-        .upgrade-info small { font-size: 9px; color: #00e676; font-weight: 700; }
+        .item-info b { font-size: 12px; color: #fff; display: block; margin-bottom: 2px; }
+        .item-info small { font-size: 10px; color: #00e676; font-weight: 800; }
         
-        .btn-gold-sm {
+        .btn-action-gold {
             background: linear-gradient(135deg, #d4a017, #aa7c11); color: #050402; border: none;
-            padding: 8px 12px; border-radius: 10px; font-size: 10px; font-weight: 800; cursor: pointer;
+            padding: 10px 16px; border-radius: 12px; font-size: 11px; font-weight: 900; cursor: pointer; transition: all 0.2s;
         }
-        .btn-gold-sm:disabled { background: #332915; color: #665542; cursor: not-allowed; }
+        .btn-action-gold:disabled { background: #332915; color: #665542; cursor: not-allowed; transform: none; box-shadow: none; }
+        .btn-action-gold:active:not(:disabled) { transform: scale(0.95); }
 
-        /* ÇARK & GÖREVLER */
-        .wheel-container {
-            background: linear-gradient(145deg, #120e06, #050402); border: 1px solid rgba(212, 160, 23, 0.4);
-            border-radius: 18px; padding: 14px; text-align: center; margin-bottom: 10px;
+        /* ŞANS ÇARKI VE GÜNLÜK SERİ */
+        .streak-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 12px; }
+        .streak-box {
+            background: #0d0904; border: 1px solid rgba(212,160,23,0.4); border-radius: 14px; padding: 10px 6px; text-align: center; cursor: pointer; transition: all 0.2s;
         }
+        .streak-box.claimed { border-color: #00e676; background: rgba(0,230,118,0.08); cursor: default; }
+        .streak-box.claimed b, .streak-box.claimed span { color: #00e676; }
+        .streak-box b { font-size: 11px; color: #d4a017; display: block; }
+        .streak-box span { font-size: 9px; color: #b39b7f; font-weight: 800; }
+
+        .wheel-container { background: linear-gradient(135deg, #120e06, #050402); border: 1px solid rgba(212, 160, 23, 0.5); border-radius: 20px; padding: 16px; text-align: center; margin-bottom: 12px; }
         .wheel-box {
-            width: 140px; height: 140px; border-radius: 50%; border: 4px solid #d4a017; margin: 10px auto; position: relative;
+            width: 160px; height: 160px; border-radius: 50%; border: 5px solid #d4a017; margin: 14px auto; position: relative;
             background: conic-gradient(#d4a017 0deg 60deg, #120e06 60deg 120deg, #00e676 120deg 180deg, #171107 180deg 240deg, #aa7c11 240deg 300deg, #030201 300deg 360deg);
-            transition: transform 3.5s cubic-bezier(0.15, 0.85, 0.15, 1); box-shadow: 0 0 20px rgba(212,160,23,0.3);
+            transition: transform 4s cubic-bezier(0.1, 0.8, 0.15, 1); box-shadow: 0 0 30px rgba(212,160,23,0.4);
         }
         .wheel-pointer {
-            position: absolute; top: -10px; left: calc(50% - 6px); width: 0; height: 0;
-            border-left: 6px solid transparent; border-right: 6px solid transparent; border-bottom: 14px solid #00e676; z-index: 10;
+            position: absolute; top: -13px; left: calc(50% - 8px); width: 0; height: 0;
+            border-left: 8px solid transparent; border-right: 8px solid transparent; border-bottom: 18px solid #00e676; z-index: 10; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.7));
         }
 
-        .streak-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 10px; }
-        .streak-box {
-            background: #0d0904; border: 1px solid rgba(212,160,23,0.3); border-radius: 10px; padding: 8px 4px; text-align: center; cursor: pointer;
-        }
-        .streak-box.claimed { border-color: #00e676; background: rgba(0,230,118,0.06); }
-        .streak-box b { font-size: 10px; color: #d4a017; display: block; }
-        .streak-box span { font-size: 8px; color: #b39b7f; }
-
-        /* CÜZDAN & ÇEKİM */
-        .wallet-card-box {
-            background: linear-gradient(145deg, #120e06, #060402); border: 1px solid rgba(0, 230, 118, 0.5);
-            border-radius: 18px; padding: 16px; margin-bottom: 12px; box-shadow: 0 8px 25px rgba(0,0,0,0.8);
-        }
-        .wallet-input-field {
-            width: 100%; background: #030201; border: 1px solid rgba(212,160,23,0.35);
-            border-radius: 10px; padding: 10px; color: #fff; font-size: 11px; margin-bottom: 10px; outline: none;
-        }
-        .withdraw-network-select { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .net-opt-btn {
-            background: #030201; border: 1px solid rgba(212,160,23,0.3); border-radius: 10px;
-            padding: 8px; color: #b39b7f; font-size: 10px; font-weight: 700; text-align: center; cursor: pointer;
-        }
-        .net-opt-btn.active { border-color: #00e676; color: #00e676; background: rgba(0,230,118,0.08); }
-
-        .btn-gold-main {
-            background: linear-gradient(135deg, #d4a017 0%, #aa7c11 100%); color: #050402; border: none;
-            padding: 11px; font-size: 11px; font-weight: 800; border-radius: 12px; cursor: pointer; width: 100%; text-align: center;
-        }
-        .btn-withdraw-main {
-            background: linear-gradient(135deg, #00e676 0%, #00b0ff 100%); color: #020201; border: none;
-            padding: 12px; font-size: 11px; font-weight: 800; border-radius: 12px; cursor: pointer; width: 100%; text-align: center; margin-top: 4px;
-        }
-
-        .row-item {
-            background: linear-gradient(145deg, #120e06, #050402); border: 1px solid rgba(212, 160, 23, 0.25);
-            border-radius: 12px; padding: 10px 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; font-size: 11px;
-        }
-
-        .tab-section { display: none; }
-        .tab-section.active { display: block; animation: fadeInSec 0.2s ease-out; }
-        @keyframes fadeInSec { from { opacity: 0; } to { opacity: 1; } }
-
-        /* ALT NAVİGASYON */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
-            background: rgba(3, 2, 1, 0.98); backdrop-filter: blur(12px); 
-            display: flex; justify-content: space-around; align-items: center;
-            border-top: 1px solid rgba(212, 160, 23, 0.3); z-index: 999; 
-        }
-        .nav-item-btn { color: #665542; font-size: 8px; cursor: pointer; font-weight: 700; text-align: center; flex: 1; }
-        .nav-item-btn.active { color: #d4a017; text-shadow: 0 0 12px rgba(212,160,23,0.5); }
-        .nav-ico { font-size: 17px; display: block; margin-bottom: 2px; }
-
-        /* MODAL */
-        .modal-bg-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 9999;
-        }
-        .modal-content-box {
-            background: #100c05; border: 1px solid rgba(212,160,23,0.5); padding: 18px;
-            border-radius: 16px; width: 85%; max-width: 310px; text-align: center;
-        }
-    </style>
-</head>
-<body>
-
-<div class="app-container">
-
-    <!-- ÜST BAR -->
-    <div class="header-box">
-        <div class="brand-logo">⚡ HERTZCORE APEX</div>
-        <div class="live-badge">🔒 MAINNET SECURE</div>
-    </div>
-
-    <!-- 1. TAB: MERKEZ (DOKUN & MADENCİLİK) -->
-    <div id="tab-home" class="tab-section active">
-        <div class="ticker-card">
-            <span>🪙 1 HRT = $0.0075 USD</span>
-            <span style="color: #00e676;" id="usdValDisplay">≈ $0.00</span>
-        </div>
-
-        <div class="main-balance-card">
-            <div style="font-size: 8px; color: #8c7355; font-weight: 700; text-transform: uppercase;">TOPLAM ÇEKİLEBİLİR HRT</div>
-            <div class="balance-number" id="balanceNumBox">
-                <span id="mainBalanceVal">50.00</span> <span style="font-size: 12px; color:#fff;">HRT</span>
-            </div>
-            <div class="node-rank" id="nodeRankText">Seviye 1 • Elite Validator</div>
-        </div>
-
-        <div class="progress-box-group">
-            <div class="stamina-wrapper">
-                <div class="stamina-info">
-                    <span>⚡ HASH STAMINA (ENERJİ)</span>
-                    <span id="staminaNum">100 / 100</span>
-                </div>
-                <div class="stamina-bar-bg">
-                    <div class="stamina-bar-fill" id="staminaFillBar" style="width: 100%;"></div>
-                </div>
-            </div>
-
-            <div class="stamina-wrapper">
-                <div class="stamina-info">
-                    <span>📈 SEVİYE İLERLEMESİ (XP)</span>
-                    <span id="xpNumText">0 / 500 XP</span>
-                </div>
-                <div class="stamina-bar-bg">
-                    <div class="xp-bar-fill" id="xpBarFill"></div>
-                </div>
-            </div>
-        </div>
-
-        <div style="text-align: center; font-size: 10px; color: #00e676; font-weight: 800; margin-bottom: 8px;" id="tapPowerLabel">👇 Blok Çöz (+0.005 HRT / Dokunuş)</div>
-
-        <div class="mining-rig-box" id="rigBox" onclick="executeMiningTap(event)">
-            <div class="rig-top-info">
-                <span id="rigNameDisplay">Enterprise Rig #H-99X</span>
-                <span style="color: #00e676;" id="hashrateDisplay">85.2 MH/s</span>
-            </div>
-            <div class="fans-row-box">
-                <div class="rig-fan-item"><div class="fan-core-dot"></div><div class="fan-spin-layer"></div></div>
-                <div class="rig-fan-item"><div class="fan-core-dot"></div><div class="fan-spin-layer"></div></div>
-                <div class="rig-fan-item"><div class="fan-core-dot"></div><div class="fan-spin-layer"></div></div>
-            </div>
-            <div class="rig-bottom-info">
-                <span>Ethash-V3 Protokolü</span>
-                <span>Pasif Gelir: <b style="color:#00e676;" id="idleRateDisplay">+0.5 HRT/dk</b></span>
-            </div>
-        </div>
-    </div>
-
-    <!-- 2. TAB: UPGRADE & MAĞAZA (GELİŞTİRME MERKEZİ) -->
-    <div id="tab-upgrade" class="tab-section">
-        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px;">⚙️ Donanım & Rig Yükseltmeleri</h3>
-        <p style="font-size: 9px; color: #8c7355; margin-bottom: 10px;">Donanımlarını güçlendirerek dokunma başına kazancını ve saniyelik pasif gelirini artır.</p>
-
-        <div class="upgrade-card">
-            <div class="upgrade-info">
-                <b id="upg1Title">ASIC Soğutma Fanı (Seviye 0)</b>
-                <small id="upg1Desc">Dokunma Başına: +0.005 HRT</small>
-            </div>
-            <button class="btn-gold-sm" id="btnUpg1" onclick="buyUpgrade(1)">25.00 HRT</button>
-        </div>
-
-        <div class="upgrade-card">
-            <div class="upgrade-info">
-                <b id="upg2Title">Bulut Madencilik Modülü (Seviye 0)</b>
-                <small id="upg2Desc">Pasif Gelir: +0.5 HRT / dk</small>
-            </div>
-            <button class="btn-gold-sm" id="btnUpg2" onclick="buyUpgrade(2)">50.00 HRT</button>
-        </div>
-
-        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px; margin-top: 14px;">🔥 Günlük Seri & Şans Çarkı</h3>
-        <div class="streak-grid" id="streakGridBox"></div>
-
-        <div class="wheel-container" style="margin-top: 10px;">
-            <div style="position: relative;">
-                <div class="wheel-pointer"></div>
-                <div class="wheel-box" id="luckyWheel"></div>
-            </div>
-            <button class="btn-gold-main" style="margin-top: 8px; padding: 9px;" onclick="spinLuckyWheel()">🎁 REKLAM İZLE & ÇARKI ÇEVİR</button>
-        </div>
-    </div>
-
-    <!-- 3. TAB: ARKADAŞINI GETİR (REFERRAL) -->
-    <div id="tab-ref" class="tab-section">
-        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px;">👥 Arkadaşını Davet Et & Kazan</h3>
-        <p style="font-size: 9px; color: #8c7355; margin-bottom: 12px;">Davet ettiğin her aktif madenci başına anında <b>+25.00 HRT</b> kazan ve pasif gelir havuzuna ortak et!</p>
-
-        <div class="wallet-card-box" style="text-align: center;">
-            <div style="font-size: 10px; color: #b39b7f; margin-bottom: 6px; font-weight: 700;">Özel Davet Bağlantın</div>
-            <input type="text" id="refLinkInput" class="wallet-input-field" value="https://t.me/HertzCoreBot?start=ref_99410" readonly style="text-align: center; font-weight: 700; color: #00e676;">
-            <button class="btn-gold-main" onclick="copyReferralLink()">📋 BAĞLANTIYI KOPYALA</button>
-        </div>
-
-        <div style="font-size: 10px; color: #d4a017; font-weight: 800; margin-bottom: 6px;">📋 Davet Edilen Madenciler (0)</div>
-        <div class="row-item">
-            <span style="color: #8c7355;">Henüz davet edilen aktif bir node bulunmuyor.</span>
-        </div>
-    </div>
-
-    <!-- 4. TAB: CÜZDAN & ÇEKİM MERKEZİ -->
-    <div id="tab-wallet" class="tab-section">
-        <h3 style="color: #d4a017; font-size: 12px; margin-bottom: 6px;">💼 Web3 Cüzdan & Çekim Merkezi</h3>
-        <p style="font-size: 9px; color: #8c7355; margin-bottom: 10px;">Ana ağ transferleri şifreli protokollerle anında işleme alınır.</p>
-
-        <div class="wallet-card-box">
-            <div style="font-size: 10px; color: #b39b7f; margin-bottom: 4px; font-weight: 700;">Çekilebilir Net Bakiye</div>
-            <div style="font-size: 22px; font-weight: 800; color: #00e676; margin-bottom: 10px;" id="walletBalDisplay">50.00 HRT</div>
-            
-            <div style="font-size: 10px; color: #b39b7f; margin-bottom: 4px; font-weight: 700;">Ağ Seçimi</div>
-            <div class="withdraw-network-select">
-                <div class="net-opt-btn active" onclick="selectNetwork('TON', this)">TON Network</div>
-                <div class="net-opt-btn" onclick="selectNetwork('BSC', this)">BSC BEP-20</div>
-            </div>
-
-            <div style="font-size: 10px; color: #b39b7f; margin-bottom: 4px; font-weight: 700;" id="addrLabel">Cüzdan Adresi (EQ... / UQ...)</div>
-            <input type="text" id="walletAddrInput" class="wallet-input-field" placeholder="Cüzdan adresinizi girin...">
-            
-            <button class="btn-withdraw-main" onclick="executeWithdrawalRequest()">🚀 ANINDA ANA AĞA AKTAR</button>
-        </div>
-
-        <div style="font-size: 10px; color: #d4a017; font-weight: 800; margin-bottom: 6px;">📜 Canlı Ağ İşlem Akışı (TX Ledger)</div>
-        <div class="row-item">
-            <div>
-                <b style="color:#fff;">TX #99214 - Mainnet Transfer</b>
-                <small style="display:block; font-size:8px; color:#8c7355;">Alıcı: @CryptoWhale_TR</small>
-            </div>
-            <span style="color:#00e676; font-weight:800;">-1,200.00 HRT</span>
-        </div>
-    </div>
-
-</div>
-
-<!-- ALT NAVİGASYON -->
-<div class="bottom-nav">
-    <div class="nav-item-btn active" onclick="switchTab('home', this)"><span class="nav-ico">🏠</span>MERKEZ</div>
-    <div class="nav-item-btn" onclick="switchTab('upgrade', this)"><span class="nav-ico">⚙️</span>YÜKSELT</div>
-    <div class="nav-item-btn" onclick="switchTab('ref', this)"><span class="nav-ico">👥</span>DAVET ET</div>
-    <div class="nav-item-btn" onclick="switchTab('wallet', this)"><span class="nav-ico">💼</span>CÜZDAN</div>
-</div>
-
-<!-- MODAL -->
-<div id="modalOverlay" class="modal-bg-overlay">
-    <div class="modal-content-box">
-        <p id="modalMessageText" style="font-size: 11px; font-weight: 600; margin-bottom: 14px; color: #fff; line-height: 1.4;"></p>
-        <button class="btn-gold-main" style="padding: 9px;" onclick="closeModalBox()">Tamam</button>
-    </div>
-</div>
-
-<script>
-    let tg = window.Telegram?.WebApp;
-    if (tg) tg.expand();
-
-    let appState = {
-        balance: parseFloat(localStorage.getItem('apex_bal')) || 50.00,
-        energy: 100,
-        level: parseInt(localStorage.getItem('apex_lvl')) || 1,
-        xp: parseInt(localStorage.getItem('apex_xp')) || 0,
-        tapReward: parseFloat(localStorage.getItem('apex_tap')) || 0.005,
-        idleRate: parseFloat(localStorage.getItem('apex_idle')) || 0.5,
-        upg1Level: parseInt(localStorage.getItem('apex_u1')) || 0,
-        upg2Level: parseInt(localStorage.getItem('apex_u2')) || 0,
-        streakDay: parseInt(localStorage.getItem('apex_streak_day')) || 1,
-        streakClaimed: localStorage.getItem('apex_streak_claimed') === 'true' || false,
-        network: "TON"
-    };
-
-    const TOKEN_PRICE = 0.0075;
-    const MIN_WITHDRAW_LIMIT = 20.00;
-    let wheelDeg = 0;
-    let isSpinning = false;
-
-    // Web Audio API Sound Generator
-    let audioCtx = null;
-    function playSound(type) {
-        try {
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            let now = audioCtx.currentTime;
-            if (type === 'tap') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
-                gain.gain.setValueAtTime(0.08, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.08);
-                osc.start(now);
-                osc.stop(now + 0.08);
-            } else if (type === 'success') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(523.25, now);
-                osc.frequency.setValueAtTime(659.25, now + 0.1);
-                osc.frequency.setValueAtTime(783.99, now + 0.2);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.linearRampToValueAtTime(0.01, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            }
-        } catch (e) {}
-    }
-
-    renderStreakUI();
-    refreshAllUI();
-
-    // Enerji ve Pasif Gelir (Idle) Döngüsü
-    setInterval(() => {
-        if (appState.energy < 100) {
-            appState.energy = Math.min(100, appState.energy + 2);
-            refreshEnergyUI();
-        }
-    }, 1000);
-
-    // Her saniye pasif madencilik kazancı (idleRate dakikalıktır, saniyeye bölünür)
-    setInterval(() => {
-        if (appState.idleRate > 0) {
-            let addVal = appState.idleRate / 60;
-            appState.balance += addVal;
-            refreshAllUI();
-            persistState();
-        }
-    }, 1000);
-
-    function persistState() {
-        localStorage.setItem('apex_bal', appState.balance);
-        localStorage.setItem('apex_lvl', appState.level);
-        localStorage.setItem('apex_xp', appState.xp);
-        localStorage.setItem('apex_tap', appState.tapReward);
-        localStorage.setItem('apex_idle', appState.idleRate);
-        localStorage.setItem('apex_u1', appState.upg1Level);
-        localStorage.setItem('apex_u2', appState.upg2Level);
-        localStorage.setItem('apex_streak_day', appState.streakDay);
-        localStorage.setItem('apex_streak_claimed', appState.streakClaimed);
-    }
-
-    function switchTab(tabId, el) {
-        document.querySelectorAll('.tab-section').forEach(t => t.classList.remove('active'));
-        document.querySelectorAll('.nav-item-btn').forEach(n => n.classList.remove('active'));
-        document.getElementById('tab-' + tabId).classList.add('active');
-        el.classList.add('active');
-        if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
-        playSound('tap');
-    }
-
-    function refreshAllUI() {
-        let balFormatted = appState.balance.toFixed(2);
-        let usdVal = (appState.balance * TOKEN_PRICE).toFixed(2);
-
-        document.getElementById('mainBalanceVal').innerText = balFormatted;
-        document.getElementById('walletBalDisplay').innerText = balFormatted + " HRT";
-        document.getElementById('usdValDisplay').innerText = `≈ $` + usdVal;
-        document.getElementById('tapPowerLabel').innerText = `👇 Blok Çöz (+${appState.tapReward.toFixed(3)} HRT / Dokunuş)`;
-        document.getElementById('idleRateDisplay').innerText = `+${appState.idleRate.toFixed(1)} HRT/dk`;
-
-        let xpNeeded = appState.level * 500;
-        if (appState.xp >= xpNeeded) {
-            appState.level++;
-            appState.xp = 0;
-            showModalMessage(`Tebrikler! Seviye ${appState.level}'e atlarsın! Kazanç çarpanların yükseldi.`);
-        }
-        document.getElementById('xpNumText').innerText = `${appState.xp} / ${xpNeeded} XP`;
-        document.getElementById('xpBarFill').style.width = `${Math.min(100, (appState.xp / xpNeeded) * 100)}%`;
-
-        document.getElementById('nodeRankText').innerText = `Seviye ${appState.level} • Apex Cluster Node`;
-
-        // Yükseltme kartları güncelleme
-        let cost1 = 25 * Math.pow(1.6, appState.upg1Level);
-        document.getElementById('upg1Title').innerText = `ASIC Soğutma Fanı (Seviye ${appState.upg1Level})`;
-        document.getElementById('upg1Desc').innerText = `Dokunma Başına: +${appState.tapReward.toFixed(3)} HRT`;
-        let btn1 = document.getElementById('btnUpg1');
-        btn1.innerText = `${cost1.toFixed(1)} HRT`;
-        btn1.disabled = appState.balance < cost1;
-
-        let cost2 = 50 * Math.pow(1.8, appState.upg2Level);
-        document.getElementById('upg2Title').innerText = `Bulut Madencilik Modülü (Seviye ${appState.upg2Level})`;
-        document.getElementById('upg2Desc').innerText = `Pasif Gelir: +${appState.idleRate.toFixed(1)} HRT / dk`;
-        let btn2 = document.getElementById('btnUpg2');
-        btn2.innerText = `${cost2.toFixed(1)} HRT`;
-        btn2.disabled = appState.balance < cost2;
-    }
-
-    function refreshEnergyUI() {
-        document.getElementById('staminaNum').innerText = `${appState.energy} / 100`;
-        document.getElementById('staminaFillBar').style.width = `${appState.energy}%`;
-    }
-
-    function buyUpgrade(type) {
-        if (type === 1) {
-            let cost = 25 * Math.pow(1.6, appState.upg1Level);
-            if (appState.balance < cost) return;
-            appState.balance -= cost;
-            appState.upg1Level++;
-            appState.tapReward += 0.005;
-        } else if (type === 2) {
-            let cost = 50 * Math.pow(1.8, appState.upg2Level);
-            if (appState.balance < cost) return;
-            appState.balance -= cost;
-            appState.upg2Level++;
-            appState.idleRate += 0.5;
-        }
-        refreshAllUI();
-        persistState();
-        playSound('success');
-        showModalMessage("Donanım başarıyla yükseltildi ve devreye alındı!");
-    }
-
-    function renderStreakUI() {
-        let grid = document.getElementById('streakGridBox');
-        grid.innerHTML = '';
-        let rewardsList = [5, 10, 20, 50];
-        for (let i = 1; i <= 4; i++) {
-            let isDone = i < appState.streakDay || (i === appState.streakDay && appState.streakClaimed);
-            grid.innerHTML += `
-                <div class="streak-box ${isDone ? 'claimed' : ''}" onclick="claimStreak(${i})">
-                    <span>Gün ${i}</span>
-                    <b>+${rewardsList[i-1]} HRT</b>
-                    <small style="font-size:7px; color:${isDone ? '#00e676' : '#d4a017'}">${isDone ? 'Alındı' : 'Al'}</small>
-                </div>`;
-        }
-    }
-
-    function claimStreak(day) {
-        if (day !== appState.streakDay || appState.streakClaimed) {
-            showModalMessage("Bu seri ödülünü şu an alamazsınız ya da zaten alındı!");
-            return;
-        }
-        let rewardsList = [5, 10, 20, 50];
-        let reward = rewardsList[day - 1];
-        appState.balance += reward;
-        appState.streakClaimed = true;
-        refreshAllUI();
-        renderStreakUI();
-        persistState();
-        playSound('success');
-        showModalMessage(`Tebrikler! Gün ${day} seri ödülü olarak +${reward} HRT cüzdanınıza eklendi.`);
-    }
-
-    function executeMiningTap(event) {
-        if (appState.energy < 4) {
-            showModalMessage("Enerjiniz tükendi! Yükselt sekmesinden şans çarkını çevirerek anında enerji doldurabilirsiniz.");
-            return;
-        }
-
-        appState.energy -= 4;
-        appState.balance += appState.tapReward;
-        appState.xp += 10;
-        refreshAllUI();
-        refreshEnergyUI();
-        persistState();
-        playSound('tap');
-
-        let numBox = document.getElementById('balanceNumBox');
-        numBox.classList.remove('bounce-anim');
-        void numBox.offsetWidth;
-        numBox.classList.add('bounce-anim');
-
-        let rigElement = document.getElementById('rigBox');
-        let rect = rigElement.getBoundingClientRect();
-        let clientX = event.clientX - rect.left;
-        let clientY = event.clientY - rect.top;
-
-        let flyElem = document.createElement('div');
-        flyElem.className = 'tap-effect';
-        flyElem.innerText = `+${appState.tapReward.toFixed(3)}`;
-        
-        let tx = (Math.random() * 80 - 40) + 'px';
-        let trot = (Math.random() * 40 - 20) + 'deg';
-        flyElem.style.setProperty('--tx', tx);
-        flyElem.style.setProperty('--trot', trot);
-        flyElem.style.left = `${clientX}px`;
-        flyElem.style.top = `${clientY}px`;
-        
-        rigElement.appendChild(flyElem);
-        setTimeout(() => flyElem.remove(), 550);
-
-        if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
-    }
-
-    function spinLuckyWheel() {
-        if (isSpinning) return;
-        isSpinning = true;
-
-        let rewards = [5, 12, 25, 40, 75, 3];
-        let randomSlice = Math.floor(Math.random() * rewards.length);
-        let selectedReward = rewards[randomSlice];
-
-        let extraTurns = 360 * 5;
-        let sliceAngle = 60;
-        let targetDeg = wheelDeg + extraTurns + (randomSlice * sliceAngle) + (sliceAngle / 2);
-
-        let wheelEl = document.getElementById('luckyWheel');
-        wheelEl.style.transform = `rotate(${targetDeg}deg)`;
-        wheelDeg = targetDeg;
-
-        setTimeout(() => {
-            isSpinning = false;
-            appState.balance += selectedReward;
-            appState.energy = 100;
-            refreshAllUI();
-            refreshEnergyUI();
-            persistState();
-            playSound('success');
-            showModalMessage(`🎉 Çark Sonucu: +${selectedReward} HRT kazandınız ve enerji tam doluluğa ulaştı!`);
-        }, 3600);
-    }
-
-    function copyReferralLink() {
-        let inputEl = document.getElementById('refLinkInput');
-        inputEl.select();
-        navigator.clipboard.writeText(inputEl.value);
-        playSound('success');
-        showModalMessage("Davet bağlantınız panoya kopyalandı! Arkadaşlarınızla paylaşarak kazancınızı katlayın.");
-    }
-
-    function selectNetwork(netName, el) {
-        document.querySelectorAll('.net-opt-btn').forEach(b => b.classList.remove('active'));
-        el.classList.add('active');
-        appState.network = netName;
-        document.getElementById('addrLabel').innerText = netName === 'TON' ? "TON Cüzdan Adresi (EQ... / UQ...)" : "BEP-20 Cüzdan Adresi (0x...)";
-        playSound('tap');
-    }
-
-    function executeWithdrawalRequest() {
-        let addressVal = document.getElementById('walletAddrInput').value.trim();
-        if (appState.network === 'TON' && !addressVal.startsWith('EQ') && !addressVal.startsWith('UQ')) {
-            showModalMessage("Geçersiz TON cüzdan adresi! Adres 'EQ' veya 'UQ' ile başlamalıdır.");
-            return;
-        }
-        if (appState.network === 'BSC' && !addressVal.startsWith('0x')) {
-            showModalMessage("Geçersiz BSC cüzdan adresi! Adres '0x' ile başlamalıdır.");
-            return;
-        }
-        if (appState.balance < MIN_WITHDRAW_LIMIT) {
-            showModalMessage(`Yetersiz bakiye! Çekim yapabilmek için en az ${MIN_WITHDRAW_LIMIT} HRT bakiyeniz olmalıdır.`);
-            return;
-        }
-
-        playSound('success');
-        showModalMessage(`Çekim talebiniz ${appState.network} ana ağına başarıyla iletildi! ${appState.balance.toFixed(2)} HRT transfer ediliyor.`);
-        appState.balance = 0;
-        refreshAllUI();
-        persistState();
-    }
-
-    function showModalMessage(msg) {
-        document.getElementById('modalMessageText').innerText = msg;
-        document.getElementById('modalOverlay').style.display = 'flex';
-    }
-    function closeModalBox() { document.getElementById('modalOverlay').style.display = 'none'; }
-</script>
-</body>
-</html>
+        /* LİDER TABLOSU VE CÜZDAN */
+        .leaderboard-card, .wallet-card-box {
+            background: linear-gradient(135deg
