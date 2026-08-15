@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RigMaster Pro</title>
+    <title>Cyber Blade Slice</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #070913;
-            --card-bg: #101728;
-            --primary: #00ff88;
-            --primary-glow: rgba(0, 255, 136, 0.25);
-            --accent: #38bdf8;
-            --danger: #ef4444;
+            --bg: #05050a;
+            --primary: #f43f5e;
+            --primary-glow: rgba(244, 63, 94, 0.4);
+            --accent: #06b6d4;
+            --accent-glow: rgba(6, 182, 212, 0.4);
             --text: #ffffff;
-            --text-muted: #64748b;
-            --border: rgba(255, 255, 255, 0.08);
+            --text-muted: #94a3b8;
+            --card: #0f172a;
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * {
@@ -32,609 +32,452 @@
             margin: 0;
             padding: 0;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
             overflow: hidden;
-        }
-
-        .container {
-            flex: 1;
-            max-width: 480px;
-            width: 100%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        }
-
-        /* Header */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 14px 20px;
-            background: var(--card-bg);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .temp-badge {
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--primary);
-            border: 1px solid var(--border);
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: 800;
-        }
-
-        /* İçerik Alanı */
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 16px;
-            padding-bottom: 90px;
-        }
-
-        .pane {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .pane.active {
-            display: flex;
-        }
-
-        /* Bakiye Paneli */
-        .balance-card {
-            width: 100%;
-            background: linear-gradient(135deg, #131d35, #0b101d);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 18px;
-            text-align: center;
-            margin-bottom: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
-        }
-
-        .balance-title {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 800;
-            letter-spacing: 1px;
-        }
-
-        .balance-amount {
-            font-size: 30px;
-            font-weight: 900;
-            color: var(--primary);
-            margin: 6px 0;
-            text-shadow: 0 0 20px var(--primary-glow);
-        }
-
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid var(--border);
-        }
-
-        .metric-label {
-            font-size: 9px;
-            color: var(--text-muted);
-            font-weight: 700;
-        }
-
-        .metric-val {
-            font-size: 12px;
-            font-weight: 800;
-            color: var(--accent);
-            margin-top: 2px;
-        }
-
-        /* Madencilik / Tıklama Alanı */
-        .mining-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
-
-        .main-gpu-btn {
-            width: 100%;
-            background: var(--card-bg);
-            border: 2px solid var(--primary);
-            border-radius: 20px;
-            padding: 18px 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            cursor: pointer;
-            box-shadow: 0 0 30px var(--primary-glow);
-            transition: transform 0.05s ease;
         }
 
-        .main-gpu-btn:active {
-            transform: scale(0.97);
-        }
-
-        .gpu-svg-art {
+        .container {
             width: 100%;
-            max-width: 320px;
-            height: auto;
-            filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
-        }
-
-        /* Fan Dönüş Animasyonları (Merkez Eksende Kusursuz Dönen Kanatlar) */
-        .fan-group-1 { transform-origin: 175px 125px; animation: spin 1s linear infinite; }
-        .fan-group-2 { transform-origin: 350px 125px; animation: spin 1s linear infinite; }
-        .fan-group-3 { transform-origin: 525px 125px; animation: spin 1s linear infinite; }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .click-hint {
-            font-size: 11px;
-            color: var(--primary);
-            font-weight: 800;
-            margin-top: 14px;
-            letter-spacing: 1.2px;
-            text-shadow: 0 0 10px rgba(0,255,136,0.3);
-        }
-
-        /* Market ve Atölye Listesi */
-        .section-title {
-            width: 100%;
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            margin-bottom: 10px;
-            letter-spacing: 0.5px;
-        }
-
-        .shop-card {
-            width: 100%;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-
-        .shop-left {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .shop-thumb {
-            width: 65px;
-            height: 38px;
-            background: #070913;
-            border-radius: 8px;
-            padding: 3px;
-            border: 1px solid var(--border);
-            object-fit: contain;
-        }
-
-        .shop-info h4 {
-            margin: 0 0 2px 0;
-            font-size: 13px;
-            font-weight: 800;
-        }
-
-        .shop-info p {
-            margin: 0;
-            font-size: 10px;
-            color: var(--text-muted);
-        }
-
-        .action-btn {
-            background: var(--primary);
-            color: #000;
-            border: none;
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-weight: 800;
-            font-size: 11px;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,255,136,0.2);
-        }
-
-        .action-btn:active {
-            opacity: 0.8;
-        }
-
-        /* Alt Navigasyon Çubuğu */
-        .nav-bar {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(11, 16, 29, 0.95);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0 20px 0;
-            border-top: 1px solid var(--border);
-        }
-
-        .nav-btn {
-            color: var(--text-muted);
-            font-size: 11px;
-            font-weight: 700;
+            max-width: 480px;
+            height: 100%;
             display: flex;
             flex-direction: column;
+            position: relative;
+            background: radial-gradient(circle at center, #111827 0%, #05050a 100%);
+            overflow: hidden;
+        }
+
+        /* Üst Bilgi Paneli */
+        .header {
+            display: flex;
+            justify-content: space-between;
             align-items: center;
+            padding: 16px 20px;
+            z-index: 10;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 800;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: 900;
+            color: var(--accent);
+            text-shadow: 0 0 10px var(--accent-glow);
+        }
+
+        .lives {
+            display: flex;
             gap: 4px;
-            cursor: pointer;
-            flex: 1;
-        }
-
-        .nav-btn.active {
-            color: var(--primary);
-        }
-
-        .nav-btn span:first-child {
             font-size: 18px;
         }
 
-        /* Tıklama Uçan Sayı Efekti */
-        .float-num {
-            position: absolute;
-            color: var(--primary);
-            font-weight: 900;
-            font-size: 16px;
-            pointer-events: none;
-            animation: floatUp 0.5s ease-out forwards;
-            z-index: 99;
-            text-shadow: 0 0 10px var(--primary-glow);
+        /* Oyun Tuvali */
+        canvas {
+            flex: 1;
+            display: block;
+            touch-action: none;
+            cursor: crosshair;
         }
 
-        @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-45px); }
+        /* Menü Ekranları (Overlay) */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 10, 0.85);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 20;
+            text-align: center;
+            padding: 24px;
+        }
+
+        .overlay h1 {
+            font-size: 32px;
+            margin: 0 0 8px 0;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px var(--primary-glow);
+        }
+
+        .overlay p {
+            color: var(--text-muted);
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, var(--primary), #e11d48);
+            color: white;
+            border: none;
+            padding: 14px 36px;
+            font-size: 16px;
+            font-weight: 900;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 20px var(--primary-glow);
+            transition: transform 0.1s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* Combo Efekti */
+        .combo-popup {
+            position: absolute;
+            top: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 24px;
+            font-weight: 900;
+            color: #f59e0b;
+            text-shadow: 0 0 15px rgba(245, 158, 11, 0.6);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            z-index: 15;
+        }
+
+        .combo-popup.show {
+            opacity: 1;
+            transform: translateX(-50%) scale(1.2);
         }
     </style>
 </head>
 <body>
 
-<div class="container" id="app-wrapper">
-    <!-- Header -->
+<div class="container" id="app">
+    <!-- Üst Bar -->
     <div class="header">
-        <div class="user-badge">
-            <span>👤</span> <span id="username">Madenci</span>
+        <div class="stat-box">
+            <span class="stat-label">Skor</span>
+            <span class="stat-value" id="score-val">0</span>
         </div>
-        <div class="temp-badge" id="temp-badge">🌡️ 40.0°C</div>
-    </div>
-
-    <!-- İçerik -->
-    <div class="content">
-        <!-- RIG PANELİ -->
-        <div id="pane-rig" class="pane active">
-            <div class="balance-card">
-                <div class="balance-title">Havuz Bakiyesi (PTS)</div>
-                <div class="balance-amount"><span id="balance">0.0000</span></div>
-                <div class="metrics-grid">
-                    <div>
-                        <div class="metric-label">Hashrate</div>
-                        <div class="metric-val">+<span id="hashrate">0.00</span> MH</div>
-                    </div>
-                    <div>
-                        <div class="metric-label">Güç Tüketimi</div>
-                        <div class="metric-val" style="color:var(--danger);"><span id="power">0</span> W</div>
-                    </div>
-                    <div>
-                        <div class="metric-label">Saniyede Kazanç</div>
-                        <div class="metric-val">+<span id="cps">0.00</span></div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mining-area">
-                <div class="main-gpu-btn" onclick="mineClick(event)">
-                    <!-- Kaliteli, Orantılı ve Kusursuz Dönen Fanlı Ekran Kartı SVG -->
-                    <svg class="gpu-svg-art" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
-                        <!-- Kart Gövdesi -->
-                        <rect x="20" y="25" width="660" height="200" rx="35" fill="#131722" stroke="#252f4a" stroke-width="6"/>
-                        <!-- PCI Bağlantı Kısmı -->
-                        <rect x="180" y="225" width="140" height="15" fill="#f59e0b" rx="4"/>
-                        <!-- Sol Süs / Çizgi -->
-                        <path d="M35 55H65V195H35z" fill="#1a2236" rx="6"/>
-
-                        <!-- FAN 1 -->
-                        <g transform="translate(175, 125)">
-                            <circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/>
-                            <g class="fan-group-1">
-                                <circle r="22" fill="#f59e0b"/>
-                                <path d="M0 0 L-18 -45 C-35 -30 -35 -10 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L45 -18 C30 -35 10 -35 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L18 45 C35 30 35 10 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L-45 18 C-30 35 -10 35 0 0Z" fill="#4338ca"/>
-                            </g>
-                        </g>
-
-                        <!-- FAN 2 -->
-                        <g transform="translate(350, 125)">
-                            <circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/>
-                            <g class="fan-group-2">
-                                <circle r="22" fill="#f59e0b"/>
-                                <path d="M0 0 L-18 -45 C-35 -30 -35 -10 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L45 -18 C30 -35 10 -35 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L18 45 C35 30 35 10 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L-45 18 C-30 35 -10 35 0 0Z" fill="#4338ca"/>
-                            </g>
-                        </g>
-
-                        <!-- FAN 3 -->
-                        <g transform="translate(525, 125)">
-                            <circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/>
-                            <g class="fan-group-3">
-                                <circle r="22" fill="#f59e0b"/>
-                                <path d="M0 0 L-18 -45 C-35 -30 -35 -10 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L45 -18 C30 -35 10 -35 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L18 45 C35 30 35 10 0 0Z" fill="#4338ca"/>
-                                <path d="M0 0 L-45 18 C-30 35 -10 35 0 0Z" fill="#4338ca"/>
-                            </g>
-                        </g>
-                    </svg>
-                    <div class="click-hint">HİSSE ÇÖZMEK İÇİN DOKUN</div>
-                </div>
-            </div>
+        <div class="stat-box" style="align-items: center;">
+            <span class="stat-label">En Yüksek</span>
+            <span class="stat-value" id="highscore-val" style="color:var(--primary);">0</span>
         </div>
-
-        <!-- MARKET PANELİ -->
-        <div id="pane-market" class="pane">
-            <div class="section-title">Ekran Kartı Pazarı</div>
-
-            <div class="shop-card">
-                <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
-                    <div class="shop-info">
-                        <h4>RX 470 8GB <span id="cnt-rx470" style="color:var(--primary);">(0)</span></h4>
-                        <p>28 MH/s • 120W • <span id="prc-rx470">10.00</span> PTS</p>
-                    </div>
-                </div>
-                <button class="action-btn" onclick="buyItem('rx470', 10, 28, 120)">Al</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
-                    <div class="shop-info">
-                        <h4>RX 590 8GB <span id="cnt-rx590" style="color:var(--primary);">(0)</span></h4>
-                        <p>32 MH/s • 145W • <span id="prc-rx590">45.00</span> PTS</p>
-                    </div>
-                </div>
-                <button class="action-btn" onclick="buyItem('rx590', 45, 32, 145)">Al</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
-                    <div class="shop-info">
-                        <h4>RTX 3060 Ti <span id="cnt-rtx3060" style="color:var(--primary);">(0)</span></h4>
-                        <p>60 MH/s • 130W • <span id="prc-rtx3060">180.00</span> PTS</p>
-                    </div>
-                </div>
-                <button class="action-btn" onclick="buyItem('rtx3060', 180, 60, 130)">Al</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
-                    <div class="shop-info">
-                        <h4>RX 6700 XT <span id="cnt-rx6700" style="color:var(--primary);">(0)</span></h4>
-                        <p>82 MH/s • 160W • <span id="prc-rx6700">550.00</span> PTS</p>
-                    </div>
-                </div>
-                <button class="action-btn" onclick="buyItem('rx6700', 550, 82, 160)">Al</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
-                    <div class="shop-info">
-                        <h4>RTX 4080 <span id="cnt-rtx4080" style="color:var(--primary);">(0)</span></h4>
-                        <p>145 MH/s • 220W • <span id="prc-rtx4080">1800.00</span> PTS</p>
-                    </div>
-                </div>
-                <button class="action-btn" onclick="buyItem('rtx4080', 1800, 145, 220)">Al</button>
-            </div>
-        </div>
-
-        <!-- ATÖLYE PANELİ -->
-        <div id="pane-workshop" class="pane">
-            <div class="section-title">Atölye ve Eklentiler</div>
-            
-            <div class="shop-card">
-                <div class="shop-info" style="margin-left: 4px;">
-                    <h4>BIOS Mod & OC</h4>
-                    <p>Tıklama gücünü artırır (+0.03 PTS)</p>
-                </div>
-                <button class="action-btn" id="btn-oc" onclick="buyUpgrade('oc')">25.00 PTS</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-info" style="margin-left: 4px;">
-                    <h4>Bakır Soğutma</h4>
-                    <p>Sıcaklık seviyesini düşürür</p>
-                </div>
-                <button class="action-btn" id="btn-cool" onclick="buyUpgrade('cool')">50.00 PTS</button>
-            </div>
+        <div class="stat-box" style="align-items: flex-end;">
+            <span class="stat-label">Can</span>
+            <div class="lives" id="lives-container">❤️❤️❤️</div>
         </div>
     </div>
 
-    <!-- Alt Navigasyon -->
-    <div class="nav-bar">
-        <div class="nav-btn active" onclick="switchTab('rig', this)">
-            <span>🖥️</span>
-            <span>Rig</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('market', this)">
-            <span>🛒</span>
-            <span>Market</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('workshop', this)">
-            <span>🛠️</span>
-            <span>Atölye</span>
-        </div>
+    <!-- Oyun Alanı -->
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Combo Uyarı Alanı -->
+    <div class="combo-popup" id="comboPopup">KUSURSUZ KESİŞ!</div>
+
+    <!-- Ana Menü / Başlangıç Ekranı -->
+    <div class="overlay" id="startScreen">
+        <h1>CYBER BLADE</h1>
+        <p>Ekranda parmağını kaydırarak siber nesneleri kes, bombalardan kaç ve yüksek skorları patlat!</p>
+        <button class="btn" onclick="startGame()">Oyuna Başla</button>
+    </div>
+
+    <!-- Game Over Ekranı -->
+    <div class="overlay hidden" id="gameOverScreen">
+        <h1>OYUN BİTTİ</h1>
+        <p>Toplam Skorun: <span id="finalScore" style="color:var(--accent); font-weight:bold;">0</span></p>
+        <button class="btn" onclick="startGame()">Tekrar Dene</button>
     </div>
 </div>
 
-<!-- Market Küçük Görseller İçin Şablon -->
-<svg style="display:none;">
-    <defs>
-        <g id="gpu-mini-template">
-            <rect x="20" y="25" width="660" height="200" rx="35" fill="#131722" stroke="#252f4a" stroke-width="6"/>
-            <rect x="180" y="225" width="140" height="15" fill="#f59e0b" rx="4"/>
-            <path d="M35 55H65V195H35z" fill="#1a2236"/>
-            <g transform="translate(175, 125)"><circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/><circle r="22" fill="#f59e0b"/></g>
-            <g transform="translate(350, 125)"><circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/><circle r="22" fill="#f59e0b"/></g>
-            <g transform="translate(525, 125)"><circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/><circle r="22" fill="#f59e0b"/></g>
-        </g>
-    </defs>
-</svg>
-
 <script>
-    let balance = parseFloat(localStorage.getItem('rm_bal')) || 0;
-    let clickPower = parseFloat(localStorage.getItem('rm_cp')) || 0.05;
-    let hashrate = parseFloat(localStorage.getItem('rm_hr')) || 0;
-    let power = parseInt(localStorage.getItem('rm_pow')) || 0;
-    let temp = 40.0;
-    
-    let ocCost = parseFloat(localStorage.getItem('rm_occ')) || 25.0;
-    let coolCost = parseFloat(localStorage.getItem('rm_clc')) || 50.0;
-    let coolBonus = parseFloat(localStorage.getItem('rm_clb')) || 0;
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-    let items = JSON.parse(localStorage.getItem('rm_items')) || {
-        rx470: { count: 0, rate: 28, power: 120, price: 10 },
-        rx590: { count: 0, rate: 32, power: 145, price: 45 },
-        rtx3060: { count: 0, rate: 60, power: 130, price: 180 },
-        rx6700: { count: 0, rate: 82, power: 160, price: 550 },
-        rtx4080: { count: 0, rate: 145, power: 220, price: 1800 }
-    };
+    function resizeCanvas() {
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight - document.querySelector('.header').offsetHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
 
-    const tg = window.Telegram?.WebApp;
-    if (tg && tg.initDataUnsafe?.user) {
-        document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
+    let score = 0;
+    let highscore = localStorage.getItem('cb_high') || 0;
+    let lives = 3;
+    let isPlaying = false;
+
+    document.getElementById('highscore-val').innerText = highscore;
+
+    let objects = [];
+    let particles = [];
+    let trail = [];
+
+    // Nesne Tipleri (Şekiller, Renkler, Puanlar)
+    const itemTypes = [
+        { type: 'target', radius: 28, color: '#06b6d4', points: 10, label: '🔷' },
+        { type: 'target', radius: 32, color: '#3b82f6', points: 15, label: '💠' },
+        { type: 'target', radius: 24, color: '#10b981', points: 20, label: '🟢' },
+        { type: 'bonus', radius: 22, color: '#f59e0b', points: 50, label: '⭐' },
+        { type: 'bomb', radius: 26, color: '#ef4444', points: 0, label: '💣' }
+    ];
+
+    function startGame() {
+        score = 0;
+        lives = 3;
+        objects = [];
+        particles = [];
+        isPlaying = true;
+        document.getElementById('score-val').innerText = score;
+        updateLivesUI();
+        document.getElementById('startScreen').classList.add('hidden');
+        document.getElementById('gameOverScreen').classList.add('hidden');
     }
 
-    // Otomatik Kazanç Döngüsü (100ms)
-    setInterval(() => {
-        if (hashrate > 0) {
-            balance += (hashrate * 0.00004);
-            temp = 40 + (power / 25) - coolBonus;
-            if (temp < 38) temp = 38;
-            updateUI();
-            saveData();
+    function gameOver() {
+        isPlaying = false;
+        if (score > highscore) {
+            highscore = score;
+            localStorage.setItem('cb_high', highscore);
+            document.getElementById('highscore-val').innerText = highscore;
         }
-    }, 100);
-
-    function mineClick(e) {
-        balance += clickPower;
-        updateUI();
-        saveData();
-
-        let wrapper = document.getElementById('app-wrapper');
-        let rect = wrapper.getBoundingClientRect();
-        let x = (e.clientX || 200) - rect.left;
-        let y = (e.clientY || 300) - rect.top;
-
-        let el = document.createElement('div');
-        el.className = 'float-num';
-        el.innerText = "+" + clickPower.toFixed(2);
-        el.style.left = x + 'px';
-        el.style.top = y + 'px';
-        wrapper.appendChild(el);
-        setTimeout(() => el.remove(), 500);
+        document.getElementById('finalScore').innerText = score;
+        document.getElementById('gameOverScreen').classList.remove('hidden');
     }
 
-    function buyItem(id, baseP, rInc, pInc) {
-        let item = items[id];
-        if (balance >= item.price) {
-            balance -= item.price;
-            item.count++;
-            hashrate += rInc;
-            power += pInc;
-            item.price = Math.round(item.price * 1.22 * 100) / 100;
-            updateUI();
-            saveData();
-        } else {
-            alert("Yetersiz bakiye!");
-        }
+    function updateLivesUI() {
+        let str = '';
+        for (let i = 0; i < lives; i++) str += '❤️';
+        document.getElementById('lives-container').innerText = str;
     }
 
-    function buyUpgrade(type) {
-        if (type === 'oc' && balance >= ocCost) {
-            balance -= ocCost;
-            clickPower += 0.03;
-            ocCost = Math.round(ocCost * 1.5 * 100) / 100;
-        } else if (type === 'cool' && balance >= coolCost) {
-            balance -= coolCost;
-            coolBonus += 5.0;
-            coolCost = Math.round(coolCost * 1.6 * 100) / 100;
-        } else {
-            alert("Yetersiz bakiye!");
-            return;
-        }
-        updateUI();
-        saveData();
-    }
-
-    function switchTab(tab, el) {
-        document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('pane-' + tab).classList.add('active');
-        el.classList.add('active');
-    }
-
-    function updateUI() {
-        document.getElementById('balance').innerText = balance.toFixed(4);
-        document.getElementById('hashrate').innerText = hashrate.toFixed(1);
-        document.getElementById('power').innerText = power;
-        document.getElementById('cps').innerText = (hashrate * 0.0004).toFixed(4);
-        document.getElementById('temp-badge').innerText = `🌡️ ${temp.toFixed(1)}°C`;
-
-        for (let id in items) {
-            document.getElementById('cnt-' + id).innerText = `(${items[id].count})`;
-            document.getElementById('prc-' + id).innerText = items[id].price.toFixed(2);
+    // Nesne Üretici
+    function spawnObject() {
+        if (!isPlaying) return;
+        let template = itemTypes[Math.floor(Math.random() * itemTypes.length)];
+        // Bombanın çıkma olasılığını dengele
+        if (Math.random() < 0.2 && template.type !== 'bomb') {
+            template = itemTypes[4];
         }
 
-        document.getElementById('btn-oc').innerText = ocCost.toFixed(2) + " PTS";
-        document.getElementById('btn-cool').innerText = coolCost.toFixed(2) + " PTS";
+        let x = Math.random() * (canvas.width - 100) + 50;
+        let y = canvas.height + 40;
+        let vx = (canvas.width / 2 - x) / 25 + (Math.random() - 0.5) * 4;
+        let vy = -(Math.random() * 5 + 13);
+        let g = 0.35;
+
+        objects.push({
+            x: x,
+            y: y,
+            vx: vx,
+            vy: vy,
+            g: g,
+            radius: template.radius,
+            color: template.color,
+            points: template.points,
+            label: template.label,
+            type: template.type,
+            sliced: false,
+            rotation: 0,
+            vRot: (Math.random() - 0.5) * 0.1
+        });
     }
 
-    function saveData() {
-        localStorage.setItem('rm_bal', balance);
-        localStorage.setItem('rm_cp', clickPower);
-        localStorage.setItem('rm_hr', hashrate);
-        localStorage.setItem('rm_pow', power);
-        localStorage.setItem('rm_occ', ocCost);
-        localStorage.setItem('rm_clc', coolCost);
-        localStorage.setItem('rm_clb', coolBonus);
-        localStorage.setItem('rm_items', JSON.stringify(items));
+    // Efekt Partikülleri
+    function createParticles(x, y, color) {
+        for (let i = 0; i < 12; i++) {
+            particles.push({
+                x: x,
+                y: y,
+                vx: (Math.random() - 0.5) * 8,
+                vy: (Math.random() - 0.5) * 8,
+                alpha: 1,
+                color: color,
+                radius: Math.random() * 4 + 2
+            });
+        }
     }
 
-    updateUI();
+    // Dokunma ve Fare Kontrolü (Kılıç İzleme)
+    let isDrawing = false;
+
+    canvas.addEventListener('pointerdown', (e) => {
+        isDrawing = true;
+        trail = [{x: e.offsetX, y: e.offsetY, time: Date.now()}];
+    });
+
+    canvas.addEventListener('pointermove', (e) => {
+        if (!isDrawing) return;
+        let pt = {x: e.offsetX, y: e.offsetY, time: Date.now()};
+        trail.push(pt);
+
+        // Kesme kontrolü
+        checkSlice(pt);
+    });
+
+    canvas.addEventListener('pointerup', () => {
+        isDrawing = false;
+        trail = [];
+    });
+
+    canvas.addEventListener('pointerleave', () => {
+        isDrawing = false;
+        trail = [];
+    });
+
+    function checkSlice(pt) {
+        if (!isPlaying) return;
+        for (let obj of objects) {
+            if (obj.sliced) continue;
+            let dist = Math.hypot(obj.x - pt.x, obj.y - pt.y);
+            if (dist < obj.radius + 15) {
+                obj.sliced = true;
+                createParticles(obj.x, obj.y, obj.color);
+
+                if (obj.type === 'bomb') {
+                    lives = 0;
+                    updateLivesUI();
+                    gameOver();
+                    return;
+                } else {
+                    score += obj.points;
+                    document.getElementById('score-val').innerText = score;
+                    if (obj.points >= 50) showCombo("SÜPER BONUS! +50");
+                }
+            }
+        }
+    }
+
+    function showCombo(text) {
+        let popup = document.getElementById('comboPopup');
+        popup.innerText = text;
+        popup.classList.add('show');
+        setTimeout(() => popup.classList.remove('show'), 600);
+    }
+
+    // Oyun Döngüsü
+    let spawnTimer = 0;
+
+    function loop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        if (isPlaying) {
+            spawnTimer++;
+            if (spawnTimer > 45) {
+                spawnObject();
+                spawnTimer = 0;
+            }
+
+            // Nesneleri Güncelle ve Çiz
+            for (let i = objects.length - 1; i >= 0; i--) {
+                let obj = objects[i];
+                obj.x += obj.vx;
+                obj.y += obj.vy;
+                obj.vy += obj.g;
+                obj.rotation += obj.vRot;
+
+                ctx.save();
+                ctx.translate(obj.x, obj.y);
+                ctx.rotate(obj.rotation);
+
+                if (!obj.sliced) {
+                    ctx.beginPath();
+                    ctx.arc(0, 0, obj.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = obj.color;
+                    ctx.shadowColor = obj.color;
+                    ctx.shadowBlur = 15;
+                    ctx.fill();
+                    ctx.lineWidth = 3;
+                    ctx.strokeStyle = '#ffffff';
+                    ctx.stroke();
+
+                    ctx.font = '16px sans-serif';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(obj.label, 0, 0);
+                }
+                ctx.restore();
+
+                // Ekrandan düşen kaçırılan nesneler
+                if (obj.y > canvas.height + 60) {
+                    if (!obj.sliced && obj.type === 'target') {
+                        lives--;
+                        updateLivesUI();
+                        if (lives <= 0) gameOver();
+                    }
+                    objects.splice(i, 1);
+                }
+            }
+        }
+
+        // Partikülleri Çiz
+        for (let i = particles.length - 1; i >= 0; i--) {
+            let p = particles[i];
+            p.x += p.vx;
+            p.y += p.vy;
+            p.alpha -= 0.03;
+
+            if (p.alpha <= 0) {
+                particles.splice(i, 1);
+                continue;
+            }
+
+            ctx.save();
+            ctx.globalAlpha = p.alpha;
+            ctx.beginPath();
+            ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+            ctx.fillStyle = p.color;
+            ctx.shadowColor = p.color;
+            ctx.shadowBlur = 10;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // Kılıç İzi (Blade Trail) Çizimi
+        let now = Date.now();
+        trail = trail.filter(pt => now - pt.time < 180);
+
+        if (trail.length > 1) {
+            ctx.beginPath();
+            ctx.moveTo(trail[0].x, trail[0].y);
+            for (let i = 1; i < trail.length; i++) {
+                ctx.lineTo(trail[i].x, trail[i].y);
+            }
+            ctx.strokeStyle = '#38bdf8';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.shadowColor = '#38bdf8';
+            ctx.shadowBlur = 20;
+            ctx.stroke();
+        }
+
+        requestAnimationFrame(loop);
+    }
+
+    loop();
 </script>
 </body>
 </html>
