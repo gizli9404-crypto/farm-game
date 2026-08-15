@@ -271,6 +271,63 @@
         }
         .input-box::placeholder { color: #594833; }
 
+        /* EARN SEKMESİ ÜST KATEGORİLERİ */
+        .earn-categories {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+            background: #141008;
+            padding: 6px;
+            border-radius: 14px;
+            border: 1px solid rgba(212,160,23,0.2);
+            overflow-x: auto;
+        }
+        .earn-cat-btn {
+            flex: 1;
+            background: #0a0804;
+            border: 1px solid rgba(212,160,23,0.2);
+            color: #8c7355;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 10px;
+            font-weight: 800;
+            text-align: center;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .earn-cat-btn.active {
+            background: rgba(212,160,23,0.15);
+            color: #d4a017;
+            border-color: #d4a017;
+            box-shadow: 0 0 10px rgba(212,160,23,0.2);
+        }
+
+        /* GÖREV KARTI */
+        .task-card {
+            background: linear-gradient(145deg, #141008, #0a0804);
+            border: 1px solid rgba(212, 160, 23, 0.25);
+            border-radius: 16px;
+            padding: 12px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .task-info b { font-size: 12px; color: #fff; display: block; margin-bottom: 2px; }
+        .task-info small { font-size: 11px; color: #00e676; font-weight: 700; }
+        .btn-task-open {
+            background: linear-gradient(135deg, #d4a017, #aa7c11);
+            color: #0c0a06;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(212,160,23,0.3);
+        }
+        .btn-task-open:active { transform: scale(0.95); }
+
         /* ALT MENÜ */
         .navbar { 
             position: fixed; bottom: 0; left: 0; width: 100%; height: 65px;
@@ -295,7 +352,7 @@
         }
         .modal-card {
             background: #141008; border: 1px solid rgba(212,160,23,0.4); padding: 20px;
-            border-radius: 18px; width: 85%; max-width: 320px; text-align: center;
+            border-radius: 18px; width: 88%; max-width: 330px; text-align: center;
         }
 
         .float-number {
@@ -312,7 +369,7 @@
 
 <div class="app-container">
 
-    <!-- ÜST BAR (Dil Seçeneği) -->
+    <!-- ÜST BAR -->
     <div class="top-bar">
         <span style="font-size: 11px; font-weight: 800; color: #d4a017;">⚡ SANAL MINER PRO</span>
         <button class="lang-switch" onclick="toggleLanguage()">🌐 TR / EN</button>
@@ -321,14 +378,14 @@
     <!-- 1. TAB: HOME -->
     <div id="tab-home" class="tab-content active">
         <div class="profile-card" style="padding: 12px; margin-bottom: 10px;">
-            <div style="font-size: 10px; color: #8c7355; font-weight: 700; text-transform: uppercase;" id="txtKazimHizi">🚀 SANAL KAZIM HIZI</div>
+            <div style="font-size: 10px; color: #8c7355; font-weight: 700; text-transform: uppercase;">🚀 SANAL KAZIM HIZI</div>
             <div style="font-size: 26px; font-weight: 800; color: #d4a017; margin: 6px 0;"><span id="homeBalance">135.19</span> <span style="font-size: 14px; color:#fff;">GOAL</span></div>
-            <div style="font-size: 11px; color: #00e676; font-weight: 600;" id="txtAdsGramDurum">AdsGram Verim: %100 Aktif</div>
+            <div style="font-size: 11px; color: #00e676; font-weight: 600;">AdsGram Verim: %100 Aktif</div>
         </div>
 
         <div class="gpu-card-container" onclick="mineWithRig(event)">
             <div class="gpu-top-bar">
-                <span id="txtRigName">ASUS Mining Rig Pro</span>
+                <span>ASUS Mining Rig Pro</span>
                 <span style="color: #00e676;">● Aktif</span>
             </div>
             
@@ -345,7 +402,7 @@
         </div>
 
         <div class="market-card">
-            <div style="font-size: 10px; color: #8c7355; font-weight: 700; margin-bottom: 6px;" id="txtPromoTitle">🎟️ PROMOSYON KODU</div>
+            <div style="font-size: 10px; color: #8c7355; font-weight: 700; margin-bottom: 6px;">🎟️ PROMOSYON KODU</div>
             <div style="display: flex; gap: 8px;">
                 <input type="text" id="promoInput" class="input-box" style="margin-bottom:0;" placeholder="Kod yazın...">
                 <button class="btn-gold-action" style="width: 100px; padding: 0; margin: 0; height: 42px;" onclick="usePromoCode()">Kullan</button>
@@ -353,46 +410,88 @@
         </div>
     </div>
 
-    <!-- 2. TAB: EARN (GÖREVLER & REKLAMLAR - SENİN GELİRİN) -->
+    <!-- 2. TAB: EARN (GÖREVLER & REKLAMLAR - GÖNDERDİĞİN ÖRNEK TASARIM) -->
     <div id="tab-earn" class="tab-content">
-        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;" id="txtEarnTitle">📺 Sponsorlu Reklamlar & Görevler</h3>
-        
-        <div class="market-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <b style="font-size: 12px; display: block;">AdsGram Ödüllü Reklam</b>
-                    <small style="color: #00e676; font-weight: 700;">Ödül: +25 GOAL</small>
+        <div class="earn-categories">
+            <div class="earn-cat-btn active" onclick="switchEarnTab('telegram', this)">✈️ TELEGRAM 0/6</div>
+            <div class="earn-cat-btn" onclick="switchEarnTab('twitter', this)">🅲 X / TWITTER 0/2</div>
+            <div class="earn-cat-btn" onclick="switchEarnTab('tasks', this)">⚽ GÖREVLER 0/15</div>
+        </div>
+
+        <div id="earn-list-telegram" class="earn-sub-list">
+            <div class="task-card">
+                <div class="task-info">
+                    <b>JOIN MONEY HUB</b>
+                    <small>+5 GOAL</small>
                 </div>
-                <button class="btn-gold-action" style="width: 110px; padding: 10px; margin: 0;" onclick="watchAd()">Reklam İzle</button>
+                <button class="btn-task-open" onclick="completeTask(5, 'Money Hub Kanalı')">→ AÇ</button>
+            </div>
+            <div class="task-card">
+                <div class="task-info">
+                    <b>JOIN SIMPLE CRYPTO</b>
+                    <small>+5 GOAL</small>
+                </div>
+                <button class="btn-task-open" onclick="completeTask(5, 'Simple Crypto')">→ AÇ</button>
+            </div>
+            <div class="task-card">
+                <div class="task-info">
+                    <b>INSTANT EARNING WAY</b>
+                    <small>+5 GOAL</small>
+                </div>
+                <button class="btn-task-open" onclick="completeTask(5, 'Instant Earning')">→ AÇ</button>
             </div>
         </div>
 
-        <div class="market-card">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <b style="font-size: 12px; display: block;">Telegram Kanalına Katıl</b>
-                    <small style="color: #d4a017; font-weight: 700;">Ödül: +50 GOAL</small>
+        <div id="earn-list-twitter" class="earn-sub-list" style="display: none;">
+            <div class="task-card">
+                <div class="task-info">
+                    <b>LIKE, COMMENT & SHARE POST</b>
+                    <small>+10 GOAL</small>
                 </div>
-                <button class="btn-gold-action" style="width: 110px; padding: 10px; margin: 0;" onclick="completeTask(50)">Katıl</button>
+                <button class="btn-task-open" onclick="completeTask(10, 'X Post Etkileşim')">→ AÇ</button>
+            </div>
+            <div class="task-card">
+                <div class="task-info">
+                    <b>FOLLOW OFFICIAL X PAGE</b>
+                    <small>+15 GOAL</small>
+                </div>
+                <button class="btn-task-open" onclick="completeTask(15, 'X Sayfa Takibi')">→ AÇ</button>
+            </div>
+        </div>
+
+        <div id="earn-list-tasks" class="earn-sub-list" style="display: none;">
+            <div class="task-card">
+                <div class="task-info">
+                    <b>SUBSCRIBE FAKHAMA TUBE</b>
+                    <small>+25 GOAL</small>
+                </div>
+                <button class="btn-task-open" onclick="completeTask(25, 'YouTube Abone')">→ AÇ</button>
+            </div>
+            <div class="task-card">
+                <div class="task-info">
+                    <b>AdsGram Ödüllü Reklam İzle</b>
+                    <small>+25 GOAL</small>
+                </div>
+                <button class="btn-task-open" onclick="watchAd()">İZLE</button>
             </div>
         </div>
     </div>
 
-    <!-- 3. TAB: MARKET (DONANIM, RIG VE VIP STATÜLERİ - GERÇEK KAZANÇ ALANIN) -->
+    <!-- 3. TAB: MARKET (BINANCE ÖDEME ENTEGRASYONLU VIP) -->
     <div id="tab-market" class="tab-content">
         <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;">🛒 Donanım & VIP Statü Marketi</h3>
-        <div style="font-size: 11px; color: #8c7355; margin-bottom: 12px;">VIP Statü alarak tıklama gücünü ve pasif kazancını katla!</div>
+        <div style="font-size: 11px; color: #8c7355; margin-bottom: 12px;">Gerçek ödeme ile statünü yükselt, kazancını katla!</div>
 
-        <!-- VIP Statü Kartı (Senin Para Kazanman İçin) -->
+        <!-- Binance Ödeme Entegreli VIP Kartı -->
         <div class="market-card" style="border-color: #ffaa00; background: linear-gradient(145deg, #1f1505, #0d0a04);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
                 <b style="font-size: 13px; color: #ffaa00;">⭐ GOLD VIP STATÜ (Booster)</b>
-                <span style="font-size: 9px; background: rgba(255,170,0,0.2); color: #ffaa00; padding: 3px 8px; border-radius: 6px; font-weight: 700;">Sınırsız Güç</span>
+                <span style="font-size: 9px; background: rgba(255,170,0,0.2); color: #ffaa00; padding: 3px 8px; border-radius: 6px; font-weight: 700;">Binance Pay</span>
             </div>
             <div style="font-size: 11px; color: #00e676; margin-bottom: 10px;">Tıklama Gücü: <b>5 Katına Çıkar (+0.0500)</b></div>
             <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid rgba(255,255,255,0.06); padding-top: 10px;">
-                <span style="font-size: 13px; font-weight: 800; color: #ffaa00;">99 TL / 100 Star</span>
-                <button class="btn-gold-action" style="width: 130px; padding: 10px; margin: 0; background: linear-gradient(135deg, #ffaa00, #cc7700);" onclick="buyVipStatus()">VIP Statü Al</button>
+                <span style="font-size: 13px; font-weight: 800; color: #ffaa00;">99 TL / USDT</span>
+                <button class="btn-gold-action" style="width: 140px; padding: 10px; margin: 0; background: linear-gradient(135deg, #ffaa00, #cc7700);" onclick="buyVipViaBinance()">Binance ile Al</button>
             </div>
         </div>
 
@@ -412,7 +511,7 @@
 
     <!-- 4. TAB: INVITE -->
     <div id="tab-invite" class="tab-content">
-        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;" id="txtInviteTitle">👥 Arkadaşını Davet Et</h3>
+        <h3 style="color: #d4a017; font-size: 14px; margin-bottom: 10px;">👥 Arkadaşını Davet Et</h3>
         
         <div class="profile-card" style="text-align: center; padding: 16px;">
             <div style="font-size: 14px; font-weight: 800; color: #d4a017;">Her Arkadaş İçin +100 GOAL</div>
@@ -426,7 +525,7 @@
         </div>
     </div>
 
-    <!-- 5. TAB: WALLET -->
+    <!-- 5. TAB: WALLET (DETAYLI ÇEKİM EKRANI) -->
     <div id="tab-wallet" class="tab-content">
         
         <div class="profile-card">
@@ -458,25 +557,24 @@
         </div>
 
         <button class="btn-gold-action" onclick="openWithdrawModal()">
-            📦 BAKİYEYİ ÇEK
+            📦 DETAYLI PARA ÇEKME TALEBİ
         </button>
 
         <div class="btn-row">
             <div class="btn-outline-box" onclick="showAlert('Dil Türkçe olarak ayarlandı.')">🌐 TURKISH</div>
-            <div class="btn-outline-box" onclick="openSupport()">💬 YÖNETİCİ İLE İLETİŞİME GEÇ</div>
+            <div class="btn-outline-box" onclick="openSupport()">💬 YÖNETİCİ İLETİŞİM</div>
         </div>
 
         <div class="history-section">
-            <div class="history-title">💳 PARA ÇEKİMLERİ</div>
+            <div class="history-title">💳 ÇEKİM GEÇMİŞİ</div>
             <div class="filter-tabs">
                 <div class="filter-tab active" onclick="switchFilter(this)">Tümü</div>
                 <div class="filter-tab" onclick="switchFilter(this)">Beklemede</div>
                 <div class="filter-tab" onclick="switchFilter(this)">Onaylandı</div>
-                <div class="filter-tab" onclick="switchFilter(this)">Reddedildi</div>
             </div>
-            <div class="empty-history">
+            <div class="empty-history" id="historyEmptyText">
                 <div style="font-size: 24px; margin-bottom: 6px;">📭</div>
-                Henüz para çekme işlemi yok
+                Henüz para çekme talebiniz bulunmuyor.
             </div>
         </div>
 
@@ -493,7 +591,7 @@
     <div class="nav-item" onclick="switchTab('wallet', this)"><span class="nav-icon">💼</span>WALLET</div>
 </div>
 
-<!-- MODAL -->
+<!-- UYARI MODALI -->
 <div id="alertModal" class="modal-overlay">
     <div class="modal-card">
         <p id="alertText" style="font-size: 12px; font-weight: 600; margin-bottom: 15px; color: #fff;"></p>
@@ -501,13 +599,24 @@
     </div>
 </div>
 
-<!-- ÇEKİM MODALI -->
+<!-- DETAYLI ÇEKİM MODALI (GÖNDERDİĞİN ÖRNEK FOTOĞRAFA UYUMLU) -->
 <div id="withdrawModal" class="modal-overlay">
-    <div class="modal-card">
-        <h3 style="color:#d4a017; font-size:14px; margin-bottom:10px;">Para Çekme Talebi</h3>
-        <input type="text" id="withdrawWallet" class="input-box" placeholder="Cüzdan Adresi (TON / TRC20)">
+    <div class="modal-card" style="text-align: left;">
+        <h3 style="color:#d4a017; font-size:14px; margin-bottom:12px; text-align:center;">Para Çekme Talebi</h3>
+        
+        <label style="font-size: 10px; color: #8c7355; font-weight: 700; display: block; margin-bottom: 4px;">Ağ Seçimi</label>
+        <select id="withdrawNetwork" class="input-box" style="margin-bottom: 8px;">
+            <option value="TON">TON Network (Telegram Cüzdanı)</option>
+            <option value="TRC20">USDT - TRC20 (Binance / Tron)</option>
+        </select>
+
+        <label style="font-size: 10px; color: #8c7355; font-weight: 700; display: block; margin-bottom: 4px;">Cüzdan Adresi</label>
+        <input type="text" id="withdrawWallet" class="input-box" placeholder="Cüzdan adresinizi girin...">
+        
+        <label style="font-size: 10px; color: #8c7355; font-weight: 700; display: block; margin-bottom: 4px;">Çekim Miktarı</label>
         <input type="number" id="withdrawAmount" class="input-box" placeholder="Miktar (Min 10.000 Goal)">
-        <div style="display:flex; gap:8px;">
+        
+        <div style="display:flex; gap:8px; margin-top: 6px;">
             <button class="btn-gold-action" style="flex:1; padding:10px; margin:0;" onclick="submitWithdraw()">Talep Et</button>
             <button class="btn-outline-box" style="flex:1; padding:10px; margin:0;" onclick="closeWithdrawModal()">İptal</button>
         </div>
@@ -563,6 +672,13 @@
         if (tg?.HapticFeedback) tg.HapticFeedback.selectionChanged();
     }
 
+    function switchEarnTab(cat, el) {
+        document.querySelectorAll('.earn-sub-list').forEach(l => l.style.display = 'none');
+        document.querySelectorAll('.earn-cat-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('earn-list-' + cat).style.display = 'block';
+        el.classList.add('active');
+    }
+
     function updateUI() {
         let formattedBal = gameData.balance.toFixed(2);
         document.getElementById('homeBalance').innerText = formattedBal;
@@ -587,13 +703,14 @@
         if (tg?.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     }
 
-    function buyVipStatus() {
-        // Gerçek ödeme simülasyonu (Telegram Stars / Kredi Kartı / TON entegrasyonu buraya gelecek)
-        gameData.isVip = true;
-        gameData.clickPower = 0.0500;
-        document.getElementById('userVipRank').innerText = "⭐ GOLD VIP MADENCİ";
-        saveData();
-        showAlert("Tebrikler! Gold VIP Statü aktifleşti. Tıklama gücünüz 5 katına çıktı!");
+    // GÖNDERDİĞİN İSTEK: KULLANICI TIKLAYINCA SENİN BİNANCE HESABINA YÖNLENDİRME
+    function buyVipViaBinance() {
+        let binancePayLink = "https://app.binance.com/en/send/crypto"; // Buraya kendi Binance ödeme bağlantını veya Pay ID linkini yazabilirsin
+        showAlert("Binance ödeme sayfasına yönlendiriliyorsunuz. Ödemeyi tamamladıktan sonra VIP statünüz aktifleşecektir.");
+        setTimeout(() => {
+            if (tg?.openTelegramLink) tg.openTelegramLink(binancePayLink);
+            else window.open(binancePayLink, '_blank');
+        }, 1500);
     }
 
     function usePromoCode() {
@@ -617,11 +734,11 @@
         showAlert("AdsGram Reklamı Tamamlandı: +25 GOAL kazandınız!");
     }
 
-    function completeTask(reward) {
+    function completeTask(reward, taskName) {
         gameData.balance += reward;
         updateUI();
         saveData();
-        showAlert(`Görev başarıyla tamamlandı: +${reward} GOAL!`);
+        showAlert(`"${taskName}" görevi tamamlandı: +${reward} GOAL eklendi!`);
     }
 
     function buyRig(price, rate) {
@@ -641,13 +758,16 @@
 
     function submitWithdraw() {
         let amt = parseFloat(document.getElementById('withdrawAmount').value);
+        let wallet = document.getElementById('withdrawWallet').value.trim();
+        if (!wallet) { showAlert("Lütfen cüzdan adresinizi girin!"); return; }
         if (!amt || amt < 10000) { showAlert("Minimum çekim miktarı 10.000 GOAL!"); return; }
         if (gameData.balance < amt) { showAlert("Bakiyeniz yetersiz!"); return; }
+        
         gameData.balance -= amt;
         updateUI();
         saveData();
         closeWithdrawModal();
-        showAlert("Çekim talebiniz sıraya alındı.");
+        showAlert("Para çekme talebiniz başarıyla sıraya alındı.");
     }
 
     function toggleLanguage() {
