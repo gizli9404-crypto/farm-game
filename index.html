@@ -7,9 +7,10 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg: #090d16;
-            --card-bg: #131b2e;
+            --bg: #070913;
+            --card-bg: #101728;
             --primary: #00ff88;
+            --primary-glow: rgba(0, 255, 136, 0.25);
             --accent: #38bdf8;
             --danger: #ef4444;
             --text: #ffffff;
@@ -74,7 +75,7 @@
             font-weight: 800;
         }
 
-        /* İçerik */
+        /* İçerik Alanı */
         .content {
             flex: 1;
             overflow-y: auto;
@@ -92,37 +93,38 @@
             display: flex;
         }
 
-        /* Bakiye Kutusu */
+        /* Bakiye Paneli */
         .balance-card {
             width: 100%;
-            background: linear-gradient(135deg, #17223b, #0d1322);
+            background: linear-gradient(135deg, #131d35, #0b101d);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 20px;
+            padding: 18px;
             text-align: center;
             margin-bottom: 16px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
         }
 
         .balance-title {
-            font-size: 11px;
+            font-size: 10px;
             color: var(--text-muted);
             text-transform: uppercase;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: 1px;
         }
 
         .balance-amount {
-            font-size: 32px;
+            font-size: 30px;
             font-weight: 900;
             color: var(--primary);
-            margin: 8px 0;
-            text-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
+            margin: 6px 0;
+            text-shadow: 0 0 20px var(--primary-glow);
         }
 
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
+            gap: 6px;
             margin-top: 12px;
             padding-top: 12px;
             border-top: 1px solid var(--border);
@@ -141,13 +143,12 @@
             margin-top: 2px;
         }
 
-        /* Ana Tıklama Alanı */
+        /* Madencilik / Tıklama Alanı */
         .mining-area {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
-            margin-top: 10px;
         }
 
         .main-gpu-btn {
@@ -155,14 +156,14 @@
             background: var(--card-bg);
             border: 2px solid var(--primary);
             border-radius: 20px;
-            padding: 20px;
+            padding: 18px 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(0, 255, 136, 0.15);
-            transition: transform 0.05s;
+            box-shadow: 0 0 30px var(--primary-glow);
+            transition: transform 0.05s ease;
         }
 
         .main-gpu-btn:active {
@@ -171,26 +172,17 @@
 
         .gpu-svg-art {
             width: 100%;
-            max-width: 280px;
+            max-width: 320px;
             height: auto;
-            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3));
+            filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.4));
         }
 
-        /* Fan Dönüş Animasyonları */
-        .fan-blade {
-            transform-origin: 202px 177px;
-            animation: spinFan 1.2s linear infinite;
-        }
-        .fan-blade-2 {
-            transform-origin: 500px 177px;
-            animation: spinFan 1.2s linear infinite;
-        }
-        .fan-blade-3 {
-            transform-origin: 698px 177px;
-            animation: spinFan 1.2s linear infinite;
-        }
+        /* Fan Dönüş Animasyonları (Merkez Eksende Kusursuz Dönen Kanatlar) */
+        .fan-group-1 { transform-origin: 175px 125px; animation: spin 1s linear infinite; }
+        .fan-group-2 { transform-origin: 350px 125px; animation: spin 1s linear infinite; }
+        .fan-group-3 { transform-origin: 525px 125px; animation: spin 1s linear infinite; }
 
-        @keyframes spinFan {
+        @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
@@ -199,11 +191,12 @@
             font-size: 11px;
             color: var(--primary);
             font-weight: 800;
-            margin-top: 12px;
-            letter-spacing: 1px;
+            margin-top: 14px;
+            letter-spacing: 1.2px;
+            text-shadow: 0 0 10px rgba(0,255,136,0.3);
         }
 
-        /* Market ve Atölye Kartları */
+        /* Market ve Atölye Listesi */
         .section-title {
             width: 100%;
             font-size: 11px;
@@ -234,10 +227,10 @@
 
         .shop-thumb {
             width: 65px;
-            height: 40px;
-            background: #090d16;
+            height: 38px;
+            background: #070913;
             border-radius: 8px;
-            padding: 4px;
+            padding: 3px;
             border: 1px solid var(--border);
             object-fit: contain;
         }
@@ -263,19 +256,20 @@
             font-weight: 800;
             font-size: 11px;
             cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0,255,136,0.2);
         }
 
         .action-btn:active {
             opacity: 0.8;
         }
 
-        /* Navigasyon */
+        /* Alt Navigasyon Çubuğu */
         .nav-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(13, 19, 34, 0.95);
+            background: rgba(11, 16, 29, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
@@ -303,7 +297,7 @@
             font-size: 18px;
         }
 
-        /* Uçan Metin */
+        /* Tıklama Uçan Sayı Efekti */
         .float-num {
             position: absolute;
             color: var(--primary);
@@ -312,11 +306,12 @@
             pointer-events: none;
             animation: floatUp 0.5s ease-out forwards;
             z-index: 99;
+            text-shadow: 0 0 10px var(--primary-glow);
         }
 
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-40px); }
+            100% { opacity: 0; transform: translateY(-45px); }
         }
     </style>
 </head>
@@ -333,7 +328,7 @@
 
     <!-- İçerik -->
     <div class="content">
-        <!-- RIG PANEELİ -->
+        <!-- RIG PANELİ -->
         <div id="pane-rig" class="pane active">
             <div class="balance-card">
                 <div class="balance-title">Havuz Bakiyesi (PTS)</div>
@@ -356,33 +351,49 @@
 
             <div class="mining-area">
                 <div class="main-gpu-btn" onclick="mineClick(event)">
-                    <!-- Ana Ekran Kartı SVG ve Dönen Fanlar -->
-                    <svg class="gpu-svg-art" viewBox="0 0 800 354" xmlns="http://www.w3.org/2000/svg">
-                        <rect width="800" height="354" rx="40" fill="#151622"/>
-                        <path d="M22 52H57V302H22r0-250z" fill="#272a18"/>
-                        
-                        <!-- 1. Fan -->
-                        <circle cx="202" cy="177" r="90" fill="#121620" stroke="#38bdf8" stroke-width="6"/>
-                        <g class="fan-blade">
-                            <circle cx="202" cy="177" r="27" fill="#f59e0b"/>
-                            <path d="M202 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                            <path d="M202 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+                    <!-- Kaliteli, Orantılı ve Kusursuz Dönen Fanlı Ekran Kartı SVG -->
+                    <svg class="gpu-svg-art" viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg">
+                        <!-- Kart Gövdesi -->
+                        <rect x="20" y="25" width="660" height="200" rx="35" fill="#131722" stroke="#252f4a" stroke-width="6"/>
+                        <!-- PCI Bağlantı Kısmı -->
+                        <rect x="180" y="225" width="140" height="15" fill="#f59e0b" rx="4"/>
+                        <!-- Sol Süs / Çizgi -->
+                        <path d="M35 55H65V195H35z" fill="#1a2236" rx="6"/>
+
+                        <!-- FAN 1 -->
+                        <g transform="translate(175, 125)">
+                            <circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/>
+                            <g class="fan-group-1">
+                                <circle r="22" fill="#f59e0b"/>
+                                <path d="M0 0 L-18 -45 C-35 -30 -35 -10 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L45 -18 C30 -35 10 -35 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L18 45 C35 30 35 10 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L-45 18 C-30 35 -10 35 0 0Z" fill="#4338ca"/>
+                            </g>
                         </g>
 
-                        <!-- 2. Fan -->
-                        <circle cx="500" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
-                        <g class="fan-blade-2">
-                            <circle cx="500" cy="177" r="27" fill="#f5ce0b"/>
-                            <path d="M500 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                            <path d="M500 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+                        <!-- FAN 2 -->
+                        <g transform="translate(350, 125)">
+                            <circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/>
+                            <g class="fan-group-2">
+                                <circle r="22" fill="#f59e0b"/>
+                                <path d="M0 0 L-18 -45 C-35 -30 -35 -10 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L45 -18 C30 -35 10 -35 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L18 45 C35 30 35 10 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L-45 18 C-30 35 -10 35 0 0Z" fill="#4338ca"/>
+                            </g>
                         </g>
 
-                        <!-- 3. Fan -->
-                        <circle cx="698" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
-                        <g class="fan-blade-3">
-                            <circle cx="698" cy="177" r="27" fill="#f5ce0b"/>
-                            <path d="M698 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                            <path d="M698 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
+                        <!-- FAN 3 -->
+                        <g transform="translate(525, 125)">
+                            <circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/>
+                            <g class="fan-group-3">
+                                <circle r="22" fill="#f59e0b"/>
+                                <path d="M0 0 L-18 -45 C-35 -30 -35 -10 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L45 -18 C30 -35 10 -35 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L18 45 C35 30 35 10 0 0Z" fill="#4338ca"/>
+                                <path d="M0 0 L-45 18 C-30 35 -10 35 0 0Z" fill="#4338ca"/>
+                            </g>
                         </g>
                     </svg>
                     <div class="click-hint">HİSSE ÇÖZMEK İÇİN DOKUN</div>
@@ -390,13 +401,13 @@
             </div>
         </div>
 
-        <!-- MARKET PANEELİ -->
+        <!-- MARKET PANELİ -->
         <div id="pane-market" class="pane">
             <div class="section-title">Ekran Kartı Pazarı</div>
 
             <div class="shop-card">
                 <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
                     <div class="shop-info">
                         <h4>RX 470 8GB <span id="cnt-rx470" style="color:var(--primary);">(0)</span></h4>
                         <p>28 MH/s • 120W • <span id="prc-rx470">10.00</span> PTS</p>
@@ -407,7 +418,7 @@
 
             <div class="shop-card">
                 <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
                     <div class="shop-info">
                         <h4>RX 590 8GB <span id="cnt-rx590" style="color:var(--primary);">(0)</span></h4>
                         <p>32 MH/s • 145W • <span id="prc-rx590">45.00</span> PTS</p>
@@ -418,7 +429,7 @@
 
             <div class="shop-card">
                 <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
                     <div class="shop-info">
                         <h4>RTX 3060 Ti <span id="cnt-rtx3060" style="color:var(--primary);">(0)</span></h4>
                         <p>60 MH/s • 130W • <span id="prc-rtx3060">180.00</span> PTS</p>
@@ -429,7 +440,7 @@
 
             <div class="shop-card">
                 <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
                     <div class="shop-info">
                         <h4>RX 6700 XT <span id="cnt-rx6700" style="color:var(--primary);">(0)</span></h4>
                         <p>82 MH/s • 160W • <span id="prc-rx6700">550.00</span> PTS</p>
@@ -440,7 +451,7 @@
 
             <div class="shop-card">
                 <div class="shop-left">
-                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <svg class="shop-thumb" viewBox="0 0 700 250"><use href="#gpu-mini-template"/></svg>
                     <div class="shop-info">
                         <h4>RTX 4080 <span id="cnt-rtx4080" style="color:var(--primary);">(0)</span></h4>
                         <p>145 MH/s • 220W • <span id="prc-rtx4080">1800.00</span> PTS</p>
@@ -450,14 +461,14 @@
             </div>
         </div>
 
-        <!-- ATÖLYE PANEELİ -->
+        <!-- ATÖLYE PANELİ -->
         <div id="pane-workshop" class="pane">
             <div class="section-title">Atölye ve Eklentiler</div>
             
             <div class="shop-card">
                 <div class="shop-info" style="margin-left: 4px;">
                     <h4>BIOS Mod & OC</h4>
-                    <p>Tıklama gücünü artırır (+0.05 PTS)</p>
+                    <p>Tıklama gücünü artırır (+0.03 PTS)</p>
                 </div>
                 <button class="action-btn" id="btn-oc" onclick="buyUpgrade('oc')">25.00 PTS</button>
             </div>
@@ -489,33 +500,16 @@
     </div>
 </div>
 
-<!-- Market ve Rig İçin Ortak SVG Şablonu (Dönen Fanlar Dahil) -->
+<!-- Market Küçük Görseller İçin Şablon -->
 <svg style="display:none;">
     <defs>
-        <g id="gpu-template">
-            <rect width="800" height="354" rx="40" fill="#151622"/>
-            <path d="M22 52H57V302H22r0-250z" fill="#272a18"/>
-            
-            <circle cx="202" cy="177" r="90" fill="#121620" stroke="#38bdf8" stroke-width="6"/>
-            <g class="fan-blade">
-                <circle cx="202" cy="177" r="27" fill="#f59e0b"/>
-                <path d="M202 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                <path d="M202 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
-            </g>
-
-            <circle cx="500" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
-            <g class="fan-blade-2">
-                <circle cx="500" cy="177" r="27" fill="#f5ce0b"/>
-                <path d="M500 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                <path d="M500 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
-            </g>
-
-            <circle cx="698" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
-            <g class="fan-blade-3">
-                <circle cx="698" cy="177" r="27" fill="#f5ce0b"/>
-                <path d="M698 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
-                <path d="M698 177l50-50c36 36 36 95 0 131s-95 36-131 0z" fill="#6366f1"/>
-            </g>
+        <g id="gpu-mini-template">
+            <rect x="20" y="25" width="660" height="200" rx="35" fill="#131722" stroke="#252f4a" stroke-width="6"/>
+            <rect x="180" y="225" width="140" height="15" fill="#f59e0b" rx="4"/>
+            <path d="M35 55H65V195H35z" fill="#1a2236"/>
+            <g transform="translate(175, 125)"><circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/><circle r="22" fill="#f59e0b"/></g>
+            <g transform="translate(350, 125)"><circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/><circle r="22" fill="#f59e0b"/></g>
+            <g transform="translate(525, 125)"><circle r="75" fill="#090c15" stroke="#38bdf8" stroke-width="4"/><circle r="22" fill="#f59e0b"/></g>
         </g>
     </defs>
 </svg>
