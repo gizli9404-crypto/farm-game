@@ -2,375 +2,250 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HiveOS / MinerStat Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Bot Şablon Ön İzleme Yöneticisi</title>
     <style>
         :root {
-            --bg-dark: #0a0e17;
-            --card-bg: #131b2e;
-            --border-color: #1e293b;
-            --accent-cyan: #06b6d4;
-            --accent-green: #10b981;
-            --accent-orange: #f59e0b;
-            --text-main: #f8fafc;
-            --text-muted: #64748b;
+            --bg: #0f172a;
+            --panel: #1e293b;
+            --border: #334155;
+            --accent: #38bdf8;
+            --text: #f8fafc;
+            --muted: #94a3b8;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            user-select: none;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--text);
             display: flex;
-            justify-content: center;
-            align-items: center;
             height: 100vh;
             overflow: hidden;
         }
 
-        .rig-dashboard {
-            width: 100%;
-            max-width: 410px;
-            height: 100%;
-            max-height: 840px;
-            background: var(--bg-dark);
+        /* Sol Menü: Bot / Şablon Listesi */
+        .sidebar {
+            width: 350px;
+            background: var(--panel);
+            border-right: 1px solid var(--border);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 14px;
-            border: 1px solid var(--border-color);
+            padding: 20px;
         }
 
-        /* Header Üst Panel */
-        .rig-header {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px 16px;
+        .sidebar h2 {
+            font-size: 16px;
+            color: var(--accent);
+            margin-bottom: 5px;
+        }
+
+        .sidebar p {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 20px;
+        }
+
+        .template-list {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .rig-identity h3 {
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--accent-cyan);
-            letter-spacing: 0.5px;
-        }
-
-        .rig-identity p {
-            font-size: 10px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .rig-status-badge {
-            background: rgba(16, 185, 129, 0.15);
-            color: var(--accent-green);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
-        }
-
-        /* İstatistik Kartları */
-        .metrics-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin: 10px 0;
-        }
-
-        .metric-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 10px 8px;
-            text-align: center;
-        }
-
-        .metric-card .label {
-            font-size: 9px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .metric-card .value {
-            font-size: 13px;
-            font-weight: 700;
-            color: var(--text-main);
-            margin-top: 4px;
-        }
-
-        /* Ana Havuz / Bakiye Alanı */
-        .pool-balance-box {
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            position: relative;
-        }
-
-        .pool-balance-box .title {
-            font-size: 10px;
-            color: var(--text-muted);
-            letter-spacing: 1px;
-        }
-
-        .pool-balance-box .amount {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--accent-green);
-            margin: 6px 0;
-        }
-
-        /* Donanım Rig Listesi */
-        .hardware-container {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            flex-grow: 1;
-            margin: 10px 0;
+            flex-direction: column;
+            gap: 10px;
             overflow-y: auto;
         }
 
-        .section-title {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .gpu-card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-color);
+        .template-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            padding: 12px;
             border-radius: 8px;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-
-        .gpu-info h5 {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-main);
-        }
-
-        .gpu-info p {
-            font-size: 10px;
-            color: var(--accent-cyan);
-            margin-top: 2px;
-        }
-
-        .gpu-action {
-            background: rgba(6, 182, 212, 0.1);
-            color: var(--accent-cyan);
-            border: 1px solid rgba(6, 182, 212, 0.3);
-            padding: 5px 10px;
-            font-size: 10px;
-            font-weight: 700;
-            border-radius: 6px;
             cursor: pointer;
-        }
-
-        /* Senin Reklam Geliri Alanı (Zorunlu Havuz Kilidi) */
-        .ad-revenue-banner {
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px dashed rgba(245, 158, 11, 0.4);
-            border-radius: 12px;
-            padding: 12px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .ad-revenue-text h5 {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent-orange);
-        }
-
-        .ad-revenue-text p {
-            font-size: 9px;
-            color: var(--text-muted);
-            margin-top: 2px;
-        }
-
-        .watch-ad-btn {
-            background: var(--accent-orange);
-            color: #0a0e17;
-            border: none;
-            padding: 7px 12px;
-            font-size: 10px;
-            font-weight: 800;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        /* Alt Navigasyon Menüsü */
-        .nav-bar {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 8px;
-            gap: 6px;
-        }
-
-        .nav-btn {
-            text-align: center;
-            color: var(--text-muted);
-            font-size: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 8px;
             transition: 0.2s;
         }
 
-        .nav-btn.active, .nav-btn:hover {
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--accent-cyan);
+        .template-card:hover, .template-card.active {
+            border-color: var(--accent);
+            background: rgba(56, 189, 248, 0.05);
         }
 
-        .nav-btn .icon {
-            font-size: 16px;
-            margin-bottom: 2px;
+        .template-card h4 {
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .template-card span {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        /* Sağ Taraf: Canlı Ön İzleme Ekranı */
+        .preview-area {
+            flex-grow: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #090d16;
+            position: relative;
+        }
+
+        .phone-mockup {
+            width: 380px;
+            height: 750px;
+            background: #000;
+            border: 10px solid #222;
+            border-radius: 35px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #fff;
         }
     </style>
 </head>
 <body>
 
-    <div class="rig-dashboard">
-        <!-- Üst Panel -->
-        <div class="rig-header">
-            <div class="rig-identity">
-                <h3>RIG-MASTER #01</h3>
-                <p>Kocaeli Havuz • Ethash</p>
-            </div>
-            <div class="rig-status-badge">🟢 ONLINE</div>
-        </div>
+    <!-- Sol Seçim Paneli -->
+    <div class="sidebar">
+        <h2>Bot Şablon Seçici</h2>
+        <p>Aşağıdaki tasarımlara tıklayarak sağdaki ekranda anında ön izlemesini gör.</p>
 
-        <!-- İstatistik Grid -->
-        <div class="metrics-grid">
-            <div class="metric-card">
-                <div class="label">Hashrate</div>
-                <div class="value" id="hashrate">64.2 MH</div>
+        <div class="template-list">
+            <div class="template-card active" onclick="loadTemplate('rig1', this)">
+                <h4>1. Saf Rig & Havuz Paneli</h4>
+                <span>RX 470 / RX 590, Sıcaklık ve Hashrate odaklı</span>
             </div>
-            <div class="metric-card">
-                <div class="label">Sıcaklık</div>
-                <div class="value">63 °C</div>
+            <div class="template-card" onclick="loadTemplate('rig2', this)">
+                <h4>2. HiveOS / Modern MinerStat</h4>
+                <span>Koyu tema, profesyonel rig takip arayüzü</span>
             </div>
-            <div class="metric-card">
-                <div class="label">Verimlilik</div>
-                <div class="value">340 kH/W</div>
-            </div>
-        </div>
-
-        <!-- Havuz Bakiye Konsolu -->
-        <div class="pool-balance-box">
-            <div class="title">HAVUZDA BİRİKEN BAKİYE</div>
-            <div class="amount" id="balance">0.045210</div>
-            <div style="font-size: 9px; color: var(--text-muted);">ETHW / USDT</div>
-        </div>
-
-        <!-- Donanım Rigleri -->
-        <div class="hardware-container">
-            <div class="section-title">
-                <span>Aktif GPU Birimleri</span>
-                <span>⚡</span>
-            </div>
-
-            <div class="gpu-card">
-                <div class="gpu-info">
-                    <h5>AMD RX 470 4GB</h5>
-                    <p>+24.5 MH/s • 90W</p>
-                </div>
-                <button class="gpu-action" onclick="optimizeGpu(this)">OC YAP</button>
-            </div>
-
-            <div class="gpu-card">
-                <div class="gpu-info">
-                    <h5>AMD RX 590 8GB</h5>
-                    <p>+39.7 MH/s • 130W</p>
-                </div>
-                <button class="gpu-action" onclick="optimizeGpu(this)">OC YAP</button>
-            </div>
-        </div>
-
-        <!-- Reklam & Monetizasyon Alanı (Sana Para Kazandıracak Kısım) -->
-        <div class="ad-revenue-banner">
-            <div class="ad-revenue-text">
-                <h5>Ödeme Kanalı Kilidi</h5>
-                <p>Bakiyenin cüzdana düşmesi için reklam onayı şart.</p>
-            </div>
-            <button class="watch-ad-btn" onclick="triggerAdMonetization()">REKLAM İZLE</button>
-        </div>
-
-        <!-- Alt Menü -->
-        <div class="nav-bar">
-            <div class="nav-btn active">
-                <div class="icon">💻</div>Rigler
-            </div>
-            <div class="nav-btn" onclick="alert('Market: Yeni nesil ekran kartları eklemek ve hashrate yükseltmek için bakiye biriktir.')">
-                <div class="icon">🛒</div>Market
-            </div>
-            <div class="nav-btn" onclick="alert('Görevler: Sponsorlu reklam görevlerini tamamlayarak ekstra gelir elde et.')">
-                <div class="icon">🎯</div>Görevler
-            </div>
-            <div class="nav-btn" onclick="alert('Cüzdan: Çekim yapabilmek için günlük reklam izleme sınırını tamamlamalısın.')">
-                <div class="icon">💳</div>Cüzdan
+            <div class="template-card" onclick="loadTemplate('rig3', this)">
+                <h4>3. Özelleştirilebilir Atölye</h4>
+                <span>Kullanıcının kart ve algoritma seçebildiği panel</span>
             </div>
         </div>
     </div>
 
+    <!-- Sağ Canlı Ön İzleme Alanı -->
+    <div class="preview-area">
+        <div class="phone-mockup">
+            <iframe id="previewFrame" srcdoc=""></iframe>
+        </div>
+    </div>
+
     <script>
-        let balance = 0.045210;
-        let hashrate = 64.2;
+        // Şablonların HTML kodlarını burada tutuyoruz
+        const templates = {
+            rig1: `
+                <!DOCTYPE html>
+                <html lang="tr">
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { background: #090c10; color: #fff; font-family: monospace; padding: 15px; margin: 0; }
+                        .box { background: #161b22; border: 1px solid #30363d; padding: 12px; border-radius: 8px; margin-bottom: 10px; text-align: center; }
+                        h3 { color: #00ff88; font-size: 14px; margin: 0 0 5px 0; }
+                        .btn { background: #f0883e; color: #000; border: none; padding: 8px 12px; font-weight: bold; border-radius: 4px; width: 100%; cursor: pointer; margin-top: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="box">
+                        <h3>WORKER_01 (Kocaeli)</h3>
+                        <p style="font-size: 11px; color: #8b949e;">Hashrate: 64.2 MH/s</p>
+                    </div>
+                    <div class="box">
+                        <span style="font-size: 10px; color: #8b949e;">BİRİKEN KAZANÇ</span>
+                        <div style="font-size: 22px; color: #00ff88; font-weight: bold; margin: 5px 0;">0.004200 USDT</div>
+                    </div>
+                    <div class="box" style="border-style: dashed; border-color: #f0883e;">
+                        <span style="font-size: 11px; color: #f0883e;">Ödeme Kilidi Aktif</span>
+                        <button class="btn" onclick="alert('Ön izleme modu: Reklam tetiklendi!')">REKLAM İZLE & ÇEK</button>
+                    </div>
+                </body>
+                </html>
+            `,
+            rig2: `
+                <!DOCTYPE html>
+                <html lang="tr">
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { background: #0a0e17; color: #f8fafc; font-family: sans-serif; padding: 15px; margin: 0; }
+                        .card { background: #131b2e; border: 1px solid #1e293b; padding: 14px; border-radius: 12px; margin-bottom: 10px; }
+                        .title { font-size: 13px; font-weight: bold; color: #06b6d4; }
+                        .btn { background: #f59e0b; color: #0a0e17; border: none; padding: 8px; width: 100%; font-weight: bold; border-radius: 6px; cursor: pointer; margin-top: 10px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="card">
+                        <div class="title">HIVEOS PRO PANEL</div>
+                        <p style="font-size: 10px; color: #64748b; margin-top: 2px;">Durum: Çevrim içi 🟢</p>
+                    </div>
+                    <div class="card" style="text-align: center;">
+                        <span style="font-size: 10px; color: #64748b;">HAVUZ BAKİYESİ</span>
+                        <div style="font-size: 24px; font-weight: 800; color: #10b981; margin: 5px 0;">0.045210 ETH</div>
+                    </div>
+                    <div class="card" style="border: 1px dashed #f59e0b;">
+                        <div style="font-size: 11px; font-weight: bold; color: #f59e0b;">Havuz Onay Gerekiyor</div>
+                        <button class="btn" onclick="alert('Ön izleme modu: Reklam izlendi!')">REKLAM İLE ONAYLA</button>
+                    </div>
+                </body>
+                </html>
+            `,
+            rig3: `
+                <!DOCTYPE html>
+                <html lang="tr">
+                <head>
+                    <meta charset="UTF-8">
+                    <style>
+                        body { background: #0d1117; color: #c9d1d9; font-family: sans-serif; padding: 15px; margin: 0; }
+                        .panel { background: #161b22; border: 1px solid #30363d; padding: 12px; border-radius: 10px; margin-bottom: 10px; }
+                        .opt { display: flex; gap: 5px; margin-top: 8px; }
+                        .opt button { flex: 1; background: #21262d; border: 1px solid #30363d; color: #8b949e; padding: 6px; font-size: 10px; border-radius: 4px; cursor: pointer; }
+                        .opt button.active { background: rgba(88,166,255,0.15); border-color: #58a6ff; color: #58a6ff; font-weight: bold; }
+                    </style>
+                </head>
+                <body>
+                    <div class="panel">
+                        <div style="font-size: 11px; font-weight: bold; color: #58a6ff; margin-bottom: 5px;">GPU Seçimi Yap</div>
+                        <div class="opt">
+                            <button class="active">RX 470</button>
+                            <button>RX 590</button>
+                            <button>RTX 3060</button>
+                        </div>
+                    </div>
+                    <div class="panel" style="text-align: center;">
+                        <span style="font-size: 9px; color: #8b949e;">ANLIK KAZANÇ</span>
+                        <div style="font-size: 20px; font-weight: bold; color: #2ea043; margin-top: 4px;">0.001540 ETH</div>
+                    </div>
+                </body>
+                </html>
+            `
+        };
 
-        // Gerçekçi madencilik bakiye artışı
-        setInterval(() => {
-            balance += 0.000002;
-            document.getElementById("balance").innerText = balance.toFixed(6);
-        }, 1000);
+        function loadTemplate(name, element) {
+            // Aktif sınıfını değiştir
+            document.querySelectorAll('.template-card').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
 
-        function optimizeGpu(btn) {
-            hashrate += 10.0;
-            document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH";
-            btn.innerText = "AKTİF";
-            btn.style.borderColor = "var(--accent-green)";
-            btn.style.color = "var(--accent-green)";
-            alert("🚀 GPU optimize edildi! Hashrate yükseltildi.");
+            // İframe içine şablonu bas
+            document.getElementById('previewFrame').srcdoc = templates[name];
         }
 
-        function triggerAdMonetization() {
-            // Telegram Adsgram veya harici reklam entegrasyonu buraya gelecek.
-            // Kullanıcı bu butona bastığında reklam açılacak, sen reklamlardan paranı kazanacaksın,
-            // kullanıcı da havuz onayını geçecek.
-            alert("📺 Reklam oynatılıyor... (Reklam başarıyla yüklendi, reklam geliriniz sisteme yansıtıldı!)");
-            balance += 0.005000;
-            document.getElementById("balance").innerText = balance.toFixed(6);
-            alert("🎉 Onaylandı! Havuz birikimi cüzdana aktarıldı.");
-        }
+        // Sayfa açıldığında ilk şablonu otomatik yükle
+        window.onload = () => {
+            document.getElementById('previewFrame').srcdoc = templates.rig1;
+        };
     </script>
 </body>
 </html>
