@@ -178,7 +178,7 @@
             margin-top: 2px;
         }
 
-        /* GPU Donanım Butonu (Animasyonlu) */
+        /* Ana Ekran Kartı Kazım Butonu */
         .mining-section {
             display: flex;
             flex-direction: column;
@@ -187,8 +187,8 @@
         }
 
         .gpu-rig-btn {
-            width: 170px;
-            height: 170px;
+            width: 220px;
+            height: 220px;
             border-radius: 50%;
             background: radial-gradient(circle at 30% 30%, #1e293b, #070a12);
             border: 4px solid var(--primary);
@@ -201,32 +201,35 @@
             position: relative;
             transition: transform 0.05s ease;
             margin: 10px 0;
+            overflow: hidden;
         }
 
         .gpu-rig-btn:active {
             transform: scale(0.94);
         }
 
-        .gpu-rig-icon {
-            font-size: 50px;
+        .gpu-rig-img {
+            width: 130px;
+            height: auto;
             filter: drop-shadow(0 0 12px var(--primary-glow));
             transition: transform 0.2s;
         }
 
         .spinning {
-            animation: spinFans 0.8s linear infinite;
+            animation: spinGpu 0.6s linear infinite;
         }
 
-        @keyframes spinFans {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        @keyframes spinGpu {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(5deg); }
+            100% { transform: scale(1) rotate(0deg); }
         }
 
         .gpu-rig-text {
             font-size: 10px;
             font-weight: 800;
             color: var(--primary);
-            margin-top: 4px;
+            margin-top: 8px;
             letter-spacing: 0.5px;
         }
 
@@ -261,11 +264,21 @@
             text-align: left;
         }
 
+        .shop-icon-img {
+            width: 48px;
+            height: auto;
+            background: var(--surface-card);
+            padding: 6px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            object-fit: contain;
+        }
+
         .shop-icon {
             font-size: 24px;
             background: var(--surface-card);
-            width: 40px;
-            height: 40px;
+            width: 48px;
+            height: 48px;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -396,7 +409,7 @@
 
             <div class="mining-section">
                 <div class="gpu-rig-btn" onclick="performShareMining(event)">
-                    <div class="gpu-rig-icon" id="rig-icon">🖥️</div>
+                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9" alt="GPU" class="gpu-rig-img" id="rig-image" style="background:#090d16; border-radius:10px; padding:4px;">
                     <div class="gpu-rig-text">HİSSE ÇÖZ</div>
                 </div>
                 <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 8px; text-align: center;">
@@ -405,13 +418,13 @@
             </div>
         </div>
 
-        <!-- 2. DONANIM MARKETİ (Genişletilmiş Ekran Kartları) -->
+        <!-- 2. DONANIM MARKETİ (Ekran Kartları) -->
         <div id="pane-shop" class="pane" style="width: 100%;">
             <div class="section-title">💻 Ekran Kartı Pazarı</div>
 
             <div class="shop-card">
                 <div class="shop-info">
-                    <div class="shop-icon">⚡</div>
+                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
                     <div>
                         <div class="shop-name">RX 470 8GB <span style="color:var(--primary); font-size:11px;" id="count-rx470">(0)</span></div>
                         <div class="shop-desc">28 MH/s • 120W • Fiyat: <span id="price-rx470">10.00</span> PTS</div>
@@ -422,7 +435,7 @@
 
             <div class="shop-card">
                 <div class="shop-info">
-                    <div class="shop-icon">🔥</div>
+                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
                     <div>
                         <div class="shop-name">RX 590 8GB <span style="color:var(--primary); font-size:11px;" id="count-rx590">(0)</span></div>
                         <div class="shop-desc">32 MH/s • 145W • Fiyat: <span id="price-rx590">45.00</span> PTS</div>
@@ -433,7 +446,7 @@
 
             <div class="shop-card">
                 <div class="shop-info">
-                    <div class="shop-icon">🚀</div>
+                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
                     <div>
                         <div class="shop-name">RTX 3060 Ti <span style="color:var(--primary); font-size:11px;" id="count-rtx3060">(0)</span></div>
                         <div class="shop-desc">60 MH/s • 130W • Fiyat: <span id="price-rtx3060">180.00</span> PTS</div>
@@ -444,7 +457,7 @@
 
             <div class="shop-card">
                 <div class="shop-info">
-                    <div class="shop-icon">💎</div>
+                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
                     <div>
                         <div class="shop-name">RX 6700 XT <span style="color:var(--primary); font-size:11px;" id="count-rx6700">(0)</span></div>
                         <div class="shop-desc">82 MH/s • 160W • Fiyat: <span id="price-rx6700">550.00</span> PTS</div>
@@ -455,7 +468,7 @@
 
             <div class="shop-card">
                 <div class="shop-info">
-                    <div class="shop-icon">👑</div>
+                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
                     <div>
                         <div class="shop-name">RTX 4080 <span style="color:var(--primary); font-size:11px;" id="count-rtx4080">(0)</span></div>
                         <div class="shop-desc">145 MH/s • 220W • Fiyat: <span id="price-rtx4080">1800.00</span> PTS</div>
@@ -523,7 +536,19 @@
 </div>
 
 <script>
-    // Web Audio API ile Harici Dosya Gerektirmeyen Ses Efektleri
+    // Gönderdiğin ekran kartı görselinin base64 formatı
+    const gpuImageBase64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgMzU0Ij4KPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSIzNTQiIHJ4PSI0MCIgZmlsbD0iIzE1MTYyMiIvPgo8cGF0aCBkPSJNMjIgNTJINTdWMzAySDIycjAtMjUweiIgZmlsbD0iIzI3MmExOCIvPgo8Y2lyY2xlIGN4PSIyMDIiIGNjeT0iMTc3IiByPSI5MCIgZmlsbD0iIzEyMTYyMCIgc3Ryb2tlPSIjMzhiZGY4IiBzdHJva2Utd2lkdGg9IjYiLz4KPGNpcmNsZSBjeT0iMjAyIiBjY3k9IjE3NyIgcj0iMjciIGZpbGw9IiNmNW
+9lMGIiLz4KPHBhdGggZD0iTTIwMiAxNzdsLTUwIDUwYy0zNi0zNi0zNi05NSAwLTEzMXM5NS0zNiAxMzEgMHoiIGZpbGw9IiM2MzY2ZjEiLz4KPHBhdGggZD0iTTIwMiAxNzdsNTAgNTBjMzYtMzYgMzYtOTUgMC0xMzFzLTk1LTM2LTEzMSAweiIgZmlsbD0iIzRhMDUwZSIvPgo8Y2lyY2xlIGN4PSI1MDAiIGNjeT0iMTc3IiByPSI5MCIgZmlsbD0iIzEyMTYyM0IiIHN0cm9rZT0iIzM4YmRmOCIgc3Ryb2tlLXdpZHRoPSI2Ii8+CjxjaXJjbGUgY3g9IjUwMCIgY2N5PSIxNzciIHI9IjI3IiBmaWxsPSIjZjVjZTBiIi8+CjxwYXRoIGQ9Ik01MDAgMTc3bC01MCA1MGMtMzYtMzYtMzYtOTUgMC0xMzFzOTUtMzYgMTMxIDB6IiBmaWxsPSIjNjM2NmYxIi8+CjxwYXRoIGQ9Ik01MDAgMTc3bDUwIDUwYzM2LTM2IDM2LTk1IDAtMTMxcy05NS0zNi0xMzEgMHoiIGZpbGw9IiM0YTA1MGUiLz4KPGNpcmNsZSBjeT0iNjk4IiBjY3k9IjE3NyIgcj0iOTAiIGZpbGw9IiMxMjE2MjMiIHN0cm9rZT0iIzM4YmRmOCIgc3Ryb2tlLXdpZHRoPSI2Ii8+CjxjaXJjbGUgY3g9IjY5OCIgY2N5PSIxNzciIHI9IjI3IiBmaWxsPSIjZjVjZTBiIi8+CjxwYXRoIGQ9Ik02OTggMTc3bC01MCA1MGMtMzYtMzYtMzYtOTUgMC0xMzFzOTUtMzYgMTMxIDB6IiBmaWxsPSIjNjM2NmYxIi8+CjxwYXRoIGQ9Ik02OTggMTc3bDUwIDUwYzM2LTM2IDM2LTk1IDAtMTMxcy05NS0zNi0xMzEgMHoiIGZpbGw9IiM0YTA1MGUiLz4KPC9zdmc+";
+
+    // Sayfa yüklendiğinde görselleri otomatik yerleştir
+    window.onload = function() {
+        document.getElementById('rig-image').src = gpuImageBase64;
+        let marketImgs = document.querySelectorAll('.gpu-market-img');
+        marketImgs.forEach(img => img.src = gpuImageBase64);
+        updateUI();
+    };
+
+    // Web Audio API ile Ses Efektleri
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep(freq, type, duration) {
         if (!audioCtx) return;
@@ -578,7 +603,6 @@
             let earned = (hashrate * 0.00004);
             balance += earned;
 
-            // Sıcaklık ve Güç Hesaplaması
             temperature = 40 + (powerDraw * psuEfficiency / 20) - coolingBonus;
             if (temperature < 38) temperature = 38;
 
@@ -603,14 +627,14 @@
 
     function performShareMining(e) {
         balance += clickPower;
-        playBeep(650, 'triangle', 0.08); // Tıklama ses efekti
+        playBeep(650, 'triangle', 0.08); 
         updateUI();
         saveState();
 
-        // Icon Animasyonu Tetikle
-        let icon = document.getElementById('rig-icon');
-        icon.classList.add('spinning');
-        setTimeout(() => icon.classList.remove('spinning'), 300);
+        // Kart görselini döndürme efekti tetikle
+        let rigImg = document.getElementById('rig-image');
+        rigImg.classList.add('spinning');
+        setTimeout(() => rigImg.classList.remove('spinning'), 400);
 
         let container = document.getElementById('main-container');
         let rect = container.getBoundingClientRect();
@@ -635,7 +659,7 @@
             hashrate += rateInc;
             powerDraw += powerInc;
             gpu.price = Math.round(gpu.price * 1.22 * 100) / 100;
-            playBeep(880, 'sine', 0.15); // Satın alım ses efekti
+            playBeep(880, 'sine', 0.15);
             updateUI();
             saveState();
         } else {
@@ -673,7 +697,7 @@
     function buyPSU() {
         if (balance >= psuCost) {
             balance -= psuCost;
-            psuEfficiency -= 0.15; // Güç tüketim katsayısını iyileştirir
+            psuEfficiency -= 0.15;
             if (psuEfficiency < 0.5) psuEfficiency = 0.5;
             psuCost = Math.round(psuCost * 1.8 * 100) / 100;
             playBeep(920, 'sine', 0.15);
@@ -717,10 +741,6 @@
         document.getElementById('btn-cool').innerText = coolCost.toFixed(2) + " PTS";
         document.getElementById('btn-psu').innerText = psuCost.toFixed(2) + " PTS";
     }
-
-    window.onload = function() {
-        updateUI();
-    };
 </script>
 </body>
 </html>
