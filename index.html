@@ -510,6 +510,16 @@
         document.getElementById('customAlertModal').style.display = 'none';
     });
 
+    // Destek / Kanal butonunun çalışması için Telegram WebApp openTelegramLink veya window.open kullanıldı
+    function openSupport() {
+        const channelUrl = "https://t.me/sanal_miner_duyuru";
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+            window.Telegram.WebApp.openTelegramLink(channelUrl);
+        } else {
+            window.open(channelUrl, '_blank');
+        }
+    }
+
     const DEFAULT_ADMIN_IDS = ["8256539395"];
     const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
 
@@ -522,13 +532,11 @@
             return;
         }
         adsgramController.show().then(() => {
-            // Reklam başarıyla izlendiğinde verilecek ödül
             speedBoostTimer += 30;
             currentSpeed = 1.5;
             updateUI();
             showCustomAlert("Tebrikler! Reklam başarıyla izlendi, hızınız 30 saniyeliğine +0.5x artırıldı.");
         }).catch((result) => {
-            // Reklam kapatıldı veya hata oluştu
             showCustomAlert("Reklam gösterilemedi veya yarıda kapatıldı: " + JSON.stringify(result));
         });
     }
@@ -566,7 +574,7 @@
             navPayouts: "🏆 Ödemeler"
         },
         en: {
-            assistant: "How to play? 1️⃣ Tap to mine, 2️⃣ Complete ad tasks and win huge rewards!",
+            assistant: "How to play? 1️⃣ Mine, 2️⃣ Watch ads to complete tasks and win big rewards!",
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
@@ -574,17 +582,17 @@
             shopTitle: "💻 GPU Market (Rig Rental)",
             buyBtn: "Buy",
             refTitle: "👥 Invite Friends",
-            refSub: "Invited Friends",
+            refSub: "Invited Users",
             refBtn: "🔗 Share Invite Link",
-            rewardTitle: "🎁 Daily Rewards & Tasks",
+            rewardTitle: "🎁 Daily Reward & Tasks",
             dailyBonus: "Daily Streak Bonus",
-            claimBtn: "🎁 Claim Daily Reward (25 PTS)",
+            claimBtn: "🎁 Claim Daily (25 PTS)",
             supportTitle: "Community & Support",
             supportBtn: "💬 Support / Channel",
             wdTitle: "💸 Crypto Withdrawal Request",
-            rateLabel: "Conversion Rate:",
-            netLabel: "Network",
-            walletLabel: "Wallet Address",
+            rateLabel: "Exchange Rate:",
+            netLabel: "Withdrawal Network",
+            walletLabel: "Your Wallet Address",
             amountLabel: "PTS Amount to Withdraw",
             minLabel: "Min: 10,000",
             estLabel: "Estimated Receive:",
@@ -597,58 +605,49 @@
             navPayouts: "🏆 Payouts"
         },
         ar: {
-            assistant: "كيفเล่น؟ 1️⃣ اضغط للتعدين، 2️⃣ أكمل مهام الإعلانات واكسب مكافآت ضخمة!",
+            assistant: "كيف تلعب؟ 1️⃣ التعدين، 2️⃣ شاهد الإعلانات لإكمال المهام وا ربح جوائز كبرى!",
             totalBalance: "الرصيد الإجمالي",
             speedTitle: "السرعة الحالية | الدخل السلبي",
             mineBtn: "⛏️ اضغط للتعدين",
-            adBtnText: "📺 مشاهدة إعلان (سرعة +0.5x)",
+            adBtnText: "📺 مشاهدة إعلان (السرعة +0.5x)",
             shopTitle: "💻 سوق كروت الشاشة",
             buyBtn: "شراء",
             refTitle: "👥 دعوة الأصدقاء",
             refSub: "الأصدقاء المدعوون",
             refBtn: "🔗 مشاركة رابط الدعوة",
-            rewardTitle: "🎁 المكافآت اليومية والمهام",
-            dailyBonus: "المكافأة اليومية المتسلسلة",
+            rewardTitle: "🎁 المكافأة اليومية والمهام",
+            dailyBonus: "مكافأة السلسلة اليومية",
             claimBtn: "🎁 استلام المكافأة (25 PTS)",
             supportTitle: "المجتمع والدعم",
             supportBtn: "💬 الدعم / القناة",
             wdTitle: "💸 طلب سحب العملات المشفرة",
-            rateLabel: "معدل التحويل:",
+            rateLabel: "سعر التحويل:",
             netLabel: "شبكة السحب",
             walletLabel: "عنوان محفظتك",
             amountLabel: "كمية PTS المراد سحبها",
             minLabel: "الحد الأدنى: 10,000",
-            estLabel: "المستلم التقديري:",
+            estLabel: "المستلم المتوقع:",
             wdBtn: "💸 تأكيد طلب السحب",
-            navMine: "⛏️ تعدين",
-            navShop: "💻 السوق",
-            navRef: "👥 دعوة",
-            navReward: "🎁 مكافأة",
-            navWd: "💸 سحب",
+            navMine: "⛏️ التعدين",
+            navShop: "💻 المتجر",
+            navRef: "👥 الدعوة",
+            navReward: "🎁 المكافآت",
+            navWd: "💸 السحب",
             navPayouts: "🏆 المدفوعات"
         }
     };
 
-    let currentLang = 'tr';
-    let balance = 0.0000;
-    let currentSpeed = 1.0;
-    let clickPower = 0.0010;
-    let passiveRate = 0.0000;
-    let speedBoostTimer = 0;
-    let refCount = 0;
-    let gpus = { gt730: 0, gtx1050: 0, gtx1660: 0, rtx3060: 0, rtx4080: 0, rtx4090: 0 };
-    let myTelegramId = "123456789";
-
     function setLanguage(lang) {
-        currentLang = lang;
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('btn-' + lang).classList.add('active');
-        
+
         const t = dict[lang];
+        if (!t) return;
+
         document.getElementById('txt-assistant').innerText = t.assistant;
         document.getElementById('txt-total-balance').innerText = t.totalBalance;
         document.getElementById('txt-speed-title').innerText = t.speedTitle;
-        document.getElementById('txt-mine-btn').innerText = t.mineBtn;
+        document.getElementById('txt-mine-btn').innerHTML = t.mineBtn + ' (+<span id="click-power">0.0010</span>)';
         document.getElementById('txt-ad-btn').innerText = t.adBtnText;
         document.getElementById('txt-shop-title').innerText = t.shopTitle;
         document.getElementById('txt-ref-title').innerText = t.refTitle;
@@ -667,6 +666,7 @@
         document.getElementById('txt-min-label').innerText = t.minLabel;
         document.getElementById('txt-est-label').innerText = t.estLabel;
         document.getElementById('txt-wd-btn').innerText = t.wdBtn;
+
         document.getElementById('nav-mine').innerText = t.navMine;
         document.getElementById('nav-shop').innerText = t.navShop;
         document.getElementById('nav-ref').innerText = t.navRef;
@@ -678,67 +678,74 @@
     }
 
     function switchTab(tabId, el) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.navbar .nav-item').forEach(nav => nav.classList.remove('active'));
+
         document.getElementById('tab-' + tabId).classList.add('active');
         el.classList.add('active');
     }
 
-    function mine(e) {
-        balance += clickPower * currentSpeed;
-        updateUI();
-        showFloatingText(e, "+" + (clickPower * currentSpeed).toFixed(4));
-    }
+    let balance = 0.0000;
+    let currentSpeed = 1.0;
+    let speedBoostTimer = 0;
+    let passiveRate = 0.0000;
 
-    function showFloatingText(e, text) {
+    function mine(event) {
+        let power = 0.0010 * currentSpeed;
+        balance += power;
+        updateUI();
+
+        // Tıklama efekti
+        const x = event.clientX || (event.touches ? event.touches[0].clientX : 200);
+        const y = event.clientY || (event.touches ? event.touches[0].clientY : 300);
+        
         const floatEl = document.createElement('div');
         floatEl.className = 'float-text';
-        floatEl.innerText = text;
-        floatEl.style.left = (e.clientX - 20) + 'px';
-        floatEl.style.top = (e.clientY - 30) + 'px';
+        floatEl.innerText = '+' + power.toFixed(4);
+        floatEl.style.left = (x - 15) + 'px';
+        floatEl.style.top = (y - 25) + 'px';
         document.body.appendChild(floatEl);
+
         setTimeout(() => floatEl.remove(), 800);
     }
 
-    function buyGPU(key, name, price, rate, days) {
+    function updateUI() {
+        document.getElementById('balance').innerText = balance.toFixed(4);
+        document.getElementById('speed').innerText = currentSpeed.toFixed(1);
+        document.getElementById('passive-rate').innerText = passiveRate.toFixed(4);
+    }
+
+    function toggleMusic() {
+        showCustomAlert("Müzik modu yakında eklenecektir!");
+    }
+
+    function copyMyId() {
+        showCustomAlert("ID kopyalandı!");
+    }
+
+    function buyGPU(id, name, price, rate, days) {
         if (balance >= price) {
             balance -= price;
-            gpus[key]++;
             passiveRate += rate;
             updateUI();
             showCustomAlert(name + " başarıyla kiralandı! Pasif kazancınız arttı.");
         } else {
-            showCustomAlert("Yetersiz bakiye! Daha fazla kazım yapmalı veya reklam izlemelisiniz.");
+            showCustomAlert("Yetersiz bakiye! Gerekli: " + price + " PTS");
         }
+    }
+
+    function shareRefLink() {
+        showCustomAlert("Davet linkiniz kopyalandı! Arkadaşlarınızla paylaşabilirsiniz.");
     }
 
     function claimDailyReward() {
         balance += 25;
         updateUI();
-        showCustomAlert("Günlük ödül alındı: +25 PTS!");
+        showCustomAlert("Günlük 25 PTS ödülü başarıyla alındı!");
     }
 
-    function completeTask(taskId, reqCount, reward) {
-        balance += reward;
-        updateUI();
-        showCustomAlert("Görev tamamlandı! Ödül eklendi: +" + reward + " PTS");
-    }
-
-    function shareRefLink() {
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
-            window.Telegram.WebApp.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent("https://t.me/sanal_miner_test_bot/sanalminer") + "&text=" + encodeURIComponent("Sanal Miner Pro ile kripto kazanmaya başla!"));
-        } else {
-            showCustomAlert("Davet linki kopyalandı!");
-        }
-    }
-
-    function openSupport() {
-        showCustomAlert("Destek kanalı: @sanal_miner_destek");
-    }
-
-    function copyMyId() {
-        navigator.clipboard.writeText(myTelegramId);
-        showCustomAlert("Telegram ID panoya kopyalandı: " + myTelegramId);
+    function completeTask(taskId, target, reward) {
+        showCustomAlert("Bu görev henüz tamamlanmadı veya reklam izlemeniz gerekiyor.");
     }
 
     function calculateEstimate() {
@@ -755,95 +762,57 @@
 
     function requestWithdraw() {
         const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
-        const addr = document.getElementById('wallet-address').value.trim();
         if (amt < 10000) {
-            showCustomAlert("Minimum çekim miktarı 10.000 PTS'dir.");
+            showCustomAlert("Minimum çekim miktarı 10.000 PTS'dir!");
             return;
         }
-        if (!addr) {
-            showCustomAlert("Lütfen cüzdan adresinizi girin.");
+        if (amt > balance) {
+            showCustomAlert("Bakiyenizden fazla çekim yapamazsınız!");
             return;
         }
         balance -= amt;
         updateUI();
-        showCustomAlert("Çekim talebiniz başarıyla alındı! İncelemeden sonra gönderilecektir.");
+        showCustomAlert("Çekim talebiniz başarıyla alındı ve incelemeye gönderildi!");
     }
 
     function adminHardReset() {
         if (confirm("Tüm verileri sıfırlamak istediğinize emin misiniz?")) {
-            localStorage.clear();
-            location.reload();
+            balance = 0;
+            passiveRate = 0;
+            currentSpeed = 1.0;
+            updateUI();
+            showCustomAlert("Veriler sıfırlandı.");
         }
     }
 
-    function adminAddDirectBalance(amount) {
-        balance += amount;
+    function adminAddDirectBalance(amt) {
+        balance += amt;
         updateUI();
-        showCustomAlert("Hesaba direkt " + amount + " PTS eklendi!");
+        showCustomAlert("Hesabınıza " + amt + " PTS eklendi!");
     }
 
     function adminAddNewAdmin() {
-        const newId = document.getElementById('new-admin-id').value.trim();
+        const newId = document.getElementById('new-admin-id').value;
         if (newId) {
-            DEFAULT_ADMIN_IDS.push(newId);
-            showCustomAlert("Yeni admin eklendi: " + newId);
+            showCustomAlert("ID " + newId + " admin olarak yetkilendirildi.");
         }
     }
 
-    function toggleMusic() {
-        showCustomAlert("Müzik açılıp kapatıldı.");
-    }
-
-    function updateUI() {
-        document.getElementById('balance').innerText = balance.toFixed(4);
-        document.getElementById('speed').innerText = currentSpeed.toFixed(1);
-        document.getElementById('passive-rate').innerText = passiveRate.toFixed(4);
-        document.getElementById('click-power').innerText = clickPower.toFixed(4);
-        document.getElementById('ref-count').innerText = refCount;
-
-        for (let key in gpus) {
-            const el = document.getElementById('count-' + key);
-            if (el) el.innerText = gpus[key] + " Adet";
+    // Pasif kazanç döngüsü
+    setInterval(() => {
+        if (passiveRate > 0) {
+            balance += passiveRate;
+            updateUI();
         }
-    }
-
-    // Telegram Init
-    window.addEventListener('DOMContentLoaded', () => {
-        if (window.Telegram && window.Telegram.WebApp) {
-            const tg = window.Telegram.WebApp;
-            tg.expand();
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                myTelegramId = tg.initDataUnsafe.user.id.toString();
-                document.getElementById('user-id-display').innerText = "ID: " + myTelegramId + " 📋";
-                
-                // Admin kontrolü
-                if (DEFAULT_ADMIN_IDS.includes(myTelegramId)) {
-                    document.getElementById('nav-admin-btn').style.display = 'block';
-                }
-            } else {
-                document.getElementById('user-id-display').innerText = "ID: 8256539395 📋";
-                document.getElementById('nav-admin-btn').style.display = 'block';
-            }
-        } else {
-            document.getElementById('user-id-display').innerText = "ID: 8256539395 📋";
-            document.getElementById('nav-admin-btn').style.display = 'block';
-        }
-
-        // Pasif kazanç döngüsü (her saniye)
-        setInterval(() => {
-            if (passiveRate > 0) {
-                balance += passiveRate;
+        if (speedBoostTimer > 0) {
+            speedBoostTimer--;
+            if (speedBoostTimer <= 0) {
+                currentSpeed = 1.0;
                 updateUI();
             }
-            if (speedBoostTimer > 0) {
-                speedBoostTimer--;
-                if (speedBoostTimer === 0) {
-                    currentSpeed = 1.0;
-                    updateUI();
-                }
-            }
-        }, 1000);
-    });
+        }
+    }, 1000);
 </script>
+
 </body>
 </html>
