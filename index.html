@@ -3,30 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CryptoMiner Pro - Pool Manager</title>
+    <title>HiveOS / MinerStat Pro</title>
     <style>
         :root {
-            --bg: #090c10;
-            --panel: #161b22;
-            --border: #30363d;
-            --green: #238636;
-            --accent: #00ff88;
-            --warning: #f0883e;
-            --text: #ffffff;
-            --muted: #8b949e;
+            --bg-dark: #0a0e17;
+            --card-bg: #131b2e;
+            --border-color: #1e293b;
+            --accent-cyan: #06b6d4;
+            --accent-green: #10b981;
+            --accent-orange: #f59e0b;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Courier New', Courier, monospace; /* Tam rig/terminal havası */
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             user-select: none;
         }
 
         body {
-            background-color: var(--bg);
-            color: var(--text);
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -34,153 +34,131 @@
             overflow: hidden;
         }
 
-        .miner-container {
+        .rig-dashboard {
             width: 100%;
-            max-width: 400px;
+            max-width: 410px;
             height: 100%;
-            max-height: 850px;
-            background: var(--bg);
+            max-height: 840px;
+            background: var(--bg-dark);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 12px;
-            border: 1px solid var(--border);
-            border-radius: 10px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
         }
 
-        /* Üst Durum Çubuğu */
-        .top-status {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 10px;
-            border-radius: 8px;
+        /* Header Üst Panel */
+        .rig-header {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .rig-id h4 {
-            font-size: 12px;
-            color: var(--accent);
+        .rig-identity h3 {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            letter-spacing: 0.5px;
         }
 
-        .rig-id span {
-            font-size: 9px;
-            color: var(--muted);
-        }
-
-        .pool-ping {
+        .rig-identity p {
             font-size: 10px;
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--accent);
-            padding: 3px 6px;
-            border-radius: 4px;
-            border: 1px solid rgba(0, 255, 136, 0.3);
-        }
-
-        /* Ana Havuz Konsolu */
-        .pool-console {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .balance-label {
-            font-size: 10px;
-            color: var(--muted);
-            letter-spacing: 1px;
-        }
-
-        .balance-amount {
-            font-size: 26px;
-            font-weight: bold;
-            color: var(--accent);
-            margin: 5px 0 12px 0;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
-        .stat-card {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border);
-            padding: 6px;
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .stat-card .lbl {
-            font-size: 8px;
-            color: var(--muted);
-        }
-
-        .stat-card .val {
-            font-size: 11px;
-            font-weight: bold;
-            color: var(--text);
+            color: var(--text-muted);
             margin-top: 2px;
         }
 
-        /* Donanım Listesi (RX 470, RX 590 vb.) */
-        .rig-section {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px;
+        .rig-status-badge {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+        }
+
+        /* İstatistik Kartları */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .metric-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 10px 8px;
+            text-align: center;
+        }
+
+        .metric-card .label {
+            font-size: 9px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .value {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-top: 4px;
+        }
+
+        /* Ana Havuz / Bakiye Alanı */
+        .pool-balance-box {
+            background: linear-gradient(135deg, rgba(6, 182, 212, 0.08) 0%, rgba(16, 185, 129, 0.08) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .pool-balance-box .title {
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 1px;
+        }
+
+        .pool-balance-box .amount {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--accent-green);
+            margin: 6px 0;
+        }
+
+        /* Donanım Rig Listesi */
+        .hardware-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
             flex-grow: 1;
-            margin: 8px 0;
+            margin: 10px 0;
             overflow-y: auto;
         }
 
-        .sec-title {
-            font-size: 10px;
-            color: var(--muted);
-            margin-bottom: 8px;
+        .section-title {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 10px;
             text-transform: uppercase;
-        }
-
-        .hardware-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            padding: 8px;
-            border-radius: 6px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
         }
 
-        .hw-info h5 {
-            font-size: 11px;
-            color: var(--text);
-        }
-
-        .hw-info p {
-            font-size: 9px;
-            color: var(--accent);
-            margin-top: 1px;
-        }
-
-        .hw-action {
-            background: #21262d;
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 4px 8px;
-            font-size: 9px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        /* Senin Reklam Geliri Elde Edeceğin Zorunlu Alan */
-        .ad-monetize-box {
-            background: rgba(240, 136, 62, 0.05);
-            border: 1px dashed var(--warning);
+        .gpu-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
             border-radius: 8px;
             padding: 10px;
             display: flex;
@@ -189,159 +167,206 @@
             margin-bottom: 8px;
         }
 
-        .ad-text h5 {
-            font-size: 11px;
-            color: var(--warning);
+        .gpu-info h5 {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
         }
 
-        .ad-text p {
+        .gpu-info p {
+            font-size: 10px;
+            color: var(--accent-cyan);
+            margin-top: 2px;
+        }
+
+        .gpu-action {
+            background: rgba(6, 182, 212, 0.1);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(6, 182, 212, 0.3);
+            padding: 5px 10px;
+            font-size: 10px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* Senin Reklam Geliri Alanı (Zorunlu Havuz Kilidi) */
+        .ad-revenue-banner {
+            background: rgba(245, 158, 11, 0.08);
+            border: 1px dashed rgba(245, 158, 11, 0.4);
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .ad-revenue-text h5 {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--accent-orange);
+        }
+
+        .ad-revenue-text p {
             font-size: 9px;
-            color: var(--muted);
+            color: var(--text-muted);
+            margin-top: 2px;
         }
 
         .watch-ad-btn {
-            background: var(--warning);
-            color: #000;
+            background: var(--accent-orange);
+            color: #0a0e17;
             border: none;
-            padding: 6px 10px;
+            padding: 7px 12px;
             font-size: 10px;
-            font-weight: bold;
-            border-radius: 4px;
+            font-weight: 800;
+            border-radius: 6px;
             cursor: pointer;
         }
 
-        /* Alt Menü */
-        .bottom-menu {
+        /* Alt Navigasyon Menüsü */
+        .nav-bar {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            background: var(--panel);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 6px;
-            gap: 4px;
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 8px;
+            gap: 6px;
         }
 
-        .menu-btn {
+        .nav-btn {
             text-align: center;
-            color: var(--muted);
-            font-size: 9px;
+            color: var(--text-muted);
+            font-size: 10px;
+            font-weight: 600;
             cursor: pointer;
-            padding: 4px;
-            border-radius: 4px;
+            padding: 6px;
+            border-radius: 8px;
+            transition: 0.2s;
         }
 
-        .menu-btn.active, .menu-btn:hover {
-            background: rgba(255,255,255,0.05);
-            color: var(--accent);
+        .nav-btn.active, .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent-cyan);
         }
 
-        .menu-btn div {
-            font-size: 14px;
-            margin-bottom: 1px;
+        .nav-btn .icon {
+            font-size: 16px;
+            margin-bottom: 2px;
         }
     </style>
 </head>
 <body>
 
-    <div class="miner-container">
-        <!-- Üst Durum -->
-        <div class="top-status">
-            <div class="rig-id">
-                <h4>WORKER_01 [Kocaeli]</h4>
-                <span>Algoritma: Ethash / KawPow</span>
+    <div class="rig-dashboard">
+        <!-- Üst Panel -->
+        <div class="rig-header">
+            <div class="rig-identity">
+                <h3>RIG-MASTER #01</h3>
+                <p>Kocaeli Havuz • Ethash</p>
             </div>
-            <div class="pool-ping">🟢 38ms</div>
+            <div class="rig-status-badge">🟢 ONLINE</div>
         </div>
 
-        <!-- Konsol -->
-        <div class="pool-console">
-            <div class="balance-label">HAVUZDA BIRIKEN KAZANC (USDT)</div>
-            <div class="balance-amount" id="balance">0.000420</div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="lbl">Hashrate</div>
-                    <div class="val" id="hashrate">64.2 MH</div>
-                </div>
-                <div class="stat-card">
-                    <div class="lbl">Sıcaklık</div>
-                    <div class="val">62 °C</div>
-                </div>
-                <div class="stat-card">
-                    <div class="lbl">Red (Stale)</div>
-                    <div class="val" style="color: #ff4d4d;">0.00%</div>
-                </div>
+        <!-- İstatistik Grid -->
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="label">Hashrate</div>
+                <div class="value" id="hashrate">64.2 MH</div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Sıcaklık</div>
+                <div class="value">63 °C</div>
+            </div>
+            <div class="metric-card">
+                <div class="label">Verimlilik</div>
+                <div class="value">340 kH/W</div>
             </div>
         </div>
 
-        <!-- Donanım Listesi -->
-        <div class="rig-section">
-            <div class="sec-title">Aktif Ekran Kartı Rigleri</div>
-            
-            <div class="hardware-item">
-                <div class="hw-info">
+        <!-- Havuz Bakiye Konsolu -->
+        <div class="pool-balance-box">
+            <div class="title">HAVUZDA BİRİKEN BAKİYE</div>
+            <div class="amount" id="balance">0.045210</div>
+            <div style="font-size: 9px; color: var(--text-muted);">ETHW / USDT</div>
+        </div>
+
+        <!-- Donanım Rigleri -->
+        <div class="hardware-container">
+            <div class="section-title">
+                <span>Aktif GPU Birimleri</span>
+                <span>⚡</span>
+            </div>
+
+            <div class="gpu-card">
+                <div class="gpu-info">
                     <h5>AMD RX 470 4GB</h5>
                     <p>+24.5 MH/s • 90W</p>
                 </div>
-                <button class="hw-action" onclick="boostRig(10)">OVERCLOCK</button>
+                <button class="gpu-action" onclick="optimizeGpu(this)">OC YAP</button>
             </div>
 
-            <div class="hardware-item">
-                <div class="hw-info">
+            <div class="gpu-card">
+                <div class="gpu-info">
                     <h5>AMD RX 590 8GB</h5>
                     <p>+39.7 MH/s • 130W</p>
                 </div>
-                <button class="hw-action" onclick="boostRig(15)">OVERCLOCK</button>
+                <button class="gpu-action" onclick="optimizeGpu(this)">OC YAP</button>
             </div>
         </div>
 
-        <!-- Senin Reklam Geliri Alanı (Zorunlu Havuz Kilidi) -->
-        <div class="ad-monetize-box">
-            <div class="ad-text">
-                <h5>Havuz Payı Güncellemesi</h5>
-                <p>Bakiyenin cüzdana düşmesi için reklam onayı gerekli.</p>
+        <!-- Reklam & Monetizasyon Alanı (Sana Para Kazandıracak Kısım) -->
+        <div class="ad-revenue-banner">
+            <div class="ad-revenue-text">
+                <h5>Ödeme Kanalı Kilidi</h5>
+                <p>Bakiyenin cüzdana düşmesi için reklam onayı şart.</p>
             </div>
-            <button class="watch-ad-btn" onclick="watchAdMonetize()">REKLAM İZLE</button>
+            <button class="watch-ad-btn" onclick="triggerAdMonetization()">REKLAM İZLE</button>
         </div>
 
         <!-- Alt Menü -->
-        <div class="bottom-menu">
-            <div class="menu-btn active">
-                <div>💻</div>Rigler
+        <div class="nav-bar">
+            <div class="nav-btn active">
+                <div class="icon">💻</div>Rigler
             </div>
-            <div class="menu-btn" onclick="alert('Market: Yeni RX serisi kartlar eklemek için bakiye biriktirmelisin.')">
-                <div>🛒</div>Market
+            <div class="nav-btn" onclick="alert('Market: Yeni nesil ekran kartları eklemek ve hashrate yükseltmek için bakiye biriktir.')">
+                <div class="icon">🛒</div>Market
             </div>
-            <div class="menu-btn" onclick="alert('Görevler: Reklam izleyerek ekstradan hashrate bonusu al.')">
-                <div>⚡</div>Boost
+            <div class="nav-btn" onclick="alert('Görevler: Sponsorlu reklam görevlerini tamamlayarak ekstra gelir elde et.')">
+                <div class="icon">🎯</div>Görevler
             </div>
-            <div class="menu-btn" onclick="alert('Cüzdan: Çekim yapabilmek için günlük reklam kotasını doldurmalısın.')">
-                <div>💳</div>Cüzdan
+            <div class="nav-btn" onclick="alert('Cüzdan: Çekim yapabilmek için günlük reklam izleme sınırını tamamlamalısın.')">
+                <div class="icon">💳</div>Cüzdan
             </div>
         </div>
     </div>
 
     <script>
-        let balance = 0.000420;
+        let balance = 0.045210;
         let hashrate = 64.2;
 
-        // Gerçekçi yavaş madencilik akışı
+        // Gerçekçi madencilik bakiye artışı
         setInterval(() => {
-            balance += 0.000002 * (hashrate / 50);
+            balance += 0.000002;
             document.getElementById("balance").innerText = balance.toFixed(6);
         }, 1000);
 
-        function boostRig(power) {
-            hashrate += power;
+        function optimizeGpu(btn) {
+            hashrate += 10.0;
             document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH";
-            alert("⚡ Kartlar overclock edildi! Anlık hashrate artırıldı.");
+            btn.innerText = "AKTİF";
+            btn.style.borderColor = "var(--accent-green)";
+            btn.style.color = "var(--accent-green)";
+            alert("🚀 GPU optimize edildi! Hashrate yükseltildi.");
         }
 
-        function watchAdMonetize() {
-            // Buraya Telegram Adsgram veya reklam kodunu koyacaksın.
+        function triggerAdMonetization() {
+            // Telegram Adsgram veya harici reklam entegrasyonu buraya gelecek.
             // Kullanıcı bu butona bastığında reklam açılacak, sen reklamlardan paranı kazanacaksın,
-            // kullanıcı da havuzda biriken payını cüzdana geçirme hakkı kazanacak.
-            alert("📺 Reklam oynatılıyor... (Reklam başarıyla yüklendi, senin reklam kazancın hesabına işlendi!)");
+            // kullanıcı da havuz onayını geçecek.
+            alert("📺 Reklam oynatılıyor... (Reklam başarıyla yüklendi, reklam geliriniz sisteme yansıtıldı!)");
             balance += 0.005000;
             document.getElementById("balance").innerText = balance.toFixed(6);
             alert("🎉 Onaylandı! Havuz birikimi cüzdana aktarıldı.");
