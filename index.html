@@ -3,16 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanal Miner Pro - Fixed Edition</title>
+    <title>Sanal Miner Pro - Ultimate</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
 
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: 'Outfit', sans-serif; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; font-family: 'Plus Jakarta Sans', sans-serif; }
         
         body {
-            background: #05070e;
+            background: #03050b;
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(0, 243, 255, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(120, 0, 255, 0.08) 0%, transparent 45%);
             color: #ffffff;
             margin: 0;
             padding: 0;
@@ -22,254 +24,366 @@
             overflow-x: hidden;
         }
 
-        /* Ana uygulama konteyneri - Sabit yükseklik ve taşma yönetimi */
         .app-container {
             flex: 1;
             max-width: 420px;
             width: 100%;
             margin: 0 auto;
-            padding: 12px 12px 100px 12px; /* Alt menü için boşluk bırakıldı */
+            padding: 14px 14px 90px 14px;
             overflow-y: auto;
         }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        h1 { 
-            background: linear-gradient(135deg, #00fff5, #7000ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: 18px; 
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(13, 19, 38, 0.7);
+            backdrop-filter: blur(12px);
+            padding: 10px 14px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            margin-bottom: 12px;
+        }
+
+        .user-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #00f3ff;
+        }
+
+        .user-avatar {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #00f3ff, #7800ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
             font-weight: 900;
-            margin: 0; 
+            font-size: 11px;
         }
 
         .icon-btn {
-            background: rgba(20, 30, 60, 0.9);
-            border: 1px solid rgba(0, 255, 245, 0.3);
-            color: #00fff5;
-            width: 36px;
-            height: 36px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+            width: 32px;
+            height: 32px;
             border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 14px;
+            transition: 0.2s;
         }
-        .icon-btn:active { transform: scale(0.9); }
+        .icon-btn:active { transform: scale(0.9); background: rgba(0, 243, 255, 0.2); }
 
-        /* Kartlar */
-        .clicker-card {
-            background: linear-gradient(180deg, rgba(18, 27, 53, 0.9) 0%, rgba(8, 12, 24, 0.95) 100%);
-            border: 1px solid rgba(0, 255, 245, 0.25);
-            border-radius: 18px;
-            padding: 16px;
-            margin-bottom: 10px;
+        /* Ana Bakiye Kartı */
+        .balance-card {
+            background: linear-gradient(135deg, rgba(16, 24, 48, 0.9) 0%, rgba(8, 12, 26, 0.95) 100%);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            border-radius: 20px;
+            padding: 18px;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.1);
+            margin-bottom: 12px;
+        }
+        
+        .balance-title { font-size: 11px; color: #8c9cb6; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+        .balance-amount { font-size: 32px; font-weight: 800; color: #00f3ff; margin: 6px 0; text-shadow: 0 0 20px rgba(0,243,255,0.4); }
+        .balance-usd { font-size: 12px; color: #00e676; font-weight: 600; }
+
+        /* Kazım Çekirdeği */
+        .clicker-section {
+            background: rgba(13, 19, 38, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 16px;
+            text-align: center;
+            margin-bottom: 12px;
         }
 
         .core-reactor {
-            width: 110px;
-            height: 110px;
-            margin: 8px auto;
+            width: 130px;
+            height: 130px;
+            margin: 12px auto;
             border-radius: 50%;
-            background: radial-gradient(circle, rgba(0,255,245,0.25) 0%, rgba(112,0,255,0.25) 70%, transparent 100%);
-            border: 2px solid rgba(0, 255, 245, 0.7);
+            background: radial-gradient(circle, rgba(0,243,255,0.3) 0%, rgba(120,0,255,0.3) 70%, transparent 100%);
+            border: 2px solid #00f3ff;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
             position: relative;
-            box-shadow: 0 0 25px rgba(0, 255, 245, 0.4);
-            transition: transform 0.08s ease;
+            box-shadow: 0 0 35px rgba(0, 243, 255, 0.4), inset 0 0 20px rgba(0, 243, 255, 0.4);
+            transition: transform 0.06s ease;
         }
         .core-reactor:active { transform: scale(0.92); }
-        .core-icon { font-size: 45px; filter: drop-shadow(0 0 10px #00fff5); z-index: 2; }
+        .core-reactor::after {
+            content: '';
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 50%;
+            border: 2px dashed rgba(255, 0, 128, 0.6);
+            animation: spinReactor 12s linear infinite;
+        }
+        @keyframes spinReactor { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .core-icon { font-size: 55px; filter: drop-shadow(0 0 12px #00f3ff); z-index: 2; }
 
         .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
         .stat-box { 
-            background: rgba(14, 21, 41, 0.9); 
-            padding: 10px; 
-            border-radius: 12px; 
+            background: rgba(13, 19, 38, 0.8); 
+            padding: 12px; 
+            border-radius: 14px; 
             border: 1px solid rgba(255, 255, 255, 0.06); 
             text-align: left;
         }
-        .stat-title { font-size: 9px; color: #8a99ad; text-transform: uppercase; font-weight: 600; }
-        .stat-value { font-size: 16px; font-weight: 700; color: #00fff5; margin-top: 2px; }
+        .stat-title { font-size: 10px; color: #8c9cb6; text-transform: uppercase; font-weight: 700; }
+        .stat-value { font-size: 16px; font-weight: 800; color: #fff; margin-top: 4px; }
 
-        .main-btn {
-            background: linear-gradient(135deg, #00fff5, #0088cc);
+        /* Butonlar & Kartlar */
+        .btn-primary {
+            background: linear-gradient(135deg, #00f3ff, #0066ff);
             border: none; color: #000; padding: 12px; font-size: 14px; font-weight: 800;
-            border-radius: 12px; cursor: pointer; width: 100%;
-            box-shadow: 0 4px 15px rgba(0, 255, 245, 0.3);
-            transition: transform 0.1s;
+            border-radius: 12px; cursor: pointer; width: 100%; text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 243, 255, 0.3);
+            transition: 0.2s;
         }
-        .main-btn:active { transform: scale(0.97); }
+        .btn-primary:active { transform: scale(0.97); opacity: 0.9; }
 
-        .shop-card { 
-            background: rgba(16, 24, 46, 0.9); 
-            padding: 12px; 
-            border-radius: 14px; 
-            margin-bottom: 8px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            text-align: left; 
-            border: 1px solid rgba(0, 255, 245, 0.15);
+        .btn-ad {
+            background: linear-gradient(135deg, #ff9100, #ff3d00);
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(255, 145, 0, 0.3);
+            margin-bottom: 8px;
         }
 
-        .buy-btn { 
-            background: linear-gradient(135deg, #00fff5, #00b894); 
-            color: #000; border: none; padding: 8px 12px; font-size: 11px; font-weight: 800; 
-            border-radius: 8px; cursor: pointer; 
-        }
-
-        /* Sabit ve Kesinlikle Üst Binmeyen Alt Navigasyon */
-        .navbar { 
-            position: fixed; 
-            bottom: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 70px;
-            background: rgba(8, 12, 24, 0.98); 
-            backdrop-filter: blur(15px); 
-            display: flex; 
-            justify-content: space-around; 
+        .item-card {
+            background: rgba(13, 19, 38, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 12px 14px;
+            border-radius: 14px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
-            border-top: 1px solid rgba(0, 255, 245, 0.2); 
-            z-index: 999; 
+            text-align: left;
         }
-        .nav-item { color: #6b7c93; font-size: 10px; cursor: pointer; font-weight: 600; text-align: center; flex: 1; }
-        .nav-item.active { color: #00fff5; text-shadow: 0 0 10px rgba(0,255,245,0.6); }
-        .nav-icon { font-size: 16px; display: block; margin-bottom: 2px; }
+        .item-info b { font-size: 13px; color: #fff; }
+        .item-info small { font-size: 11px; color: #00f3ff; display: block; margin-top: 2px; }
+        .item-price { font-size: 11px; color: #ff3366; font-weight: 700; display: block; margin-top: 2px; }
 
+        .action-sm-btn {
+            background: linear-gradient(135deg, #00f3ff, #00b0ff);
+            color: #000; border: none; padding: 8px 14px; font-size: 11px; font-weight: 800;
+            border-radius: 8px; cursor: pointer;
+        }
+
+        /* Sekme İçerikleri */
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: block; animation: fadeIn 0.25s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Uçan Puan Animasyonu */
+        /* Sabit Alt Menü */
+        .navbar { 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 75px;
+            background: rgba(6, 10, 20, 0.95); backdrop-filter: blur(20px); 
+            display: flex; justify-content: space-around; align-items: center;
+            border-top: 1px solid rgba(0, 243, 255, 0.15); z-index: 999; 
+        }
+        .nav-item { color: #6b7c93; font-size: 10px; cursor: pointer; font-weight: 700; text-align: center; flex: 1; transition: 0.2s; }
+        .nav-item.active { color: #00f3ff; text-shadow: 0 0 10px rgba(0,243,255,0.5); }
+        .nav-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+
+        /* Uçan Sayı Animasyonu */
         .float-number {
             position: absolute;
-            color: #00fff5;
+            color: #00f3ff;
             font-weight: 900;
-            font-size: 16px;
+            font-size: 18px;
             pointer-events: none;
-            animation: floatUpAnim 0.7s ease-out forwards;
+            animation: floatUp 0.7s ease-out forwards;
             z-index: 9999;
+            text-shadow: 0 0 10px rgba(0,243,255,0.8);
         }
-        @keyframes floatUpAnim {
+        @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(1); }
-            100% { opacity: 0; transform: translateY(-40px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-50px) scale(1.3); }
         }
 
+        /* Modallar */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85); display: none; justify-content: center;
-            align-items: center; z-index: 99999; backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.85); display: none; justify-content: center;
+            align-items: center; z-index: 99999; backdrop-filter: blur(8px);
         }
         .modal-card {
-            background: #101830; border: 1px solid #00fff5; padding: 20px;
-            border-radius: 16px; width: 85%; max-width: 320px; text-align: left;
+            background: #0d1326; border: 1px solid rgba(0,243,255,0.3); padding: 20px;
+            border-radius: 20px; width: 88%; max-width: 340px; text-align: left;
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.2);
+        }
+
+        .input-box {
+            width: 100%; padding: 12px; border-radius: 10px; background: #060914;
+            border: 1px solid rgba(0,243,255,0.3); color: #fff; margin-bottom: 10px; outline: none; font-size: 13px;
+        }
+
+        /* Çark Alanı */
+        .wheel-container {
+            width: 160px; height: 160px; border-radius: 50%; border: 4px dashed #00f3ff;
+            margin: 15px auto; display: flex; align-items: center; justify-content: center;
+            position: relative; background: radial-gradient(circle, rgba(0,243,255,0.1), rgba(120,0,255,0.2));
+            font-weight: 800; font-size: 14px; color: #00f3ff; text-align: center;
         }
     </style>
 </head>
 <body>
 
 <div class="app-container">
-    <div class="top-bar">
-        <h1>⚡ SANAL MINER PRO</h1>
-        <div class="icon-btn" onclick="openModal('settingsModal')">⚙️</div>
+    <!-- ÜST KİMLİK & AYARLAR -->
+    <div class="header">
+        <div class="user-pill">
+            <div class="user-avatar" id="userInitial">U</div>
+            <span id="userName">Madenci #8492</span>
+        </div>
+        <div style="display: flex; gap: 6px;">
+            <div class="icon-btn" onclick="openModal('tasksModal')" title="Görevler">📋</div>
+            <div class="icon-btn" onclick="openModal('settingsModal')" title="Ayarlar">⚙️</div>
+        </div>
     </div>
 
     <!-- TAB 1: KAZIM MERKEZİ -->
     <div id="tab-mine" class="tab-content active">
-        <div class="clicker-card">
-            <div class="stat-box" style="margin-bottom: 10px; background: rgba(0,255,245,0.04); border: 1px solid rgba(0,255,245,0.2);">
-                <div class="stat-title">Toplam Bakiye</div>
-                <div class="stat-value" style="font-size: 24px; color: #00fff5;"><span id="balance">0.0000</span> PTS</div>
-            </div>
+        <div class="balance-card">
+            <div class="balance-title">Toplam Varlık</div>
+            <div class="balance-amount"><span id="balance">350.0000</span> <span style="font-size: 18px; color:#fff;">PTS</span></div>
+            <div class="balance-usd">≈ $<span id="balanceUsd">35.00</span> USDT</div>
+        </div>
 
-            <div class="core-reactor" onclick="mineCore(event)" id="reactorBtn">
+        <div class="clicker-section">
+            <div style="font-size: 11px; color: #8c9cb6; font-weight: 700;">ENERJİ REAKTÖRÜ</div>
+            <div class="core-reactor" onclick="mineCore(event)">
                 <div class="core-icon">⚛️</div>
             </div>
-            <div style="font-size: 10px; color: #8a99ad; margin-top: 6px;">Çekirdeğe dokunarak kazım yap!</div>
+            <div style="font-size: 11px; color: #00f3ff; font-weight: 600;">Dokunarak Enerji Üret!</div>
         </div>
 
         <div class="stat-grid">
             <div class="stat-box">
                 <div class="stat-title">Dokunma Gücü</div>
-                <div class="stat-value">+<span id="click-power">0.0010</span></div>
+                <div class="stat-value">+<span id="click-power">0.0010</span> PTS</div>
             </div>
             <div class="stat-box">
-                <div class="stat-title">Pasif Kazanç</div>
+                <div class="stat-title">Pasif Rig Hızı</div>
                 <div class="stat-value">+<span id="passive-rate">0.0000</span>/sn</div>
             </div>
         </div>
 
-        <button class="main-btn" style="background: linear-gradient(135deg, #ff9900, #ff3300); color: #fff;" onclick="watchBonusAd()">
-            📺 Bonus Reklam İzle (+0.5x Hız)
+        <button class="btn-primary btn-ad" onclick="watchBonusAd()">
+            📺 Reklam İzle & 2x Hız Kazan (+0.5x)
         </button>
     </div>
 
     <!-- TAB 2: MARKET & RİG KİRALAMA -->
     <div id="tab-shop" class="tab-content">
-        <h3 style="text-align: left; color: #00fff5; font-size: 13px; margin-bottom: 8px;">💻 Ekran Kartı Rig Filosu</h3>
+        <h3 style="color: #00f3ff; font-size: 14px; margin-bottom: 10px;">💻 Ekran Kartı Rig Filosu</h3>
         
-        <div class="shop-card">
-            <div>
-                <b>GT 730 Mini-Rig</b><br>
-                <small style="color: #00fff5;">+0.0010 PTS/sn</small><br>
-                <span style="color: #ff416c; font-weight: bold; font-size: 11px;">Fiyat: 150 PTS</span>
+        <div class="item-card">
+            <div class="item-info">
+                <b>GT 730 Mini-Rig</b>
+                <small>Pasif: +0.0010 PTS/sn</small>
+                <span class="item-price">Fiyat: 150 PTS</span>
             </div>
-            <button class="buy-btn" onclick="buyRig('gt730', 150)">Kirala</button>
+            <button class="action-sm-btn" onclick="buyRig('gt730', 150, 0.0010)">Kirala</button>
         </div>
 
-        <div class="shop-card">
-            <div>
-                <b>GTX 1050 Ti Rig</b><br>
-                <small style="color: #00fff5;">+0.0030 PTS/sn</small><br>
-                <span style="color: #ff416c; font-weight: bold; font-size: 11px;">Fiyat: 600 PTS</span>
+        <div class="item-card">
+            <div class="item-info">
+                <b>GTX 1050 Ti Rig</b>
+                <small>Pasif: +0.0030 PTS/sn</small>
+                <span class="item-price">Fiyat: 600 PTS</span>
             </div>
-            <button class="buy-btn" onclick="buyRig('gtx1050', 600)">Kirala</button>
+            <button class="action-sm-btn" onclick="buyRig('gtx1050', 600, 0.0030)">Kirala</button>
         </div>
 
-        <div class="shop-card">
-            <div>
-                <b>GTX 1660 Super</b><br>
-                <small style="color: #00fff5;">+0.0080 PTS/sn</small><br>
-                <span style="color: #ff416c; font-weight: bold; font-size: 11px;">Fiyat: 2,500 PTS</span>
+        <div class="item-card">
+            <div class="item-info">
+                <b>GTX 1660 Super Rig</b>
+                <small>Pasif: +0.0080 PTS/sn</small>
+                <span class="item-price">Fiyat: 2,500 PTS</span>
             </div>
-            <button class="buy-btn" onclick="buyRig('gtx1660', 2500)">Kirala</button>
+            <button class="action-sm-btn" onclick="buyRig('gtx1660', 2500, 0.0080)">Kirala</button>
+        </div>
+
+        <div class="item-card">
+            <div class="item-info">
+                <b>RTX 3060 Ti Pro Rig</b>
+                <small>Pasif: +0.0250 PTS/sn</small>
+                <span class="item-price">Fiyat: 10,000 PTS</span>
+            </div>
+            <button class="action-sm-btn" onclick="buyRig('rtx3060', 10000, 0.0250)">Kirala</button>
         </div>
     </div>
 
     <!-- TAB 3: DAVET ET -->
     <div id="tab-ref" class="tab-content">
-        <h3 style="text-align: left; color: #00fff5; font-size: 13px;">👥 Arkadaşını Davet Et</h3>
-        <div class="stat-box" style="text-align: center; margin: 12px 0; background: rgba(0,255,245,0.04);">
-            <div style="font-size: 13px; font-weight: bold; color: #00fff5;">Her Arkadaşına → +500 PTS Kazan!</div>
-            <div style="font-size: 10px; color: #8a99ad; margin-top: 4px;">Toplam Davet: <span id="ref-count" style="color:#fff; font-weight:bold;">0</span></div>
+        <h3 style="color: #00f3ff; font-size: 14px; margin-bottom: 10px;">👥 Arkadaşını Davet Et</h3>
+        <div class="balance-card" style="text-align: center; padding: 14px;">
+            <div style="font-size: 14px; font-weight: 800; color: #00f3ff;">Her Arkadaşına +1.000 PTS!</div>
+            <div style="font-size: 11px; color: #8c9cb6; margin-top: 4px;">Toplam Davet Edilen: <span id="ref-count" style="color:#fff; font-weight:bold;">0</span></div>
         </div>
-        <button class="main-btn" onclick="shareRef()">🔗 Davet Linkini Paylaş</button>
+        <button class="btn-primary" onclick="shareRef()">🔗 Davet Linkini Paylaş</button>
     </div>
 
-    <!-- TAB 4: ÖDÜLLER -->
+    <!-- TAB 4: ÖDÜLLER & ÇARK -->
     <div id="tab-rewards" class="tab-content">
-        <h3 style="text-align: left; color: #00fff5; font-size: 13px; margin-bottom: 8px;">🎁 Günlük Bonuslar</h3>
-        <div class="shop-card" style="flex-direction: column; align-items: flex-start; gap: 6px;">
-            <div><b>Günlük Giriş Ödülü</b><br><small style="color: #8a99ad;">Her 24 saatte bir kez topla!</small></div>
-            <button class="buy-btn" style="width: 100%; padding: 8px;" onclick="claimDaily()">Ödülü Al (+100 PTS)</button>
+        <h3 style="color: #00f3ff; font-size: 14px; margin-bottom: 10px;">🎁 Şans Çarkı & Ödüller</h3>
+        
+        <div class="clicker-section" style="padding: 12px;">
+            <div style="font-size: 12px; font-weight: 700; color: #fff;">Günlük Şans Çarkı</div>
+            <div class="wheel-container" id="wheelBox">ÇARK KAZAN</div>
+            <button class="btn-primary" onclick="spinWheel()">🎲 Çarkı Çevir (Ücretsiz)</button>
+        </div>
+
+        <div class="item-card" style="margin-top: 10px;">
+            <div class="item-info">
+                <b>Günlük Giriş Ödülü</b>
+                <small>Her 24 Saatte Bir Topla</small>
+                <span style="color: #00e676; font-size: 11px; font-weight: 700;">+500 PTS</span>
+            </div>
+            <button class="action-sm-btn" onclick="claimDaily()">Topla</button>
         </div>
     </div>
 
-    <!-- TAB 5: ÇEKİM -->
+    <!-- TAB 5: ÇEKİM TALEBİ -->
     <div id="tab-withdraw" class="tab-content">
-        <h3 style="text-align: left; color: #00fff5; font-size: 13px; margin-bottom: 8px;">💸 Kripto Çekim</h3>
-        <div class="stat-box" style="margin-bottom: 10px; text-align: center;">
-            <div style="font-size: 10px; color: #00fff5;">Oran: 10.000 PTS = 1.00 USDT</div>
+        <h3 style="color: #00f3ff; font-size: 14px; margin-bottom: 10px;">💸 Kripto Çekim Merkezi</h3>
+        <div class="balance-card" style="padding: 12px; text-align: center; margin-bottom: 10px;">
+            <div style="font-size: 10px; color: #8c9cb6;">DÖNÜŞÜM ORANI</div>
+            <div style="font-size: 13px; font-weight: 700; color: #00f3ff; margin-top: 2px;">10.000 PTS = 1.00 USDT</div>
         </div>
-        <div style="text-align: left; font-size: 10px; color: #8a99ad; margin-bottom: 4px;">Cüzdan Adresi (TON / TRC20)</div>
-        <input type="text" id="walletInput" placeholder="UQ... veya T..." style="width: 100%; padding: 10px; border-radius: 8px; background: #070b18; border: 1px solid rgba(0,255,245,0.3); color: #fff; margin-bottom: 10px; outline: none;">
-        <button class="main-btn" onclick="requestWithdraw()">Çekim Talebi Oluştur</button>
+
+        <div style="font-size: 11px; color: #8c9cb6; margin-bottom: 4px; font-weight: 700;">Ağ Seçimi</div>
+        <select id="networkSelect" class="input-box">
+            <option value="TON">TON Network (The Open Network)</option>
+            <option value="TRC20">USDT (TRC20 - Tron)</option>
+            <option value="BEP20">USDT (BEP20 - Binance Smart Chain)</option>
+        </select>
+
+        <div style="font-size: 11px; color: #8c9cb6; margin-bottom: 4px; font-weight: 700;">Cüzdan Adresi</div>
+        <input type="text" id="walletInput" class="input-box" placeholder="Cüzdan adresinizi girin (UQ... veya T...)">
+
+        <div style="font-size: 11px; color: #8c9cb6; margin-bottom: 4px; font-weight: 700;">Çekilecek Miktar (PTS)</div>
+        <input type="number" id="withdrawAmount" class="input-box" placeholder="Min. 10000 PTS">
+
+        <button class="btn-primary" onclick="requestWithdraw()">Çekim Talebi Oluştur</button>
     </div>
 </div>
 
@@ -282,20 +396,37 @@
     <div class="nav-item" onclick="switchTab('withdraw', this)"><span class="nav-icon">💸</span>Çekim</div>
 </div>
 
+<!-- GÖREVLER MODALI -->
+<div id="tasksModal" class="modal-overlay">
+    <div class="modal-card">
+        <h3 style="color: #00f3ff; margin-top: 0; font-size: 15px;">📋 Günlük Görevler</h3>
+        <div class="item-card">
+            <div class="item-info"><b>Telegram Kanalına Katıl</b><small>+2.500 PTS</small></div>
+            <button class="action-sm-btn" onclick="completeTask(2500, this)">Yap</button>
+        </div>
+        <div class="item-card">
+            <div class="item-info"><b>TikTok Yayını İzle</b><small>+1.500 PTS</small></div>
+            <button class="action-sm-btn" onclick="completeTask(1500, this)">Yap</button>
+        </div>
+        <button class="btn-primary" style="margin-top: 10px;" onclick="closeModal('tasksModal')">Kapat</button>
+    </div>
+</div>
+
 <!-- AYARLAR MODALI -->
 <div id="settingsModal" class="modal-overlay">
     <div class="modal-card">
-        <h3 style="color: #00fff5; margin-top: 0; font-size: 15px;">⚙️ Ayarlar & Profil</h3>
-        <p style="font-size: 11px; color: #8a99ad;" id="userInfoText">Kullanıcı ID: Yükleniyor...</p>
-        <button class="main-btn" style="margin-top: 12px; padding: 8px;" onclick="closeModal('settingsModal')">Kapat</button>
+        <h3 style="color: #00f3ff; margin-top: 0; font-size: 15px;">⚙️ Profil & Bilgiler</h3>
+        <p style="font-size: 12px; color: #8c9cb6;" id="userIdText">Kullanıcı ID: Yükleniyor...</p>
+        <p style="font-size: 12px; color: #8c9cb6;">Versiyon: v4.2 Ultimate</p>
+        <button class="btn-primary" style="margin-top: 12px;" onclick="closeModal('settingsModal')">Kapat</button>
     </div>
 </div>
 
 <!-- BİLDİRİM MODALI -->
 <div id="alertModal" class="modal-overlay">
     <div class="modal-card" style="text-align: center;">
-        <p id="alertText" style="font-size: 12px; font-weight: 600; margin-bottom: 12px; color: #fff;"></p>
-        <button class="buy-btn" style="padding: 8px 16px;" onclick="closeModal('alertModal')">Tamam</button>
+        <p id="alertText" style="font-size: 13px; font-weight: 600; margin-bottom: 15px; color: #fff;"></p>
+        <button class="action-sm-btn" style="width: 100%; padding: 10px;" onclick="closeModal('alertModal')">Tamam</button>
     </div>
 </div>
 
@@ -304,15 +435,18 @@
     if (tg) { tg.expand(); }
 
     let gameData = {
-        balance: 300.0000,
+        balance: 350.0000,
         clickPower: 0.0010,
         speedMultiplier: 1.0,
-        gpus: { gt730: 0, gtx1050: 0, gtx1660: 0 },
+        gpus: { gt730: 0, gtx1050: 0, gtx1660: 0, rtx3060: 0 },
         refCount: 0,
-        userId: tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000)
+        userId: tg?.initDataUnsafe?.user?.id || Math.floor(100000 + Math.random() * 900000),
+        userName: tg?.initDataUnsafe?.user?.first_name || "Madenci"
     };
 
-    document.getElementById('userInfoText').innerText = `Kullanıcı ID: ${gameData.userId}`;
+    document.getElementById('userName').innerText = gameData.userName;
+    document.getElementById('userInitial').innerText = gameData.userName.charAt(0).toUpperCase();
+    document.getElementById('userIdText').innerText = `Kullanıcı ID: ${gameData.userId}`;
     updateUI();
 
     function switchTab(tabId, el) {
@@ -342,63 +476,78 @@
     function getPassiveRate() {
         return (gameData.gpus.gt730 * 0.0010) + 
                (gameData.gpus.gtx1050 * 0.0030) + 
-               (gameData.gpus.gtx1660 * 0.0080);
+               (gameData.gpus.gtx1660 * 0.0080) + 
+               (gameData.gpus.rtx3060 * 0.0250);
     }
 
     function updateUI() {
         document.getElementById('balance').innerText = gameData.balance.toFixed(4);
+        document.getElementById('balanceUsd').innerText = (gameData.balance / 10000).toFixed(2);
         document.getElementById('click-power').innerText = gameData.clickPower.toFixed(4);
         document.getElementById('passive-rate').innerText = getPassiveRate().toFixed(4);
         document.getElementById('ref-count').innerText = gameData.refCount;
     }
 
-    function buyRig(type, price) {
+    function buyRig(type, price, rate) {
         if (gameData.balance >= price) {
             gameData.balance -= price;
             gameData.gpus[type]++;
             updateUI();
-            showAlert("Rig başarıyla filonuza eklendi!");
+            showAlert("Tebrikler! Rig başarıyla filonuza eklendi ve pasif kazancınız arttı.");
         } else {
-            showAlert("Yetersiz bakiye!");
+            showAlert("Yetersiz bakiye! Çekirdeğe tıklayarak veya görevleri yaparak PTS kazanmalısın.");
         }
     }
 
     function watchBonusAd() {
-        if (typeof Adsgram !== 'undefined') {
-            Adsgram.init({ blockId: "int--***" }).show().then(() => {
-                gameData.speedMultiplier += 0.5;
-                showAlert("Reklam izlendi, hız artırıldı!");
-            }).catch(() => {
-                showAlert("Reklam yüklenemedi.");
-            });
-        } else {
-            gameData.speedMultiplier += 0.5;
-            showAlert("Test Modu: Hız bonusu aktif (+0.5x).");
-        }
+        // Adsgram veya simüle edilmiş reklam akışı
+        showAlert("Reklam yükleniyor... (Test Modu: Ödül başarıyla tanımlandı!)");
+        gameData.speedMultiplier += 0.5;
+        updateUI();
+    }
+
+    function spinWheel() {
+        let rewards = [100, 250, 500, 1000, 5000, 50];
+        let win = rewards[Math.floor(Math.random() * rewards.length)];
+        gameData.balance += win;
+        updateUI();
+        showAlert(`Şans Çarkı Çevrildi! Kazancın: +${win} PTS`);
     }
 
     function claimDaily() {
-        gameData.balance += 100;
+        gameData.balance += 500;
         updateUI();
-        showAlert("Günlük 100 PTS ödül eklendi!");
+        showAlert("Günlük 500 PTS ödülün başarıyla yüklendi!");
+    }
+
+    function completeTask(amount, btn) {
+        gameData.balance += amount;
+        updateUI();
+        btn.innerText = "Tamamlandı";
+        btn.disabled = true;
+        btn.style.opacity = "0.5";
+        showAlert(`Görev tamamlandı! +${amount} PTS eklendi.`);
     }
 
     function requestWithdraw() {
         let addr = document.getElementById('walletInput').value;
-        if (!addr) { showAlert("Cüzdan adresi giriniz!"); return; }
-        if (gameData.balance < 10000) { showAlert("Minimum çekim 10.000 PTS!"); return; }
-        gameData.balance -= 10000;
+        let amount = parseFloat(document.getElementById('withdrawAmount').value);
+        if (!addr) { showAlert("Lütfen cüzdan adresinizi girin!"); return; }
+        if (!amount || amount < 10000) { showAlert("Minimum çekim miktarı 10.000 PTS'dir!"); return; }
+        if (gameData.balance < amount) { showAlert("Bakiyeniz bu miktar için yetersiz!"); return; }
+
+        gameData.balance -= amount;
         updateUI();
-        showAlert("Çekim talebi alındı!");
+        showAlert("Çekim talebiniz başarıyla kuyruğa alındı ve inceleniyor.");
     }
 
     function shareRef() {
         let link = `https://t.me/SanalMinerProBot?start=ref_${gameData.userId}`;
         if (tg && tg.openTelegramLink) {
-            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=🚀 Sanal madenciliğe başla!`);
+            tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(link)}&text=🚀 Sen de sanal madenciliğe başla, ekran kartı kirala ve kripto kazan!`);
         } else {
             navigator.clipboard.writeText(link);
-            showAlert("Davet linki kopyalandı!");
+            showAlert("Davet bağlantınız panoya kopyalandı!");
         }
     }
 
@@ -409,6 +558,7 @@
         openModal('alertModal');
     }
 
+    // Pasif Kazanç Döngüsü (1 Saniye)
     setInterval(() => {
         let passive = getPassiveRate();
         if (passive > 0) {
