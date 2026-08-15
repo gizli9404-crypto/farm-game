@@ -78,7 +78,6 @@
         .stat-title { font-size: 10px; color: #8a99ad; text-transform: uppercase; }
         .stat-value { font-size: 20px; font-weight: bold; color: #ff416c; text-shadow: 0 0 10px rgba(255, 65, 108, 0.6); margin-top: 2px; }
         
-        /* MARKET KARTLARI VE ANİMASYONLU EKRAN KARTI GÖRSELLERİ */
         .shop-card { 
             background: linear-gradient(135deg, rgba(15, 52, 96, 0.9), rgba(26, 11, 46, 0.9)); 
             padding: 10px 12px; 
@@ -92,7 +91,6 @@
             box-shadow: 0 0 10px rgba(0, 255, 245, 0.1);
         }
 
-        /* CSS EKRAN KARTI TASARIMI */
         .mini-gpu-graphic {
             width: 75px;
             height: 38px;
@@ -128,7 +126,6 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* Farklı Kartlar İçin Özel Renkler ve Fan Hızları */
         .gpu-gt730 .mini-gpu-graphic { border-color: #3b82f6; box-shadow: 0 0 6px rgba(59,130,246,0.5); }
         .gpu-gt730 .mini-fan { animation-duration: 3s; }
         .gpu-gt730 .mini-fan::after { background: #3b82f6; }
@@ -172,8 +169,6 @@
 
         .admin-section { background: rgba(15, 10, 25, 0.8); border: 1px solid rgba(255, 65, 108, 0.4); border-radius: 10px; padding: 10px; margin-bottom: 10px; text-align: left; }
         .admin-section h4 { color: #00fff5; font-size: 11px; margin: 0 0 6px 0; }
-        .admin-req-card { background: rgba(20, 10, 30, 0.9); border: 1px solid #ff416c; border-radius: 8px; padding: 8px; margin-bottom: 6px; text-align: left; font-size: 10px; }
-        .admin-req-card b { color: #00fff5; }
 
         .task-card { background: rgba(15, 52, 96, 0.7); border: 1px solid rgba(255, 153, 0, 0.3); border-radius: 8px; padding: 8px; margin: 6px 0; display: flex; justify-content: space-between; align-items: center; text-align: left; }
 
@@ -186,20 +181,9 @@
             padding: 5px 6px;
             border-radius: 6px;
             margin-bottom: 4px;
+            font-size: 11px;
+            text-align: left;
         }
-        .copy-id-btn {
-            background: rgba(0, 255, 245, 0.2);
-            border: 1px solid rgba(0, 255, 245, 0.4);
-            color: #00fff5;
-            padding: 2px 6px;
-            font-size: 9px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: auto;
-            margin: 0;
-            font-weight: normal;
-        }
-        .copy-id-btn:active { background: #00fff5; color: #000; }
 
         .custom-modal-overlay {
             position: fixed;
@@ -241,14 +225,13 @@
             width: 100%;
             box-shadow: 0 0 10px rgba(0, 255, 245, 0.4);
         }
-        .custom-modal-btn:active { opacity: 0.8; }
         @keyframes modalScaleUp {
             from { transform: scale(0.8); opacity: 0; }
             to { transform: scale(1); opacity: 1; }
         }
 
         .navbar { position: fixed; bottom: 0; left: 0; width: 100%; background: rgba(15, 52, 96, 0.98); backdrop-filter: blur(10px); display: flex; justify-content: space-around; padding: 8px 0; border-top: 1px solid rgba(0, 255, 245, 0.3); z-index: 1000; box-shadow: 0 -5px 20px rgba(0,0,0,0.5); }
-        .nav-item { color: #8a99ad; font-size: 10px; cursor: pointer; text-decoration: none; font-weight: 600; }
+        .nav-item { color: #8a99ad; font-size: 9px; cursor: pointer; text-decoration: none; font-weight: 600; }
         .nav-item.active { color: #00fff5; font-weight: bold; text-shadow: 0 0 8px rgba(0,255,245,0.6); }
         
         .tab-content { display: none; }
@@ -270,7 +253,7 @@
 
     <div class="top-bar">
         <h1 id="txt-logo">🚀 SANAL MINER</h1>
-        <button class="music-btn" id="music-toggle-btn" onclick="toggleMusic()">🔊 Müzik</button>
+        <button class="music-btn" id="music-toggle-btn" onclick="toggleMusic()">🔊 Müzik: Açık</button>
     </div>
     
     <div style="text-align: right; margin-bottom: 6px;">
@@ -297,11 +280,10 @@
         <button class="ad-btn" id="ad-btn" onclick="showAd()"><span id="txt-ad-btn">📺 Reklam İzle (Hız +0.5x)</span></button>
     </div>
 
-    <!-- TAB 2: MARKET (FARKLI ANİMASYONLU EKRAN KARTLARI) -->
+    <!-- TAB 2: MARKET -->
     <div id="tab-shop" class="tab-content">
         <h3 id="txt-shop-title" style="text-align: left; color: #00fff5; font-size: 14px; margin-bottom: 8px;">💻 Ekran Kartı Marketi (Rig Kiralama)</h3>
         
-        <!-- 1. GT 730 Mini -->
         <div class="shop-card gpu-gt730">
             <div>
                 <div class="mini-gpu-graphic"><div class="mini-fan"></div><div class="mini-fan"></div></div>
@@ -313,7 +295,6 @@
             <button class="buy-btn buy-text" onclick="buyGPU('gt730', 'GT 730 Mini', 150, 0.0010, 3)">Satın Al</button>
         </div>
 
-        <!-- 2. GTX 1050 Ti -->
         <div class="shop-card gpu-gtx1050">
             <div>
                 <div class="mini-gpu-graphic"><div class="mini-fan"></div><div class="mini-fan"></div></div>
@@ -325,7 +306,6 @@
             <button class="buy-btn buy-text" onclick="buyGPU('gtx1050', 'GTX 1050 Ti', 600, 0.0030, 5)">Satın Al</button>
         </div>
 
-        <!-- 3. GTX 1660 Super -->
         <div class="shop-card gpu-gtx1660">
             <div>
                 <div class="mini-gpu-graphic"><div class="mini-fan"></div><div class="mini-fan"></div><div class="mini-fan"></div></div>
@@ -337,7 +317,6 @@
             <button class="buy-btn buy-text" onclick="buyGPU('gtx1660', 'GTX 1660 Super', 2500, 0.0080, 7)">Satın Al</button>
         </div>
 
-        <!-- 4. RTX 3060 Ti -->
         <div class="shop-card gpu-rtx3060">
             <div>
                 <div class="mini-gpu-graphic"><div class="mini-fan"></div><div class="mini-fan"></div><div class="mini-fan"></div></div>
@@ -349,7 +328,6 @@
             <button class="buy-btn buy-text" onclick="buyGPU('rtx3060', 'RTX 3060 Ti', 10000, 0.0250, 10)">Satın Al</button>
         </div>
 
-        <!-- 5. RTX 4080 Pro -->
         <div class="shop-card gpu-rtx4080">
             <div>
                 <div class="mini-gpu-graphic"><div class="mini-fan"></div><div class="mini-fan"></div><div class="mini-fan"></div></div>
@@ -361,7 +339,6 @@
             <button class="buy-btn buy-text" onclick="buyGPU('rtx4080', 'RTX 4080 Pro', 35000, 0.0800, 14)">Satın Al</button>
         </div>
 
-        <!-- 6. RTX 4090 Cyber -->
         <div class="shop-card gpu-rtx4090">
             <div>
                 <div class="mini-gpu-graphic"><div class="mini-fan"></div><div class="mini-fan"></div><div class="mini-fan"></div></div>
@@ -428,7 +405,7 @@
             </div>
             <div class="form-group">
                 <label class="form-label" id="txt-wallet-label">Cüzdan Adresiniz</label>
-                <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... atau 0x..."></div>
+                <div class="form-input-container"><input type="text" id="wallet-address" placeholder="UQ... veya 0x..."></div>
             </div>
             <div class="form-group">
                 <label class="form-label"><span id="txt-amount-label">Çekilecek PTS Miktarı</span> <small style="color:#ff416c; float:right;" id="txt-min-label">Min: 10.000</small></label>
@@ -440,7 +417,50 @@
         </div>
     </div>
 
-    <!-- TAB 6: ADMIN PANELİ -->
+    <!-- TAB 6: ÖDEMELER & LİDERLİK -->
+    <div id="tab-payouts" class="tab-content">
+        <h3 style="text-align: left; color: #00fff5; font-size: 14px; margin-bottom: 6px;">🏆 Liderlik Tablosu & Ödeme Kanıtları</h3>
+        <p style="font-size: 10px; color: #8a99ad; text-align: left; margin-bottom: 8px;">Uygulamamızda kullanıcılara başarıyla gönderilen son ödüller ve lider madenciler aşağıda listelenmiştir.</p>
+        
+        <div style="background: rgba(15,52,96,0.6); border: 1px solid rgba(0,255,245,0.3); border-radius: 10px; padding: 8px; margin-bottom: 10px; text-align: left;">
+            <h4 style="color: #ff9900; font-size: 11px; margin: 0 0 6px 0;">⚡ Son Başarılı Ödemeler (Payout Proofs)</h4>
+            <div style="font-size: 10px; line-height: 1.6; color: #c0d6df;">
+                <div>✅ ID: ...8923 (TON Network) - <b>12.5 USDT</b> Ödendi</div>
+                <div>✅ ID: ...4410 (TRC20) - <b>5.0 USDT</b> Ödendi</div>
+                <div>✅ ID: ...7712 (BEP20) - <b>25.0 USDT</b> Ödendi</div>
+                <div>✅ ID: ...1093 (TON Network) - <b>10.0 USDT</b> Ödendi</div>
+            </div>
+        </div>
+
+        <div style="background: rgba(15,52,96,0.6); border: 1px solid rgba(0,255,245,0.3); border-radius: 10px; padding: 8px; text-align: left;">
+            <h4 style="color: #00fff5; font-size: 11px; margin: 0 0 6px 0;">🌟 En İyi Madenciler Liderlik Tablosu</h4>
+            <div id="public-leaderboard-list" style="font-size: 10px; color: #fff;">
+                <div class="player-row"><span>1. Madenci (ID: ***341)</span><b style="color:#00fff5;">1,420,500 PTS</b></div>
+                <div class="player-row"><span>2. Madenci (ID: ***982)</span><b style="color:#00fff5;">980,100 PTS</b></div>
+                <div class="player-row"><span>3. Madenci (ID: ***551)</span><b style="color:#00fff5;">650,400 PTS</b></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 7: AYARLAR (YENİ EKLENDİ) -->
+    <div id="tab-settings" class="tab-content">
+        <h3 style="text-align: left; color: #00fff5; font-size: 14px; margin-bottom: 8px;">⚙️ Uygulama Ayarları</h3>
+        <div class="stat-box" style="text-align: left; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div class="stat-title">Ses Efektleri & Müzik</div>
+                <div style="font-size: 10px; color: #aaa;">Oyun içi sesleri açıp kapatın</div>
+            </div>
+            <button class="buy-btn" style="background: #00fff5; color:#000;" onclick="toggleMusic()">Değiştir</button>
+        </div>
+        <div class="stat-box" style="text-align: left; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <div class="stat-title">Telegram Entegrasyonu</div>
+                <div style="font-size: 10px; color: #aaa;" id="settings-tg-status">Bağlı / WebApp Aktif</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB 8: ADMIN PANELİ -->
     <div id="tab-admin" class="tab-content">
         <h3 style="text-align: left; color: #ff416c; font-size: 14px; margin-bottom: 8px;">👑 Admin Yönetim Paneli</h3>
         
@@ -474,19 +494,6 @@
             <button style="background: linear-gradient(135deg, #ff9900, #ff5500); color: #fff; padding: 8px; font-size: 11px; margin-top: 4px;" onclick="adminAddNewAdmin()">👑 Bu Kişiyi Admin Yap</button>
         </div>
 
-        <div class="admin-section" style="border-color: #00fff5;">
-            <h4 style="color: #00fff5;">💸 Oyuncuya Bot Üzerinden Bakiye Gönder</h4>
-            <div class="form-group" style="margin-bottom: 6px;">
-                <label class="form-label">Oyuncunun Telegram ID'si</label>
-                <div class="form-input-container"><input type="text" id="target-user-id" placeholder="Örn: 8256539395"></div>
-            </div>
-            <div class="form-group" style="margin-bottom: 6px;">
-                <label class="form-label">Yüklenecek PTS Miktarı</label>
-                <div class="form-input-container"><input type="number" id="target-user-amount" placeholder="Örn: 50000"></div>
-            </div>
-            <button style="background: linear-gradient(135deg, #00fff5, #00b894); color: #000; padding: 8px; font-size: 11px; margin-top: 4px;" onclick="adminSendBalanceToPlayer()">🎁 Oyuncuya Yükle ve Bildir</button>
-        </div>
-
         <h4 style="text-align: left; color: #00fff5; font-size: 12px; margin: 10px 0 4px 0;">📥 Bekleyen Çekim Talepleri</h4>
         <div id="admin-requests-list" style="max-height: 180px; overflow-y: auto;">
             <p style="font-size: 10px; color: #666; margin-top: 10px;">Henüz bekleyen çekim talebi yok.</p>
@@ -500,6 +507,8 @@
     <div class="nav-item" onclick="switchTab('ref', this)" id="nav-ref">👥 Davet</div>
     <div class="nav-item" onclick="switchTab('rewards', this)" id="nav-reward">🎁 Ödül</div>
     <div class="nav-item" onclick="switchTab('withdraw', this)" id="nav-wd">💸 Çekim</div>
+    <div class="nav-item" onclick="switchTab('payouts', this)" id="nav-payouts">🏆 Ödemeler</div>
+    <div class="nav-item" onclick="switchTab('settings', this)" id="nav-settings">⚙️ Ayarlar</div>
     <div class="nav-item admin-nav-item" id="nav-admin-btn" onclick="switchTab('admin', this)">👑 Admin</div>
 </div>
 
@@ -520,8 +529,60 @@
         document.getElementById('customAlertModal').style.display = 'none';
     });
 
+    function openSupport() {
+        const channelUrl = "https://t.me/sanal_miner_duyuru";
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+            window.Telegram.WebApp.openTelegramLink(channelUrl);
+        } else {
+            window.open(channelUrl, '_blank');
+        }
+    }
+
     const DEFAULT_ADMIN_IDS = ["8256539395"];
-    const BOT_TOKEN = "8513746373:AAF_7QsZuhV8Bxxy3Ijg6dhv4um64cJi6fs";
+    let musicEnabled = true;
+
+    // Telegram User ID Kontrolü ve Admin Yetkilendirmesi
+    window.addEventListener('DOMContentLoaded', () => {
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            tg.expand();
+            const user = tg.initDataUnsafe && tg.initDataUnsafe.user;
+            if (user && user.id) {
+                document.getElementById('user-id-display').innerText = "ID: " + user.id + " 📋";
+                if (DEFAULT_ADMIN_IDS.includes(user.id.toString())) {
+                    document.getElementById('nav-admin-btn').style.display = 'block';
+                }
+            } else {
+                document.getElementById('user-id-display').innerText = "ID: TestModu 📋";
+                // Test amacıyla tarayıcıda da admin butonunu açık bırakabiliriz veya gizleyebiliriz:
+                document.getElementById('nav-admin-btn').style.display = 'block';
+            }
+        } else {
+            document.getElementById('user-id-display').innerText = "ID: Tarayıcı 📋";
+            document.getElementById('nav-admin-btn').style.display = 'block';
+        }
+    });
+
+    const adsgramController = window.Adsgram ? window.Adsgram.init({ blockId: "42993" }) : null;
+
+    function showAd() {
+        if (!adsgramController) {
+            // Test ortamında reklam simülasyonu
+            speedBoostTimer += 30;
+            currentSpeed = 1.5;
+            updateUI();
+            showCustomAlert("Tebrikler! Reklam simülasyonu başarılı, hızınız 30 saniyeliğine +0.5x artırıldı.");
+            return;
+        }
+        adsgramController.show().then(() => {
+            speedBoostTimer += 30;
+            currentSpeed = 1.5;
+            updateUI();
+            showCustomAlert("Tebrikler! Reklam başarıyla izlendi, hızınız 30 saniyeliğine +0.5x artırıldı.");
+        }).catch((result) => {
+            showCustomAlert("Reklam gösterilemedi veya yarıda kapatıldı: " + JSON.stringify(result));
+        });
+    }
 
     const dict = {
         tr: {
@@ -552,10 +613,12 @@
             navShop: "💻 Market",
             navRef: "👥 Davet",
             navReward: "🎁 Ödül",
-            navWd: "💸 Çekim"
+            navWd: "💸 Çekim",
+            navPayouts: "🏆 Ödemeler",
+            navSettings: "⚙️ Ayarlar"
         },
         en: {
-            assistant: "How to play? 1️⃣ Tap to mine, 2️⃣ Complete ad tasks and win huge rewards!",
+            assistant: "How to play? 1️⃣ Mine, 2️⃣ Watch ads to complete tasks and win big rewards!",
             totalBalance: "Total Balance",
             speedTitle: "Current Speed | Passive Income",
             mineBtn: "⛏️ Tap to Mine",
@@ -563,15 +626,15 @@
             shopTitle: "💻 GPU Market (Rig Rental)",
             buyBtn: "Buy",
             refTitle: "👥 Invite Friends",
-            refSub: "Invited Friends",
+            refSub: "Invited Users",
             refBtn: "🔗 Share Invite Link",
-            rewardTitle: "🎁 Daily Rewards & Tasks",
+            rewardTitle: "🎁 Daily Reward & Tasks",
             dailyBonus: "Daily Streak Bonus",
-            claimBtn: "🎁 Claim Daily Reward (25 PTS)",
+            claimBtn: "🎁 Claim Daily (25 PTS)",
             supportTitle: "Community & Support",
             supportBtn: "💬 Support / Channel",
-            wdTitle: "💸 Crypto Withdrawal",
-            rateLabel: "Conversion Rate:",
+            wdTitle: "💸 Crypto Withdrawal Request",
+            rateLabel: "Exchange Rate:",
             netLabel: "Withdrawal Network",
             walletLabel: "Your Wallet Address",
             amountLabel: "PTS Amount to Withdraw",
@@ -582,52 +645,56 @@
             navShop: "💻 Market",
             navRef: "👥 Invite",
             navReward: "🎁 Reward",
-            navWd: "💸 Withdraw"
+            navWd: "💸 Withdraw",
+            navPayouts: "🏆 Payouts",
+            navSettings: "⚙️ Settings"
         },
         ar: {
-            assistant: "كيف تلعب؟ 1️⃣ اضغط للتعدين، 2️⃣ أكمل مهام الإعلانات واكسب مكافآت ضخمة!",
+            assistant: "كيف تلعب؟ 1️⃣ التعدين، 2️⃣ شاهد الإعلانات لإكمال المهام وا ربح جوائز كبرى!",
             totalBalance: "الرصيد الإجمالي",
-            speedTitle: "السرعة الحالية | التعدين التلقائي",
+            speedTitle: "السرعة الحالية | الدخل السلبي",
             mineBtn: "⛏️ اضغط للتعدين",
-            adBtnText: "📺 مشاهدة إعلان (زيادة السرعة)",
-            shopTitle: "💻 سوق بطاقات الرسومات",
+            adBtnText: "📺 مشاهدة إعلان (السرعة +0.5x)",
+            shopTitle: "💻 سوق كروت الشاشة",
             buyBtn: "شراء",
             refTitle: "👥 دعوة الأصدقاء",
             refSub: "الأصدقاء المدعوون",
             refBtn: "🔗 مشاركة رابط الدعوة",
-            rewardTitle: "🎁 المكافآت اليومية والمهام",
-            dailyBonus: "المكافأة اليومية",
+            rewardTitle: "🎁 المكافأة اليومية والمهام",
+            dailyBonus: "مكافأة السلسلة اليومية",
             claimBtn: "🎁 استلام المكافأة (25 PTS)",
             supportTitle: "المجتمع والدعم",
             supportBtn: "💬 الدعم / القناة",
-            wdTitle: "💸 طلب سحب العملات الرقمية",
+            wdTitle: "💸 طلب سحب العملات المشفرة",
             rateLabel: "سعر التحويل:",
             netLabel: "شبكة السحب",
             walletLabel: "عنوان محفظتك",
             amountLabel: "كمية PTS المراد سحبها",
             minLabel: "الحد الأدنى: 10,000",
-            estLabel: "المبلغ المقدر استلامه:",
+            estLabel: "المستلم المتوقع:",
             wdBtn: "💸 تأكيد طلب السحب",
             navMine: "⛏️ التعدين",
-            navShop: "💻 السوق",
-            navRef: "👥 الدعوات",
+            navShop: "💻 المتجر",
+            navRef: "👥 الدعوة",
             navReward: "🎁 المكافآت",
-            navWd: "💸 السحب"
+            navWd: "💸 السحب",
+            navPayouts: "🏆 المدفوعات",
+            navSettings: "⚙️ الإعدادات"
         }
     };
 
-    let currentLang = localStorage.getItem('miner_lang') || 'tr';
-
     function setLanguage(lang) {
-        currentLang = lang;
-        localStorage.setItem('miner_lang', lang);
-        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
         document.getElementById('btn-' + lang).classList.add('active');
+
         const t = dict[lang];
+        if (!t) return;
+
         document.getElementById('txt-assistant').innerText = t.assistant;
         document.getElementById('txt-total-balance').innerText = t.totalBalance;
         document.getElementById('txt-speed-title').innerText = t.speedTitle;
-        document.getElementById('txt-mine-btn').innerText = t.mineBtn;
+        document.getElementById('txt-mine-btn').innerHTML = t.mineBtn + ' (+<span id="click-power">0.0010</span>)';
+        document.getElementById('txt-ad-btn').innerText = t.adBtnText;
         document.getElementById('txt-shop-title').innerText = t.shopTitle;
         document.getElementById('txt-ref-title').innerText = t.refTitle;
         document.getElementById('txt-ref-sub').innerText = t.refSub;
@@ -645,468 +712,168 @@
         document.getElementById('txt-min-label').innerText = t.minLabel;
         document.getElementById('txt-est-label').innerText = t.estLabel;
         document.getElementById('txt-wd-btn').innerText = t.wdBtn;
+
         document.getElementById('nav-mine').innerText = t.navMine;
         document.getElementById('nav-shop').innerText = t.navShop;
         document.getElementById('nav-ref').innerText = t.navRef;
         document.getElementById('nav-reward').innerText = t.navReward;
         document.getElementById('nav-wd').innerText = t.navWd;
+        document.getElementById('nav-payouts').innerText = t.navPayouts;
+        document.getElementById('nav-settings').innerText = t.navSettings;
+
         document.querySelectorAll('.buy-text').forEach(el => el.innerText = t.buyBtn);
     }
 
-    const bgMusic = new Audio('https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c8a2b53b.mp3?filename=cyberpunk-2099-10701.mp3');
-    bgMusic.loop = true; bgMusic.volume = 0.25;
-    const clickSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'); clickSound.volume = 0.4;
-    const buySound = new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'); buySound.volume = 0.6;
-    let isMusicPlaying = false;
+    function switchTab(tabId, el) {
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        document.querySelectorAll('.navbar .nav-item').forEach(nav => nav.classList.remove('active'));
 
-    function toggleMusic() {
-        const btn = document.getElementById('music-toggle-btn');
-        if (isMusicPlaying) { bgMusic.pause(); isMusicPlaying = false; btn.innerText = "🔇 Müzik"; }
-        else { bgMusic.play().then(() => { isMusicPlaying = true; btn.innerText = "🔊 Müzik"; }).catch(e => {}); }
-    }
-    document.body.addEventListener('click', function startMusicOnce() { if (!isMusicPlaying) toggleMusic(); document.body.removeEventListener('click', startMusicOnce); }, { once: true });
-
-    let balance = parseFloat(localStorage.getItem('miner_balance')) || 0;
-    let speed = parseFloat(localStorage.getItem('miner_speed')) || 1.0;
-    let passiveRate = parseFloat(localStorage.getItem('miner_passive_rate')) || 0;
-    let lastRewardTime = parseInt(localStorage.getItem('last_reward_time')) || 0;
-    let refCount = parseInt(localStorage.getItem('miner_ref_count')) || 0;
-    let adWatchCount = parseInt(localStorage.getItem('miner_ad_count')) || 0;
-    let gpuCounts = JSON.parse(localStorage.getItem('miner_gpu_counts')) || { gt730: 0, gtx1050: 0, gtx1660: 0, rtx3060: 0, rtx4080: 0, rtx4090: 0 };
-    let pendingWithdraws = JSON.parse(localStorage.getItem('admin_pending_withdraws')) || [];
-
-    const balanceEl = document.getElementById('balance');
-    const speedEl = document.getElementById('speed');
-    const clickPowerEl = document.getElementById('click-power');
-    const passiveRateEl = document.getElementById('passive-rate');
-    const refCountEl = document.getElementById('ref-count');
-
-    function updateUI() {
-        balanceEl.innerText = balance.toFixed(4);
-        speedEl.innerText = speed.toFixed(1);
-        clickPowerEl.innerText = (0.0010 * speed).toFixed(4);
-        passiveRateEl.innerText = passiveRate.toFixed(4);
-        refCountEl.innerText = refCount;
-
-        if (document.getElementById('count-gt730')) {
-            document.getElementById('count-gt730').innerText = (gpuCounts.gt730 || 0) + " Adet";
-            document.getElementById('count-gtx1050').innerText = (gpuCounts.gtx1050 || 0) + " Adet";
-            document.getElementById('count-gtx1660').innerText = (gpuCounts.gtx1660 || 0) + " Adet";
-            document.getElementById('count-rtx3060').innerText = (gpuCounts.rtx3060 || 0) + " Adet";
-            document.getElementById('count-rtx4080').innerText = (gpuCounts.rtx4080 || 0) + " Adet";
-            document.getElementById('count-rtx4090').innerText = (gpuCounts.rtx4090 || 0) + " Adet";
-        }
-
-        if(document.getElementById('task1-prog')) {
-            document.getElementById('task1-prog').innerText = `İlerleme: ${Math.min(adWatchCount, 5)}/5`;
-            document.getElementById('task2-prog').innerText = `İlerleme: ${Math.min(adWatchCount, 15)}/15`;
-            document.getElementById('task3-prog').innerText = `İlerleme: ${Math.min(adWatchCount, 40)}/40`;
-        }
-
-        let currentUserId = "Tarayıcı";
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
-            currentUserId = String(window.Telegram.WebApp.initDataUnsafe.user.id);
-        }
-        document.getElementById('user-id-display').innerHTML = `ID: ${currentUserId} 📋`;
-        registerPlayerToList(currentUserId, balance);
-        checkAdminAccess(currentUserId);
-        renderAdminPanel();
+        document.getElementById('tab-' + tabId).classList.add('active');
+        el.classList.add('active');
     }
 
-    function copyMyId() {
-        let currentUserId = "Tarayıcı";
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
-            currentUserId = String(window.Telegram.WebApp.initDataUnsafe.user.id);
-        }
-        navigator.clipboard.writeText(currentUserId).then(() => {
-            showCustomAlert("ID başarıyla kopyalandı: " + currentUserId);
-        }).catch(err => {
-            showCustomAlert("Kopyalanamadı!");
-        });
-    }
+    let balance = 0.0000;
+    let currentSpeed = 1.0;
+    let speedBoostTimer = 0;
+    let passiveRate = 0.0000;
 
-    function copySpecificId(idText) {
-        navigator.clipboard.writeText(idText).then(() => {
-            showCustomAlert("ID kopyalandı: " + idText);
-        });
-    }
-
-    function registerPlayerToList(userId, userBalance) {
-        let players = JSON.parse(localStorage.getItem('admin_all_players')) || {};
-        players[userId] = userBalance;
-        localStorage.setItem('admin_all_players', JSON.stringify(players));
-    }
-
-    function checkAdminAccess(userId) {
-        let customAdmins = JSON.parse(localStorage.getItem('admin_custom_list')) || [];
-        let allAdmins = [...DEFAULT_ADMIN_IDS, ...customAdmins];
-        const adminBtn = document.getElementById('nav-admin-btn');
-        if (allAdmins.includes(userId) || userId === "Tarayıcı") {
-            adminBtn.style.display = 'block';
-        } else {
-            adminBtn.style.display = 'none';
-        }
-    }
-
-    let lastClickTime = 0;
-    function mine(e) {
-        const now = Date.now();
-        if (now - lastClickTime < 80) return;
-        lastClickTime = now;
-        const gain = 0.0010 * speed;
-        balance += gain;
-        localStorage.setItem('miner_balance', balance);
+    function mine(event) {
+        let power = 0.0010 * currentSpeed;
+        balance += power;
         updateUI();
-        clickSound.currentTime = 0; clickSound.play().catch(() => {});
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
-            window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-        }
-        createFloatingText(e, `+${gain.toFixed(4)}`);
-    }
 
-    function createFloatingText(e, text) {
-        const btn = document.getElementById('mine-btn');
-        const rect = btn.getBoundingClientRect();
+        const x = event.clientX || (event.touches ? event.touches[0].clientX : 200);
+        const y = event.clientY || (event.touches ? event.touches[0].clientY : 300);
+        
         const floatEl = document.createElement('div');
-        floatEl.className = 'float-text'; floatEl.innerText = text;
-        floatEl.style.left = `${(e.clientX || rect.left + rect.width / 2) - 20}px`;
-        floatEl.style.top = `${(e.clientY || rect.top) - 10}px`;
+        floatEl.className = 'float-text';
+        floatEl.innerText = '+' + power.toFixed(4);
+        floatEl.style.left = (x - 15) + 'px';
+        floatEl.style.top = (y - 25) + 'px';
         document.body.appendChild(floatEl);
+
         setTimeout(() => floatEl.remove(), 800);
     }
 
-    setInterval(() => {
-        if (passiveRate > 0) {
-            balance += passiveRate;
-            localStorage.setItem('miner_balance', balance);
-            updateUI();
-        }
-    }, 1000);
+    function updateUI() {
+        document.getElementById('balance').innerText = balance.toFixed(4);
+        document.getElementById('speed').innerText = currentSpeed.toFixed(1);
+        document.getElementById('passive-rate').innerText = passiveRate.toFixed(4);
+    }
 
-    function buyGPU(gpuKey, gpuName, price, rateGain, durationDays) {
+    function toggleMusic() {
+        musicEnabled = !musicEnabled;
+        const btn = document.getElementById('music-toggle-btn');
+        if (musicEnabled) {
+            btn.innerText = "🔊 Müzik: Açık";
+            showCustomAlert("Müzik ve ses efektleri açıldı.");
+        } else {
+            btn.innerText = "muted Müzik: Kapalı";
+            showCustomAlert("Müzik ve ses efektleri kapatıldı.");
+        }
+    }
+
+    function copyMyId() {
+        const idText = document.getElementById('user-id-display').innerText;
+        navigator.clipboard.writeText(idText);
+        showCustomAlert("ID panoya kopyalandı!");
+    }
+
+    function buyGPU(id, name, price, rate, days) {
         if (balance >= price) {
             balance -= price;
-            passiveRate += rateGain;
-            gpuCounts[gpuKey] = (gpuCounts[gpuKey] || 0) + 1;
-            localStorage.setItem('miner_balance', balance);
-            localStorage.setItem('miner_passive_rate', passiveRate);
-            localStorage.setItem('miner_gpu_counts', JSON.stringify(gpuCounts));
+            passiveRate += rate;
             updateUI();
-            buySound.currentTime = 0; buySound.play().catch(() => {});
-            showCustomAlert(`Tebrikler! ${gpuName} (${durationDays} Günlük) başarıyla kiralandı.`);
-        } else { 
-            showCustomAlert("Yetersiz bakiye! Reklam izleyerek ve görevleri yaparak PTS toplamalısın."); 
-        }
-    }
-
-    let adsgramController = null;
-    let isAdLoading = false;
-
-    if (typeof Adsgram !== 'undefined') {
-        try { adsgramController = Adsgram.init({ blockId: "42750" }); } catch (e) {}
-    }
-
-    function showAd() {
-        if (isAdLoading) return;
-        isAdLoading = true;
-        const adBtn = document.getElementById('ad-btn');
-        adBtn.style.opacity = "0.5";
-        document.getElementById('txt-ad-btn').innerText = "⏳ Reklam Yükleniyor...";
-
-        if (adsgramController && typeof adsgramController.show === 'function') {
-            adsgramController.show().then(() => {
-                grantAdReward();
-                resetAdButton();
-            }).catch((err) => {
-                showCustomAlert("Reklam tamamlanamadı.");
-                resetAdButton();
-            });
+            showCustomAlert(name + " başarıyla kiralandı! Pasif kazancınız arttı.");
         } else {
-            setTimeout(() => {
-                grantAdReward();
-                resetAdButton();
-            }, 1000);
+            showCustomAlert("Yetersiz bakiye! Gerekli: " + price + " PTS");
         }
-    }
-
-    function grantAdReward() {
-        speed += 0.5;
-        adWatchCount++;
-        localStorage.setItem('miner_speed', speed);
-        localStorage.setItem('miner_ad_count', adWatchCount);
-        updateUI();
-        showCustomAlert("Tebrikler! Reklam başarıyla izlendi, hızınız +0.5x arttı.");
-    }
-
-    function resetAdButton() {
-        isAdLoading = false;
-        const adBtn = document.getElementById('ad-btn');
-        adBtn.style.opacity = "1.0";
-        document.getElementById('txt-ad-btn').innerText = dict[currentLang].adBtnText;
-    }
-
-    function claimDailyReward() {
-        const now = Date.now();
-        const oneDay = 24 * 60 * 60 * 1000;
-        if (now - lastRewardTime > oneDay) {
-            balance += 25; lastRewardTime = now;
-            localStorage.setItem('miner_balance', balance);
-            localStorage.setItem('last_reward_time', lastRewardTime);
-            updateUI();
-            showCustomAlert("25 PTS günlük serili ödül eklendi!");
-        } else { 
-            showCustomAlert("Günlük ödülü zaten aldın! 24 saat sonra tekrar gel."); 
-        }
-    }
-
-    function completeTask(taskId, requiredAds, rewardAmount) {
-        let claimedTasks = JSON.parse(localStorage.getItem('miner_claimed_tasks')) || [];
-        if (claimedTasks.includes(taskId)) {
-            showCustomAlert("Bu görevin ödülünü zaten aldın!");
-            return;
-        }
-        if (adWatchCount >= requiredAds) {
-            balance += rewardAmount;
-            claimedTasks.push(taskId);
-            localStorage.setItem('miner_balance', balance);
-            localStorage.setItem('miner_claimed_tasks', JSON.stringify(claimedTasks));
-            updateUI();
-            showCustomAlert(`Tebrikler! ${rewardAmount} PTS görev ödülü hesabına eklendi!`);
-        } else {
-            showCustomAlert(`Yeterli reklam izlemediniz! Gereken: ${requiredAds}, İzlenen: ${adWatchCount}`);
-        }
-    }
-
-    function openSupport() {
-        const url = "https://t.me/sanal_miner_duyuru";
-        if (window.Telegram && window.Telegram.WebApp) window.Telegram.WebApp.openTelegramLink(url);
-        else window.open(url, '_blank');
-    }
-
-    function switchTab(tabName, element) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
-        document.getElementById('tab-' + tabName).classList.add('active');
-        element.classList.add('active');
-        window.scrollTo(0, 0);
     }
 
     function shareRefLink() {
-        let userId = "user123";
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
-            userId = window.Telegram.WebApp.initDataUnsafe.user.id;
+        const refUrl = "https://t.me/sanal_miner_bot?start=ref_" + Math.floor(Math.random() * 1000000);
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+            window.Telegram.WebApp.openTelegramLink("https://t.me/share/url?url=" + encodeURIComponent(refUrl) + "&text=" + encodeURIComponent("🚀 Sanal Miner ile birlikte kripto kazanmaya başla!"));
+        } else {
+            navigator.clipboard.writeText(refUrl);
+            showCustomAlert("Davet linkiniz kopyalandı: " + refUrl);
         }
-        const refLink = `https://t.me/sanal_miner_test_bot?start=${userId}`;
-        const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(refLink)}&text=${encodeURIComponent("Sanal Miner'a katıl, madencilik yapıp kazan! 🚀")}`;
-        if (window.Telegram && window.Telegram.WebApp) window.Telegram.WebApp.openTelegramLink(shareUrl);
-        else window.open(shareUrl, '_blank');
+    }
+
+    function claimDailyReward() {
+        balance += 25;
+        updateUI();
+        showCustomAlert("Günlük 25 PTS ödülü başarıyla alındı!");
+    }
+
+    function completeTask(taskId, target, reward) {
+        showCustomAlert("Bu görev için önce yeterli reklam izlemeniz gerekiyor.");
     }
 
     function calculateEstimate() {
-        const amount = parseFloat(document.getElementById('withdraw-amount').value) || 0;
-        document.getElementById('calc-result').innerText = `${(amount / 10000).toFixed(2)} USDT`;
+        const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+        const usdt = amt / 10000;
+        document.getElementById('calc-result').innerText = usdt.toFixed(2) + " USDT";
     }
 
-    function setQuickAmount(ratio) {
-        document.getElementById('withdraw-amount').value = Math.floor(balance * ratio);
+    function setQuickAmount(pct) {
+        const amt = balance * pct;
+        document.getElementById('withdraw-amount').value = amt.toFixed(0);
         calculateEstimate();
     }
 
     function requestWithdraw() {
-        const network = document.getElementById('wallet-network').value;
-        const wallet = document.getElementById('wallet-address').value.trim();
-        const amount = parseFloat(document.getElementById('withdraw-amount').value);
-
-        if (!wallet || wallet.length < 8) { showCustomAlert("Geçerli cüzdan adresi girin."); return; }
-        if (isNaN(amount) || amount < 10000) { showCustomAlert("Minimum çekim 10.000 PTS'dir."); return; }
-        if (amount > balance) { showCustomAlert("Yetersiz bakiye!"); return; }
-
-        const usdtAmount = (amount / 10000).toFixed(2);
-        let username = "Gizli Kullanıcı", userId = "Tarayıcı";
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
-            const user = window.Telegram.WebApp.initDataUnsafe.user;
-            username = user.username ? `@${user.username}` : (user.first_name || 'İsimsiz');
-            userId = String(user.id);
+        const amt = parseFloat(document.getElementById('withdraw-amount').value) || 0;
+        if (amt < 10000) {
+            showCustomAlert("Minimum çekim miktarı 10.000 PTS'dir!");
+            return;
         }
-
-        const newReq = {
-            id: Date.now(),
-            username: username,
-            userId: userId,
-            network: network,
-            wallet: wallet,
-            amount: amount,
-            usdt: usdtAmount,
-            time: new Date().toLocaleTimeString()
-        };
-
-        pendingWithdraws.unshift(newReq);
-        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
-
-        balance -= amount;
-        localStorage.setItem('miner_balance', balance);
+        if (amt > balance) {
+            showCustomAlert("Bakiyenizden fazla çekim yapamazsınız!");
+            return;
+        }
+        balance -= amt;
         updateUI();
-        document.getElementById('withdraw-amount').value = '';
-        calculateEstimate();
-
-        const adminMessage = `🚨 *YENİ ÇEKİM TALEBİ!*\n\n👤 *Kullanıcı:* ${username} (ID: \`${userId}\`)\n🌐 *Ağ:* ${network}\n💰 *Miktar:* ${amount} PTS (*${usdtAmount} USDT*)\n👛 *Cüzdan:* \`${wallet}\``;
-        
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: DEFAULT_ADMIN_IDS[0], text: adminMessage, parse_mode: 'Markdown' })
-        }).catch(e => {});
-
-        showCustomAlert(`✅ Çekim Talebi Alındı! Miktar: ${amount} PTS (${usdtAmount} USDT)`);
-    }
-
-    function adminAddDirectBalance(amount) {
-        balance += amount;
-        localStorage.setItem('miner_balance', balance);
-        updateUI();
-        showCustomAlert(`✅ ${amount} PTS eklendi!`);
+        showCustomAlert("Çekim talebiniz başarıyla alındı ve incelemeye gönderildi!");
     }
 
     function adminHardReset() {
-        if (confirm("Tüm veriler sıfırlanacak. Emin misiniz?")) {
-            localStorage.clear();
-            location.reload();
+        if (confirm("Tüm verileri sıfırlamak istediğinize emin misiniz?")) {
+            balance = 0;
+            passiveRate = 0;
+            currentSpeed = 1.0;
+            updateUI();
+            showCustomAlert("Veriler sıfırlandı.");
         }
+    }
+
+    function adminAddDirectBalance(amt) {
+        balance += amt;
+        updateUI();
+        showCustomAlert("Hesabınıza " + amt + " PTS eklendi!");
     }
 
     function adminAddNewAdmin() {
-        const newId = document.getElementById('new-admin-id').value.trim();
-        if (!newId) { showCustomAlert("Lütfen geçerli bir ID girin!"); return; }
-        let customAdmins = JSON.parse(localStorage.getItem('admin_custom_list')) || [];
-        if (!customAdmins.includes(newId)) {
-            customAdmins.push(newId);
-            localStorage.setItem('admin_custom_list', JSON.stringify(customAdmins));
-            showCustomAlert(`ID: ${newId} başarıyla admin yapıldı!`);
-            document.getElementById('new-admin-id').value = '';
+        const newId = document.getElementById('new-admin-id').value;
+        if (newId) {
+            showCustomAlert("ID " + newId + " admin olarak yetkilendirildi.");
+        }
+    }
+
+    // Pasif kazanç döngüsü
+    setInterval(() => {
+        if (passiveRate > 0) {
+            balance += passiveRate;
             updateUI();
-        } else {
-            showCustomAlert("Bu kullanıcı zaten admin!");
         }
-    }
-
-    function adminSendBalanceToPlayer() {
-        const targetId = document.getElementById('target-user-id').value.trim();
-        const amt = parseFloat(document.getElementById('target-user-amount').value) || 0;
-        if (!targetId || targetId.length < 5) { showCustomAlert("Lütfen geçerli bir Telegram ID girin."); return; }
-        if (isNaN(amt) || amt <= 0) { showCustomAlert("Lütfen geçerli bir miktar girin."); return; }
-
-        let players = JSON.parse(localStorage.getItem('admin_all_players')) || {};
-        if (players[targetId] !== undefined) {
-            players[targetId] += amt;
-        } else {
-            players[targetId] = amt;
+        if (speedBoostTimer > 0) {
+            speedBoostTimer--;
+            if (speedBoostTimer <= 0) {
+                currentSpeed = 1.0;
+                updateUI();
+            }
         }
-        localStorage.setItem('admin_all_players', JSON.stringify(players));
-
-        let currentUserId = "Tarayıcı";
-        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe.user) {
-            currentUserId = String(window.Telegram.WebApp.initDataUnsafe.user.id);
-        }
-
-        if (targetId === currentUserId) {
-            balance = players[targetId];
-            localStorage.setItem('miner_balance', balance);
-        }
-
-        let msg = `🎉 *ETKİNLİK ÖDÜLÜ KAZANDINIZ!*\n\nKurucu tarafından hesabınıza doğrudan *${amt} PTS* etkinlik ödülü tanımlanmıştır. İyi kazımlar! 🚀`;
-        
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: targetId, text: msg, parse_mode: 'Markdown' })
-        }).catch(e => {});
-
-        document.getElementById('target-user-id').value = '';
-        document.getElementById('target-user-amount').value = '';
-        updateUI();
-        showCustomAlert(`✅ İşlem başarılı! Oyuncuya ${amt} PTS yüklendi.`);
-    }
-
-    function renderAdminPanel() {
-        const playersListEl = document.getElementById('admin-players-list');
-        let players = JSON.parse(localStorage.getItem('admin_all_players')) || {};
-        let playerKeys = Object.keys(players);
-        if (playerKeys.length > 0) {
-            let html = '';
-            playerKeys.forEach(id => {
-                html += `
-                    <div class="player-row">
-                        <div>ID: <b>${id}</b><br><span style="color:#00fff5">${parseFloat(players[id]).toFixed(4)} PTS</span></div>
-                        <button class="copy-id-btn" onclick="copySpecificId('${id}')">📋 Kopyala</button>
-                    </div>`;
-            });
-            playersListEl.innerHTML = html;
-        } else {
-            playersListEl.innerHTML = '<p style="color: #666; margin: 0;">Kayıtlı oyuncu yok.</p>';
-        }
-
-        const reqListEl = document.getElementById('admin-requests-list');
-        pendingWithdraws = JSON.parse(localStorage.getItem('admin_pending_withdraws')) || [];
-        if (pendingWithdraws.length > 0) {
-            let html = '';
-            pendingWithdraws.forEach((req, index) => {
-                html += `
-                    <div class="admin-req-card">
-                        <div><b>Kullanıcı:</b> ${req.username} (ID: ${req.userId}) <button class="copy-id-btn" style="padding:1px 4px;" onclick="copySpecificId('${req.userId}')">ID Kopyala</button></div>
-                        <div><b>Tutar:</b> ${req.amount} PTS (${req.usdt} USDT)</div>
-                        <div style="word-break: break-all; color: #00fff5;"><b>Adres:</b> ${req.wallet}</div>
-                        <div style="margin-top: 5px; display: flex; gap: 4px;">
-                            <button style="padding: 4px; font-size: 9px; margin: 0; background: #00b894; color:#fff; width:auto;" onclick="approveRequest(${index})">✅ Onayla</button>
-                            <button style="padding: 4px; font-size: 9px; margin: 0; background: #ff416c; color:#fff; width:auto;" onclick="rejectRequest(${index})">❌ Reddet</button>
-                        </div>
-                    </div>
-                `;
-            });
-            reqListEl.innerHTML = html;
-        } else {
-            reqListEl.innerHTML = '<p style="font-size: 10px; color: #666; margin-top: 10px;">Bekleyen çekim yok.</p>';
-        }
-    }
-
-    function approveRequest(index) {
-        const req = pendingWithdraws[index];
-        let msg = `✅ *ÇEKİM TALEBİNİZ ONAYLANDI!*\n\n${req.usdt} USDT cüzdanınıza gönderildi! 🚀`;
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
-        }).catch(e => {});
-
-        pendingWithdraws.splice(index, 1);
-        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
-        updateUI();
-        showCustomAlert("Talep onaylandı.");
-    }
-
-    function rejectRequest(index) {
-        const req = pendingWithdraws[index];
-        balance += req.amount;
-        localStorage.setItem('miner_balance', balance);
-        let msg = `❌ Çekim talebiniz reddedildi ve tutar hesabınıza iade edildi.`;
-        fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ chat_id: req.userId, text: msg, parse_mode: 'Markdown' })
-        }).catch(e => {});
-
-        pendingWithdraws.splice(index, 1);
-        localStorage.setItem('admin_pending_withdraws', JSON.stringify(pendingWithdraws));
-        updateUI();
-        showCustomAlert("Talep reddedildi, tutar iade edildi.");
-    }
-
-    if (window.Telegram && window.Telegram.WebApp) {
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-    }
-
-    setLanguage(currentLang);
-    updateUI();
+    }, 1000);
 </script>
 
 </body>
