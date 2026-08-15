@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rig Tycoon - Mining Manager</title>
+    <title>CryptoEmpire - Idle Clicker</title>
     <style>
         :root {
-            --bg: #090a0f;
-            --panel: #131722;
-            --border: #2a2e3d;
-            --accent: #00ff88;
-            --warning: #ff4d4d;
+            --bg: #0c0e15;
+            --card: #161b26;
+            --border: #2d3748;
+            --primary: #f59e0b; /* Altın / Kripto Sarısı */
+            --accent: #10b981;  /* Kazanç Yeşili */
             --text: #ffffff;
-            --muted: #848e9c;
+            --muted: #94a3b8;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Roboto, sans-serif;
             user-select: none;
         }
 
@@ -33,7 +33,7 @@
             overflow: hidden;
         }
 
-        .app {
+        .phone-frame {
             width: 100%;
             max-width: 400px;
             height: 100%;
@@ -46,172 +46,137 @@
             position: relative;
         }
 
-        /* Top Header */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: var(--panel);
-            padding: 10px 14px;
-            border-radius: 10px;
-            border: 1px solid var(--border);
-        }
-
-        .rig-title h4 {
-            font-size: 13px;
-            color: var(--accent);
-        }
-
-        .rig-title span {
-            font-size: 10px;
-            color: var(--muted);
-        }
-
-        .ad-income-btn {
-            background: rgba(0, 255, 136, 0.1);
-            color: var(--accent);
-            border: 1px solid var(--accent);
-            padding: 5px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Main Dashboard Screen */
-        .dash-screen {
-            background: var(--panel);
+        /* Üst Panel & Cüzdan */
+        .top-panel {
+            background: var(--card);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-            position: relative;
-        }
-
-        .stat-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 12px;
-        }
-
-        .stat-box {
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border);
-            padding: 8px;
-            border-radius: 8px;
-        }
-
-        .stat-box .lbl {
-            font-size: 10px;
-            color: var(--muted);
-        }
-
-        .stat-box .val {
-            font-size: 14px;
-            font-weight: bold;
-            color: var(--text);
-            margin-top: 2px;
-        }
-
-        .main-balance {
-            margin: 10px 0;
             padding: 12px;
-            background: rgba(0, 255, 136, 0.05);
-            border: 1px dashed var(--accent);
-            border-radius: 8px;
-        }
-
-        .main-balance .title {
-            font-size: 10px;
-            color: var(--muted);
-        }
-
-        .main-balance .amount {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--accent);
-            margin-top: 2px;
-        }
-
-        /* Interactive Mining Rig Area */
-        .rig-workbench {
-            background: #1a1f2c;
-            border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 10px;
-            text-align: center;
-        }
-
-        .rig-workbench p {
-            font-size: 11px;
-            color: var(--muted);
-            margin-bottom: 10px;
-        }
-
-        .action-main-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #00ff88 0%, #00b4d8 100%);
-            color: #000;
-            border: none;
-            padding: 12px;
-            font-size: 13px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,255,136,0.2);
-        }
-
-        .action-main-btn:active {
-            transform: scale(0.97);
-        }
-
-        /* Mandatory Ad / Difficulty Wall */
-        .ad-wall {
-            background: rgba(255, 77, 77, 0.05);
-            border: 1px solid rgba(255, 77, 77, 0.3);
-            border-radius: 10px;
-            padding: 10px 14px;
-            margin-top: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .ad-wall-info h5 {
-            font-size: 11px;
-            color: var(--warning);
+        .user-tag h4 {
+            font-size: 13px;
+            color: var(--primary);
         }
 
-        .ad-wall-info p {
-            font-size: 9px;
+        .user-tag span {
+            font-size: 10px;
             color: var(--muted);
         }
 
-        .watch-ad-btn {
-            background: var(--warning);
-            color: #fff;
-            border: none;
-            padding: 6px 10px;
-            font-size: 10px;
+        .ad-boost-pill {
+            background: rgba(245, 158, 11, 0.15);
+            color: var(--primary);
+            border: 1px solid var(--primary);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
             font-weight: bold;
-            border-radius: 6px;
             cursor: pointer;
         }
 
-        /* Bottom Nav */
-        .nav-bar {
+        /* Merkez Skor Alanı */
+        .game-center {
+            text-align: center;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .coin-balance-label {
+            font-size: 11px;
+            color: var(--muted);
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
+
+        .coin-balance-val {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        /* Tıklanacak Büyük Kripto Sandığı / Token */
+        .click-target {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto;
+            background: radial-gradient(circle, #374151 0%, #1f2937 100%);
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
+            transition: transform 0.08s ease;
+        }
+
+        .click-target:active {
+            transform: scale(0.92);
+        }
+
+        .click-target span {
+            font-size: 60px;
+        }
+
+        .click-hint {
+            font-size: 10px;
+            color: var(--muted);
+            margin-top: 12px;
+        }
+
+        /* Reklam / Para Duvarı Alanı (Sana kazandıracak yer) */
+        .monetize-box {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
+            border: 1px dashed var(--accent);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .monetize-text h5 {
+            font-size: 12px;
+            color: var(--accent);
+        }
+
+        .monetize-text p {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .watch-ad-action {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* Alt Sekmeler */
+        .bottom-tabs {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            background: var(--panel);
+            background: var(--card);
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 8px;
             gap: 4px;
         }
 
-        .nav-btn {
+        .tab-item {
             text-align: center;
             color: var(--muted);
             font-size: 10px;
@@ -221,12 +186,12 @@
             transition: 0.2s;
         }
 
-        .nav-btn.active, .nav-btn:hover {
+        .tab-item.active, .tab-item:hover {
             background: rgba(255,255,255,0.05);
-            color: var(--accent);
+            color: var(--primary);
         }
 
-        .nav-btn div {
+        .tab-item div {
             font-size: 16px;
             margin-bottom: 2px;
         }
@@ -234,99 +199,70 @@
 </head>
 <body>
 
-    <div class="app">
-        <!-- Top Bar -->
-        <div class="top-bar">
-            <div class="rig-title">
-                <h4>ASIC Rig #01</h4>
-                <span>Durum: Aktif & Stabil</span>
+    <div class="phone-frame">
+        <!-- Üst Panel -->
+        <div class="top-panel">
+            <div class="user-tag">
+                <h4>Trader #5091</h4>
+                <span>Seviye: 1 • Çırak</span>
             </div>
-            <button class="ad-income-btn" onclick="triggerForcedAd()">📺 2X Güç</button>
+            <div class="ad-boost-pill" onclick="forceAdView()">⚡ 3x Hız (Reklam)</div>
         </div>
 
-        <!-- Main Dashboard -->
-        <div class="dash-screen">
-            <div class="stat-row">
-                <div class="stat-box">
-                    <div class="lbl">Anlık Hashrate</div>
-                    <div class="val" id="hashrate">45.0 MH/s</div>
-                </div>
-                <div class="stat-box">
-                    <div class="lbl">GPU Sıcaklığı</div>
-                    <div class="val" id="temp">65 °C</div>
-                </div>
-            </div>
+        <!-- Merkez Skor ve Oyun Alanı -->
+        <div class="game-center">
+            <div class="coin-balance-label">TOPLAM RIX COİN</div>
+            <div class="coin-balance-val" id="score">0.00</div>
 
-            <div class="main-balance">
-                <div class="title">HAVUZDA BİRİKEN BAKİYE</div>
-                <div class="amount" id="balance">0.000000 USDT</div>
+            <div class="click-target" onclick="earnCoin(event)">
+                <span>💎</span>
             </div>
-
-            <!-- Rig Workbench / Zorunlu Tıklama & Bakım Alanı -->
-            <div class="rig-workbench">
-                <p>⚠️ Cihazın soğuması ve blok çözmesi için işlem yapman gerekiyor!</p>
-                <button class="action-main-btn" onclick="boostWork()">⚡ BLOK ÇÖZ & HİSSE TOPLA</button>
-            </div>
-
-            <!-- Zorunlu Reklam / Para Kazanma Duvarı -->
-            <div class="ad-wall">
-                <div class="ad-wall-info">
-                    <h5>Çekim Kilidi Aktif!</h5>
-                    <p>Bakiyeyi cüzdana aktarmak için reklam izle.</p>
-                </div>
-                <button class="watch-ad-btn" onclick="triggerForcedAd()">REKLAM İZLE</button>
-            </div>
+            <div class="click-hint">Blokları çözmek için dokun!</div>
         </div>
 
-        <!-- Bottom Navigation -->
-        <div class="nav-bar">
-            <div class="nav-btn active">
-                <div>💻</div>Rigler
+        <!-- Senin Reklam Geliri Elde Edeceğin Alan -->
+        <div class="monetize-box">
+            <div class="monetize-text">
+                <h5>Ödüllü Blok Havuzu</h5>
+                <p>Çekim yapabilmek için reklam onayı şart.</p>
             </div>
-            <div class="nav-btn" onclick="alert('Market: Buradan daha güçlü ekran kartları alarak pasif geliri artırabilirsin!')">
-                <div>🛒</div>Market
+            <button class="watch-ad-action" onclick="forceAdView()">REKLAM İZLE</button>
+        </div>
+
+        <!-- Alt Sekmeler -->
+        <div class="bottom-tabs">
+            <div class="tab-item active">
+                <div>🪙</div>Kazanç
             </div>
-            <div class="nav-btn" onclick="alert('Görevler: Reklam izleyerek ekstra ödüller topla!')">
+            <div class="tab-item" onclick="alert('Borsa: Topladığın coinleri burada USDT karşılığında satabilmek için günlük reklam kotanı doldurmalısın.')">
+                <div>📈</div>Borsa
+            </div>
+            <div class="tab-item" onclick="alert('Görevler: Sponsor kanallara katılarak ve reklam izleyerek ekstra kazanç sağla.')">
                 <div>🎯</div>Görevler
             </div>
-            <div class="nav-btn" onclick="alert('Cüzdan: Çekim yapabilmek için reklam sınırını doldurmalısın.')">
-                <div>💳</div>Cüzdan
+            <div class="tab-item" onclick="alert('Cüzdan: Çekimler her pazartesi yapılır. Minimum çekim için aktif reklam izleme zorunludur.')">
+                <div>👛</div>Cüzdan
             </div>
         </div>
     </div>
 
     <script>
-        let balance = 0.000000;
-        let hashrate = 45.0;
+        let score = 0.00;
+        let perClick = 1.00;
 
-        // Çok yavaş artış (Millet hemen kazanamasın, zorlansın ki reklam izlesin)
-        setInterval(() => {
-            balance += 0.000001 * (hashrate / 10);
-            document.getElementById("balance").innerText = balance.toFixed(6) + " USDT";
-        }, 1000);
-
-        function boostWork() {
-            balance += 0.000500;
-            document.getElementById("balance").innerText = balance.toFixed(6) + " USDT";
-            
-            // Kullanıcı tıkladıkça sanki işlemci ısınıyormuş gibi dereceyi anlık oynatalım
-            let tempEl = document.getElementById("temp");
-            let currentTemp = parseInt(tempEl.innerText);
-            tempEl.innerText = (currentTemp + 1) + " °C";
-            
-            setTimeout(() => {
-                tempEl.innerText = currentTemp + " °C";
-            }, 500);
+        function earnCoin(event) {
+            score += perClick;
+            document.getElementById("score").innerText = score.toFixed(2);
         }
 
-        function triggerForcedAd() {
-            // Burası senin Telegram Adsgram veya reklam kodunu bağlayacağın yer.
-            // Kullanıcı buraya tıkladığında reklam açılacak, reklam oynatılırken hem senin 
-            // kasana para yazılacak hem de kullanıcının kazanç hızı katlanacak.
-            alert("📺 Reklam yükleniyor... (Bu reklam tetiklendiğinde senin reklam geliriniz hesabınıza işlenecektir.)");
-            hashrate += 15.0;
-            document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH/s";
-            alert("🚀 Reklam başarıyla izlendi! Hashrate artırıldı ve bakiye çekim kilidi esnetildi.");
+        function forceAdView() {
+            // Buraya Telegram Adsgram veya harici reklam kodunu entegre edeceksin.
+            // Kullanıcı bu butona tıkladığında reklam açılacak, sen reklamdan paranı kazanacaksın,
+            // kullanıcı da oyunda hız veya ekstra ödül alacak.
+            alert("📺 Reklam oynatılıyor... (Bu tıklama üzerinden reklam geliriniz sisteme yansıtıldı!)");
+            score += 50.00; // Kullanıcıya ödül
+            document.getElementById("score").innerText = score.toFixed(2);
+            alert("🎉 Reklam tamamlandı! Hesabına +50 RIX Coin eklendi.");
         }
     </script>
 </body>
