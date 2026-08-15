@@ -2,285 +2,331 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Mining Hub</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>CryptoTap Pro - Mining Bot</title>
     <style>
+        :root {
+            --bg-dark: #0f1219;
+            --card-bg: #181d28;
+            --accent: #f3ba2f;
+            --accent-glow: rgba(243, 186, 47, 0.3);
+            --text-main: #ffffff;
+            --text-muted: #8c96a5;
+        }
+
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            user-select: none;
         }
 
         body {
-            background-color: #0f111a;
-            color: #ffffff;
-            padding: 10px;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
             display: flex;
             justify-content: center;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 420px;
-            background: #161b22;
-            border-radius: 12px;
-            border: 1px solid #30363d;
+            align-items: center;
+            height: 100vh;
             overflow: hidden;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.6);
         }
 
+        .app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100%;
+            max-height: 850px;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            position: relative;
+        }
+
+        /* Üst Bilgi / Profil */
         .header {
-            padding: 15px;
-            background: #1f242d;
-            border-bottom: 1px solid #30363d;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .user-box h4 {
-            font-size: 14px;
-            color: #58a6ff;
+        .profile-info h3 {
+            font-size: 15px;
+            font-weight: 600;
         }
 
-        .user-box span {
+        .profile-info span {
             font-size: 11px;
-            color: #8b949e;
+            color: var(--text-muted);
         }
 
-        .pool-status {
-            font-size: 10px;
-            background: rgba(235, 158, 52, 0.15);
-            color: #f0883e;
-            padding: 4px 8px;
-            border-radius: 6px;
-            border: 1px solid rgba(235, 158, 52, 0.3);
+        .ad-badge {
+            background: rgba(243, 186, 47, 0.1);
+            color: var(--accent);
+            border: 1px solid rgba(243, 186, 47, 0.3);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
         }
 
-        .main-board {
-            padding: 20px;
+        /* Skor Göstergesi */
+        .score-section {
             text-align: center;
-            background: radial-gradient(circle, rgba(22,27,34,1) 0%, rgba(13,17,23,1) 100%);
+            margin: 10px 0;
         }
 
-        .balance-label {
-            font-size: 11px;
-            color: #8b949e;
-            letter-spacing: 0.5px;
+        .coin-icon {
+            font-size: 32px;
             margin-bottom: 5px;
         }
 
-        .balance-value {
-            font-size: 26px;
-            font-weight: 700;
-            color: #3fb950;
-            margin-bottom: 15px;
+        .score-value {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--accent);
+            letter-spacing: 0.5px;
         }
 
-        .info-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .info-card {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid #30363d;
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .info-card .label {
-            font-size: 10px;
-            color: #8b949e;
-        }
-
-        .info-card .val {
+        .score-title {
             font-size: 12px;
-            font-weight: 600;
-            color: #c9d1d9;
-            margin-top: 3px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        /* Reklam / Zorluk Sistemi Butonları */
-        .ad-wall-box {
-            background: #21262d;
-            border: 1px dashed #f0883e;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            text-align: center;
+        /* Tıklama Alanı (Ana Maden Taşı) */
+        .tap-area-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            flex-grow: 1;
         }
 
-        .ad-wall-box p {
-            font-size: 11px;
-            color: #f0883e;
-            margin-bottom: 10px;
-            line-height: 1.4;
-        }
-
-        .ad-btn {
-            width: 100%;
-            background: linear-gradient(135deg, #f0883e 0%, #d16922 100%);
-            color: #fff;
-            border: none;
-            padding: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            border-radius: 6px;
+        .tap-coin {
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, #252c3d 0%, #181d28 100%);
+            border: 4px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(240, 136, 62, 0.3);
+            box-shadow: 0 0 30px var(--accent-glow);
+            transition: transform 0.05s ease;
+            position: relative;
+        }
+
+        .tap-coin:active {
+            transform: scale(0.93);
+        }
+
+        .tap-coin span {
+            font-size: 50px;
+        }
+
+        /* Enerji Barı */
+        .energy-section {
+            margin-bottom: 15px;
+        }
+
+        .energy-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 5px;
+        }
+
+        .energy-bar-bg {
+            width: 100%;
+            height: 8px;
+            background: var(--card-bg);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .energy-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            border-radius: 4px;
+            transition: width 0.2s;
+        }
+
+        /* Alt Menü Barı */
+        .nav-menu {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 8px;
+            gap: 5px;
+        }
+
+        .nav-item {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 10px;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
             transition: 0.2s;
         }
 
-        .ad-btn:active {
-            transform: scale(0.98);
+        .nav-item.active, .nav-item:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--accent);
         }
 
-        .mine-action-btn {
-            width: 100%;
-            background: #238636;
-            color: #fff;
-            border: none;
-            padding: 12px;
-            font-size: 13px;
-            font-weight: 700;
-            border-radius: 6px;
-            cursor: pointer;
+        .nav-item div {
+            font-size: 16px;
+            margin-bottom: 2px;
         }
 
-        .sec-title {
-            font-size: 11px;
-            color: #8b949e;
-            padding: 10px 15px 5px 15px;
-            text-transform: uppercase;
+        /* Uçan Puan Animasyonu */
+        .floating-number {
+            position: absolute;
+            color: var(--accent);
+            font-weight: bold;
+            font-size: 20px;
+            animation: floatUp 0.8s ease-out forwards;
+            pointer-events: none;
         }
 
-        .tasks-list {
-            padding: 0 15px 15px 15px;
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .task-item {
-            background: #21262d;
-            border: 1px solid #30363d;
-            padding: 10px;
-            border-radius: 6px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .task-desc h5 {
-            font-size: 11px;
-            color: #c9d1d9;
-        }
-
-        .task-desc p {
-            font-size: 9px;
-            color: #8b949e;
-            margin-top: 2px;
-        }
-
-        .do-btn {
-            background: #30363d;
-            color: #58a6ff;
-            border: 1px solid #484f58;
-            padding: 5px 10px;
-            font-size: 11px;
-            border-radius: 4px;
-            cursor: pointer;
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-70px) scale(1.2); }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
+    <div class="app-container" id="app">
         <!-- Header -->
         <div class="header">
-            <div class="user-box">
-                <h4>Miner #9482</h4>
-                <span>Tier 1: Ham Madenci</span>
+            <div class="profile-info">
+                <h3>Madenci #8912</h3>
+                <span>Lig: Bronz 🥉</span>
             </div>
-            <div class="pool-status">⚠️ Düşük Hashrate</div>
+            <!-- Senin reklamdan para kazanacağın ana buton -->
+            <div class="ad-badge" onclick="watchAdReward()">📺 2x Kazan (Reklam)</div>
         </div>
 
-        <!-- Main Dashboard -->
-        <div class="main-board">
-            <div class="balance-label">BİRİKEN KAZANÇ (Çok Yavaş Mod)</div>
-            <div class="balance-value" id="balance">0.000014 USDT</div>
+        <!-- Skor -->
+        <div class="score-section">
+            <div class="score-title">Toplam Kazanç</div>
+            <div class="score-value" id="score">0.00</div>
+        </div>
 
-            <div class="info-grid">
-                <div class="info-card">
-                    <div class="label">Pasif Hız</div>
-                    <div class="val">0.0001 MH/s</div>
-                </div>
-                <div class="info-card">
-                    <div class="label">Reklam Çarpanı</div>
-                    <div class="val" id="multiplier">1.0x (Pasif)</div>
-                </div>
-            </div>
-
-            <!-- Reklam İzlemeden Çekim Yapılamaz / Zorlaştırılmış Alan -->
-            <div class="ad-wall-box">
-                <p>💡 <b>Sistem Kuralı:</b> Havuz havadislerinin güncellenmesi ve kazancın cüzdana yansıması için reklam vererek gücü tetiklemen şart!</p>
-                <button class="ad-btn" onclick="watchAdForBoost()">📺 REKLAM İZLE & HIZI AÇ (0.5x Bonus)</button>
+        <!-- Tıklama Alanı -->
+        <div class="tap-area-wrapper" id="tapArea" onclick="tapCoin(event)">
+            <div class="tap-coin">
+                <span>🪙</span>
             </div>
         </div>
 
-        <!-- Görevler ve Reklam Gelir Alanı -->
-        <div class="sec-title">Sponsorlu Havuz Görevleri (Zorunlu)</div>
-        <div class="tasks-list">
-            <div class="task-item">
-                <div class="task-desc">
-                    <h5>Sponsor Reklamı Görüntüle</h5>
-                    <p>Günlük havuz payı için tıkla (10 sn bekle)</p>
-                </div>
-                <button class="do-btn" onclick="watchSponsorAd()">İzle (+0.001)</button>
+        <!-- Enerji -->
+        <div class="energy-section">
+            <div class="energy-info">
+                <span>Enerji</span>
+                <span id="energyText">1000 / 1000</span>
             </div>
-            <div class="task-item">
-                <div class="task-desc">
-                    <h5>Ağ Doğrulama Görevi</h5>
-                    <p>Blok onaylama simülasyonu</p>
-                </div>
-                <button class="do-btn" onclick="verifyNetwork()">Doğrula</button>
+            <div class="energy-bar-bg">
+                <div class="energy-bar-fill" id="energyFill"></div>
+            </div>
+        </div>
+
+        <!-- Menü -->
+        <div class="nav-menu">
+            <div class="nav-item active">
+                <div>⛏️</div>Madende
+            </div>
+            <div class="nav-item" onclick="openBoostMenu()">
+                <div>🚀</div>Boost
+            </div>
+            <div class="nav-item" onclick="openFriendsMenu()">
+                <div>👥</div>Arkadaş
+            </div>
+            <div class="nav-item" onclick="openWalletMenu()">
+                <div>💰</div>Cüzdan
             </div>
         </div>
     </div>
 
     <script>
-        let balance = 0.000014;
-        let speedMultiplier = 1.0;
+        let score = 0.00;
+        let energy = 1000;
+        let maxEnergy = 1000;
+        let tapPower = 1;
+        let multiplier = 1;
 
-        // Çok yavaş artış (Kullanıcı hemen para kazanamasın, zorlansın)
+        function tapCoin(event) {
+            if (energy >= tapPower) {
+                energy -= tapPower;
+                score += (tapPower * multiplier);
+                
+                updateUI();
+                showFloatingText(event);
+            }
+        }
+
+        function showFloatingText(event) {
+            const app = document.getElementById('app');
+            const el = document.createElement('div');
+            el.className = 'floating-number';
+            el.innerText = "+" + (tapPower * multiplier);
+            
+            const rect = app.getBoundingClientRect();
+            el.style.left = (event.clientX - rect.left) + 'px';
+            el.style.top = (event.clientY - rect.top - 20) + 'px';
+            
+            app.appendChild(el);
+            setTimeout(() => el.remove(), 800);
+        }
+
+        function updateUI() {
+            document.getElementById('score').innerText = score.toFixed(2);
+            document.getElementById('energyText').innerText = `${energy} / ${maxEnergy}`;
+            let percentage = (energy / maxEnergy) * 100;
+            document.getElementById('energyFill').style.width = percentage + '%';
+        }
+
+        // Enerji dolumu (Her saniye)
         setInterval(() => {
-            let increment = 0.0000001 * speedMultiplier;
-            balance += increment;
-            document.getElementById("balance").innerText = balance.toFixed(6) + " USDT";
+            if (energy < maxEnergy) {
+                energy = Math.min(maxEnergy, energy + 5);
+                updateUI();
+            }
         }, 1000);
 
-        function watchAdForBoost() {
-            // Buraya Telegram Adsgram veya harici reklam kodunu entegre edeceksin.
-            // Reklam izlendiğinde hem senin reklam kazancın olacak hem kullanıcı hız kazanacak.
-            alert("📺 Reklam simülasyonu oynatılıyor... (Reklam bittiğinde senin kasana gelir yazıldı!)");
-            speedMultiplier += 0.5;
-            document.getElementById("multiplier").innerText = speedMultiplier.toFixed(1) + "x (Aktif)";
-            alert("🎉 Havuz hızı artırıldı! Şimdi biraz daha hızlı kazanıyorsun.");
+        function watchAdReward() {
+            // Buraya Adsgram veya Telegram reklam SDK entegrasyonu gelecek.
+            // Kullanıcı reklam izlediğinde hem reklam gösterilip sana para kazandıracak 
+            // hem de kullanıcıya 30 saniyeliğine 2x kazanç bonusu vereceksin.
+            alert("📺 Reklam gösteriliyor... (İzleme bittiğinde sana reklam geliri yazıldı ve 2x aktifleşti!)");
+            multiplier = 2;
+            setTimeout(() => {
+                multiplier = 1;
+                alert("⏰ 2x bonus süresi bitti.");
+            }, 30000); // 30 saniye 2x
         }
 
-        function watchSponsorAd() {
-            alert("📺 Sponsor reklam yüklendi. İzleme tamamlandıktan sonra havuza katkın eklenecek.");
-            balance += 0.001000;
-            document.getElementById("balance").innerText = balance.toFixed(6) + " USDT";
+        function openBoostMenu() {
+            alert("🚀 Boost Menüsü: Reklam izleyerek enerji sınırını artırabilir veya otomatik kazım botu kiralayabilirsin!");
         }
 
-        function verifyNetwork() {
-            alert("🔍 Blok zinciri doğrulanıyor... (Minimum çekim sınırına ulaşmak için daha çok reklam izlemelisin!)");
+        function openFriendsMenu() {
+            alert("👥 Davet Et Kazan: Arkadaşını getiren herkesten sen de pasif gelir alırsın!");
+        }
+
+        function openWalletMenu() {
+            alert("💰 Cüzdan: Çekim yapabilmek için günlük görevleri tamamlaman ve reklam izleme sınırını doldurman gerekiyor.");
         }
     </script>
 </body>
