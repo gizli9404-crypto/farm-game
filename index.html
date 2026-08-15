@@ -3,23 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CryptoEmpire - Idle Clicker</title>
+    <title>CryptoMiner Pro - Pool Manager</title>
     <style>
         :root {
-            --bg: #0c0e15;
-            --card: #161b26;
-            --border: #2d3748;
-            --primary: #f59e0b; /* Altın / Kripto Sarısı */
-            --accent: #10b981;  /* Kazanç Yeşili */
+            --bg: #090c10;
+            --panel: #161b22;
+            --border: #30363d;
+            --green: #238636;
+            --accent: #00ff88;
+            --warning: #f0883e;
             --text: #ffffff;
-            --muted: #94a3b8;
+            --muted: #8b949e;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: 'Segoe UI', Roboto, sans-serif;
+            font-family: 'Courier New', Courier, monospace; /* Tam rig/terminal havası */
             user-select: none;
         }
 
@@ -33,7 +34,7 @@
             overflow: hidden;
         }
 
-        .phone-frame {
+        .miner-container {
             width: 100%;
             max-width: 400px;
             height: 100%;
@@ -42,227 +43,308 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 15px;
-            position: relative;
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
         }
 
-        /* Üst Panel & Cüzdan */
-        .top-panel {
-            background: var(--card);
+        /* Üst Durum Çubuğu */
+        .top-status {
+            background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 12px;
+            padding: 10px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        .user-tag h4 {
-            font-size: 13px;
-            color: var(--primary);
-        }
-
-        .user-tag span {
-            font-size: 10px;
-            color: var(--muted);
-        }
-
-        .ad-boost-pill {
-            background: rgba(245, 158, 11, 0.15);
-            color: var(--primary);
-            border: 1px solid var(--primary);
-            padding: 5px 10px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        /* Merkez Skor Alanı */
-        .game-center {
-            text-align: center;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 20px;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-
-        .coin-balance-label {
-            font-size: 11px;
-            color: var(--muted);
-            letter-spacing: 1px;
-            margin-bottom: 5px;
-        }
-
-        .coin-balance-val {
-            font-size: 32px;
-            font-weight: 800;
-            color: var(--primary);
-            margin-bottom: 15px;
-        }
-
-        /* Tıklanacak Büyük Kripto Sandığı / Token */
-        .click-target {
-            width: 140px;
-            height: 140px;
-            margin: 0 auto;
-            background: radial-gradient(circle, #374151 0%, #1f2937 100%);
-            border: 4px solid var(--primary);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.3);
-            transition: transform 0.08s ease;
-        }
-
-        .click-target:active {
-            transform: scale(0.92);
-        }
-
-        .click-target span {
-            font-size: 60px;
-        }
-
-        .click-hint {
-            font-size: 10px;
-            color: var(--muted);
-            margin-top: 12px;
-        }
-
-        /* Reklam / Para Duvarı Alanı (Sana kazandıracak yer) */
-        .monetize-box {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(59, 130, 246, 0.1) 100%);
-            border: 1px dashed var(--accent);
-            border-radius: 12px;
-            padding: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .monetize-text h5 {
+        .rig-id h4 {
             font-size: 12px;
             color: var(--accent);
         }
 
-        .monetize-text p {
-            font-size: 10px;
+        .rig-id span {
+            font-size: 9px;
             color: var(--muted);
         }
 
-        .watch-ad-action {
-            background: var(--accent);
-            color: #000;
-            border: none;
-            padding: 8px 12px;
+        .pool-ping {
+            font-size: 10px;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent);
+            padding: 3px 6px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        /* Ana Havuz Konsolu */
+        .pool-console {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .balance-label {
+            font-size: 10px;
+            color: var(--muted);
+            letter-spacing: 1px;
+        }
+
+        .balance-amount {
+            font-size: 26px;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 5px 0 12px 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            padding: 6px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .stat-card .lbl {
+            font-size: 8px;
+            color: var(--muted);
+        }
+
+        .stat-card .val {
             font-size: 11px;
             font-weight: bold;
+            color: var(--text);
+            margin-top: 2px;
+        }
+
+        /* Donanım Listesi (RX 470, RX 590 vb.) */
+        .rig-section {
+            background: var(--panel);
+            border: 1px solid var(--border);
             border-radius: 8px;
+            padding: 10px;
+            flex-grow: 1;
+            margin: 8px 0;
+            overflow-y: auto;
+        }
+
+        .sec-title {
+            font-size: 10px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .hardware-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            padding: 8px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .hw-info h5 {
+            font-size: 11px;
+            color: var(--text);
+        }
+
+        .hw-info p {
+            font-size: 9px;
+            color: var(--accent);
+            margin-top: 1px;
+        }
+
+        .hw-action {
+            background: #21262d;
+            color: var(--accent);
+            border: 1px solid var(--accent);
+            padding: 4px 8px;
+            font-size: 9px;
+            border-radius: 4px;
             cursor: pointer;
         }
 
-        /* Alt Sekmeler */
-        .bottom-tabs {
+        /* Senin Reklam Geliri Elde Edeceğin Zorunlu Alan */
+        .ad-monetize-box {
+            background: rgba(240, 136, 62, 0.05);
+            border: 1px dashed var(--warning);
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .ad-text h5 {
+            font-size: 11px;
+            color: var(--warning);
+        }
+
+        .ad-text p {
+            font-size: 9px;
+            color: var(--muted);
+        }
+
+        .watch-ad-btn {
+            background: var(--warning);
+            color: #000;
+            border: none;
+            padding: 6px 10px;
+            font-size: 10px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Alt Menü */
+        .bottom-menu {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            background: var(--card);
+            background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 8px;
+            border-radius: 8px;
+            padding: 6px;
             gap: 4px;
         }
 
-        .tab-item {
+        .menu-btn {
             text-align: center;
             color: var(--muted);
-            font-size: 10px;
+            font-size: 9px;
             cursor: pointer;
-            padding: 6px;
-            border-radius: 8px;
-            transition: 0.2s;
+            padding: 4px;
+            border-radius: 4px;
         }
 
-        .tab-item.active, .tab-item:hover {
+        .menu-btn.active, .menu-btn:hover {
             background: rgba(255,255,255,0.05);
-            color: var(--primary);
+            color: var(--accent);
         }
 
-        .tab-item div {
-            font-size: 16px;
-            margin-bottom: 2px;
+        .menu-btn div {
+            font-size: 14px;
+            margin-bottom: 1px;
         }
     </style>
 </head>
 <body>
 
-    <div class="phone-frame">
-        <!-- Üst Panel -->
-        <div class="top-panel">
-            <div class="user-tag">
-                <h4>Trader #5091</h4>
-                <span>Seviye: 1 • Çırak</span>
+    <div class="miner-container">
+        <!-- Üst Durum -->
+        <div class="top-status">
+            <div class="rig-id">
+                <h4>WORKER_01 [Kocaeli]</h4>
+                <span>Algoritma: Ethash / KawPow</span>
             </div>
-            <div class="ad-boost-pill" onclick="forceAdView()">⚡ 3x Hız (Reklam)</div>
+            <div class="pool-ping">🟢 38ms</div>
         </div>
 
-        <!-- Merkez Skor ve Oyun Alanı -->
-        <div class="game-center">
-            <div class="coin-balance-label">TOPLAM RIX COİN</div>
-            <div class="coin-balance-val" id="score">0.00</div>
+        <!-- Konsol -->
+        <div class="pool-console">
+            <div class="balance-label">HAVUZDA BIRIKEN KAZANC (USDT)</div>
+            <div class="balance-amount" id="balance">0.000420</div>
 
-            <div class="click-target" onclick="earnCoin(event)">
-                <span>💎</span>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="lbl">Hashrate</div>
+                    <div class="val" id="hashrate">64.2 MH</div>
+                </div>
+                <div class="stat-card">
+                    <div class="lbl">Sıcaklık</div>
+                    <div class="val">62 °C</div>
+                </div>
+                <div class="stat-card">
+                    <div class="lbl">Red (Stale)</div>
+                    <div class="val" style="color: #ff4d4d;">0.00%</div>
+                </div>
             </div>
-            <div class="click-hint">Blokları çözmek için dokun!</div>
         </div>
 
-        <!-- Senin Reklam Geliri Elde Edeceğin Alan -->
-        <div class="monetize-box">
-            <div class="monetize-text">
-                <h5>Ödüllü Blok Havuzu</h5>
-                <p>Çekim yapabilmek için reklam onayı şart.</p>
+        <!-- Donanım Listesi -->
+        <div class="rig-section">
+            <div class="sec-title">Aktif Ekran Kartı Rigleri</div>
+            
+            <div class="hardware-item">
+                <div class="hw-info">
+                    <h5>AMD RX 470 4GB</h5>
+                    <p>+24.5 MH/s • 90W</p>
+                </div>
+                <button class="hw-action" onclick="boostRig(10)">OVERCLOCK</button>
             </div>
-            <button class="watch-ad-action" onclick="forceAdView()">REKLAM İZLE</button>
+
+            <div class="hardware-item">
+                <div class="hw-info">
+                    <h5>AMD RX 590 8GB</h5>
+                    <p>+39.7 MH/s • 130W</p>
+                </div>
+                <button class="hw-action" onclick="boostRig(15)">OVERCLOCK</button>
+            </div>
         </div>
 
-        <!-- Alt Sekmeler -->
-        <div class="bottom-tabs">
-            <div class="tab-item active">
-                <div>🪙</div>Kazanç
+        <!-- Senin Reklam Geliri Alanı (Zorunlu Havuz Kilidi) -->
+        <div class="ad-monetize-box">
+            <div class="ad-text">
+                <h5>Havuz Payı Güncellemesi</h5>
+                <p>Bakiyenin cüzdana düşmesi için reklam onayı gerekli.</p>
             </div>
-            <div class="tab-item" onclick="alert('Borsa: Topladığın coinleri burada USDT karşılığında satabilmek için günlük reklam kotanı doldurmalısın.')">
-                <div>📈</div>Borsa
+            <button class="watch-ad-btn" onclick="watchAdMonetize()">REKLAM İZLE</button>
+        </div>
+
+        <!-- Alt Menü -->
+        <div class="bottom-menu">
+            <div class="menu-btn active">
+                <div>💻</div>Rigler
             </div>
-            <div class="tab-item" onclick="alert('Görevler: Sponsor kanallara katılarak ve reklam izleyerek ekstra kazanç sağla.')">
-                <div>🎯</div>Görevler
+            <div class="menu-btn" onclick="alert('Market: Yeni RX serisi kartlar eklemek için bakiye biriktirmelisin.')">
+                <div>🛒</div>Market
             </div>
-            <div class="tab-item" onclick="alert('Cüzdan: Çekimler her pazartesi yapılır. Minimum çekim için aktif reklam izleme zorunludur.')">
-                <div>👛</div>Cüzdan
+            <div class="menu-btn" onclick="alert('Görevler: Reklam izleyerek ekstradan hashrate bonusu al.')">
+                <div>⚡</div>Boost
+            </div>
+            <div class="menu-btn" onclick="alert('Cüzdan: Çekim yapabilmek için günlük reklam kotasını doldurmalısın.')">
+                <div>💳</div>Cüzdan
             </div>
         </div>
     </div>
 
     <script>
-        let score = 0.00;
-        let perClick = 1.00;
+        let balance = 0.000420;
+        let hashrate = 64.2;
 
-        function earnCoin(event) {
-            score += perClick;
-            document.getElementById("score").innerText = score.toFixed(2);
+        // Gerçekçi yavaş madencilik akışı
+        setInterval(() => {
+            balance += 0.000002 * (hashrate / 50);
+            document.getElementById("balance").innerText = balance.toFixed(6);
+        }, 1000);
+
+        function boostRig(power) {
+            hashrate += power;
+            document.getElementById("hashrate").innerText = hashrate.toFixed(1) + " MH";
+            alert("⚡ Kartlar overclock edildi! Anlık hashrate artırıldı.");
         }
 
-        function forceAdView() {
-            // Buraya Telegram Adsgram veya harici reklam kodunu entegre edeceksin.
-            // Kullanıcı bu butona tıkladığında reklam açılacak, sen reklamdan paranı kazanacaksın,
-            // kullanıcı da oyunda hız veya ekstra ödül alacak.
-            alert("📺 Reklam oynatılıyor... (Bu tıklama üzerinden reklam geliriniz sisteme yansıtıldı!)");
-            score += 50.00; // Kullanıcıya ödül
-            document.getElementById("score").innerText = score.toFixed(2);
-            alert("🎉 Reklam tamamlandı! Hesabına +50 RIX Coin eklendi.");
+        function watchAdMonetize() {
+            // Buraya Telegram Adsgram veya reklam kodunu koyacaksın.
+            // Kullanıcı bu butona bastığında reklam açılacak, sen reklamlardan paranı kazanacaksın,
+            // kullanıcı da havuzda biriken payını cüzdana geçirme hakkı kazanacak.
+            alert("📺 Reklam oynatılıyor... (Reklam başarıyla yüklendi, senin reklam kazancın hesabına işlendi!)");
+            balance += 0.005000;
+            document.getElementById("balance").innerText = balance.toFixed(6);
+            alert("🎉 Onaylandı! Havuz birikimi cüzdana aktarıldı.");
         }
     </script>
 </body>
