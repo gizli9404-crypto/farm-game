@@ -3,19 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RigMaster Pro - Ultimate Mining Sim</title>
+    <title>RigMaster Pro</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #07090e;
-            --surface: #0f141f;
-            --surface-card: #151c2a;
+            --bg: #090d16;
+            --card-bg: #131b2e;
             --primary: #00ff88;
-            --primary-glow: rgba(0, 255, 136, 0.3);
             --accent: #38bdf8;
             --danger: #ef4444;
-            --warning: #f59e0b;
-            --text-main: #ffffff;
+            --text: #ffffff;
             --text-muted: #64748b;
             --border: rgba(255, 255, 255, 0.08);
         }
@@ -28,18 +25,18 @@
         }
 
         body {
-            background-color: var(--bg-dark);
-            color: var(--text-main);
+            background-color: var(--bg);
+            color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             margin: 0;
             padding: 0;
             height: 100vh;
-            overflow: hidden;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
-        .app-container {
+        .container {
             flex: 1;
             max-width: 480px;
             width: 100%;
@@ -47,291 +44,239 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            overflow: hidden;
         }
 
-        /* Üst Header */
+        /* Header */
         .header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 14px 20px;
-            background: var(--surface);
+            background: var(--card-bg);
             border-bottom: 1px solid var(--border);
         }
 
-        .user-pill {
+        .user-badge {
             display: flex;
             align-items: center;
-            gap: 10px;
-            background: var(--surface-card);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid var(--border);
-        }
-
-        .user-avatar {
-            width: 26px;
-            height: 26px;
-            border-radius: 50%;
-            background: var(--primary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
-            color: #000;
-            font-size: 11px;
-        }
-
-        .user-name {
+            gap: 8px;
             font-size: 13px;
             font-weight: 700;
         }
 
-        .rig-status-badge {
+        .temp-badge {
             background: rgba(0, 255, 136, 0.1);
             color: var(--primary);
-            border: 1px solid rgba(0, 255, 136, 0.3);
-            padding: 6px 12px;
-            border-radius: 20px;
+            border: 1px solid var(--border);
+            padding: 4px 10px;
+            border-radius: 12px;
             font-size: 11px;
             font-weight: 800;
         }
 
-        /* İçerik Alanı */
+        /* İçerik */
         .content {
             flex: 1;
             overflow-y: auto;
             padding: 16px;
             padding-bottom: 90px;
-            -webkit-overflow-scrolling: touch;
         }
 
         .pane {
             display: none;
             flex-direction: column;
             align-items: center;
-            animation: fadeIn 0.2s ease-in-out;
         }
 
         .pane.active {
             display: flex;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* İstatistik Kartı */
-        .stats-card {
+        /* Bakiye Kutusu */
+        .balance-card {
             width: 100%;
-            background: linear-gradient(135deg, #131b2c, #0b1018);
+            background: linear-gradient(135deg, #17223b, #0d1322);
             border: 1px solid var(--border);
             border-radius: 20px;
-            padding: 18px;
+            padding: 20px;
             text-align: center;
             margin-bottom: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
         }
 
-        .stats-title {
+        .balance-title {
             font-size: 11px;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1px;
             font-weight: 700;
         }
 
-        .stats-value {
-            font-size: 30px;
+        .balance-amount {
+            font-size: 32px;
             font-weight: 900;
-            color: #fff;
-            margin: 6px 0;
-        }
-
-        .stats-value span {
             color: var(--primary);
-            text-shadow: 0 0 15px var(--primary-glow);
+            margin: 8px 0;
+            text-shadow: 0 0 15px rgba(0, 255, 136, 0.3);
         }
 
-        .stats-grid {
+        .metrics-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 6px;
+            gap: 8px;
             margin-top: 12px;
             padding-top: 12px;
             border-top: 1px solid var(--border);
-            text-align: center;
         }
 
-        .stat-item-label {
+        .metric-label {
             font-size: 9px;
             color: var(--text-muted);
             font-weight: 700;
         }
 
-        .stat-item-val {
+        .metric-val {
             font-size: 12px;
             font-weight: 800;
             color: var(--accent);
             margin-top: 2px;
         }
 
-        /* Ana Ekran Kartı Kazım Butonu */
-        .mining-section {
+        /* Ana Tıklama / Kazım Kartı (Görsel Alanı) */
+        .mining-area {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%;
+            margin-top: 10px;
         }
 
-        .gpu-rig-btn {
-            width: 220px;
-            height: 220px;
-            border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #1e293b, #070a12);
-            border: 4px solid var(--primary);
-            box-shadow: 0 0 35px var(--primary-glow), inset 0 0 25px rgba(0, 255, 136, 0.15);
+        .main-gpu-btn {
+            width: 100%;
+            max-height: 220px;
+            background: var(--card-bg);
+            border: 2px solid var(--primary);
+            border-radius: 20px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            box-shadow: 0 0 25px rgba(0, 255, 136, 0.15);
+            transition: transform 0.05s;
             position: relative;
-            transition: transform 0.05s ease;
-            margin: 10px 0;
-            overflow: hidden;
         }
 
-        .gpu-rig-btn:active {
-            transform: scale(0.94);
+        .main-gpu-btn:active {
+            transform: scale(0.97);
         }
 
-        .gpu-rig-img {
-            width: 130px;
+        .gpu-svg-art {
+            width: 100%;
+            max-width: 260px;
             height: auto;
-            filter: drop-shadow(0 0 12px var(--primary-glow));
-            transition: transform 0.2s;
+            filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.3));
         }
 
-        .spinning {
-            animation: spinGpu 0.6s linear infinite;
+        .spin-anim {
+            animation: pulseGpu 0.3s ease-in-out;
         }
 
-        @keyframes spinGpu {
-            0% { transform: scale(1) rotate(0deg); }
-            50% { transform: scale(1.05) rotate(5deg); }
-            100% { transform: scale(1) rotate(0deg); }
+        @keyframes pulseGpu {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+            100% { transform: scale(1); }
         }
 
-        .gpu-rig-text {
-            font-size: 10px;
-            font-weight: 800;
+        .click-hint {
+            font-size: 11px;
             color: var(--primary);
-            margin-top: 8px;
-            letter-spacing: 0.5px;
+            font-weight: 800;
+            margin-top: 10px;
+            letter-spacing: 1px;
         }
 
-        /* Market ve Donanım Kartları */
+        /* Market ve Atölye Kartları */
         .section-title {
             width: 100%;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: 800;
             color: var(--text-muted);
             text-transform: uppercase;
             margin-bottom: 10px;
             letter-spacing: 0.5px;
-            text-align: left;
         }
 
         .shop-card {
             width: 100%;
-            background: var(--surface);
+            background: var(--card-bg);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 12px 16px;
+            padding: 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 10px;
         }
 
-        .shop-info {
+        .shop-left {
             display: flex;
             align-items: center;
             gap: 12px;
-            text-align: left;
         }
 
-        .shop-icon-img {
-            width: 48px;
-            height: auto;
-            background: var(--surface-card);
-            padding: 6px;
-            border-radius: 12px;
+        .shop-thumb {
+            width: 55px;
+            height: 35px;
+            background: #090d16;
+            border-radius: 8px;
+            padding: 4px;
             border: 1px solid var(--border);
             object-fit: contain;
         }
 
-        .shop-icon {
-            font-size: 24px;
-            background: var(--surface-card);
-            width: 48px;
-            height: 48px;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 1px solid var(--border);
-        }
-
-        .shop-name {
+        .shop-info h4 {
+            margin: 0 0 2px 0;
             font-size: 13px;
             font-weight: 800;
-            color: #fff;
-            margin: 0 0 2px 0;
         }
 
-        .shop-desc {
+        .shop-info p {
+            margin: 0;
             font-size: 10px;
             color: var(--text-muted);
-            margin: 0;
         }
 
-        .buy-btn {
+        .action-btn {
             background: var(--primary);
             color: #000;
             border: none;
-            padding: 8px 14px;
+            padding: 8px 12px;
             border-radius: 10px;
             font-weight: 800;
             font-size: 11px;
             cursor: pointer;
-            transition: opacity 0.2s;
         }
 
-        .buy-btn:active {
+        .action-btn:active {
             opacity: 0.8;
-            transform: scale(0.96);
         }
 
-        /* Alt Navigasyon */
-        .bottom-nav {
+        /* Navigasyon */
+        .nav-bar {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(15, 20, 31, 0.95);
+            background: rgba(13, 19, 34, 0.95);
             backdrop-filter: blur(10px);
             display: flex;
             justify-content: space-around;
             padding: 10px 0 20px 0;
             border-top: 1px solid var(--border);
-            z-index: 100;
         }
 
-        .nav-item {
+        .nav-btn {
             color: var(--text-muted);
             font-size: 11px;
             font-weight: 700;
@@ -341,406 +286,334 @@
             gap: 4px;
             cursor: pointer;
             flex: 1;
-            transition: color 0.2s;
         }
 
-        .nav-item.active {
+        .nav-btn.active {
             color: var(--primary);
         }
 
-        .nav-item span:first-child {
-            font-size: 20px;
+        .nav-btn span:first-child {
+            font-size: 18px;
         }
 
-        /* Uçan Sayı Efekti */
-        .floating-text {
+        /* Uçan Metin */
+        .float-num {
             position: absolute;
             color: var(--primary);
             font-weight: 900;
-            font-size: 18px;
+            font-size: 16px;
             pointer-events: none;
-            animation: floatUp 0.6s ease-out forwards;
-            z-index: 1000;
-            text-shadow: 0 0 10px var(--primary-glow);
+            animation: floatUp 0.5s ease-out forwards;
+            z-index: 99;
         }
 
         @keyframes floatUp {
-            0% { opacity: 1; transform: translateY(0) scale(0.8); }
-            100% { opacity: 0; transform: translateY(-50px) scale(1.2); }
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-40px); }
         }
     </style>
 </head>
 <body>
 
-<div class="app-container" id="main-container">
-    <!-- Üst Bar -->
+<div class="container" id="app-wrapper">
+    <!-- Header -->
     <div class="header">
-        <div class="user-pill">
-            <div class="user-avatar" id="user-initial">M</div>
-            <div class="user-name" id="user-fullname">Madenci</div>
+        <div class="user-badge">
+            <span>👤</span> <span id="username">Madenci</span>
         </div>
-        <div class="rig-status-badge" id="temp-badge">🌡️ 40°C</div>
+        <div class="temp-badge" id="temp-badge">🌡️ 40.0°C</div>
     </div>
 
-    <!-- İçerik Alanı -->
+    <!-- İçerik -->
     <div class="content">
-        
-        <!-- 1. KAZIM MERKEZİ -->
-        <div id="pane-mine" class="pane active" style="width: 100%;">
-            <div class="stats-card">
-                <div class="stats-title">Havuz Bakiyesi (PTS)</div>
-                <div class="stats-value"><span id="balance">0.0000</span></div>
-                
-                <div class="stats-grid">
+        <!-- RIG PANEELİ -->
+        <div id="pane-rig" class="pane active">
+            <div class="balance-card">
+                <div class="balance-title">Havuz Bakiyesi (PTS)</div>
+                <div class="balance-amount"><span id="balance">0.0000</span></div>
+                <div class="metrics-grid">
                     <div>
-                        <div class="stat-item-label">Hashrate</div>
-                        <div class="stat-item-val">+<span id="hashrate">0.00</span> MH</div>
+                        <div class="metric-label">Hashrate</div>
+                        <div class="metric-val">+<span id="hashrate">0.00</span> MH</div>
                     </div>
                     <div>
-                        <div class="stat-item-label">Güç (W)</div>
-                        <div class="stat-item-val" style="color:var(--danger);"><span id="power-draw">0</span> W</div>
+                        <div class="metric-label">Güç Tüketimi</div>
+                        <div class="metric-val" style="color:var(--danger);"><span id="power">0</span> W</div>
                     </div>
                     <div>
-                        <div class="stat-item-label">Verim / sn</div>
-                        <div class="stat-item-val">+<span id="net-rate">0.00</span></div>
+                        <div class="metric-label">Saniyede Kazanç</div>
+                        <div class="metric-val">+<span id="cps">0.00</span></div>
                     </div>
                 </div>
             </div>
 
-            <div class="mining-section">
-                <div class="gpu-rig-btn" onclick="performShareMining(event)">
-                    <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9" alt="GPU" class="gpu-rig-img" id="rig-image" style="background:#090d16; border-radius:10px; padding:4px;">
-                    <div class="gpu-rig-text">HİSSE ÇÖZ</div>
+            <div class="mining-area">
+                <div class="main-gpu-btn" id="main-gpu-card" onclick="mineClick(event)">
+                    <!-- Doğrudan Gömülü Ekran Kartı Görseli -->
+                    <svg class="gpu-svg-art" viewBox="0 0 800 354" xmlns="http://www.w3.org/2000/svg">
+                        <rect width="800" height="354" rx="40" fill="#151622"/>
+                        <path d="M22 52H57V302H22r0-250z" fill="#272a18"/>
+                        <circle cx="202" cy="177" r="90" fill="#121620" stroke="#38bdf8" stroke-width="6"/>
+                        <circle cx="202" cy="177" r="27" fill="#f59e0b"/>
+                        <path d="M202 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                        <path d="M202 177l50 50c36-36 36-95 0-131s-95-36-131 0z" fill="#4a050e"/>
+                        <circle cx="500" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
+                        <circle cx="500" cy="177" r="27" fill="#f5ce0b"/>
+                        <path d="M500 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                        <path d="M500 177l50 50c36-36 36-95 0-131s-95-36-131 0z" fill="#4a050e"/>
+                        <circle cx="698" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
+                        <circle cx="698" cy="177" r="27" fill="#f5ce0b"/>
+                        <path d="M698 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+                        <path d="M698 177l50 50c36-36 36-95 0-131s-95-36-131 0z" fill="#4a050e"/>
+                    </svg>
+                    <div class="click-hint">HİSSE ÇÖZMEK İÇİN DOKUN</div>
                 </div>
-                <div style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin-top: 8px; text-align: center;">
-                    Donanımlar blokları çözmeye devam ediyor.
-                </div>
-            </div>
-        </div>
-
-        <!-- 2. DONANIM MARKETİ (Ekran Kartları) -->
-        <div id="pane-shop" class="pane" style="width: 100%;">
-            <div class="section-title">💻 Ekran Kartı Pazarı</div>
-
-            <div class="shop-card">
-                <div class="shop-info">
-                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
-                    <div>
-                        <div class="shop-name">RX 470 8GB <span style="color:var(--primary); font-size:11px;" id="count-rx470">(0)</span></div>
-                        <div class="shop-desc">28 MH/s • 120W • Fiyat: <span id="price-rx470">10.00</span> PTS</div>
-                    </div>
-                </div>
-                <button class="buy-btn" onclick="buyGPU('rx470', 10.00, 28, 120)">Satın Al</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-info">
-                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
-                    <div>
-                        <div class="shop-name">RX 590 8GB <span style="color:var(--primary); font-size:11px;" id="count-rx590">(0)</span></div>
-                        <div class="shop-desc">32 MH/s • 145W • Fiyat: <span id="price-rx590">45.00</span> PTS</div>
-                    </div>
-                </div>
-                <button class="buy-btn" onclick="buyGPU('rx590', 45.00, 32, 145)">Satın Al</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-info">
-                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
-                    <div>
-                        <div class="shop-name">RTX 3060 Ti <span style="color:var(--primary); font-size:11px;" id="count-rtx3060">(0)</span></div>
-                        <div class="shop-desc">60 MH/s • 130W • Fiyat: <span id="price-rtx3060">180.00</span> PTS</div>
-                    </div>
-                </div>
-                <button class="buy-btn" onclick="buyGPU('rtx3060', 180.00, 60, 130)">Satın Al</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-info">
-                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
-                    <div>
-                        <div class="shop-name">RX 6700 XT <span style="color:var(--primary); font-size:11px;" id="count-rx6700">(0)</span></div>
-                        <div class="shop-desc">82 MH/s • 160W • Fiyat: <span id="price-rx6700">550.00</span> PTS</div>
-                    </div>
-                </div>
-                <button class="buy-btn" onclick="buyGPU('rx6700', 550.00, 82, 160)">Satın Al</button>
-            </div>
-
-            <div class="shop-card">
-                <div class="shop-info">
-                    <img src="" class="shop-icon-img gpu-market-img" alt="GPU">
-                    <div>
-                        <div class="shop-name">RTX 4080 <span style="color:var(--primary); font-size:11px;" id="count-rtx4080">(0)</span></div>
-                        <div class="shop-desc">145 MH/s • 220W • Fiyat: <span id="price-rtx4080">1800.00</span> PTS</div>
-                    </div>
-                </div>
-                <button class="buy-btn" onclick="buyGPU('rtx4080', 1800.00, 145, 220)">Satın Al</button>
             </div>
         </div>
 
-        <!-- 3. ATÖLYE & EKLENTİLER -->
-        <div id="pane-workshop" class="pane" style="width: 100%;">
-            <div class="section-title">🛠️ Donanım Atölyesi ve Eklentiler</div>
+        <!-- MARKET PANEELİ -->
+        <div id="pane-market" class="pane">
+            <div class="section-title">Ekran Kartı Pazarı</div>
 
             <div class="shop-card">
-                <div class="shop-info">
-                    <div class="shop-icon">🔧</div>
-                    <div>
-                        <div class="shop-name">BIOS Mod & OC</div>
-                        <div class="shop-desc">Tıklama gücünü artırır (+0.05 PTS)</div>
+                <div class="shop-left">
+                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <div class="shop-info">
+                        <h4>RX 470 8GB <span id="cnt-rx470" style="color:var(--primary);">(0)</span></h4>
+                        <p>28 MH/s • 120W • <span id="prc-rx470">10.00</span> PTS</p>
                     </div>
                 </div>
-                <button class="buy-btn" id="btn-oc" onclick="buyOverclock()">25.00 PTS</button>
+                <button class="action-btn" onclick="buyItem('rx470', 10, 28, 120)">Al</button>
             </div>
 
             <div class="shop-card">
-                <div class="shop-info">
-                    <div class="shop-icon">❄️</div>
-                    <div>
-                        <div class="shop-name">Bakır Blok Soğutma</div>
-                        <div class="shop-desc">Sıcaklığı düşürür, performansı dengeler</div>
+                <div class="shop-left">
+                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <div class="shop-info">
+                        <h4>RX 590 8GB <span id="cnt-rx590" style="color:var(--primary);">(0)</span></h4>
+                        <p>32 MH/s • 145W • <span id="prc-rx590">45.00</span> PTS</p>
                     </div>
                 </div>
-                <button class="buy-btn" id="btn-cool" onclick="buyCooling()">50.00 PTS</button>
+                <button class="action-btn" onclick="buyItem('rx590', 45, 32, 145)">Al</button>
             </div>
 
             <div class="shop-card">
-                <div class="shop-info">
-                    <div class="shop-icon">🔋</div>
-                    <div>
-                        <div class="shop-name">Gold PSU (1000W)</div>
-                        <div class="shop-desc">Elektrik maliyetini ve yükü azaltır</div>
+                <div class="shop-left">
+                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <div class="shop-info">
+                        <h4>RTX 3060 Ti <span id="cnt-rtx3060" style="color:var(--primary);">(0)</span></h4>
+                        <p>60 MH/s • 130W • <span id="prc-rtx3060">180.00</span> PTS</p>
                     </div>
                 </div>
-                <button class="buy-btn" id="btn-psu" onclick="buyPSU()">120.00 PTS</button>
+                <button class="action-btn" onclick="buyItem('rtx3060', 180, 60, 130)">Al</button>
+            </div>
+
+            <div class="shop-card">
+                <div class="shop-left">
+                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <div class="shop-info">
+                        <h4>RX 6700 XT <span id="cnt-rx6700" style="color:var(--primary);">(0)</span></h4>
+                        <p>82 MH/s • 160W • <span id="prc-rx6700">550.00</span> PTS</p>
+                    </div>
+                </div>
+                <button class="action-btn" onclick="buyItem('rx6700', 550, 82, 160)">Al</button>
+            </div>
+
+            <div class="shop-card">
+                <div class="shop-left">
+                    <svg class="shop-thumb" viewBox="0 0 800 354"><use href="#gpu-template"/></svg>
+                    <div class="shop-info">
+                        <h4>RTX 4080 <span id="cnt-rtx4080" style="color:var(--primary);">(0)</span></h4>
+                        <p>145 MH/s • 220W • <span id="prc-rtx4080">1800.00</span> PTS</p>
+                    </div>
+                </div>
+                <button class="action-btn" onclick="buyItem('rtx4080', 1800, 145, 220)">Al</button>
             </div>
         </div>
 
+        <!-- ATÖLYE PANEELİ -->
+        <div id="pane-workshop" class="pane">
+            <div class="section-title">Atölye ve Eklentiler</div>
+            
+            <div class="shop-card">
+                <div class="shop-info" style="margin-left: 4px;">
+                    <h4>BIOS Mod & OC</h4>
+                    <p>Tıklama gücünü artırır (+0.05 PTS)</p>
+                </div>
+                <button class="action-btn" id="btn-oc" onclick="buyUpgrade('oc')">25.00 PTS</button>
+            </div>
+
+            <div class="shop-card">
+                <div class="shop-info" style="margin-left: 4px;">
+                    <h4>Bakır Soğutma</h4>
+                    <p>Sıcaklık seviyesini düşürür</p>
+                </div>
+                <button class="action-btn" id="btn-cool" onclick="buyUpgrade('cool')">50.00 PTS</button>
+            </div>
+        </div>
     </div>
 
     <!-- Alt Navigasyon -->
-    <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchPane('mine', this)">
+    <div class="nav-bar">
+        <div class="nav-btn active" onclick="switchTab('rig', this)">
             <span>🖥️</span>
             <span>Rig</span>
         </div>
-        <div class="nav-item" onclick="switchPane('shop', this)">
+        <div class="nav-btn" onclick="switchTab('market', this)">
             <span>🛒</span>
             <span>Market</span>
         </div>
-        <div class="nav-item" onclick="switchPane('workshop', this)">
+        <div class="nav-btn" onclick="switchTab('workshop', this)">
             <span>🛠️</span>
             <span>Atölye</span>
         </div>
     </div>
 </div>
 
+<!-- SVG Şablonu Gizli Alan -->
+<svg style="display:none;">
+    <defs>
+        <g id="gpu-template">
+            <rect width="800" height="354" rx="40" fill="#151622"/>
+            <path d="M22 52H57V302H22r0-250z" fill="#272a18"/>
+            <circle cx="202" cy="177" r="90" fill="#121620" stroke="#38bdf8" stroke-width="6"/>
+            <circle cx="202" cy="177" r="27" fill="#f59e0b"/>
+            <path d="M202 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+            <circle cx="500" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
+            <circle cx="500" cy="177" r="27" fill="#f5ce0b"/>
+            <path d="M500 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+            <circle cx="698" cy="177" r="90" fill="#121623" stroke="#38bdf8" stroke-width="6"/>
+            <circle cx="698" cy="177" r="27" fill="#f5ce0b"/>
+            <path d="M698 177l-50 50c-36-36-36-95 0-131s95-36 131 0z" fill="#6366f1"/>
+        </g>
+    </defs>
+</svg>
+
 <script>
-    // Gönderdiğin ekran kartı görselinin base64 formatı
-    const gpuImageBase64 = "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA4MDAgMzU0Ij4KPHJlY3Qgd2lkdGg9IjgwMCIgaGVpZ2h0PSIzNTQiIHJ4PSI0MCIgZmlsbD0iIzE1MTYyMiIvPgo8cGF0aCBkPSJNMjIgNTJINTdWMzAySDIycjAtMjUweiIgZmlsbD0iIzI3MmExOCIvPgo8Y2lyY2xlIGN4PSIyMDIiIGNjeT0iMTc3IiByPSI5MCIgZmlsbD0iIzEyMTYyMCIgc3Ryb2tlPSIjMzhiZGY4IiBzdHJva2Utd2lkdGg9IjYiLz4KPGNpcmNsZSBjeT0iMjAyIiBjY3k9IjE3NyIgcj0iMjciIGZpbGw9IiNmNW
-9lMGIiLz4KPHBhdGggZD0iTTIwMiAxNzdsLTUwIDUwYy0zNi0zNi0zNi05NSAwLTEzMXM5NS0zNiAxMzEgMHoiIGZpbGw9IiM2MzY2ZjEiLz4KPHBhdGggZD0iTTIwMiAxNzdsNTAgNTBjMzYtMzYgMzYtOTUgMC0xMzFzLTk1LTM2LTEzMSAweiIgZmlsbD0iIzRhMDUwZSIvPgo8Y2lyY2xlIGN4PSI1MDAiIGNjeT0iMTc3IiByPSI5MCIgZmlsbD0iIzEyMTYyM0IiIHN0cm9rZT0iIzM4YmRmOCIgc3Ryb2tlLXdpZHRoPSI2Ii8+CjxjaXJjbGUgY3g9IjUwMCIgY2N5PSIxNzciIHI9IjI3IiBmaWxsPSIjZjVjZTBiIi8+CjxwYXRoIGQ9Ik01MDAgMTc3bC01MCA1MGMtMzYtMzYtMzYtOTUgMC0xMzFzOTUtMzYgMTMxIDB6IiBmaWxsPSIjNjM2NmYxIi8+CjxwYXRoIGQ9Ik01MDAgMTc3bDUwIDUwYzM2LTM2IDM2LTk1IDAtMTMxcy05NS0zNi0xMzEgMHoiIGZpbGw9IiM0YTA1MGUiLz4KPGNpcmNsZSBjeT0iNjk4IiBjY3k9IjE3NyIgcj0iOTAiIGZpbGw9IiMxMjE2MjMiIHN0cm9rZT0iIzM4YmRmOCIgc3Ryb2tlLXdpZHRoPSI2Ii8+CjxjaXJjbGUgY3g9IjY5OCIgY2N5PSIxNzciIHI9IjI3IiBmaWxsPSIjZjVjZTBiIi8+CjxwYXRoIGQ9Ik02OTggMTc3bC01MCA1MGMtMzYtMzYtMzYtOTUgMC0xMzFzOTUtMzYgMTMxIDB6IiBmaWxsPSIjNjM2NmYxIi8+CjxwYXRoIGQ9Ik02OTggMTc3bDUwIDUwYzM2LTM2IDM2LTk1IDAtMTMxcy05NS0zNi0xMzEgMHoiIGZpbGw9IiM0YTA1MGUiLz4KPC9zdmc+";
-
-    // Sayfa yüklendiğinde görselleri otomatik yerleştir
-    window.onload = function() {
-        document.getElementById('rig-image').src = gpuImageBase64;
-        let marketImgs = document.querySelectorAll('.gpu-market-img');
-        marketImgs.forEach(img => img.src = gpuImageBase64);
-        updateUI();
-    };
-
-    // Web Audio API ile Ses Efektleri
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playBeep(freq, type, duration) {
-        if (!audioCtx) return;
-        if (audioCtx.state === 'suspended') audioCtx.resume();
-        let osc = audioCtx.createOscillator();
-        let gain = audioCtx.createGain();
-        osc.type = type;
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.start();
-        osc.stop(audioCtx.currentTime + duration);
-    }
-
-    let balance = parseFloat(localStorage.getItem('rm_balance')) || 0.0;
-    let clickPower = parseFloat(localStorage.getItem('rm_clickPower')) || 0.05;
-    let hashrate = parseFloat(localStorage.getItem('rm_hashrate')) || 0.00;
-    let powerDraw = parseInt(localStorage.getItem('rm_powerDraw')) || 0;
-    let temperature = parseFloat(localStorage.getItem('rm_temp')) || 40.0;
+    let balance = parseFloat(localStorage.getItem('rm_bal')) || 0;
+    let clickPower = parseFloat(localStorage.getItem('rm_cp')) || 0.05;
+    let hashrate = parseFloat(localStorage.getItem('rm_hr')) || 0;
+    let power = parseInt(localStorage.getItem('rm_pow')) || 0;
+    let temp = 40.0;
     
-    let ocCost = parseFloat(localStorage.getItem('rm_ocCost')) || 25.00;
-    let coolCost = parseFloat(localStorage.getItem('rm_coolCost')) || 50.00;
-    let psuCost = parseFloat(localStorage.getItem('rm_psuCost')) || 120.00;
-    
-    let coolingBonus = parseFloat(localStorage.getItem('rm_coolingBonus')) || 0;
-    let psuEfficiency = parseFloat(localStorage.getItem('rm_psuEff')) || 1.0;
+    let ocCost = parseFloat(localStorage.getItem('rm_occ')) || 25.0;
+    let coolCost = parseFloat(localStorage.getItem('rm_clc')) || 50.0;
+    let coolBonus = parseFloat(localStorage.getItem('rm_clb')) || 0;
 
-    let gpus = JSON.parse(localStorage.getItem('rm_gpus')) || {
-        rx470: { count: 0, rate: 28, power: 120, price: 10.00 },
-        rx590: { count: 0, rate: 32, power: 145, price: 45.00 },
-        rtx3060: { count: 0, rate: 60, power: 130, price: 180.00 },
-        rx6700: { count: 0, rate: 82, power: 160, price: 550.00 },
-        rtx4080: { count: 0, rate: 145, power: 220, price: 1800.00 }
+    let items = JSON.parse(localStorage.getItem('rm_items')) || {
+        rx470: { count: 0, rate: 28, power: 120, price: 10 },
+        rx590: { count: 0, rate: 32, power: 145, price: 45 },
+        rtx3060: { count: 0, rate: 60, power: 130, price: 180 },
+        rx6700: { count: 0, rate: 82, power: 160, price: 550 },
+        rtx4080: { count: 0, rate: 145, power: 220, price: 1800 }
     };
 
     const tg = window.Telegram?.WebApp;
-    if (tg) {
-        tg.ready();
-        tg.expand();
-        if (tg.initDataUnsafe?.user) {
-            let user = tg.initDataUnsafe.user;
-            document.getElementById('user-fullname').innerText = user.first_name || "Madenci";
-            document.getElementById('user-initial').innerText = (user.first_name ? user.first_name[0] : "M").toUpperCase();
-        }
+    if (tg && tg.initDataUnsafe?.user) {
+        document.getElementById('username').innerText = tg.initDataUnsafe.user.first_name;
     }
 
-    // Otomatik Kazım ve Isı Döngüsü (100ms)
+    // Otomatik Kazanç Döngüsü (100ms)
     setInterval(() => {
         if (hashrate > 0) {
-            let earned = (hashrate * 0.00004);
-            balance += earned;
-
-            temperature = 40 + (powerDraw * psuEfficiency / 20) - coolingBonus;
-            if (temperature < 38) temperature = 38;
-
+            balance += (hashrate * 0.00004);
+            temp = 40 + (power / 25) - coolBonus;
+            if (temp < 38) temp = 38;
             updateUI();
-            saveState();
+            saveData();
         }
     }, 100);
 
-    function saveState() {
-        localStorage.setItem('rm_balance', balance);
-        localStorage.setItem('rm_clickPower', clickPower);
-        localStorage.setItem('rm_hashrate', hashrate);
-        localStorage.setItem('rm_powerDraw', powerDraw);
-        localStorage.setItem('rm_temp', temperature);
-        localStorage.setItem('rm_ocCost', ocCost);
-        localStorage.setItem('rm_coolCost', coolCost);
-        localStorage.setItem('rm_psuCost', psuCost);
-        localStorage.setItem('rm_coolingBonus', coolingBonus);
-        localStorage.setItem('rm_psuEff', psuEfficiency);
-        localStorage.setItem('rm_gpus', JSON.stringify(gpus));
-    }
-
-    function performShareMining(e) {
+    function mineClick(e) {
         balance += clickPower;
-        playBeep(650, 'triangle', 0.08); 
         updateUI();
-        saveState();
+        saveData();
 
-        // Kart görselini döndürme efekti tetikle
-        let rigImg = document.getElementById('rig-image');
-        rigImg.classList.add('spinning');
-        setTimeout(() => rigImg.classList.remove('spinning'), 400);
+        let card = document.getElementById('main-gpu-card');
+        card.classList.add('spin-anim');
+        setTimeout(() => card.classList.remove('spin-anim'), 300);
 
-        let container = document.getElementById('main-container');
-        let rect = container.getBoundingClientRect();
+        let wrapper = document.getElementById('app-wrapper');
+        let rect = wrapper.getBoundingClientRect();
         let x = (e.clientX || 200) - rect.left;
         let y = (e.clientY || 300) - rect.top;
 
         let el = document.createElement('div');
-        el.className = 'floating-text';
+        el.className = 'float-num';
         el.innerText = "+" + clickPower.toFixed(2);
         el.style.left = x + 'px';
         el.style.top = y + 'px';
-        container.appendChild(el);
-
-        setTimeout(() => el.remove(), 600);
+        wrapper.appendChild(el);
+        setTimeout(() => el.remove(), 500);
     }
 
-    function buyGPU(id, basePrice, rateInc, powerInc) {
-        let gpu = gpus[id];
-        if (balance >= gpu.price) {
-            balance -= gpu.price;
-            gpu.count++;
-            hashrate += rateInc;
-            powerDraw += powerInc;
-            gpu.price = Math.round(gpu.price * 1.22 * 100) / 100;
-            playBeep(880, 'sine', 0.15);
+    function buyItem(id, baseP, rInc, pInc) {
+        let item = items[id];
+        if (balance >= item.price) {
+            balance -= item.price;
+            item.count++;
+            hashrate += rInc;
+            power += pInc;
+            item.price = Math.round(item.price * 1.22 * 100) / 100;
             updateUI();
-            saveState();
+            saveData();
         } else {
-            playBeep(200, 'sawtooth', 0.2);
             alert("Yetersiz bakiye!");
         }
     }
 
-    function buyOverclock() {
-        if (balance >= ocCost) {
+    function buyUpgrade(type) {
+        if (type === 'oc' && balance >= ocCost) {
             balance -= ocCost;
             clickPower += 0.03;
             ocCost = Math.round(ocCost * 1.5 * 100) / 100;
-            playBeep(920, 'sine', 0.15);
-            updateUI();
-            saveState();
-        } else {
-            alert("Yetersiz bakiye!");
-        }
-    }
-
-    function buyCooling() {
-        if (balance >= coolCost) {
+        } else if (type === 'cool' && balance >= coolCost) {
             balance -= coolCost;
-            coolingBonus += 4.0;
+            coolBonus += 5.0;
             coolCost = Math.round(coolCost * 1.6 * 100) / 100;
-            playBeep(920, 'sine', 0.15);
-            updateUI();
-            saveState();
         } else {
             alert("Yetersiz bakiye!");
+            return;
         }
+        updateUI();
+        saveData();
     }
 
-    function buyPSU() {
-        if (balance >= psuCost) {
-            balance -= psuCost;
-            psuEfficiency -= 0.15;
-            if (psuEfficiency < 0.5) psuEfficiency = 0.5;
-            psuCost = Math.round(psuCost * 1.8 * 100) / 100;
-            playBeep(920, 'sine', 0.15);
-            updateUI();
-            saveState();
-        } else {
-            alert("Yetersiz bakiye!");
-        }
-    }
-
-    function switchPane(paneName, element) {
+    function switchTab(tab, el) {
         document.querySelectorAll('.pane').forEach(p => p.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        
-        document.getElementById('pane-' + paneName).classList.add('active');
-        element.classList.add('active');
+        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('pane-' + tab).classList.add('active');
+        el.classList.add('active');
     }
 
     function updateUI() {
         document.getElementById('balance').innerText = balance.toFixed(4);
         document.getElementById('hashrate').innerText = hashrate.toFixed(1);
-        document.getElementById('power-draw').innerText = Math.round(powerDraw * psuEfficiency);
-        document.getElementById('net-rate').innerText = (hashrate * 0.0004).toFixed(4);
+        document.getElementById('power').innerText = power;
+        document.getElementById('cps').innerText = (hashrate * 0.0004).toFixed(4);
+        document.getElementById('temp-badge').innerText = `🌡️ ${temp.toFixed(1)}°C`;
 
-        let tempBadge = document.getElementById('temp-badge');
-        tempBadge.innerText = `🌡️ ${temperature.toFixed(1)}°C`;
-        if (temperature > 75) {
-            tempBadge.style.color = "var(--danger)";
-            tempBadge.style.borderColor = "rgba(239, 68, 68, 0.4)";
-        } else {
-            tempBadge.style.color = "var(--primary)";
-            tempBadge.style.borderColor = "rgba(0, 255, 136, 0.3)";
-        }
-
-        for (let id in gpus) {
-            document.getElementById('count-' + id).innerText = `(${gpus[id].count})`;
-            document.getElementById('price-' + id).innerText = gpus[id].price.toFixed(2);
+        for (let id in items) {
+            document.getElementById('cnt-' + id).innerText = `(${items[id].count})`;
+            document.getElementById('prc-' + id).innerText = items[id].price.toFixed(2);
         }
 
         document.getElementById('btn-oc').innerText = ocCost.toFixed(2) + " PTS";
         document.getElementById('btn-cool').innerText = coolCost.toFixed(2) + " PTS";
-        document.getElementById('btn-psu').innerText = psuCost.toFixed(2) + " PTS";
     }
+
+    function saveData() {
+        localStorage.setItem('rm_bal', balance);
+        localStorage.setItem('rm_cp', clickPower);
+        localStorage.setItem('rm_hr', hashrate);
+        localStorage.setItem('rm_pow', power);
+        localStorage.setItem('rm_occ', ocCost);
+        localStorage.setItem('rm_clc', coolCost);
+        localStorage.setItem('rm_clb', coolBonus);
+        localStorage.setItem('rm_items', JSON.stringify(items));
+    }
+
+    updateUI();
 </script>
 </body>
 </html>
