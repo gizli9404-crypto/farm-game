@@ -15,21 +15,24 @@
             color: #f8fafc; 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
             user-select: none; 
-            transition: background 0.3s ease;
+            transition: background 0.3s ease, color 0.3s ease;
         }
         body.light-theme {
-            background: linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 100%);
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             color: #0f172a;
         }
         body.light-theme .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(0, 0, 0, 0.08);
+            background: rgba(255, 255, 255, 0.92);
+            border: 1px solid rgba(0, 0, 0, 0.1);
         }
         body.light-theme .glass-card {
-            background: rgba(241, 245, 249, 0.8);
-            border: 1px solid rgba(0, 0, 0, 0.06);
-            color: #1e293b;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            color: #0f172a;
         }
+        body.light-theme .text-slate-300 { color: #334155 !important; }
+        body.light-theme .text-slate-400 { color: #475569 !important; }
+        body.light-theme .text-white { color: #020617 !important; }
         body.light-theme input, body.light-theme select {
             background: #ffffff !important;
             color: #0f172a !important;
@@ -72,13 +75,13 @@
     <!-- ÜST HEADER BÖLGESİ -->
     <header class="p-4 glass-panel border-b border-slate-800/80 z-20 space-y-3">
         <div class="flex justify-between items-center">
-            <div class="flex bg-slate-950/90 p-1 rounded-xl border border-slate-800/80 shadow-inner">
+            <div class="flex bg-slate-950/90 light-theme:bg-slate-200 p-1 rounded-xl border border-slate-800/80 shadow-inner">
                 <button onclick="playClickSound()" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-black text-xs shadow-md">PEPE</button>
-                <button onclick="playClickSound()" class="px-3.5 py-1.5 rounded-lg text-slate-400 font-bold text-xs hover:text-white transition-colors">TON</button>
+                <button onclick="playClickSound()" class="px-3.5 py-1.5 rounded-lg text-slate-400 light-theme:text-slate-700 font-bold text-xs hover:text-white transition-colors">TON</button>
             </div>
             <div class="flex space-x-2 items-center">
-                <button onclick="toggleTheme(); playClickSound();" class="text-xs bg-slate-800/80 hover:bg-slate-700 text-amber-400 px-2.5 py-1.5 rounded-xl border border-slate-700/60 transition-all shadow" title="Tema Değiştir"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
-                <button onclick="switchTab('wallet'); playClickSound();" class="text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl font-bold border border-slate-700/60 transition-all shadow">Çekim</button>
+                <button onclick="toggleTheme(); playClickSound();" class="text-xs bg-slate-800/80 light-theme:bg-slate-200 hover:bg-slate-700 text-amber-400 px-2.5 py-1.5 rounded-xl border border-slate-700/60 transition-all shadow" title="Tema Değiştir"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
+                <button onclick="switchTab('wallet'); playClickSound();" class="text-xs bg-slate-800/80 light-theme:bg-slate-200 hover:bg-slate-700 text-slate-200 light-theme:text-slate-800 px-3 py-1.5 rounded-xl font-bold border border-slate-700/60 transition-all shadow">Çekim</button>
                 <button onclick="switchTab('invite'); playClickSound();" class="text-xs bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black px-3.5 py-1.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all"><i class="fa-solid fa-user-plus mr-1"></i> Davet Et</button>
             </div>
         </div>
@@ -86,7 +89,7 @@
         <!-- Bakiye Kartı -->
         <div class="glass-card p-3.5 rounded-2xl space-y-2.5 shadow-lg">
             <div class="flex justify-between items-center">
-                <span class="text-[10px] text-slate-400 uppercase font-black tracking-wider flex items-center">
+                <span class="text-[10px] text-slate-400 light-theme:text-slate-600 uppercase font-black tracking-wider flex items-center">
                     <i class="fa-solid fa-wallet text-emerald-400 mr-1.5"></i> Toplam Bakiyeniz
                 </span>
                 <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20 flex items-center">
@@ -94,13 +97,13 @@
                 </span>
             </div>
             <div class="flex items-baseline space-x-2">
-                <span id="balance" class="text-2xl font-black text-white tracking-tight">150.0000</span>
+                <span id="balance" class="text-2xl font-black text-white light-theme:text-slate-900 tracking-tight">150.0000</span>
                 <span class="text-xs font-bold text-emerald-400">PEPE</span>
             </div>
-            <div class="w-full bg-slate-950/90 h-2 rounded-full overflow-hidden p-0.5 border border-slate-800/80">
+            <div class="w-full bg-slate-950/90 light-theme:bg-slate-300 h-2 rounded-full overflow-hidden p-0.5 border border-slate-800/80">
                 <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-[3%] rounded-full transition-all duration-500 shadow-sm"></div>
             </div>
-            <div class="flex justify-between text-[10px] text-slate-400 font-semibold">
+            <div class="flex justify-between text-[10px] text-slate-400 light-theme:text-slate-600 font-semibold">
                 <span id="progress-text">150.00 / 5,000 PEPE (3.0%)</span>
                 <span class="text-emerald-400 font-bold"><i class="fa-solid fa-shield-halved mr-1"></i>AdsGram Korumalı</span>
             </div>
@@ -114,17 +117,17 @@
         <div id="tab-home" class="tab-content flex-col space-y-3">
             <div class="flex space-x-4 border-b border-slate-800/80 pb-2">
                 <span class="text-xs font-black text-emerald-400 border-b-2 border-emerald-400 pb-1 cursor-pointer">🎁 Ücretsiz Görevler</span>
-                <span onclick="switchTab('spin'); playClickSound();" class="text-xs font-bold text-slate-400 pb-1 cursor-pointer hover:text-slate-200">📄 Şans Çarkı</span>
+                <span onclick="switchTab('spin'); playClickSound();" class="text-xs font-bold text-slate-400 light-theme:text-slate-600 pb-1 cursor-pointer hover:text-slate-200">📄 Şans Çarkı</span>
             </div>
-            <div class="bg-slate-900/60 p-3 rounded-2xl border border-slate-800/80 text-xs text-slate-300 leading-relaxed shadow-sm">
-                📢 <b class="text-white">AdsGram Entegrasyonu:</b> Reklam onay sürecinden sonra buradaki görevler otomatik API üzerinden ödüllendirecektir.
+            <div class="bg-slate-900/60 light-theme:bg-slate-200 p-3 rounded-2xl border border-slate-800/80 text-xs text-slate-300 light-theme:text-slate-700 leading-relaxed shadow-sm">
+                📢 <b class="text-white light-theme:text-slate-900">AdsGram Entegrasyonu:</b> Reklam onay sürecinden sonra buradaki görevler otomatik API üzerinden ödüllendirecektir.
             </div>
             <div class="space-y-2.5">
                 <div class="glass-card p-3.5 rounded-2xl flex items-center justify-between border-slate-800/80 shadow">
                     <div class="flex items-center space-x-3">
                         <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-black text-xs border border-emerald-500/20 shadow-inner">ADS</div>
                         <div>
-                            <div class="text-xs font-bold text-white">AdsGram Sponsorlu Reklam</div>
+                            <div class="text-xs font-bold text-white light-theme:text-slate-900">AdsGram Sponsorlu Reklam</div>
                             <div class="text-[10px] text-emerald-400 font-bold mt-0.5">+1 🎫 Bilet — <span id="ad1-count">0</span>/15 gün</div>
                         </div>
                     </div>
@@ -136,7 +139,7 @@
         <!-- 2. SEKME: SPIN (GELİŞMİŞ ÖZEL ÇARK & CANLI AKIŞ ŞERİDİ) -->
         <div id="tab-spin" class="tab-content flex-col items-center space-y-2">
             <!-- Anlık Kazananlar Kayan Şeridi -->
-            <div class="w-full bg-slate-900/80 border border-slate-800 rounded-xl p-1.5 text-[10px] text-emerald-400 flex items-center space-x-2 overflow-hidden whitespace-nowrap">
+            <div class="w-full bg-slate-900/80 light-theme:bg-slate-200 border border-slate-800 rounded-xl p-1.5 text-[10px] text-emerald-400 flex items-center space-x-2 overflow-hidden whitespace-nowrap">
                 <i class="fa-solid fa-bullhorn text-amber-400 ml-1"></i>
                 <span id="ticker-winners" class="font-medium animate-pulse">CryptoKing_77 çarktan 1,000 PEPE kazandı! | TonMaster99 250 PEPE kazandı!</span>
             </div>
@@ -149,14 +152,14 @@
                 <!-- Çark Çerçevesi ve SVG -->
                 <div class="w-52 h-52 rounded-full p-1.5 bg-gradient-to-tr from-slate-900 via-emerald-500/40 to-amber-500/50 shadow-2xl flex items-center justify-center relative">
                     <svg id="svg-wheel" class="w-full h-full rounded-full overflow-hidden shadow-inner" viewBox="0 0 100 100">
-                        <!-- Dilimler (Görsel Zenginlikler ile) -->
+                        <!-- Dilimler -->
                         <path d="M50 50 L50 3 A47 47 0 0 1 90.7 26.5 Z" fill="#0369a1" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L90.7 26.5 A47 47 0 0 1 90.7 73.5 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L90.7 73.5 A47 47 0 0 1 50 97 Z" fill="#6d28d9" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L50 97 A47 47 0 0 1 9.3 73.5 Z" fill="#b45309" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L9.3 73.5 A47 47 0 0 1 9.3 26.5 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L9.3 26.5 A47 47 0 0 1 50 3 Z" fill="#047857" stroke="#0f172a" stroke-width="1.5"/>
-                        <!-- Metinler ve Simgeler -->
+                        <!-- Metinler -->
                         <g font-size="6" font-weight="900" text-anchor="middle" dominant-baseline="middle">
                             <text x="73" y="27" fill="#e0f2fe">50 PEPE</text>
                             <text x="78" y="53" fill="#94a3b8">BOŞ</text>
@@ -175,14 +178,14 @@
             
             <div class="text-center">
                 <span id="ticket-count" class="text-xs font-black text-emerald-400 tracking-wide">2 Biletiniz Var</span>
-                <p class="text-[9px] text-slate-400 mt-0.5">Ses efektli ve hızlı tıklama korumalı çark motoru.</p>
+                <p class="text-[9px] text-slate-400 light-theme:text-slate-600 mt-0.5">Ses efektli ve hızlı tıklama korumalı çark motoru.</p>
             </div>
 
             <div class="w-full max-w-xs space-y-2">
                 <button onclick="switchTab('home'); playClickSound();" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-slate-950 font-black py-2 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer flex items-center justify-center">
                     <i class="fa-solid fa-play mr-2"></i> REKLAM İZLE & BİLET KAZAN
                 </button>
-                <button id="spin-btn" onclick="spinWheel()" class="w-full bg-slate-800/90 hover:bg-slate-700 text-slate-200 font-bold py-2 rounded-xl text-xs transition-all border border-slate-700/80 cursor-pointer shadow flex items-center justify-center">
+                <button id="spin-btn" onclick="spinWheel()" class="w-full bg-slate-800/90 light-theme:bg-slate-200 hover:bg-slate-700 text-slate-200 light-theme:text-slate-800 font-bold py-2 rounded-xl text-xs transition-all border border-slate-700/80 cursor-pointer shadow flex items-center justify-center">
                     <i class="fa-solid fa-dharmachakra mr-2 text-amber-400"></i> Çarkı Çevir (1 Bilet Harca)
                 </button>
             </div>
@@ -190,58 +193,49 @@
 
         <!-- 3. SEKME: SHOP -->
         <div id="tab-shop" class="tab-content flex-col space-y-3">
-            <h2 class="text-base font-black text-white">Mağaza & VIP Bot</h2>
+            <h2 class="text-base font-black text-white light-theme:text-slate-900">Mağaza & VIP Bot</h2>
             <div class="glass-card p-3.5 rounded-2xl space-y-2 border-slate-800/80 text-xs text-slate-300">
-                <div class="font-bold text-white">Otomatik AdsGram & Bot Worker Modülü</div>
+                <div class="font-bold text-white light-theme:text-slate-900">Otomatik AdsGram & Bot Worker Modülü</div>
                 <p>Şirket onayından sonra reklam ID'leriniz buraya entegre edilerek tüm gelirler otomatik olarak hesaplara işlenecektir.</p>
             </div>
         </div>
 
-        <!-- 4. SEKME: INVITE (DETAYLI & ÖZENLİ GÖRÜNÜM) -->
+        <!-- 4. SEKME: INVITE (GERÇEK TELEGRAM DAVET SİSTEMİ) -->
         <div id="tab-invite" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
-                <h2 class="text-base font-black text-white">Arkadaşını Davet Et</h2>
+                <h2 class="text-base font-black text-white light-theme:text-slate-900">Arkadaşını Davet Et</h2>
                 <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2.5 py-1 rounded-full border border-emerald-500/20">🎁 Her Davete +2 Bilet</span>
             </div>
             
-            <!-- Link Paylaşım Kutusu -->
+            <!-- Telegram Paylaşım Kutusu -->
             <div class="glass-card p-4 rounded-2xl space-y-3 border-slate-800/80 shadow-lg">
                 <div class="text-xs text-slate-300 leading-relaxed">
-                    Özel referans bağlantınızı arkadaşlarınızla paylaşın. Bot üzerinden katılan her arkadaşınız için otomatik ödül kazanın.
+                    Telegram üzerinden arkadaşlarına doğrudan davet gönder. Arkadaşın bota katıldığı anda hesabına anında bilet tanımlanır.
                 </div>
-                <div class="flex space-x-2">
-                    <input type="text" readonly id="ref-link" value="https://t.me/SanalMinerProBot?start=ref_98412" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-2 text-[11px] text-emerald-400 font-mono focus:outline-none">
+                <button onclick="shareViaTelegram(); playClickSound();" class="w-full bg-gradient-to-r from-sky-400 to-blue-600 hover:opacity-90 text-white font-black py-3 rounded-xl text-xs shadow-lg cursor-pointer transition-all flex items-center justify-center">
+                    <i class="fa-brands fa-telegram mr-2 text-base"></i> Telegram'da Arkadaş Davet Et
+                </button>
+                <div class="flex space-x-2 pt-1">
+                    <input type="text" readonly id="ref-link" value="https://t.me/SanalMinerProBot?start=ref_98412" class="w-full bg-slate-950/90 light-theme:bg-slate-100 border border-slate-800 rounded-xl px-3 py-2 text-[11px] text-emerald-400 font-mono focus:outline-none">
                     <button onclick="copyRefLink(); playClickSound();" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow transition-all cursor-pointer whitespace-nowrap"><i class="fa-solid fa-copy mr-1"></i> Kopyala</button>
-                </div>
-            </div>
-
-            <!-- Davet İstatistik Kartları -->
-            <div class="grid grid-cols-2 gap-2.5">
-                <div class="glass-card p-3.5 rounded-2xl space-y-1 border-slate-800/80">
-                    <div class="text-[10px] text-slate-400 font-bold">Davet Edilen</div>
-                    <div id="ref-count" class="text-base font-black text-white">0 Kişi</div>
-                </div>
-                <div class="glass-card p-3.5 rounded-2xl space-y-1 border-slate-800/80">
-                    <div class="text-[10px] text-slate-400 font-bold">Kazanılan Bonus</div>
-                    <div class="text-base font-black text-emerald-400">0 PEPE</div>
                 </div>
             </div>
 
             <!-- Adım Adım Davet Rehberi -->
             <div class="glass-card p-3.5 rounded-2xl space-y-2 border-slate-800/80">
-                <div class="text-xs font-bold text-white">Nasıl Çalışır?</div>
+                <div class="text-xs font-bold text-white light-theme:text-slate-900">Nasıl Çalışır?</div>
                 <div class="space-y-1.5 text-[11px] text-slate-300">
                     <div class="flex items-center space-x-2">
                         <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-[9px]">1</span>
-                        <span>Linkini Telegram gruplarında paylaş.</span>
+                        <span>"Telegram'da Arkadaş Davet Et" butonuna tıkla.</span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-[9px]">2</span>
-                        <span>Arkadaşın botu başlattığında sisteme işlensin.</span>
+                        <span>Açılan Telegram ekranından arkadaşını seç ve gönder.</span>
                     </div>
                     <div class="flex items-center space-x-2">
                         <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-[9px]">3</span>
-                        <span>Anında +2 bilet hesabına yatsın!</span>
+                        <span>Arkadaşın botu başlattığında +2 bilet otomatik gelsin!</span>
                     </div>
                 </div>
             </div>
@@ -250,7 +244,7 @@
         <!-- 5. SEKME: RANK -->
         <div id="tab-rank" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
-                <h2 class="text-base font-black text-white">Canlı Liderlik Tablosu</h2>
+                <h2 class="text-base font-black text-white light-theme:text-slate-900">Canlı Liderlik Tablosu</h2>
                 <div class="flex items-center space-x-1.5 text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
                     <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
                     <span>Canlı Senkronize</span>
@@ -258,24 +252,24 @@
             </div>
             
             <div class="glass-card p-3 rounded-2xl space-y-2 text-xs border-slate-800/80 shadow-lg">
-                <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
                     <div class="flex items-center space-x-2">
                         <span class="text-amber-400 font-black">🥇</span>
-                        <span class="text-white font-bold">CryptoKing_77</span>
+                        <span class="text-white light-theme:text-slate-900 font-bold">CryptoKing_77</span>
                     </div>
                     <span class="text-emerald-400 font-black">34,500 PEPE</span>
                 </div>
-                <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
                     <div class="flex items-center space-x-2">
-                        <span class="text-slate-300 font-black">🥈</span>
-                        <span class="text-white font-bold">TonMaster99</span>
+                        <span class="text-slate-300 light-theme:text-slate-700 font-black">🥈</span>
+                        <span class="text-white light-theme:text-slate-900 font-bold">TonMaster99</span>
                     </div>
                     <span class="text-emerald-400 font-black">28,100 PEPE</span>
                 </div>
-                <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
                     <div class="flex items-center space-x-2">
                         <span class="text-amber-600 font-black">🥉</span>
-                        <span class="text-white font-bold">AnadoluMiner</span>
+                        <span class="text-white light-theme:text-slate-900 font-bold">AnadoluMiner</span>
                     </div>
                     <span class="text-emerald-400 font-black">19,400 PEPE</span>
                 </div>
@@ -283,7 +277,7 @@
                 <div class="flex justify-between items-center bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/30 mt-2">
                     <div class="flex items-center space-x-2">
                         <span class="text-emerald-400 font-black">📍</span>
-                        <span class="text-emerald-300 font-bold">Siz (142. Sıra)</span>
+                        <span class="text-emerald-300 light-theme:text-emerald-700 font-bold">Siz (142. Sıra)</span>
                     </div>
                     <span id="rank-balance" class="text-emerald-400 font-black">150 PEPE</span>
                 </div>
@@ -293,24 +287,24 @@
         <!-- CÜZDAN & OTOMATİK BOT ÇEKİM İŞLEMLERİ -->
         <div id="tab-wallet" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
-                <h2 class="text-base font-black text-white">Cüzdan & Otomatik Bot Çekim</h2>
+                <h2 class="text-base font-black text-white light-theme:text-slate-900">Cüzdan & Otomatik Bot Çekim</h2>
                 <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">Bot Worker: Online 🟢</span>
             </div>
             
             <div class="glass-card p-4 rounded-2xl space-y-3 border-slate-800/80 shadow-lg">
                 <div class="space-y-1">
-                    <label class="text-[10px] text-slate-400 font-bold uppercase">Ağ / Cüzdan Tipi</label>
+                    <label class="text-[10px] text-slate-400 light-theme:text-slate-600 font-bold uppercase">Ağ / Cüzdan Tipi</label>
                     <select id="wallet-network" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
                         <option value="TON">TON Blockchain (Telegram Wallet / Tonkeeper)</option>
                         <option value="BEP20">Binance Smart Chain (BEP20)</option>
                     </select>
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[10px] text-slate-400 font-bold uppercase">Cüzdan Adresi</label>
+                    <label class="text-[10px] text-slate-400 light-theme:text-slate-600 font-bold uppercase">Cüzdan Adresi</label>
                     <input type="text" id="wallet-addr" placeholder="UQ... veya 0x..." class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <div class="space-y-1">
-                    <label class="text-[10px] text-slate-400 font-bold uppercase">Çekim Miktarı (Min: 5000 PEPE)</label>
+                    <label class="text-[10px] text-slate-400 light-theme:text-slate-600 font-bold uppercase">Çekim Miktarı (Min: 5000 PEPE)</label>
                     <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <button onclick="requestWithdraw(); playClickSound();" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow cursor-pointer transition-all hover:opacity-90 flex items-center justify-center">
@@ -321,16 +315,12 @@
             <!-- Canlı Ödeme Akışı & Bot Logları -->
             <div class="glass-card p-3.5 rounded-2xl space-y-2.5 border-slate-800/80">
                 <div class="flex justify-between items-center text-xs border-b border-slate-800/80 pb-2">
-                    <span class="font-bold text-white flex items-center"><i class="fa-solid fa-terminal text-emerald-400 mr-1.5"></i> Bot Worker Log & Canlı Akış</span>
+                    <span class="font-bold text-white light-theme:text-slate-900 flex items-center"><i class="fa-solid fa-terminal text-emerald-400 mr-1.5"></i> Bot Worker Log & Canlı Akış</span>
                     <span class="text-[10px] text-emerald-400 font-semibold animate-pulse">● Canlı</span>
                 </div>
                 <div id="live-withdrawals" class="space-y-2 text-[11px]">
-                    <div class="flex justify-between items-center bg-slate-950/60 p-2 rounded-xl border border-slate-800/60 animate-fade">
-                        <span class="text-slate-300 font-medium">UQv2...81aF (5,000 PEPE)</span>
-                        <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Bot Onayladı ✅</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-950/60 p-2 rounded-xl border border-slate-800/60 animate-fade">
-                        <span class="text-slate-300 font-medium">0x4c...91f2 (12,000 PEPE)</span>
+                    <div class="flex justify-between items-center bg-slate-950/60 light-theme:bg-slate-200 p-2 rounded-xl border border-slate-800/60 animate-fade">
+                        <span class="text-slate-300 light-theme:text-slate-800 font-medium">UQv2...81aF (5,000 PEPE)</span>
                         <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Bot Onayladı ✅</span>
                     </div>
                 </div>
@@ -346,8 +336,8 @@
                 <i class="fa-solid fa-check"></i>
             </div>
             <div>
-                <h3 id="modal-title" class="font-black text-white text-base">Bilgilendirme</h3>
-                <p id="modal-desc" class="text-xs text-slate-300 mt-1.5 leading-relaxed">İşlem tamamlandı.</p>
+                <h3 id="modal-title" class="font-black text-white light-theme:text-slate-900 text-base">Bilgilendirme</h3>
+                <p id="modal-desc" class="text-xs text-slate-300 light-theme:text-slate-700 mt-1.5 leading-relaxed">İşlem tamamlandı.</p>
             </div>
             <button onclick="closeModal(); playClickSound();" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-2.5 rounded-xl text-xs transition-all cursor-pointer shadow-md">Tamam</button>
         </div>
@@ -355,19 +345,24 @@
 
     <!-- ALT NAVİGASYON -->
     <nav class="absolute bottom-0 left-0 right-0 glass-panel border-t border-slate-800/80 flex justify-around p-2.5 z-40 backdrop-blur-xl">
-        <button onclick="switchTab('home'); playClickSound();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="home"><i class="fa-solid fa-house text-xs"></i><span class="text-[9px] font-bold">HOME</span></button>
+        <button onclick="switchTab('home'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="home"><i class="fa-solid fa-house text-xs"></i><span class="text-[9px] font-bold">HOME</span></button>
         <button onclick="switchTab('spin'); playClickSound();" class="nav-btn text-emerald-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="spin"><i class="fa-solid fa-slot-machine text-xs"></i><span class="text-[9px] font-bold">SPIN</span></button>
-        <button onclick="switchTab('shop'); playClickSound();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="shop"><i class="fa-solid fa-star text-xs"></i><span class="text-[9px] font-bold">SHOP</span></button>
-        <button onclick="switchTab('invite'); playClickSound();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="invite"><i class="fa-solid fa-globe text-xs"></i><span class="text-[9px] font-bold">INVITE</span></button>
-        <button onclick="switchTab('rank'); playClickSound();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
+        <button onclick="switchTab('shop'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="shop"><i class="fa-solid fa-star text-xs"></i><span class="text-[9px] font-bold">SHOP</span></button>
+        <button onclick="switchTab('invite'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="invite"><i class="fa-solid fa-globe text-xs"></i><span class="text-[9px] font-bold">INVITE</span></button>
+        <button onclick="switchTab('rank'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
     </nav>
 
     <script>
         let gameState = { balance: 150.00, tickets: 2 };
         let currentRotation = 0;
-        let isSpinning = false; // Hızlı tıklama koruması
+        let isSpinning = false;
 
-        // Web Audio API ile Canlı Ses Efektleri (Harici dosya gerektirmez)
+        // Telegram WebApp entegrasyonu başlatma
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.expand();
+        }
+
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
         function playSound(type) {
@@ -378,7 +373,6 @@
             let gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
             let now = audioCtx.currentTime;
 
             if (type === 'click') {
@@ -393,7 +387,6 @@
                 osc.type = 'triangle';
                 osc.frequency.setValueAtTime(300, now);
                 osc.frequency.setValueAtTime(500, now + 0.1);
-                osc.frequency.setValueAtTime(700, now + 0.2);
                 gain.gain.setValueAtTime(0.1, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.4);
                 osc.start(now);
@@ -403,7 +396,6 @@
                 osc.frequency.setValueAtTime(250, now);
                 osc.frequency.setValueAtTime(450, now + 0.15);
                 osc.frequency.setValueAtTime(650, now + 0.3);
-                osc.frequency.setValueAtTime(900, now + 0.45);
                 gain.gain.setValueAtTime(0.12, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.7);
                 osc.start(now);
@@ -411,7 +403,6 @@
             } else if (type === 'error') {
                 osc.type = 'sawtooth';
                 osc.frequency.setValueAtTime(150, now);
-                osc.frequency.setValueAtTime(100, now + 0.15);
                 gain.gain.setValueAtTime(0.1, now);
                 gain.gain.linearRampToValueAtTime(0, now + 0.3);
                 osc.start(now);
@@ -437,9 +428,9 @@
             document.getElementById('tab-' + tabId).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('text-emerald-400');
-                btn.classList.add('text-slate-400');
+                btn.classList.add('text-slate-400', 'light-theme:text-slate-600');
                 if(btn.getAttribute('data-target') === tabId) {
-                    btn.classList.remove('text-slate-400');
+                    btn.classList.remove('text-slate-400', 'light-theme:text-slate-600');
                     btn.classList.add('text-emerald-400');
                 }
             });
@@ -486,11 +477,18 @@
             let copyText = document.getElementById("ref-link");
             navigator.clipboard.writeText(copyText.value);
             showModal("Başarılı 📋", "Özel davet bağlantınız panoya kopyalandı!");
-            let countEl = document.getElementById("ref-count");
-            let currentRefs = parseInt(countEl.innerText);
-            countEl.innerText = (currentRefs + 1) + " Kişi";
-            gameState.tickets += 2;
-            updateUI();
+        }
+
+        function shareViaTelegram() {
+            let refUrl = document.getElementById("ref-link").value;
+            let shareText = "🚀 Sanal Miner Pro'ya katıl, birlikte PEPE ve TON kazanalım! Hemen tıkla:";
+            
+            // Telegram yerleşik paylaşım tetikleyicisi
+            if (tg && tg.openTelegramLink) {
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${encodeURIComponent(shareText)}`);
+            } else {
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${encodeURIComponent(shareText)}`, '_blank');
+            }
         }
 
         function watchAdTask(amount, counterId, limit) {
@@ -507,7 +505,7 @@
         }
 
         function spinWheel() {
-            if (isSpinning) return; // Hızlı tıklamalara karşı güvenli kilit
+            if (isSpinning) return;
             if (gameState.tickets <= 0) {
                 showModal("Biletiniz Kalmadı", "Çevirim yapmak için reklam izleyerek bilet kazanmalısınız.", false, true);
                 return;
@@ -528,26 +526,15 @@
             let isJackpot = false;
 
             if (rand < 35) {
-                targetCenterAngle = 330; // 50 PEPE
-                prizeWon = 50;
-                prizeText = "Çarktan 50 PEPE kazandınız!";
+                targetCenterAngle = 330; prizeWon = 50; prizeText = "Çarktan 50 PEPE kazandınız!";
             } else if (rand < 65) {
-                targetCenterAngle = Math.random() < 0.5 ? 90 : 270; // BOŞ
-                prizeWon = 0;
-                prizeText = "Üzgünüm, bu çevirmede ödül çıkmadı (BOŞ)!";
+                targetCenterAngle = Math.random() < 0.5 ? 90 : 270; prizeWon = 0; prizeText = "Üzgünüm, bu çevirmede ödül çıkmadı (BOŞ)!";
             } else if (rand < 85) {
-                targetCenterAngle = 30; // 100 PEPE
-                prizeWon = 100;
-                prizeText = "Çarktan 100 PEPE kazandınız!";
+                targetCenterAngle = 30; prizeWon = 100; prizeText = "Çarktan 100 PEPE kazandınız!";
             } else if (rand < 95) {
-                targetCenterAngle = 150; // 250 PEPE
-                prizeWon = 250;
-                prizeText = "Çarktan 250 PEPE kazandınız!";
+                targetCenterAngle = 150; prizeWon = 250; prizeText = "Çarktan 250 PEPE kazandınız!";
             } else {
-                targetCenterAngle = 210; // 1000 PEPE (Büyük İkramiye)
-                prizeWon = 1000;
-                prizeText = "MUHTEŞEM! Büyük İkramiye 1000 PEPE Kazandınız! 🏆";
-                isJackpot = true;
+                targetCenterAngle = 210; prizeWon = 1000; prizeText = "MUHTEŞEM! Büyük İkramiye 1000 PEPE Kazandınız! 🏆"; isJackpot = true;
             }
 
             let extraSpins = 360 * 6;
@@ -589,12 +576,11 @@
             updateUI();
             showModal("Bot Worker Başlatıldı 🤖", `Çekim talebiniz (${network}) Telegram bot worker kuyruğuna aktarıldı.`);
 
-            // Canlı Bot Log Akışına Ekle
             let liveList = document.getElementById('live-withdrawals');
             let shortAddr = addr.substring(0, 4) + "..." + addr.substring(addr.length - 4);
             let newItem = document.createElement('div');
-            newItem.className = "flex justify-between items-center bg-slate-950/60 p-2 rounded-xl border border-slate-800/60 animate-fade";
-            newItem.innerHTML = `<span class="text-slate-300 font-medium">${shortAddr} (${amount} PEPE)</span><span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded text-[10px]">Bot İşliyor ⏳</span>`;
+            newItem.className = "flex justify-between items-center bg-slate-950/60 light-theme:bg-slate-200 p-2 rounded-xl border border-slate-800/60 animate-fade";
+            newItem.innerHTML = `<span class="text-slate-300 light-theme:text-slate-800 font-medium">${shortAddr} (${amount} PEPE)</span><span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded text-[10px]">Bot İşliyor ⏳</span>`;
             liveList.prepend(newItem);
         }
 
