@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Rewards Hub - Official App</title>
+    <title>Rewards Hub - Pro Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,12 +13,12 @@
         .tab-content.active { display: flex; }
         .glass { background: rgba(18, 24, 38, 0.9); backdrop-filter: blur(16px); border: 1px solid rgba(51, 65, 85, 0.4); }
         .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(51, 65, 85, 0.5); }
-        #fortune-wheel { transition: transform 4.5s cubic-bezier(0.12, 0.85, 0.15, 1); }
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
-            50% { box-shadow: 0 0 30px rgba(16, 185, 129, 0.6); }
+        #fortune-wheel { transition: transform 5s cubic-bezier(0.15, 0.85, 0.1, 1); }
+        @keyframes wheel-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(16, 185, 129, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(16, 185, 129, 0.5); }
         }
-        .wheel-glow { animation: pulse-glow 3s infinite; }
+        .active-wheel-glow { animation: wheel-glow 3s infinite; }
     </style>
 </head>
 <body class="flex flex-col h-screen justify-between overflow-hidden">
@@ -40,7 +40,7 @@
         <div class="glass-card p-3 rounded-2xl space-y-2 shadow-inner">
             <div class="flex justify-between items-center">
                 <span class="text-[10px] text-slate-400 uppercase font-black tracking-wider">Toplam Bakiyeniz</span>
-                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">Adil & Şeffaf Sistem 🤝</span>
+                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">AdsGram Destekli 🤝</span>
             </div>
             <div class="flex items-baseline space-x-2">
                 <span id="balance" class="text-2xl font-black text-white tracking-tight">0.0000</span>
@@ -52,7 +52,7 @@
             </div>
             <div class="flex justify-between text-[10px] text-slate-400 font-semibold">
                 <span id="progress-text">0.0000 / 5,000 PEPE (0%)</span>
-                <span class="text-emerald-400 font-bold"><i class="fa-solid fa-shield-check mr-1"></i>Güvenli Mod</span>
+                <span class="text-emerald-400 font-bold"><i class="fa-solid fa-shield-check mr-1"></i>Adil Dağıtım</span>
             </div>
         </div>
     </header>
@@ -60,7 +60,7 @@
     <!-- ANA İÇERİK (SEKMELER) -->
     <main class="flex-1 overflow-y-auto p-4 pb-24 flex flex-col justify-start">
         
-        <!-- 1. SEKME: HOME (GÖREVLER & REKLAM İLE BİLET KAZANMA) -->
+        <!-- 1. SEKME: HOME (GÖREVLER) -->
         <div id="tab-home" class="tab-content flex-col space-y-3">
             <div class="flex space-x-4 border-b border-slate-800 pb-2">
                 <span class="text-xs font-black text-emerald-400 border-b-2 border-emerald-400 pb-1 cursor-pointer">🎁 Ücretsiz Görevler</span>
@@ -68,66 +68,48 @@
             </div>
 
             <div class="bg-slate-900/60 p-3 rounded-2xl border border-slate-800 text-xs text-slate-300 leading-relaxed">
-                💡 <b class="text-white">Bilgilendirme:</b> Reklam izleyerek hiçbir ücret ödemeden bilet kazanabilir ve çarkı çevirerek birikim yapabilirsiniz. Destekleriniz sistemi güçlendirir!
+                📢 <b class="text-white">Duyuru:</b> Reklam izleyerek bilet toplayabilir, dengeli çark mekanizmasıyla birikiminizi güvenle artırıp çekim yapabilirsiniz.
             </div>
 
-            <!-- Reklam Görevleri Listesi -->
             <div class="space-y-2.5">
                 <div class="glass-card p-3 rounded-2xl flex items-center justify-between border-slate-800">
                     <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-purple-600/20 text-purple-400 flex items-center justify-center font-black text-sm border border-purple-500/30 shadow">AG</div>
+                        <div class="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-black text-sm border border-emerald-500/30 shadow">AG</div>
                         <div>
-                            <div class="text-xs font-bold text-white">AdsGram Reklamı İzle</div>
-                            <div class="text-[10px] text-emerald-400 font-bold mt-0.5">+3 🎫 Bilet — <span id="ad1-count">0</span>/15 gün</div>
+                            <div class="text-xs font-bold text-white">AdsGram Partner Reklamı</div>
+                            <div class="text-[10px] text-emerald-400 font-bold mt-0.5">+2 🎫 Bilet — <span id="ad1-count">0</span>/10 gün</div>
                         </div>
                     </div>
-                    <button onclick="watchAdTask(3, 'ad1-count', 15)" class="bg-gradient-to-r from-purple-600 to-indigo-600 hover:opacity-90 text-white font-black px-4 py-2 rounded-xl text-xs shadow-lg cursor-pointer transition-all">İzle</button>
-                </div>
-
-                <div class="glass-card p-3 rounded-2xl flex items-center justify-between border-slate-800">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-emerald-600/20 text-emerald-400 flex items-center justify-center font-black text-sm border border-emerald-500/30 shadow">MT</div>
-                        <div>
-                            <div class="text-xs font-bold text-white">Monetag Reklamı İzle</div>
-                            <div class="text-[10px] text-emerald-400 font-bold mt-0.5">+3 🎫 Bilet — <span id="ad2-count">0</span>/15 gün</div>
-                        </div>
-                    </div>
-                    <button onclick="watchAdTask(3, 'ad2-count', 15)" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-black px-4 py-2 rounded-xl text-xs shadow-lg cursor-pointer transition-all">İzle</button>
-                </div>
-
-                <div class="glass-card p-3 rounded-2xl flex items-center justify-between border-slate-800">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-black text-sm border border-blue-500/30 shadow">TD</div>
-                        <div>
-                            <div class="text-xs font-bold text-white">TADS Partner Reklamı</div>
-                            <div class="text-[10px] text-emerald-400 font-bold mt-0.5">+3 🎫 Bilet — <span id="ad3-count">0</span>/10 gün</div>
-                        </div>
-                    </div>
-                    <button onclick="watchAdTask(3, 'ad3-count', 10)" class="bg-gradient-to-r from-blue-600 to-cyan-600 hover:opacity-90 text-white font-black px-4 py-2 rounded-xl text-xs shadow-lg cursor-pointer transition-all">İzle</button>
+                    <button onclick="watchAdTask(2, 'ad1-count', 10)" class="bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white font-black px-4 py-2 rounded-xl text-xs shadow-lg cursor-pointer transition-all">İzle</button>
                 </div>
             </div>
         </div>
 
-        <!-- 2. SEKME: SPIN (ÇARK SİSTEMİ) -->
+        <!-- 2. SEKME: SPIN (GELİŞMİŞ VE DENGELİ ÇARK) -->
         <div id="tab-spin" class="tab-content active flex-col items-center space-y-3.5">
             
             <div class="relative w-64 h-64 flex items-center justify-center my-1">
-                <div class="absolute -top-3 z-30 text-emerald-400 text-2xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                <!-- Üst Ok İşaretçisi -->
+                <div class="absolute -top-3 z-30 text-emerald-400 text-2xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                     <i class="fa-solid fa-caret-down"></i>
                 </div>
                 
-                <div id="fortune-wheel" class="w-full h-full rounded-full border-4 border-slate-700 shadow-2xl relative overflow-hidden flex items-center justify-center bg-slate-900 wheel-glow">
-                    <div class="absolute inset-0 rounded-full bg-[conic-gradient(#10b981_0deg_36deg,#06b6d4_36deg_72deg,#3b82f6_72deg_108deg,#8b5cf6_108deg_144deg,#ec4899_144deg_180deg,#f43f5e_180deg_216deg,#f97316_216deg_252deg,#eab308_252deg_288deg,#14b8a6_288deg_324deg,#10b981_324deg_360deg)] opacity-95"></div>
+                <!-- Muhteşem Görsel Efektli Çark -->
+                <div id="fortune-wheel" class="w-full h-full rounded-full border-4 border-slate-700 shadow-2xl relative overflow-hidden flex items-center justify-center bg-slate-900 active-wheel-glow">
+                    <!-- Renkli Dilimler -->
+                    <div class="absolute inset-0 rounded-full bg-[conic-gradient(#10b981_0deg_45deg,#06b6d4_45deg_90deg,#3b82f6_90deg_135deg,#64748b_135deg_180deg,#8b5cf6_180deg_225deg,#f43f5e_225deg_270deg,#eab308_270deg_315deg,#10b981_315deg_360deg)] opacity-95"></div>
                     
+                    <!-- Dilim Etiketleri -->
                     <div class="absolute inset-3 rounded-full border border-white/20 flex items-center justify-center text-[10px] font-black text-white pointer-events-none">
                         <div class="absolute top-2 text-emerald-200">🏆 1000 PEPE</div>
-                        <div class="absolute bottom-2 text-slate-100">50 PEPE</div>
+                        <div class="absolute bottom-2 text-slate-300">🔄 Boş</div>
                         <div class="absolute left-2 text-cyan-200">500 PEPE</div>
                         <div class="absolute right-2 text-amber-200">250 PEPE</div>
-                        <div class="absolute top-8 left-6 text-pink-200">+3 Tickets</div>
+                        <div class="absolute top-8 left-6 text-pink-200">50 PEPE</div>
                         <div class="absolute bottom-8 right-6 text-yellow-200">100 PEPE</div>
                     </div>
 
+                    <!-- Orta Merkez Buton Süsü -->
                     <div class="w-12 h-12 bg-slate-950 rounded-full border-4 border-emerald-500 z-20 shadow-2xl flex items-center justify-center text-emerald-400 text-sm">
                         <i class="fa-solid fa-slot-machine"></i>
                     </div>
@@ -136,7 +118,7 @@
 
             <div class="text-center">
                 <span id="ticket-count" class="text-sm font-black text-emerald-400 tracking-wide">0 Biletiniz Var</span>
-                <p class="text-[10px] text-slate-400 mt-0.5">Ücretsiz bilet toplamak için HOME sekmesini kullanabilirsiniz.</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">Çarkı çevirerek dengeli ödüller kazanın.</p>
             </div>
 
             <div class="w-full max-w-xs space-y-2">
@@ -149,36 +131,32 @@
             </div>
 
             <div class="w-full max-w-xs glass-card p-2.5 rounded-xl text-[10px] text-slate-300 flex justify-between items-center border border-slate-800">
-                <span>⭐ Topluluk Üyesi kazandı: <b class="text-emerald-400">1,000 PEPE</b></span>
+                <span>⭐ Topluluk Üyesi kazandı: <b class="text-emerald-400">250 PEPE</b></span>
                 <span class="text-slate-500">Az önce</span>
             </div>
         </div>
 
-        <!-- 3. SEKME: SHOP (İsteyen Destekçi / Esnek Seçenek) -->
+        <!-- 3. SEKME: SHOP -->
         <div id="tab-shop" class="tab-content flex-col space-y-3">
-            <h2 class="text-base font-black text-white">Destek & Paketler</h2>
-            <p class="text-xs text-slate-400 leading-relaxed">Zamanı kısıtlı olan ve sistemi desteklemek isteyen kullanıcılar için esnek paketler:</p>
-            <div class="glass-card p-3.5 rounded-2xl flex justify-between items-center border-slate-800">
-                <div>
-                    <div class="text-xs font-bold text-white">Destekçi Paketi (+10 Bilet)</div>
-                    <div class="text-[10px] text-emerald-400 font-bold mt-0.5">Alternatif Destek Seçeneği</div>
-                </div>
-                <button onclick="showModal('Bilgi', 'Bu alan isteğe bağlı alternatif destekler içindir. Reklam izleyerek tamamen ücretsiz de ilerleyebilirsiniz.', true)" class="bg-emerald-500 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow cursor-pointer">İncele</button>
+            <h2 class="text-base font-black text-white">Mağaza & Bilgi</h2>
+            <div class="glass-card p-3.5 rounded-2xl space-y-2 border-slate-800 text-xs text-slate-300">
+                <div class="font-bold text-white">Adil Kazanç Sistemi Nedir?</div>
+                <p>Sistemimiz tamamen reklam gelirlerinin ortak havuzda toplanmasıyla çalışır. Herhangi bir zorunlu yatırım yoktur, tamamen ücretsizdir.</p>
             </div>
         </div>
 
         <!-- 4. SEKME: INVITE -->
         <div id="tab-invite" class="tab-content flex-col space-y-3">
             <h2 class="text-base font-black text-white">Arkadaşını Davet Et</h2>
-            <p class="text-xs text-slate-400 leading-relaxed">Davet ettiğin her arkadaşın için ortak havuzdan **+5 Bilet** kazan!</p>
+            <p class="text-xs text-slate-400 leading-relaxed">Davet ettiğin her arkadaşın için **+3 Bilet** kazan!</p>
             <button onclick="showModal('Davet Linki', 'Özel referans linkiniz kopyalandı!', true)" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow cursor-pointer">Linki Kopyala</button>
         </div>
 
-        <!-- 5. SEKME: RANK (LİDERLİK) -->
+        <!-- 5. SEKME: RANK -->
         <div id="tab-rank" class="tab-content flex-col space-y-3">
             <h2 class="text-base font-black text-white">Liderlik Tablosu</h2>
             <div class="glass-card p-3 rounded-2xl space-y-2 text-xs border-slate-800">
-                <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800"><span class="text-emerald-400 font-bold">🥇 Topluluk Lideri</span><span class="text-white font-black">125,000 PEPE</span></div>
+                <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800"><span class="text-emerald-400 font-bold">🥇 Topluluk Lideri</span><span class="text-white font-black">48,500 PEPE</span></div>
                 <div class="flex justify-between items-center bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/30"><span class="text-emerald-400 font-bold">📍 Siz (Aktif Üye)</span><span id="rank-balance" class="text-emerald-400 font-black">0 PEPE</span></div>
             </div>
         </div>
@@ -238,7 +216,7 @@
     <script>
         let gameState = {
             balance: 0.00,
-            tickets: 2 // Başlangıç hediyesi olarak 2 bilet
+            tickets: 2
         };
 
         function switchTab(tabId) {
@@ -289,12 +267,13 @@
             countEl.innerText = currentCount + 1;
             gameState.tickets += amount;
             updateUI();
-            showModal("Tebrikler! 🎟️", `Reklam başarıyla izlendi ve hesabınıza +${amount} Bilet eklendi. Çark sekmesinden çevirebilirsiniz!`, true);
+            showModal("Tebrikler! 🎟️", `Reklam başarıyla izlendi ve hesabınıza +${amount} Bilet eklendi.`, true);
         }
 
+        // DENGELİ VE KONTROLLÜ ŞANS ALGORİTMASI
         function spinWheel() {
             if (gameState.tickets <= 0) {
-                showModal("Biletiniz Kalmadı", "Çevirim yapmak için HOME sekmesinden ücretsiz reklam izleyerek bilet kazanabilirsiniz.", false);
+                showModal("Biletiniz Kalmadı", "Çevirim yapmak için HOME sekmesinden reklam izleyerek bilet kazanabilirsiniz.", false);
                 return;
             }
 
@@ -302,16 +281,36 @@
             updateUI();
 
             let wheel = document.getElementById('fortune-wheel');
+            
+            // Rastgele olasılık hesaplama (Kullanıcının hemen devasa kazanmasını önleyen dengeli oranlar)
+            let rand = Math.random() * 100;
+            let won = 0;
+            
+            if (rand < 50) {
+                won = 50; // %50 ihtimalle küçük ödül
+            } else if (rand < 75) {
+                won = 100; // %25 ihtimalle 100 PEPE
+            } else if (rand < 90) {
+                won = 250; // %15 ihtimalle 250 PEPE
+            } else if (rand < 97) {
+                won = 500; // %7 ihtimalle 500 PEPE
+            } else {
+                won = 1000; // %3 ihtimalle büyük ikramiye
+            }
+
+            // Çarkı döndür (Görsel efekt)
             let randomDeg = Math.floor(Math.random() * 1440 + 2160);
             wheel.style.transform = `rotate(${randomDeg}deg)`;
 
             setTimeout(() => {
-                let prizes = [50, 100, 250, 500, 1000];
-                let won = prizes[Math.floor(Math.random() * prizes.length)];
-                gameState.balance += won;
+                if (won > 0) {
+                    gameState.balance += won;
+                    showModal("Tebrikler! 🎰", `Çarktan **${won} PEPE** kazandınız!`, true);
+                } else {
+                    showModal("Şansınızı Deneyin", "Bu çevirmede ödül çıkmadı, bir sonraki sefere bol şans!", false);
+                }
                 updateUI();
-                showModal("Ödül Kazandınız! 🎰", `Çarktan **${won} PEPE** kazandınız!`, true);
-            }, 4500);
+            }, 5000);
         }
 
         function requestWithdraw() {
@@ -327,7 +326,7 @@
                 return;
             }
             if (gameState.balance < amount) {
-                showModal("Yetersiz Bakiye", "Çekim için bakiyeniz yetersiz.", false);
+                showModal("Yetersiz Bakiye", "Çekim için bakiyeniz henüz yeterli değil. Reklam izleyerek ilerleyebilirsiniz.", false);
                 return;
             }
 
