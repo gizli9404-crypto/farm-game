@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Madencilik Botu</title>
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: #1e293b;
+            padding: 20px;
+            border-radius: 16px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        h1 { font-size: 24px; margin-bottom: 10px; }
+        .balance { font-size: 32px; color: #38bdf8; margin: 20px 0; font-weight: bold; }
+        .mine-btn {
+            background: linear-gradient(135deg, #38bdf8, #0284c7);
+            border: none;
+            color: white;
+            font-size: 20px;
+            padding: 20px 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(56, 189, 248, 0.4);
+            transition: transform 0.1s;
+            margin: 20px 0;
+        }
+        .mine-btn:active {
+            transform: scale(0.95);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>⛏️ Madencilik Simülasyonu</h1>
+        <div class="balance" id="balanceDisplay">0.00 MNT</div>
+        
+        <!-- Kazı Butonu -->
+        <button class="mine-btn" onclick="mineToken()">TAP</button>
+        
+        <p>Kazmak için dokun!</p>
+    </div>
+
+    <script>
+        let userId = "user_123"; // Telegram ID entegrasyonu buraya gelecek
+        let balance = 0;
+
+        // Tıklama sesi için basit bir Web Audio API "ping" sentezleyici (Harici dosya gerektirmez)
+        function playPingSound() {
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.08);
+            } catch (e) {
+                // Tarayıcı ses kısıtlamaları için yedek
+            }
+        }
+
+        function mineToken() {
+            balance += 1;
+            document.getElementById('balanceDisplay').innerText = balance.toFixed(2) + " MNT";
+            
+            // Ses efekti
+            playPingSound();
+
+            // Haptic (Titreşim) Desteği (Telefonlarda titrer)
+            if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+            } else if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+        }
+    </script>
+</body>
+</html>
