@@ -3,20 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HertzCore Bot & Web3 Mining App</title>
+    <title>HertzCore Genesis | Web3 Mining Tycoon</title>
     
-    <!-- 1. REKLAM AĞI ONAY VE DOĞRULAMA KODLARI (AdSense / Adsterra vb.) -->
-    <!-- "ca-pub-XXXXXXXXXXXXXXXX" yerine kendi yayıncı kimliğini yazabilirsin -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script>
-    <meta name="google-adsense-account" content="ca-pub-XXXXXXXXXXXXXXXX">
-    
-    <!-- 2. TELEGRAM WEB APP SDK -->
+    <!-- Telegram Web App SDK -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- AdsGram SDK (AdsGram üzerinden reklam göstermek ve onay almak için zorunludur) -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
 
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { box-sizing: border-box; user-select: none; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body {
-            background: #0b0e14; color: #ffffff; margin: 0; padding: 20px;
+            background: #0b0e14; color: #ffffff; margin: 0; padding: 16px;
             display: flex; flex-direction: column; align-items: center; min-height: 100vh;
         }
         .container {
@@ -24,56 +22,72 @@
             border: 1px solid #232d3f; border-radius: 16px; padding: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.5); text-align: center;
         }
-        h2 { color: #00ff88; margin-bottom: 10px; font-size: 20px; }
-        p { color: #8a99ad; font-size: 13px; line-height: 1.5; }
+        h2 { color: #d4a017; margin-bottom: 10px; font-size: 18px; }
+        p { color: #8a99ad; font-size: 12px; line-height: 1.5; }
         .stats-box {
             background: #0b0e14; border: 1px solid #232d3f; border-radius: 12px;
-            padding: 15px; margin: 20px 0; font-size: 14px;
+            padding: 12px; margin: 15px 0; font-size: 13px; text-align: left;
         }
         .btn {
-            background: #00ff88; color: #0b0e14; border: none; padding: 12px 20px;
+            background: #d4a017; color: #0b0e14; border: none; padding: 12px 20px;
             border-radius: 10px; font-weight: bold; font-size: 14px; cursor: pointer;
-            width: 100%; transition: 0.2s;
+            width: 100%; transition: 0.2s; margin-top: 10px;
         }
-        .btn:active { transform: scale(0.97); background: #00cc6a; }
-        .footer-links { margin-top: 20px; font-size: 11px; }
+        .btn:active { transform: scale(0.97); opacity: 0.8; }
+        .footer-links { margin-top: 15px; font-size: 11px; }
         .footer-links a { color: #8a99ad; text-decoration: none; margin: 0 5px; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h2>HertzCore Bot Paneli</h2>
-        <p>Reklam ağı inceleme botları için optimize edilmiş, onay ve yönlendirme destekli Telegram Web App arayüzü.</p>
+        <h2>HertzCore Madencilik Paneli</h2>
+        <p>Uygulamanın temel özellikleri tamamen ücretsiz çalışır. Bonus enerji kazanmak için aşağıdan ödüllü reklam izleyebilirsiniz.</p>
         
         <div class="stats-box">
-            <div>Bot Durumu: <span style="color: #00ff88;">Çevrim içi (Aktif)</span></div>
-            <div style="margin-top: 8px;">Kullanıcı ID: <span id="userId" style="color: #ffaa00;">Algılanıyor...</span></div>
+            <div>Telegram ID: <span id="userId" style="color: #00ff88;">Yükleniyor...</span></div>
+            <div style="margin-top: 6px;">Durum: <span style="color: #00ff88;">Aktif (Modere Edilebilir)</span></div>
         </div>
 
-        <button class="btn" onclick="triggerBotAction()">Madencilik Verisini Senkronize Et</button>
+        <!-- Temel Fonksiyon (Reklam zorunlu değil) -->
+        <button class="btn" onclick="standardMining()" style="background: #232d3f; color: #fff;">Normal Madencilik Yap</button>
+
+        <!-- Ödüllü Reklam Alanı (AdsGram Kuralına Uygun: Açıkça belirtilmiş bonus) -->
+        <button class="btn" onclick="showRewardedAd()">💎 Bonus Enerji İçin Reklam İzle</button>
 
         <div class="footer-links">
-            <a href="/gizlilik.html">Gizlilik Politikası</a> | 
-            <a href="/iletisim.html">İletişim</a>
+            <a href="#">Gizlilik Politikası</a> | 
+            <a href="#">Lider Tablosu</a>
         </div>
     </div>
 
-    <!-- 3. OTOMATİK BOT VE REKLAM DOĞRULAMA SCRİPTİ -->
     <script>
-        // Telegram WebApp entegrasyonu
+        // Telegram WebApp başlatma
         const tg = window.Telegram.WebApp;
         tg.expand();
 
-        // Kullanıcı Telegram üzerinden açtıysa ID'sini ekrana yazar, bot doğrulaması için esneklik sağlar
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             document.getElementById('userId').innerText = tg.initDataUnsafe.user.id;
         } else {
-            document.getElementById('userId').innerText = "Web Tarayıcı Modu (Bot İncelemede)";
+            document.getElementById('userId').innerText = "Web Test Modu";
         }
 
-        function triggerBotAction() {
-            alert("Bot verileri başarıyla güncellendi ve senkronize edildi!");
+        // AdsGram Rewarded (Ödüllü) Reklam Gösterme Fonksiyonu
+        // 'YOUR_BLOCK_ID' yerine AdsGram panelinden aldığın kendi Block ID'ni yazmalısın.
+        const adController = window.Adsgram.init({ blockId: "YOUR_BLOCK_ID" });
+
+        function showRewardedAd() {
+            adController.show().then((result) => {
+                // Reklam başarıyla izlendiğinde verilecek ödül
+                alert("Tebrikler! Bonus enerjiniz hesabınıza eklendi.");
+            }).catch((err) => {
+                // Reklam kapatıldı veya yüklenemedi
+                console.log("Reklam gösterilemedi:", err);
+            });
+        }
+
+        function standardMining() {
+            alert("Normal madencilik işlemi gerçekleştirildi.");
         }
     </script>
 </body>
