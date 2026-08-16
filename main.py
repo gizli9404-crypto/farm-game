@@ -4,7 +4,7 @@ from flask import Flask, send_from_directory
 import telebot
 
 # --- TELEGRAM BOT AYARLARI ---
-TOKEN = "8854910303:AAFr2j9I06RKv8BJROg4DZd4qud3LFM"
+TOKEN = "8854910303:AAH1tF_zCo_B2RKBdE8HQs9apvtxF_rM5TI"
 bot = telebot.TeleBot(TOKEN)
 
 @bot.message_handler(commands=['start'])
