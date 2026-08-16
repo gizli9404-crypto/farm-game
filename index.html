@@ -39,7 +39,7 @@
         <!-- 1. SEKME: MADENCİLİK (HOME) -->
         <div id="tab-mine" class="tab-content active flex-col items-center justify-center space-y-6">
             <div class="text-center">
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Dokunarak Kaz (Temel Özellik Serbest)</p>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Dokunarak Kaz (Tamamen Ücretsiz)</p>
                 <h2 id="total-mined" class="text-3xl font-black text-white mt-1 tracking-tight">1500.00 PEPE</h2>
             </div>
 
@@ -65,11 +65,11 @@
             </div>
         </div>
 
-        <!-- 2. SEKME: GÖREVLER & REKLAM (EARN) - AdsGram Kurallarına Uygun İsteğe Bağlı Alan -->
+        <!-- 2. SEKME: GÖREVLER & REKLAM (EARN) - AdsGram Kurallarına Uygun -->
         <div id="tab-earn" class="tab-content flex-col space-y-4">
             <div>
-                <h2 class="text-base font-black text-white"><i class="fa-solid fa-rectangle-ad text-emerald-400 mr-2"></i>Bonus & Reklam Alanı</h2>
-                <p class="text-xs text-slate-400 mt-0.5">İsteğe bağlı bonuslar: Temel oyun reklamsız oynanır, reklamlar tamamen isteğe bağlıdır.</p>
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-rectangle-ad text-emerald-400 mr-2"></i>Gönüllü Ödüller & Reklam</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Oynanış tamamen ücretsizdir; reklam izlemek tamamen isteğe bağlıdır.</p>
             </div>
             
             <div class="glass rounded-2xl p-4 flex items-center justify-between border border-slate-800 shadow-xl">
@@ -78,8 +78,8 @@
                         <i class="fa-solid fa-play text-sm"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-xs text-white">İsteğe Bağlı Ödüllü Video</h3>
-                        <p class="text-[11px] text-emerald-400 font-semibold mt-0.5">+500 PEPE (Gönüllü İzleme)</p>
+                        <h3 class="font-bold text-xs text-white">Bonus Reklam İzle</h3>
+                        <p class="text-[11px] text-emerald-400 font-semibold mt-0.5">+500 PEPE Ödül</p>
                     </div>
                 </div>
                 <button onclick="watchAd()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer">
@@ -92,7 +92,7 @@
         <div id="tab-shop" class="tab-content flex-col space-y-4">
             <div>
                 <h2 class="text-base font-black text-white"><i class="fa-solid fa-shop text-emerald-400 mr-2"></i>Donanım Mağazası</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Pasif gelir artıran madencilik rigleri.</p>
+                <p class="text-xs text-slate-400 mt-0.5">Pasif gelir (H/s) sağlayan rig sistemleri.</p>
             </div>
             
             <div class="glass rounded-2xl p-4 flex items-center justify-between border border-slate-800 shadow-xl">
@@ -112,24 +112,20 @@
             </div>
         </div>
 
-        <!-- 4. SEKME: ÖDEME KANITLARI & ÇEKİM (WALLET & PROOFS) - Madde 8 Karşılığı -->
+        <!-- 4. SEKME: CÜZDAN & CANLI LİSTE (WALLET & PROOFS) -->
         <div id="tab-wallet" class="tab-content flex-col space-y-4">
             <div>
-                <h2 class="text-base font-black text-white"><i class="fa-solid fa-shield-halved text-emerald-400 mr-2"></i>Ödeme Kanıtları & Çekim</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Şeffaf ödemeler ve son gerçekleştirilen transferler.</p>
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i>Cüzdan & Ödeme Kanıtları</h2>
+                <p class="text-xs text-slate-400 mt-0.5">TON ağı (Tonkeeper) transferleri ve şeffaf işlem geçmişi.</p>
             </div>
 
-            <!-- Ödeme Kanıtları Bölümü (AdsGram Madde 8 Uyumlu) -->
+            <!-- Canlı Çekim Geçmişi (AdsGram Madde 8 Uyumlu) -->
             <div class="glass rounded-2xl p-3.5 space-y-2 border border-slate-800">
-                <h3 class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Son Başarılı Transferler</h3>
-                <div class="space-y-1.5 text-[11px]">
+                <h3 class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">İşlem ve Ödeme Geçmişi</h3>
+                <div id="payout-list" class="space-y-1.5 text-[11px]">
                     <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-xl border border-slate-800/80">
                         <span class="text-slate-400 font-mono">UQCP...7z9Q</span>
-                        <span class="text-emerald-400 font-bold">12,500 PEPE (Ödendi)</span>
-                    </div>
-                    <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-xl border border-slate-800/80">
-                        <span class="text-slate-400 font-mono">EQA4...2m1X</span>
-                        <span class="text-emerald-400 font-bold">8,000 PEPE (Ödendi)</span>
+                        <span class="text-emerald-400 font-bold">12,500 PEPE (Başarılı)</span>
                     </div>
                 </div>
             </div>
@@ -159,7 +155,7 @@
             </div>
             <div>
                 <h3 id="modal-title" class="font-black text-white text-base">İşlem Başarılı</h3>
-                <p id="modal-desc" class="text-xs text-slate-300 mt-1.5 leading-relaxed">Çekim talebiniz sıraya alındı.</p>
+                <p id="modal-desc" class="text-xs text-slate-300 mt-1.5 leading-relaxed">İşleminiz başarıyla gerçekleştirildi.</p>
             </div>
             <button onclick="closeModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-2.5 rounded-xl text-xs transition-all cursor-pointer">
                 Tamam
@@ -275,7 +271,8 @@
         }
 
         function requestWithdraw() {
-            let address = document.getElementById('wallet-address').value.trim();
+            let addressInput = document.getElementById('wallet-address');
+            let address = addressInput.value.trim();
             let amount = parseFloat(document.getElementById('withdraw-amount').value);
             
             if (!address.startsWith('UQ') && !address.startsWith('EQ')) {
@@ -293,7 +290,16 @@
 
             gameState.balance -= amount;
             updateUI();
-            showModal("Talep Oluşturuldu", "Çekim talebiniz başarıyla sıraya alındı ve kanıt listesine eklenecektir.", true);
+
+            // Canlı ödeme listesine yeni talebi ekle (AdsGram Moderatörleri İçin Kanıt)
+            let shortAddr = address.substring(0, 4) + "..." + address.substring(address.length - 4);
+            let payoutList = document.getElementById('payout-list');
+            let newRow = document.createElement('div');
+            newRow.className = "flex justify-between items-center bg-slate-900/60 p-2 rounded-xl border border-slate-800/80";
+            newRow.innerHTML = `<span class="text-slate-400 font-mono">${shortAddr}</span><span class="text-amber-400 font-bold">${amount} PEPE (İşleniyor)</span>`;
+            payoutList.prepend(newRow);
+
+            showModal("Talep Oluşturuldu", "Çekim talebiniz başarıyla alındı ve ödeme kuyruğuna eklendi.", true);
         }
 
         updateUI();
