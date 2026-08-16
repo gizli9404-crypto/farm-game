@@ -1,67 +1,63 @@
-import os
-import threading
 from flask import Flask, send_from_directory, request, jsonify
-import telebot
-from telebot.types import InlineKeyboardMarkup, InlineKeyboardButton, WebAppInfo
+import os
 
-# --- AYARLAR ---
-TOKEN = "8854910303:AAFr2j9I06RKv8BJROg4DZd4qud3LFM"
-ADMIN_ID = "8256539395" # Senin Telegram ID'n
-CHANNEL_ID = "@sanal_miner_duyuru" # Kanalın kullanıcı adı
-bot = telebot.TeleBot(TOKEN)
-app = Flask(__name__)
+app = Flask(__name__, static_folder='public')
 
-# --- TELEGRAM BOT MANTIĞI ---
-@bot.message_handler(commands=['start'])
-def send_welcome(message):
-    markup = InlineKeyboardMarkup()
-    web_app = WebAppInfo(url="https://miner-production-32ee.up.railway.app/")
-    markup.add(InlineKeyboardButton("🚀 Sanal Miner App Aç", web_app=web_app))
-    bot.reply_to(message, "Hoş geldin! Madenciliğe başlamak için uygulamayı aç:", reply_markup=markup)
+# Çekim taleplerini geçici olarak hafızada tutmak için liste (İleride veritabanına bağlayabilirsin)
+withdraw_requests = []
 
-# Onaylama/Reddetme Butonları (Callback)
-@bot.callback_query_handler(func=lambda call: True)
-def callback_query(call):
-    if call.data.startswith("approve_"):
-        _, user_id, amount = call.data.split("_")
-        bot.send_message(call.message.chat.id, f"✅ Çekim onaylandı! Kullanıcıya bildirildi.")
-        # Kanala ödeme kanıtı gönder
-        bot.send_message(CHANNEL_ID, f"🎉 Ödeme Yapıldı!\n\nKullanıcı: {user_id}\nMiktar: {amount} PEPE\nDurum: ✅ Ödendi")
-        bot.send_message(user_id, f"✅ Tebrikler! {amount} PEPE çekim talebin onaylandı ve hesabına gönderildi.")
-
-def run_telegram_bot():
-    print("Telegram bot başlatılıyor...")
-    bot.infinity_polling(skip_pending=True)
-
-# --- FLASK WEB SUNUCUSU ---
+# Ana sayfa (Mini uygulama index.html'i açar)
 @app.route('/')
-def index():
-    return send_from_directory('public', 'index.html')
+def serve_index():
+    return send_from_directory(app.static_folder, 'index.html')
 
-@app.route('/<path:path>')
-def serve_static(path):
-    return send_from_directory('public', path)
+# Admin Paneli Sayfası (public/admin.html dosyasını açar)
+@app.route('/admin')
+def serve_admin():
+    return send_from_directory(app.static_folder, 'admin.html')
 
-# Çekim talebi API'si
+# Çekim talebi alma API'si (Mini uygulamadan buraya istek atılır)
 @app.route('/api/withdraw', methods=['POST'])
 def withdraw():
-    data = request.json
-    user_id = data.get('user_id')
-    amount = data.get('amount')
-    wallet = data.get('wallet')
+    try:
+        data = request.json
+        user_id = data.get('user_id')
+        amount = data.get('amount')
+        wallet = data.get('wallet')
+        
+        # Gelen talebi listeye kaydedelim
+        withdraw_request_item = {
+            "user_id": user_id,
+            "amount": amount,
+            "wallet": wallet,
+            "status": "Beklemede"
+        }
+        withdraw_requests.append(withdraw_request_item)
+        
+        print(f"Yeni Çekim Talebi: User ID: {user_id}, Tutar: {amount}, Cüzdan: {wallet}")
+        return jsonify({"status": "success", "message": "Çekim talebi alındı."}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
 
-    # Admin'e onay için gönder
-    markup = InlineKeyboardMarkup()
-    markup.add(InlineKeyboardButton("✅ Onayla", callback_data=f"approve_{user_id}_{amount}"))
+# Admin Paneli için çekim taleplerini listeleyen gizli API
+@app.route('/api/admin/withdrawals', methods=['GET'])
+def get_withdrawals():
+    # Güvenlik için basit bir şifre kontrolü (?secret=SizinSifreniz)
+    secret = request.args.get('secret')
     
-    bot.send_message(ADMIN_ID, f"🔔 YENİ ÇEKİM TALEBİ\n\nKullanıcı ID: {user_id}\nMiktar: {amount} PEPE\nCüzdan: {wallet}", reply_markup=markup)
-    return jsonify({"status": "success"})
+    # Buradaki şifreyi kendi belirleyeceğin gizli bir kelimeyle değiştirebilirsin
+    if secret != "SizinGucluSifreniz123":
+        return jsonify({"error": "Yetkisiz erişim! Hatalı şifre."}), 403
+        
+    return jsonify(withdraw_requests), 200
 
-# Botu arka planda başlat
-if __name__ == "__main__":
-    bot_thread = threading.Thread(target=run_telegram_bot)
-    bot_thread.daemon = True
-    bot_thread.start()
-    
-    port = int(os.environ.get("PORT", 8080))
-    app.run(host="0.0.0.0", port=port)
+# Statik dosyalar için genel yönlendirici
+@app.route('/<path:path>')
+def serve_static(path):
+    if os.path.exists(os.path.join(app.static_folder, path)):
+        return send_from_directory(app.static_folder, path)
+    return send_from_directory(app.static_folder, 'index.html')
+
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
