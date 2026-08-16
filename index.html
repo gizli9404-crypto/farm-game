@@ -3,59 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Web3 Crypto Miner Tycoon</title>
+    <title>Sanal Miner Pro App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { background-color: #0f172a; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
-        .glow { box-shadow: 0 0 25px rgba(34, 197, 94, 0.2); }
         .tab-content { display: none; }
-        .tab-content.active { display: block; }
+        .tab-content.active { display: flex; }
     </style>
 </head>
 <body class="flex flex-col h-screen justify-between overflow-hidden">
 
     <!-- ÜST BİLGİ (HEADER) -->
-    <header class="flex justify-between items-center p-4 bg-slate-900/80 border-b border-slate-800 backdrop-blur">
+    <header class="flex justify-between items-center p-4 bg-slate-900 border-b border-slate-800">
         <div class="flex items-center space-x-2">
             <div class="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold border border-emerald-500/40">
-                <i class="fa-solid.fa-pickaxe"></i>⛏️
+                <i class="fa-solid fa-microchip"></i>
             </div>
             <div>
-                <h1 class="text-xs text-slate-400">Rigs Gücü</h1>
-                <p id="hashrate" class="text-sm font-bold text-emerald-400">0.00 H/s</p>
+                <h1 class="text-[10px] text-slate-400 uppercase">Rigs Gücü</h1>
+                <p id="hashrate" class="text-xs font-bold text-emerald-400">0.0 H/s</p>
             </div>
         </div>
-        <div class="bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700 flex items-center space-x-2">
-            <span class="text-amber-400 font-bold" id="balance">0.00</span>
+        <div class="bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 flex items-center space-x-1.5">
+            <span class="text-emerald-400 font-bold text-sm" id="balance">0.00</span>
             <span class="text-xs text-slate-300 font-semibold">PEPE</span>
         </div>
     </header>
 
     <!-- ANA İÇERİK (SEKMELER) -->
-    <main class="flex-1 overflow-y-auto p-4 pb-20">
+    <main class="flex-1 overflow-y-auto p-4 pb-20 flex flex-col justify-center">
         
         <!-- 1. SEKME: MADENCİLİK (HOME) -->
-        <div id="tab-mine" class="tab-content active flex flex-col items-center justify-center h-full space-y-6">
+        <div id="tab-mine" class="tab-content active flex-col items-center justify-center space-y-6">
             <div class="text-center">
-                <p class="text-xs text-slate-400 uppercase tracking-widest">Dokunarak Kaz</p>
-                <h2 id="total-mined" class="text-3xl font-black text-white mt-1">0.0000 PEPE</h2>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Dokunarak Kaz</p>
+                <h2 id="total-mined" class="text-3xl font-black text-white mt-1">0.00 PEPE</h2>
             </div>
 
-            <!-- Tıklama Butonu (Rig Görseli) -->
+            <!-- Tıklama Butonu -->
             <div class="relative">
                 <div class="absolute inset-0 bg-emerald-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
-                <button id="mine-btn" class="relative w-48 h-48 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-emerald-500/60 flex flex-col items-center justify-center shadow-2xl active:scale-95 transition-transform">
-                    <i class="fa-solid.fa-microchip text-5xl text-emerald-400 mb-2"></i>
-                    <span class="text-xs font-bold text-slate-300">GPU MINING</span>
+                <button id="mine-btn" class="relative w-44 h-44 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-emerald-500/60 flex flex-col items-center justify-center shadow-2xl active:scale-95 transition-transform cursor-pointer">
+                    <i class="fa-solid fa-hammer text-4xl text-emerald-400 mb-2"></i>
+                    <span class="text-xs font-bold text-slate-200">GPU MINING</span>
                     <span id="click-power" class="text-[10px] text-emerald-400 mt-1">+1.0 PEPE / Tık</span>
                 </button>
             </div>
 
             <!-- Enerji Barı -->
             <div class="w-full max-w-xs bg-slate-800 rounded-full p-1 border border-slate-700">
-                <div id="energy-bar" class="bg-gradient-to-r from-emerald-600 to-emerald-400 h-3 rounded-full transition-all duration-300" style="width: 100%;"></div>
+                <div id="energy-bar" class="bg-gradient-to-r from-emerald-600 to-emerald-400 h-2.5 rounded-full transition-all duration-200" style="width: 100%;"></div>
                 <div class="flex justify-between text-[10px] text-slate-400 px-1 mt-1">
                     <span>Enerji</span>
                     <span id="energy-text">1000 / 1000</span>
@@ -64,52 +63,51 @@
         </div>
 
         <!-- 2. SEKME: KAZAN & REKLAM (EARN) -->
-        <div id="tab-earn" class="tab-content space-y-4">
-            <h2 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-rectangle-ad text-emerald-400 mr-2"></i>Reklam & Görevler</h2>
-            <p class="text-xs text-slate-400">Reklam ağları onaylı ödüllü video izleme sistemi. Reklam izleyerek anında PEPE kazan ve maden gücünü artır.</p>
+        <div id="tab-earn" class="tab-content flex-col space-y-4">
+            <h2 class="text-md font-bold text-white"><i class="fa-solid fa-rectangle-ad text-emerald-400 mr-2"></i>Reklam & Görevler</h2>
+            <p class="text-xs text-slate-400">Reklam ağları onaylı ödüllü video izleme sistemi. Reklam izleyerek anında PEPE kazan.</p>
             
-            <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-4 flex items-center justify-between">
+            <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-sm text-white">Ödüllü Video İzle</h3>
                     <p class="text-xs text-emerald-400 mt-0.5">+500 PEPE Ödül</p>
                 </div>
-                <button onclick="watchAd()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs transition-colors">
+                <button onclick="watchAd()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs transition-colors cursor-pointer">
                     İzle & Kazan
                 </button>
             </div>
         </div>
 
-        <!-- 3. SEKME: MAĞAZA / YÜKSELTMELER (SHOP) -->
-        <div id="tab-shop" class="tab-content space-y-3">
-            <h2 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-shop text-emerald-400 mr-2"></i>Donanım Yükseltmeleri</h2>
+        <!-- 3. SEKME: MAĞAZA (SHOP) -->
+        <div id="tab-shop" class="tab-content flex-col space-y-3">
+            <h2 class="text-md font-bold text-white"><i class="fa-solid fa-shop text-emerald-400 mr-2"></i>Donanım Yükseltmeleri</h2>
             
-            <!-- Rig Kartı 1 -->
-            <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-3 flex items-center justify-between">
+            <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-sm text-white">ASUS RX 470 Rig</h3>
-                    <p class="text-xs text-slate-400">+5 H/s Pasif Gelir</p>
+                    <p class="text-xs text-slate-400">+5.0 H/s Pasif Gelir</p>
                     <p class="text-xs text-emerald-400 font-semibold mt-1">Maliyet: <span id="rig1-cost">100</span> PEPE</p>
                 </div>
-                <button onclick="buyRig(1)" class="bg-slate-700 hover:bg-emerald-500 hover:text-slate-950 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors">
+                <button onclick="buyRig()" class="bg-slate-700 hover:bg-emerald-500 hover:text-slate-950 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors cursor-pointer">
                     Satın Al
                 </button>
             </div>
         </div>
 
-        <!-- 4. SEKME: CÜZDAN & ÇEKİM (WALLET) -->
-        <div id="tab-wallet" class="tab-content space-y-4">
-            <h2 class="text-lg font-bold text-white mb-2"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i>Kripto Çekim Merkezi</h2>
-            <div class="bg-slate-800/60 border border-slate-700/80 rounded-xl p-4 space-y-3">
-                <p class="text-xs text-slate-300">Kazandığın PEPE'leri doğrudan TON ağındaki cüzdanına (Tonkeeper vb.) komisyonsuz çekebilirsin.</p>
+        <!-- 4. SEKME: CÜZDAN (WALLET) -->
+        <div id="tab-wallet" class="tab-content flex-col space-y-4">
+            <h2 class="text-md font-bold text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i>Kripto Çekim Merkezi</h2>
+            <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 space-y-3">
+                <p class="text-xs text-slate-300">Kazandığın PEPE'leri TON ağındaki cüzdanına (Tonkeeper vb.) komisyonsuz çek.</p>
                 <div>
-                    <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Cüzdan Adresi (TON Ağ)</label>
+                    <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Cüzdan Adresi (TON Ağı)</label>
                     <input type="text" id="wallet-address" placeholder="UQ..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <div>
-                    <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Çekilecek Miktar (Min: 5000 PEPE)</label>
+                    <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Miktar (Min: 5000 PEPE)</label>
                     <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
                 </div>
-                <button onclick="requestWithdraw()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-lg text-xs transition-colors">
+                <button onclick="requestWithdraw()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-lg text-xs transition-colors cursor-pointer">
                     Çekim Talebi Oluştur
                 </button>
             </div>
@@ -118,37 +116,34 @@
     </main>
 
     <!-- ALT NAVİGASYON ÇUBUĞU -->
-    <nav class="absolute bottom-0 left-0 right-0 bg-slate-900/90 border-t border-slate-800 flex justify-around p-3 backdrop-blur">
-        <button onclick="switchTab('mine')" class="nav-btn text-emerald-400 flex flex-col items-center space-y-1" data-target="mine">
-            <i class="fa-solid.fa-hammer text-lg"></i>
+    <nav class="absolute bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 flex justify-around p-3 z-50">
+        <button onclick="switchTab('mine')" class="nav-btn text-emerald-400 flex flex-col items-center space-y-1 cursor-pointer" data-target="mine">
+            <i class="fa-solid fa-hammer text-base"></i>
             <span class="text-[10px]">Madenci</span>
         </button>
-        <button onclick="switchTab('earn')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1" data-target="earn">
-            <i class="fa-solid fa-rectangle-ad text-lg"></i>
+        <button onclick="switchTab('earn')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer" data-target="earn">
+            <i class="fa-solid fa-rectangle-ad text-base"></i>
             <span class="text-[10px]">Kazan</span>
         </button>
-        <button onclick="switchTab('shop')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1" data-target="shop">
-            <i class="fa-solid fa-shop text-lg"></i>
+        <button onclick="switchTab('shop')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer" data-target="shop">
+            <i class="fa-solid fa-shop text-base"></i>
             <span class="text-[10px]">Mağaza</span>
         </button>
-        <button onclick="switchTab('wallet')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1" data-target="wallet">
-            <i class="fa-solid fa-wallet text-lg"></i>
+        <button onclick="switchTab('wallet')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer" data-target="wallet">
+            <i class="fa-solid fa-wallet text-base"></i>
             <span class="text-[10px]">Cüzdan</span>
         </button>
     </nav>
 
     <script>
-        // Oyun Durumu
         let gameState = {
-            balance: 1000.0,
+            balance: 1500.0,
             energy: 1000,
             maxEnergy: 1000,
-            clickPower: 1,
-            hashrate: 0.0,
-            rig1Count: 0
+            clickPower: 1.0,
+            hashrate: 0.0
         };
 
-        // Sekme Değiştirme Mantığı
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
@@ -163,7 +158,6 @@
             });
         }
 
-        // Tıklama ile Madencilik
         document.getElementById('mine-btn').addEventListener('click', () => {
             if (gameState.energy >= 10) {
                 gameState.energy -= 10;
@@ -172,10 +166,9 @@
             }
         });
 
-        // Pasif Gelir ve Enerji Yenileme Döngüsü (1 Saniyede Bir)
         setInterval(() => {
             if (gameState.hashrate > 0) {
-                gameState.balance += gameState.hashrate / 10; // Her 100ms veya saniyelik parça
+                gameState.balance += gameState.hashrate / 10;
             }
             if (gameState.energy < gameState.maxEnergy) {
                 gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + 5);
@@ -185,56 +178,53 @@
 
         function updateUI() {
             document.getElementById('balance').innerText = gameState.balance.toFixed(2);
-            document.getElementById('total-mined.innerText')?.... // Güvenli güncelleme
+            document.getElementById('total-mined').innerText = gameState.balance.toFixed(2) + " PEPE";
             document.getElementById('energy-bar').style.width = (gameState.energy / gameState.maxEnergy) * 100 + '%';
-            document.getElementById('energy-text').innerText = `${gameState.energy} / ${gameState.maxEnergy}`;
+            document.getElementById('energy-text').innerText = `${Math.floor(gameState.energy)} / ${gameState.maxEnergy}`;
             document.getElementById('hashrate').innerText = gameState.hashrate.toFixed(1) + ' H/s';
         }
 
-        // Reklam İzleme Simülasyonu (AdsGram SDK Entegrasyon Alanı)
         function watchAd() {
-            // Gerçek projede burada AdsGram SDK tetiklenir: AdsGram.show().then(...)
-            alert("Reklam simülasyonu: 500 PEPE hesabınıza eklendi!");
             gameState.balance += 500;
             updateUI();
+            alert("Reklam başarıyla izlendi: +500 PEPE eklendi!");
         }
 
-        // Rig Satın Alma
-        function buyRig(id) {
+        function buyRig() {
             let cost = 100;
             if (gameState.balance >= cost) {
                 gameState.balance -= cost;
                 gameState.hashrate += 5.0;
-                gameState.rig1Count++;
                 updateUI();
-                alert("Rig başarıyla kuruldu! Pasif kazancınız arttı.");
+                alert("Rig başarıyla kuruldu! Pasif kazanç aktif.");
             } else {
                 alert("Yetersiz PEPE bakiyesi!");
             }
         }
 
-        // Çekim Talebi
         function requestWithdraw() {
             let address = document.getElementById('wallet-address').value;
             let amount = parseFloat(document.getElementById('withdraw-amount').value);
             
             if (!address.startsWith('UQ') && !address.startsWith('EQ')) {
-                alert("Lütfen geçerli bir TON cüzdan adresi (UQ... veya EQ...) girin!");
+                alert("Geçersiz TON adresi! 'UQ' veya 'EQ' ile başlamalı.");
                 return;
             }
             if (amount < 5000) {
-                alert("Minimum çekim miktarı 5000 PEPE'dir!");
+                alert("Minimum çekim 5000 PEPE'dir!");
                 return;
             }
             if (gameState.balance < amount) {
-                alert("Yetersiz bakiye!");
+                alert("Bakiyeniz bu tutar için yetersiz!");
                 return;
             }
 
             gameState.balance -= amount;
             updateUI();
-            alert("Çekim talebiniz başarıyla alındı! Tonkeeper cüzdanınıza transfer sırasına eklendi.");
+            alert("Çekim talebiniz sıraya alındı. Tonkeeper cüzdanınıza gönderilecektir.");
         }
+
+        updateUI();
     </script>
 </body>
 </html>
