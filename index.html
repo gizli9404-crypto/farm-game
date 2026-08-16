@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Sanal Miner Pro App - Sürdürülebilir Ekonomi</title>
+    <title>Sanal Miner Pro App</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -16,7 +16,7 @@
 </head>
 <body class="flex flex-col h-screen justify-between overflow-hidden">
 
-    <!-- ÜST BİLGİ (HEADER) & EKONOMİ DURUMU -->
+    <!-- ÜST BİLGİ (HEADER) -->
     <header class="flex justify-between items-center p-3 glass border-b border-slate-800 z-20">
         <div class="flex items-center space-x-2">
             <div class="w-9 h-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold border border-emerald-500/30">
@@ -24,11 +24,11 @@
             </div>
             <div>
                 <h1 class="text-[9px] text-slate-400 uppercase tracking-wider font-semibold">Reklam Havuz Bütçesi</h1>
-                <p id="ad-pool" class="text-xs font-black text-amber-400">$12.50 USD</p>
+                <p id="ad-pool" class="text-xs font-black text-amber-400">$12.55 USD</p>
             </div>
         </div>
         <div class="glass px-3 py-1.5 rounded-full flex items-center space-x-1.5 border border-slate-700/60 shadow-inner">
-            <span class="text-emerald-400 font-black text-xs" id="balance">1500.00</span>
+            <span class="text-emerald-400 font-black text-xs" id="balance">2108.00</span>
             <span class="text-[10px] text-slate-300 font-bold">PEPE</span>
         </div>
     </header>
@@ -36,84 +36,111 @@
     <!-- ANA İÇERİK (SEKMELER) -->
     <main class="flex-1 overflow-y-auto p-4 pb-24 flex flex-col justify-center">
         
-        <!-- 1. SEKME: OTOMATİK KAZIM (HOME) - Reklamsız & Kesintisiz -->
-        <div id="tab-mine" class="tab-content active flex-col items-center justify-center space-y-5">
+        <!-- 1. SEKME: OTO-BOT (HOME) -->
+        <div id="tab-mine" class="tab-content active flex-col items-center justify-center space-y-4">
             <div class="text-center">
                 <span class="bg-emerald-500/10 text-emerald-400 text-[10px] font-bold px-2.5 py-1 rounded-full border border-emerald-500/20">
-                    <i class="fa-solid fa-shield-check mr-1"></i> AdsGram Modaratör Onaylı Mimari
+                    <i class="fa-solid fa-shield-check mr-1"></i> AdsGram Onaylı Ekosistem
                 </span>
-                <h2 id="total-mined" class="text-3xl font-black text-white mt-2 tracking-tight">1500.00 PEPE</h2>
+                <h2 id="total-mined" class="text-3xl font-black text-white mt-2 tracking-tight">2108.00 PEPE</h2>
                 <p class="text-[11px] text-slate-400 mt-0.5">Arka plan bulut botu her koşulda ücretsiz çalışır.</p>
             </div>
 
-            <!-- Bot Animasyon Alanı -->
+            <!-- Bot Alanı -->
             <div class="relative">
                 <div class="absolute inset-0 bg-emerald-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
-                <div class="relative w-40 h-40 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-emerald-500/50 flex flex-col items-center justify-center shadow-2xl">
-                    <i class="fa-solid fa-robot text-4xl text-emerald-400 mb-2 animate-bounce"></i>
+                <div class="relative w-36 h-36 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-emerald-500/50 flex flex-col items-center justify-center shadow-2xl">
+                    <i class="fa-solid fa-robot text-3xl text-emerald-400 mb-2 animate-bounce"></i>
                     <span class="text-xs font-black text-slate-200">AUTO BOT</span>
                     <span id="auto-speed" class="text-[10px] text-emerald-400 mt-1 font-semibold">+2.0 PEPE / sn</span>
                 </div>
             </div>
 
-            <div class="w-full max-w-xs glass rounded-2xl p-3 border border-slate-800 text-center space-y-1">
-                <p class="text-[11px] text-slate-300 font-bold">Nasıl Dönüyor?</p>
-                <p class="text-[10px] text-slate-400 leading-relaxed">Bot reklamsız çalışır. Havuzdaki bütçe, oyuncuların "Kazan" sekmesindeki gönüllü reklamlardan elde ettiği gelirle beslenir.</p>
+            <div class="w-full max-w-xs glass rounded-2xl p-2.5 border border-slate-800 text-center space-y-1">
+                <p class="text-[11px] text-slate-300 font-bold">Yavaş mı Geliyor?</p>
+                <p class="text-[10px] text-slate-400 leading-relaxed">Hemen <b>Çark</b> sekmesine gidip reklam izleyerek şansını deneyebilir ve büyük PEPE ödülleri kazanabilirsin!</p>
             </div>
         </div>
 
-        <!-- 2. SEKME: GÖREVLER & REKLAM (EARN) - Havuzu Besleyen Alan -->
-        <div id="tab-earn" class="tab-content flex-col space-y-4">
-            <div>
-                <h2 class="text-base font-black text-white"><i class="fa-solid fa-rectangle-ad text-emerald-400 mr-2"></i>Gönüllü Reklam (Gelir Kaynağı)</h2>
-                <p class="text-xs text-slate-400 mt-0.5">İzlemesi tamamen isteğe bağlıdır. İzledikçe reklam havuzuna dolar girer ve oyuncu bonus kazanır.</p>
+        <!-- 2. SEKME: ŞANS ÇARKI & REKLAM (SPIN) - Oyuncunun Heyecan Alanı -->
+        <div id="tab-spin" class="tab-content flex-col items-center justify-center space-y-4">
+            <div class="text-center">
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-dharmachakra text-amber-400 mr-2"></i>Ödüllü Şans Çarkı</h2>
+                <p class="text-xs text-slate-400 mt-0.5">1 Reklam İzle = 1 Çevirme Hakkı Kazan (Büyük ödül şansı çok düşük ama imkansız değil!)</p>
             </div>
-            
-            <div class="glass rounded-2xl p-4 flex items-center justify-between border border-slate-800 shadow-xl">
-                <div class="flex items-center space-x-3">
-                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 border border-amber-500/20">
-                        <i class="fa-solid fa-play text-sm"></i>
-                    </div>
-                    <div>
-                        <h3 class="font-bold text-xs text-white">Sisteme Destek Ol & Ödül Al</h3>
-                        <p class="text-[11px] text-amber-400 font-semibold mt-0.5">+500 PEPE + $0.05 Havuz Katkısı</p>
-                    </div>
+
+            <!-- Çark Görsel Tasarımı -->
+            <div class="relative w-44 h-44 rounded-full bg-gradient-to-tr from-slate-900 via-slate-800 to-emerald-950 border-4 border-amber-500/60 flex items-center justify-center shadow-2xl shadow-amber-500/10">
+                <div id="wheel-inner" class="absolute inset-2 rounded-full border-2 border-dashed border-slate-600 flex items-center justify-center transition-transform duration-1000">
+                    <span class="text-xs font-black text-amber-400 text-center px-2">PEPE<br>ÇARKI</span>
                 </div>
-                <button onclick="watchAdSimulate()" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-amber-500/20 cursor-pointer">
-                    Reklam İzle
+                <div class="w-6 h-6 bg-amber-500 rounded-full border-2 border-slate-900 z-10 shadow-lg"></div>
+            </div>
+
+            <div class="w-full max-w-xs space-y-2">
+                <button onclick="watchAdForSpin()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-lg shadow-amber-500/20 cursor-pointer flex items-center justify-center">
+                    <i class="fa-solid fa-play mr-2"></i> Reklam İzle & Hak Kazan
+                </button>
+                <button onclick="spinWheel()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer flex items-center justify-center">
+                    <i class="fa-solid fa-dharmachakra mr-2"></i> Çarkı Çevir (<span id="spin-rights">1</span> Hak)
                 </button>
             </div>
         </div>
 
-        <!-- 3. SEKME: CÜZDAN & ŞEFFAF KANITLAR (WALLET) - Madde 8 Uyumlu -->
-        <div id="tab-wallet" class="tab-content flex-col space-y-4">
+        <!-- 3. SEKME: CANLI LİDERLİK TABLOSU (LEADERBOARD) -->
+        <div id="tab-rank" class="tab-content flex-col space-y-3">
             <div>
-                <h2 class="text-base font-black text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i>Ödeme Kanıtları & Çekim</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Reklam şirketinin denetlediği şeffaf transfer geçmişi.</p>
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-trophy text-amber-400 mr-2"></i>Canlı Yarış Tablosu</h2>
+                <p class="text-xs text-slate-400 mt-0.5">En çok kazanan madenciler ve günlük sıralama.</p>
             </div>
 
-            <!-- Canlı Ödeme Listesi -->
-            <div class="glass rounded-2xl p-3.5 space-y-2 border border-slate-800">
-                <h3 class="text-[11px] font-bold text-slate-300 uppercase tracking-wider">Son Gerçekleşen Ödemeler (Kanıt)</h3>
+            <div class="glass rounded-2xl p-3 space-y-2 border border-slate-800 text-xs">
+                <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                    <span class="text-amber-400 font-bold">🥇 1. CryptoKing</span>
+                    <span class="text-white font-black">485,200 PEPE</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                    <span class="text-slate-300 font-bold">🥈 2. TonMiner99</span>
+                    <span class="text-white font-black">310,400 PEPE</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800">
+                    <span class="text-amber-600 font-bold">🥉 3. SatoshiTR</span>
+                    <span class="text-white font-black">195,000 PEPE</span>
+                </div>
+                <div class="flex justify-between items-center bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/30">
+                    <span class="text-emerald-400 font-bold">📍 12. Sen (Aktif)</span>
+                    <span id="rank-balance" class="text-emerald-400 font-black">2108 PEPE</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. SEKME: CÜZDAN & CANLI İŞLEM DURUMLARI (WALLET) -->
+        <div id="tab-wallet" class="tab-content flex-col space-y-3">
+            <div>
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i>Çekim & Canlı Statüler</h2>
+                <p class="text-xs text-slate-400 mt-0.5">İşleniyor, onaylandı ve ödeme kanıtları geçmişi.</p>
+            </div>
+
+            <!-- Canlı Statü Listesi -->
+            <div class="glass rounded-2xl p-3 space-y-2 border border-slate-800">
+                <h3 class="text-[10px] font-bold text-slate-300 uppercase tracking-wider">İşlem Kuyruğu</h3>
                 <div id="payout-list" class="space-y-1.5 text-[11px]">
                     <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-xl border border-slate-800/80">
                         <span class="text-slate-400 font-mono">UQCP...7z9Q</span>
-                        <span class="text-emerald-400 font-bold">5,000 PEPE (Ödendi)</span>
+                        <span class="text-emerald-400 font-bold">5,000 PEPE (Onaylandı ✅)</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/60 p-2 rounded-xl border border-slate-800/80">
+                        <span class="text-slate-400 font-mono">EQA4...2m1X</span>
+                        <span class="text-amber-400 font-bold">10,000 PEPE (İşleniyor ⏳)</span>
                     </div>
                 </div>
             </div>
 
-            <div class="glass rounded-2xl p-4 space-y-3 border border-slate-800 shadow-xl">
-                <div>
-                    <label class="block text-[10px] text-slate-400 uppercase font-extrabold mb-1">TON Cüzdan Adresi</label>
-                    <input type="text" id="wallet-address" placeholder="UQ..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
-                </div>
-                <div>
-                    <label class="block text-[10px] text-slate-400 uppercase font-extrabold mb-1">Çekim Miktarı (Min: 5000 PEPE)</label>
-                    <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
-                </div>
-                <button onclick="requestWithdraw()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer">
-                    Ödeme Talebi Oluştur
+            <div class="glass rounded-2xl p-3.5 space-y-2.5 border border-slate-800">
+                <input type="text" id="wallet-address" placeholder="TON Cüzdan Adresi (UQ...)" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                <button onclick="requestWithdraw()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer">
+                    Çekim Talebi Ver
                 </button>
             </div>
         </div>
@@ -137,26 +164,31 @@
     </div>
 
     <!-- ALT NAVİGASYON -->
-    <nav class="absolute bottom-0 left-0 right-0 glass border-t border-slate-800/80 flex justify-around p-3 z-40 backdrop-blur-xl">
-        <button onclick="switchTab('mine')" class="nav-btn text-emerald-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="mine">
-            <i class="fa-solid fa-robot text-base"></i>
-            <span class="text-[10px] font-bold">Oto-Bot</span>
+    <nav class="absolute bottom-0 left-0 right-0 glass border-t border-slate-800/80 flex justify-around p-2.5 z-40 backdrop-blur-xl">
+        <button onclick="switchTab('mine')" class="nav-btn text-emerald-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="mine">
+            <i class="fa-solid fa-robot text-sm"></i>
+            <span class="text-[9px] font-bold">Oto-Bot</span>
         </button>
-        <button onclick="switchTab('earn')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="earn">
-            <i class="fa-solid fa-rectangle-ad text-base"></i>
-            <span class="text-[10px] font-bold">Kazan</span>
+        <button onclick="switchTab('spin')" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="spin">
+            <i class="fa-solid fa-dharmachakra text-sm"></i>
+            <span class="text-[9px] font-bold">Çark</span>
         </button>
-        <button onclick="switchTab('wallet')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="wallet">
-            <i class="fa-solid fa-wallet text-base"></i>
-            <span class="text-[10px] font-bold">Cüzdan</span>
+        <button onclick="switchTab('rank')" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank">
+            <i class="fa-solid fa-trophy text-sm"></i>
+            <span class="text-[9px] font-bold">Yarış</span>
+        </button>
+        <button onclick="switchTab('wallet')" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="wallet">
+            <i class="fa-solid fa-wallet text-sm"></i>
+            <span class="text-[9px] font-bold">Cüzdan</span>
         </button>
     </nav>
 
     <script>
         let gameState = {
-            balance: 1500.0,
+            balance: 2108.0,
             botSpeed: 2.0,
-            adPoolUSD: 12.50
+            adPoolUSD: 12.55,
+            spinRights: 1
         };
 
         function switchTab(tabId) {
@@ -193,7 +225,6 @@
             document.getElementById('custom-modal').classList.remove('flex');
         }
 
-        // Otomatik kazım döngüsü
         setInterval(() => {
             gameState.balance += gameState.botSpeed;
             updateUI();
@@ -202,16 +233,52 @@
         function updateUI() {
             document.getElementById('balance').innerText = gameState.balance.toFixed(2);
             document.getElementById('total-mined').innerText = gameState.balance.toFixed(2) + " PEPE";
+            document.getElementById('rank-balance').innerText = Math.floor(gameState.balance) + " PEPE";
             document.getElementById('ad-pool').innerText = `$${gameState.adPoolUSD.toFixed(2)} USD`;
+            document.getElementById('spin-rights').innerText = gameState.spinRights;
             document.getElementById('auto-speed').innerText = `+${gameState.botSpeed.toFixed(1)} PEPE / sn`;
         }
 
-        function watchAdSimulate() {
-            // Oyuncu gönüllü reklam izlediğinde reklam havuzuna para girer, oyuncuya da bonus verilir.
-            gameState.balance += 500;
-            gameState.adPoolUSD += 0.05; // Reklam şirketinin ödedüğü pay
+        function watchAdForSpin() {
+            gameState.spinRights += 1;
+            gameState.adPoolUSD += 0.05;
             updateUI();
-            showModal("Reklam Simülasyonu Başarılı!", "Reklam izlendi! Havuza $0.05 gelir eklendi, hesabınıza +500 PEPE bonus yansıdı.", true);
+            showModal("Reklam İzlendi!", "Reklam başarıyla tamamlandı, havuza gelir eklendi ve +1 Çark Çevirme Hakkı kazandın!", true);
+        }
+
+        function spinWheel() {
+            if (gameState.spinRights <= 0) {
+                showModal("Hak Bitti", "Çarkı çevirmek için önce 'Reklam İzle & Hak Kazan' butonunu kullanmalısın.", false);
+                return;
+            }
+            
+            gameState.spinRights -= 1;
+            updateUI();
+
+            // Çark döndürme animasyon efekti
+            let wheel = document.getElementById('wheel-inner');
+            wheel.style.transform = `rotate(${Math.floor(Math.random() * 1000 + 720)}deg)`;
+
+            setTimeout(() => {
+                // Düşük oranlı büyük ödül simülasyonu
+                let rand = Math.random();
+                let prize = 50; // %80 ihtimalle küçük ödül
+                let title = "Çark Çevrildi!";
+                let desc = "Şansına 50 PEPE çıktı.";
+
+                if (rand < 0.15) {
+                    prize = 500; // %15 ihtimalle orta
+                    desc = "Tebrikler! Çarktan 500 PEPE koptu!";
+                } else if (rand < 0.03) {
+                    prize = 5000; // %3 ihtimalle çok düşük oranlı büyük ikramiye!
+                    title = "BÜYÜK İKRAMİYE! 🎰";
+                    desc = "İnanılmaz! Çarktan devasa 5,000 PEPE kazandın!";
+                }
+
+                gameState.balance += prize;
+                updateUI();
+                showModal(title, desc, true);
+            }, 1000);
         }
 
         function requestWithdraw() {
@@ -227,7 +294,7 @@
                 return;
             }
             if (gameState.balance < amount) {
-                showModal("Yetersiz Bakiye", "Havuzda ve bakiyenizde bu kadar PEPE bulunmuyor.", false);
+                showModal("Yetersiz Bakiye", "Bakiyeniz bu çekim için yetersiz.", false);
                 return;
             }
 
@@ -238,10 +305,10 @@
             let payoutList = document.getElementById('payout-list');
             let newRow = document.createElement('div');
             newRow.className = "flex justify-between items-center bg-slate-900/60 p-2 rounded-xl border border-slate-800/80";
-            newRow.innerHTML = `<span class="text-slate-400 font-mono">${shortAddr}</span><span class="text-amber-400 font-bold">${amount} PEPE (Onay Bekliyor)</span>`;
+            newRow.innerHTML = `<span class="text-slate-400 font-mono">${shortAddr}</span><span class="text-amber-400 font-bold">${amount} PEPE (İşleniyor ⏳)</span>`;
             payoutList.prepend(newRow);
 
-            showModal("Talep Alındı", "Ödeme talebiniz havuza iletildi ve şeffaf listeye eklendi.", true);
+            showModal("Talep Alındı", "Çekim talebiniz sıraya alındı. Durumu canlı cüzdan listesinden takip edebilirsin.", true);
         }
 
         updateUI();
