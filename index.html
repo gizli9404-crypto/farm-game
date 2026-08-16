@@ -14,21 +14,17 @@
         .glass { background: rgba(13, 17, 28, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
         .glass-card { background: rgba(22, 29, 46, 0.75); border: 1px solid rgba(255, 255, 255, 0.06); }
         
-        /* HİZALANMIŞ KUSURSUZ ÇARK (6 Dilim x 60 Derece)
-           0-60: 50 PEPE | 60-120: BOŞ | 120-180: 100 PEPE 
-           180-240: BOŞ | 240-300: 250 PEPE | 300-360: 1000 PEPE */
-        #fortune-wheel { 
+        /* SVG Çark Dönüş Animasyonu (Kusursuz Cubic-Bezier) */
+        #svg-wheel {
             transition: transform 5s cubic-bezier(0.15, 0.85, 0.05, 1);
-            background: conic-gradient(
-                #059669 0deg 60deg,    /* 50 PEPE */
-                #1e293b 60deg 120deg,  /* BOŞ */
-                #0284c7 120deg 180deg, /* 100 PEPE */
-                #0f172a 180deg 240deg, /* BOŞ */
-                #7c3aed 240deg 300deg, /* 250 PEPE */
-                #e11d48 300deg 360deg  /* 1000 PEPE */
-            );
-            box-shadow: 0 0 25px rgba(5, 150, 105, 0.2), inset 0 0 15px rgba(0,0,0,0.5);
+            transform-origin: center;
         }
+
+        @keyframes pulse-glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(16, 185, 129, 0.3)); }
+            50% { filter: drop-shadow(0 0 20px rgba(16, 185, 129, 0.6)); }
+        }
+        .wheel-container { animation: pulse-glow 3s infinite; }
     </style>
 </head>
 <body class="flex flex-col h-screen justify-between overflow-hidden">
@@ -92,40 +88,60 @@
             </div>
         </div>
 
-        <!-- 2. SEKME: SPIN (HATASIZ HİZALANAN ÇARK) -->
+        <!-- 2. SEKME: SPIN (SVG TABANLI KUSURSUZ VE ŞIK ÇARK) -->
         <div id="tab-spin" class="tab-content active flex-col items-center space-y-3">
             
-            <div class="relative w-64 h-64 flex items-center justify-center my-2">
-                <!-- Üst Sabit Ok İşareti (Tam Tepe Noktası: 12 Yönü) -->
-                <div class="absolute -top-3 z-30 text-amber-400 text-2xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+            <div class="relative w-64 h-64 flex items-center justify-center my-1 wheel-container">
+                <!-- Üst Sabit Ok İşareti (Tepe Noktası - 360° / 0. Dilim Referansı) -->
+                <div class="absolute -top-3.5 z-30 text-amber-400 text-2xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)]">
                     <i class="fa-solid fa-caret-down"></i>
                 </div>
                 
-                <!-- Çark Dış Çerçevesi -->
-                <div class="w-60 h-60 rounded-full p-1 bg-gradient-to-tr from-slate-700 via-emerald-500/40 to-amber-500/50 shadow-2xl flex items-center justify-center">
-                    <div id="fortune-wheel" class="w-full h-full rounded-full relative overflow-hidden flex items-center justify-center border border-slate-900">
-                        
-                        <!-- Dilim İsimleri (Her dilimin tam orta merkezine konumlandırıldı) -->
-                        <div class="absolute inset-0 w-full h-full text-[10px] font-black text-white pointer-events-none">
-                            <div class="absolute top-5 left-1/2 -translate-x-1/2 text-emerald-200 drop-shadow">50 PEPE</div>
-                            <div class="absolute top-12 right-8 text-slate-400 drop-shadow">BOŞ</div>
-                            <div class="absolute bottom-12 right-8 text-cyan-200 drop-shadow">100 PEPE</div>
-                            <div class="absolute bottom-5 left-1/2 -translate-x-1/2 text-slate-400 drop-shadow">BOŞ</div>
-                            <div class="absolute bottom-12 left-8 text-purple-200 drop-shadow">250 PEPE</div>
-                            <div class="absolute top-12 left-8 text-amber-300 drop-shadow">1000 🏆</div>
-                        </div>
+                <!-- Çark Dış Metal Çerçeve -->
+                <div class="w-60 h-60 rounded-full p-1 bg-gradient-to-tr from-slate-700 via-emerald-500/40 to-amber-500/50 shadow-2xl flex items-center justify-center relative">
+                    
+                    <!-- SVG ÇARK (6 Dilim / Her dilim tam 60 derece)
+                         Dilim 0: 330° - 30°   (50 PEPE)  -> Orta Açı: 0°
+                         Dilim 1: 30°  - 90°   (BOŞ)      -> Orta Açı: 60°
+                         Dilim 2: 90°  - 150°  (100 PEPE) -> Orta Açı: 120°
+                         Dilim 3: 150° - 210°  (BOŞ)      -> Orta Açı: 180°
+                         Dilim 4: 210° - 270°  (250 PEPE) -> Orta Açı: 240°
+                         Dilim 5: 270° - 330°  (1000 PEPE)-> Orta Açı: 300° -->
+                    <svg id="svg-wheel" class="w-full h-full rounded-full overflow-hidden" viewBox="0 0 100 100">
+                        <!-- Dilim 0: 50 PEPE (Yeşil) -->
+                        <path d="M50 50 L50 3 A47 47 0 0 1 90.7 26.5 Z" fill="#059669" stroke="#0f172a" stroke-width="1.5"/>
+                        <!-- Dilim 1: BOŞ (Koyu Gri) -->
+                        <path d="M50 50 L90.7 26.5 A47 47 0 0 1 90.7 73.5 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                        <!-- Dilim 2: 100 PEPE (Mavi) -->
+                        <path d="M50 50 L90.7 73.5 A47 47 0 0 1 50 97 Z" fill="#0284c7" stroke="#0f172a" stroke-width="1.5"/>
+                        <!-- Dilim 3: BOŞ (Derin Siyah) -->
+                        <path d="M50 50 L50 97 A47 47 0 0 1 9.3 73.5 Z" fill="#0f172a" stroke="#0f172a" stroke-width="1.5"/>
+                        <!-- Dilim 4: 250 PEPE (Mor) -->
+                        <path d="M50 50 L9.3 73.5 A47 47 0 0 1 9.3 26.5 Z" fill="#7c3aed" stroke="#0f172a" stroke-width="1.5"/>
+                        <!-- Dilim 5: 1000 PEPE (Kırmızı/Altın) -->
+                        <path d="M50 50 L9.3 26.5 A47 47 0 0 1 50 3 Z" fill="#e11d48" stroke="#0f172a" stroke-width="1.5"/>
 
-                        <!-- Orta Merkez Logo -->
-                        <div class="w-12 h-12 bg-slate-950 rounded-full border-2 border-amber-500 z-20 shadow-xl flex items-center justify-center text-amber-400 text-sm">
-                            <i class="fa-solid fa-dharmachakra"></i>
-                        </div>
+                        <!-- Dilim Yazıları ve Simgeleri (SVG koordinatlarıyla tam ortalı) -->
+                        <g font-size="6.5" font-weight="900" text-anchor="middle" dominant-baseline="middle">
+                            <text x="50" y="20" fill="#ecfdf5" transform="rotate(0 50 50)">50 PEPE</text>
+                            <text x="75" y="42" fill="#94a3b8" transform="rotate(0 50 50)">BOŞ</text>
+                            <text x="75" y="65" fill="#e0f2fe" transform="rotate(0 50 50)">100 PEPE</text>
+                            <text x="50" y="83" fill="#94a3b8" transform="rotate(0 50 50)">BOŞ</text>
+                            <text x="25" y="65" fill="#f3e8ff" transform="rotate(0 50 50)">250 PEPE</text>
+                            <text x="25" y="42" fill="#fde047" transform="rotate(0 50 50)">1000 🏆</text>
+                        </g>
+                    </svg>
+
+                    <!-- Orta Merkez Parıltılı Logo Düğmesi -->
+                    <div class="absolute w-12 h-12 bg-slate-950 rounded-full border-2 border-amber-500 z-20 shadow-2xl flex items-center justify-center text-amber-400 text-sm">
+                        <i class="fa-solid fa-gem"></i>
                     </div>
                 </div>
             </div>
 
             <div class="text-center">
                 <span id="ticket-count" class="text-sm font-black text-emerald-400 tracking-wide">0 Biletiniz Var</span>
-                <p class="text-[10px] text-slate-400 mt-0.5">Adil oranlı güvenli çark sistemi.</p>
+                <p class="text-[10px] text-slate-400 mt-0.5">Hatasız senkronize adil çark mekanizması.</p>
             </div>
 
             <div class="w-full max-w-xs space-y-2">
@@ -151,7 +167,7 @@
         <div id="tab-invite" class="tab-content flex-col space-y-3">
             <h2 class="text-base font-black text-white">Arkadaşını Davet Et</h2>
             <p class="text-xs text-slate-400">Davet ettiğin her arkadaşın için **+2 Bilet** kazan!</p>
-            <button onclick="showModal('Davet Linki', 'Özel referans linkiniz kopyalandı!', true)" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow cursor-pointer">Linki Kopyala</button>
+            <button onclick="showModal('Davet Linki', 'Özel referans linkiniz kopyalandı!')" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow cursor-pointer">Linki Kopyala</button>
         </div>
 
         <!-- 5. SEKME: RANK -->
@@ -200,6 +216,7 @@
 
     <script>
         let gameState = { balance: 0.00, tickets: 2 };
+        let currentRotation = 0; // Toplam dönüş miktarını hafızada tutuyoruz
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
@@ -248,14 +265,14 @@
             showModal("Tebrikler! 🎟️", `Reklam izlendi, hesabınıza +${amount} Bilet eklendi.`);
         }
 
-        // KUSURSUZ MATEMATİKSEL DÖNÜŞ VE HİZALAMA MANTIĞI
-        // Dilimlerin merkezi açıları:
-        // 50 PEPE  -> 30°
-        // BOŞ (1)  -> 90°
-        // 100 PEPE -> 150°
-        // BOŞ (2)  -> 210°
-        // 250 PEPE -> 270°
-        // 1000 PEPE-> 330°
+        // KUSURSUZ MATEMATİKSEL SENKRONİZASYON
+        // Dilimlerin tam orta açıları (Saat yönünde):
+        // 0: 50 PEPE  -> 0° (veya 360°)
+        // 1: BOŞ (1)  -> 60°
+        // 2: 100 PEPE -> 120°
+        // 3: BOŞ (2)  -> 180°
+        // 4: 250 PEPE -> 240°
+        // 5: 1000 PEPE-> 300°
         function spinWheel() {
             if (gameState.tickets <= 0) {
                 showModal("Biletiniz Kalmadı", "Çevirim yapmak için reklam izleyerek bilet kazanmalısınız.");
@@ -265,39 +282,40 @@
             gameState.tickets -= 1;
             updateUI();
 
-            let wheel = document.getElementById('fortune-wheel');
+            let wheel = document.getElementById('svg-wheel');
             let rand = Math.random() * 100;
-            let targetCenterAngle = 0;
+            let targetMiddleAngle = 0;
             let prizeWon = 0;
             let prizeText = "";
 
-            // Oranlar (Seni korumak için sıkı mod)
+            // Oranlar ve net hedef açı eşleştirmesi
             if (rand < 40) {
-                targetCenterAngle = Math.random() < 0.5 ? 90 : 210; // Boş dilim merkezleri
+                // Boş dilimlerden biri rastgele seçilir (60° veya 180°)
+                targetMiddleAngle = Math.random() < 0.5 ? 60 : 180; 
                 prizeWon = 0;
                 prizeText = "Üzgünüm, bu çevirmede ödül çıkmadı (BOŞ)!";
             } else if (rand < 70) {
-                targetCenterAngle = 30; // 50 PEPE
+                targetMiddleAngle = 0; // 50 PEPE
                 prizeWon = 50;
                 prizeText = "Çarktan 50 PEPE kazandınız!";
             } else if (rand < 88) {
-                targetCenterAngle = 150; // 100 PEPE
+                targetMiddleAngle = 120; // 100 PEPE
                 prizeWon = 100;
                 prizeText = "Çarktan 100 PEPE kazandınız!";
             } else if (rand < 97) {
-                targetCenterAngle = 270; // 250 PEPE
+                targetMiddleAngle = 240; // 250 PEPE
                 prizeWon = 250;
                 prizeText = "Çarktan 250 PEPE kazandınız!";
             } else {
-                targetCenterAngle = 330; // 1000 PEPE
+                targetMiddleAngle = 300; // 1000 PEPE
                 prizeWon = 1000;
                 prizeText = "TEBRİKLER! Büyük İkramiye: 1000 PEPE Kazandınız! 🏆";
             }
 
-            // CSS Conic-gradient saat yönünde döner. Ok tepe noktada (0° / 360°) sabit durur.
-            // Seçilen dilimin okun altında kusursuz durması için gereken net hesap:
-            let computedRotation = 1800 + (360 - targetCenterAngle);
-            wheel.style.transform = `rotate(${computedRotation}deg)`;
+            // En az 5 tur (1800°) atarak hedef dilimin okun (0° / tepe noktası) altında durmasını sağlıyoruz
+            let extraSpins = 360 * 5;
+            currentRotation = extraSpins + (360 - targetMiddleAngle);
+            wheel.style.transform = `rotate(${currentRotation}deg)`;
 
             setTimeout(() => {
                 if (prizeWon > 0) {
