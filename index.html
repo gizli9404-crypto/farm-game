@@ -20,11 +20,11 @@
     <header class="flex justify-between items-center p-4 glass border-b border-slate-800 z-20">
         <div class="flex items-center space-x-2.5">
             <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
-                <i class="fa-solid fa-microchip text-lg"></i>
+                <i class="fa-solid fa-robot text-lg"></i>
             </div>
             <div>
-                <h1 class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Toplam Güç</h1>
-                <p id="hashrate" class="text-xs font-black text-emerald-400">0.0 H/s</p>
+                <h1 class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Oto-Bot Durumu</h1>
+                <p id="bot-status-text" class="text-xs font-black text-emerald-400">Aktif (Bulut Kazanım)</p>
             </div>
         </div>
         <div class="glass px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-slate-700/60 shadow-inner">
@@ -36,32 +36,29 @@
     <!-- ANA İÇERİK (SEKMELER) -->
     <main class="flex-1 overflow-y-auto p-4 pb-24 flex flex-col justify-center">
         
-        <!-- 1. SEKME: MADENCİLİK (HOME) -->
+        <!-- 1. SEKME: OTOMATİK MADENCİLİK (HOME) -->
         <div id="tab-mine" class="tab-content active flex-col items-center justify-center space-y-6">
             <div class="text-center">
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Dokunarak Kaz (Tamamen Ücretsiz)</p>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Tam Otomatik Bulut Kazımı</p>
                 <h2 id="total-mined" class="text-3xl font-black text-white mt-1 tracking-tight">1500.00 PEPE</h2>
             </div>
 
-            <!-- Tıklama Butonu -->
+            <!-- Otomatik Çalışan Animasyonlu Bot Çekirdeği -->
             <div class="relative">
-                <div class="absolute inset-0 bg-emerald-500 rounded-full blur-2xl opacity-15 animate-pulse"></div>
-                <button id="mine-btn" class="relative w-44 h-44 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-emerald-500/50 flex flex-col items-center justify-center shadow-2xl active:scale-95 transition-transform cursor-pointer group">
-                    <i class="fa-solid fa-hammer text-4xl text-emerald-400 mb-2 group-hover:scale-110 transition-transform"></i>
-                    <span class="text-xs font-black text-slate-200">GPU MINING</span>
-                    <span id="click-power" class="text-[10px] text-emerald-400 mt-1 font-semibold">+1.0 PEPE / Tık</span>
-                </button>
+                <div class="absolute inset-0 bg-emerald-500 rounded-full blur-2xl opacity-20 animate-pulse"></div>
+                <div class="relative w-44 h-44 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-emerald-500/50 flex flex-col items-center justify-center shadow-2xl group">
+                    <i class="fa-solid fa-microchip text-4xl text-emerald-400 mb-2 animate-bounce"></i>
+                    <span class="text-xs font-black text-slate-200">AUTO RIG</span>
+                    <span id="auto-speed" class="text-[10px] text-emerald-400 mt-1 font-semibold">+2.5 PEPE / sn</span>
+                </div>
             </div>
 
-            <!-- Enerji Barı -->
-            <div class="w-full max-w-xs glass rounded-2xl p-2.5 border border-slate-800 shadow-lg">
-                <div class="flex justify-between text-[11px] text-slate-300 font-bold px-1 mb-1.5">
-                    <span class="flex items-center"><i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i> Enerji</span>
-                    <span id="energy-text" class="text-emerald-400">1000 / 1000</span>
+            <!-- Bot Çalışma Göstergesi -->
+            <div class="w-full max-w-xs glass rounded-2xl p-3 border border-slate-800 shadow-lg text-center space-y-1">
+                <div class="text-[11px] text-slate-300 font-bold flex items-center justify-center">
+                    <i class="fa-solid fa-circle-dot text-emerald-400 mr-2 animate-ping"></i> Arka Plan Botu Çalışıyor
                 </div>
-                <div class="w-full bg-slate-900 rounded-full h-2 p-0.5 border border-slate-800">
-                    <div id="energy-bar" class="bg-gradient-to-r from-emerald-600 to-emerald-400 h-1.5 rounded-full transition-all duration-200" style="width: 100%;"></div>
-                </div>
+                <p class="text-[10px] text-slate-400">Uygulamadan çıksanız bile sistem otomatik kazmaya devam eder.</p>
             </div>
         </div>
 
@@ -69,7 +66,7 @@
         <div id="tab-earn" class="tab-content flex-col space-y-4">
             <div>
                 <h2 class="text-base font-black text-white"><i class="fa-solid fa-rectangle-ad text-emerald-400 mr-2"></i>Gönüllü Ödüller & Reklam</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Oynanış tamamen ücretsizdir; reklam izlemek tamamen isteğe bağlıdır.</p>
+                <p class="text-xs text-slate-400 mt-0.5">Tamamen isteğe bağlıdır; temel otomatik bot her koşulda çalışır.</p>
             </div>
             
             <div class="glass rounded-2xl p-4 flex items-center justify-between border border-slate-800 shadow-xl">
@@ -78,8 +75,8 @@
                         <i class="fa-solid fa-play text-sm"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-xs text-white">Bonus Reklam İzle</h3>
-                        <p class="text-[11px] text-emerald-400 font-semibold mt-0.5">+500 PEPE Ödül</p>
+                        <h3 class="font-bold text-xs text-white">Hızlı Yakıt Ruhu (İsteğe Bağlı)</h3>
+                        <p class="text-[11px] text-emerald-400 font-semibold mt-0.5">+500 PEPE Anında Ödül</p>
                     </div>
                 </div>
                 <button onclick="watchAd()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer">
@@ -88,11 +85,11 @@
             </div>
         </div>
 
-        <!-- 3. SEKME: MAĞAZA (SHOP) -->
+        <!-- 3. SEKME: MAĞAZA (SHOP) - Bot Yükseltmeleri -->
         <div id="tab-shop" class="tab-content flex-col space-y-4">
             <div>
-                <h2 class="text-base font-black text-white"><i class="fa-solid fa-shop text-emerald-400 mr-2"></i>Donanım Mağazası</h2>
-                <p class="text-xs text-slate-400 mt-0.5">Pasif gelir (H/s) sağlayan rig sistemleri.</p>
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-shop text-emerald-400 mr-2"></i>Bot Yükseltmeleri</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Otomatik kazım hızınızı ve saniyelik veriminizi artırın.</p>
             </div>
             
             <div class="glass rounded-2xl p-4 flex items-center justify-between border border-slate-800 shadow-xl">
@@ -101,22 +98,22 @@
                         <i class="fa-solid fa-server text-sm"></i>
                     </div>
                     <div>
-                        <h3 class="font-bold text-xs text-white">ASUS RX 470 Rig</h3>
-                        <p class="text-[11px] text-slate-400">+5.0 H/s Pasif Kazanç</p>
-                        <p class="text-[11px] text-emerald-400 font-black mt-1">100 PEPE</p>
+                        <h3 class="font-bold text-xs text-white">ASUS RX 470 Bot Modülü</h3>
+                        <p class="text-[11px] text-slate-400">+5.0 PEPE / sn Hız</p>
+                        <p class="text-[11px] text-emerald-400 font-black mt-1">200 PEPE</p>
                     </div>
                 </div>
-                <button onclick="buyRig()" class="bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-white font-black px-4 py-2.5 rounded-xl text-xs transition-all border border-slate-700 cursor-pointer">
-                    Satın Al
+                <button onclick="buyBotUpgrade()" class="bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-white font-black px-4 py-2.5 rounded-xl text-xs transition-all border border-slate-700 cursor-pointer">
+                    Yükselt
                 </button>
             </div>
         </div>
 
-        <!-- 4. SEKME: CÜZDAN & CANLI LİSTE (WALLET & PROOFS) -->
+        <!-- 4. SEKME: CÜZDAN & ÖDEME KANITLARI (WALLET) -->
         <div id="tab-wallet" class="tab-content flex-col space-y-4">
             <div>
                 <h2 class="text-base font-black text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i>Cüzdan & Ödeme Kanıtları</h2>
-                <p class="text-xs text-slate-400 mt-0.5">TON ağı (Tonkeeper) transferleri ve şeffaf işlem geçmişi.</p>
+                <p class="text-xs text-slate-400 mt-0.5">TON ağı şeffaf transfer ve ödeme onay geçmişi.</p>
             </div>
 
             <!-- Canlı Çekim Geçmişi (AdsGram Madde 8 Uyumlu) -->
@@ -166,8 +163,8 @@
     <!-- ALT NAVİGASYON ÇUBUĞU -->
     <nav class="absolute bottom-0 left-0 right-0 glass border-t border-slate-800/80 flex justify-around p-3 z-40 backdrop-blur-xl">
         <button onclick="switchTab('mine')" class="nav-btn text-emerald-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="mine">
-            <i class="fa-solid fa-hammer text-base"></i>
-            <span class="text-[10px] font-bold">Madenci</span>
+            <i class="fa-solid fa-robot text-base"></i>
+            <span class="text-[10px] font-bold">Oto-Bot</span>
         </button>
         <button onclick="switchTab('earn')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="earn">
             <i class="fa-solid fa-rectangle-ad text-base"></i>
@@ -186,10 +183,7 @@
     <script>
         let gameState = {
             balance: 1500.0,
-            energy: 1000,
-            maxEnergy: 1000,
-            clickPower: 1.0,
-            hashrate: 0.0
+            botSpeed: 2.5 // Saniyede gelen otomatik PEPE
         };
 
         function switchTab(tabId) {
@@ -226,30 +220,16 @@
             document.getElementById('custom-modal').classList.remove('flex');
         }
 
-        document.getElementById('mine-btn').addEventListener('click', () => {
-            if (gameState.energy >= 10) {
-                gameState.energy -= 10;
-                gameState.balance += gameState.clickPower;
-                updateUI();
-            }
-        });
-
+        // Tam Otomatik Arka Plan Kazım Döngüsü (Her saniye çalışır)
         setInterval(() => {
-            if (gameState.hashrate > 0) {
-                gameState.balance += gameState.hashrate / 10;
-            }
-            if (gameState.energy < gameState.maxEnergy) {
-                gameState.energy = Math.min(gameState.maxEnergy, gameState.energy + 5);
-            }
+            gameState.balance += gameState.botSpeed;
             updateUI();
         }, 1000);
 
         function updateUI() {
             document.getElementById('balance').innerText = gameState.balance.toFixed(2);
             document.getElementById('total-mined').innerText = gameState.balance.toFixed(2) + " PEPE";
-            document.getElementById('energy-bar').style.width = (gameState.energy / gameState.maxEnergy) * 100 + '%';
-            document.getElementById('energy-text').innerText = `${Math.floor(gameState.energy)} / ${gameState.maxEnergy}`;
-            document.getElementById('hashrate').innerText = gameState.hashrate.toFixed(1) + ' H/s';
+            document.getElementById('auto-speed').innerText = `+${gameState.botSpeed.toFixed(1)} PEPE / sn`;
         }
 
         function watchAd() {
@@ -258,15 +238,15 @@
             showModal("Ödül Eklendi!", "Gönüllü reklam başarıyla izlendi, +500 PEPE hesabınıza eklendi.", true);
         }
 
-        function buyRig() {
-            let cost = 100;
+        function buyBotUpgrade() {
+            let cost = 200;
             if (gameState.balance >= cost) {
                 gameState.balance -= cost;
-                gameState.hashrate += 5.0;
+                gameState.botSpeed += 5.0;
                 updateUI();
-                showModal("Rig Kuruldu!", "ASUS RX 470 rigi aktif edildi, pasif kazancınız arttı.", true);
+                showModal("Bot Yükseltildi!", "ASUS RX 470 modülü eklendi, otomatik kazım hızınız arttı.", true);
             } else {
-                showModal("Yetersiz Bakiye", "Bu rigi satın almak için yeterli PEPE bakiyeniz bulunmuyor.", false);
+                showModal("Yetersiz Bakiye", "Bu modülü satın almak için yeterli PEPE bakiyeniz bulunmuyor.", false);
             }
         }
 
@@ -291,7 +271,7 @@
             gameState.balance -= amount;
             updateUI();
 
-            // Canlı ödeme listesine yeni talebi ekle (AdsGram Moderatörleri İçin Kanıt)
+            // Canlı ödeme listesine yeni talebi ekle (AdsGram Onayı İçin Kanıt)
             let shortAddr = address.substring(0, 4) + "..." + address.substring(address.length - 4);
             let payoutList = document.getElementById('payout-list');
             let newRow = document.createElement('div');
