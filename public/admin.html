@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Paneli - Çekim Talepleri</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-950 text-slate-100 p-6 font-sans">
+    <div class="max-w-2xl mx-auto space-y-6">
+        <h1 class="text-2xl font-black text-emerald-400">Admin Çekim Paneli</h1>
+        
+        <div class="flex space-x-2">
+            <input type="password" id="admin-pass" placeholder="Admin Şifresi" class="bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-sm text-white w-full focus:outline-none focus:border-emerald-500">
+            <button onclick="loadData()" class="bg-emerald-500 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm whitespace-nowrap hover:bg-emerald-400 transition-all">Listele</button>
+        </div>
+
+        <div id="results" class="space-y-3">
+            <p class="text-slate-500 text-sm">Şifreyi girip listele butonuna basın.</p>
+        </div>
+    </div>
+
+    <script>
+        async function loadData() {
+            const pass = document.getElementById('admin-pass').value;
+            const res = await fetch(`/api/admin/withdrawals?secret=${pass}`);
+            
+            if (!res.ok) {
+                alert("Yetkisiz erişim veya yanlış şifre!");
+                return;
+            }
+
+            const data = await res.json();
+            const container = document.getElementById('results');
+            container.innerHTML = "";
+
+            if (data.length === 0) {
+                container.innerHTML = '<p class="text-slate-400 text-sm">Henüz çekim talebi yok.</p>';
+                return;
+            }
+
+            data.forEach((item, index) => {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex justify-between items-center text-sm">
+                        <div>
+                            <div class="font-bold text-emerald-400">${item.amount} PEPE</div>
+                            <div class="text-xs text-slate-400">Telegram ID: ${item.user_id}</div>
+                            <div class="text-xs text-slate-300 font-mono mt-1">Cüzdan: ${item.wallet}</div>
+                        </div>
+                        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2.5 py-1 rounded-lg text-xs font-bold">${item.status}</span>
+                    </div>
+                `;
+            });
+        }
+    </script>
+</body>
+</html>
