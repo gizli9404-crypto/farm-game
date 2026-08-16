@@ -8,87 +8,105 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background-color: #0f172a; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
+        body { background-color: #0b0f19; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; user-select: none; }
         .tab-content { display: none; }
         .tab-content.active { display: flex; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(51, 65, 85, 0.5); }
     </style>
 </head>
 <body class="flex flex-col h-screen justify-between overflow-hidden">
 
     <!-- ÜST BİLGİ (HEADER) -->
-    <header class="flex justify-between items-center p-4 bg-slate-900 border-b border-slate-800">
-        <div class="flex items-center space-x-2">
-            <div class="w-9 h-9 rounded-full bg-emerald-500/20 flex items-center justify-center text-emerald-400 font-bold border border-emerald-500/40">
-                <i class="fa-solid fa-microchip"></i>
+    <header class="flex justify-between items-center p-4 glass border-b border-slate-800 z-20">
+        <div class="flex items-center space-x-2.5">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 font-bold border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
+                <i class="fa-solid fa-microchip text-lg"></i>
             </div>
             <div>
-                <h1 class="text-[10px] text-slate-400 uppercase">Rigs Gücü</h1>
-                <p id="hashrate" class="text-xs font-bold text-emerald-400">0.0 H/s</p>
+                <h1 class="text-[10px] text-slate-400 uppercase tracking-wider font-semibold">Toplam Güç</h1>
+                <p id="hashrate" class="text-xs font-black text-emerald-400">0.0 H/s</p>
             </div>
         </div>
-        <div class="bg-slate-800 px-3 py-1.5 rounded-full border border-slate-700 flex items-center space-x-1.5">
-            <span class="text-emerald-400 font-bold text-sm" id="balance">0.00</span>
-            <span class="text-xs text-slate-300 font-semibold">PEPE</span>
+        <div class="glass px-3.5 py-1.5 rounded-full flex items-center space-x-2 border border-slate-700/60 shadow-inner">
+            <span class="text-emerald-400 font-black text-sm" id="balance">1500.00</span>
+            <span class="text-[11px] text-slate-300 font-bold">PEPE</span>
         </div>
     </header>
 
     <!-- ANA İÇERİK (SEKMELER) -->
-    <main class="flex-1 overflow-y-auto p-4 pb-20 flex flex-col justify-center">
+    <main class="flex-1 overflow-y-auto p-4 pb-24 flex flex-col justify-center">
         
         <!-- 1. SEKME: MADENCİLİK (HOME) -->
         <div id="tab-mine" class="tab-content active flex-col items-center justify-center space-y-6">
             <div class="text-center">
-                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold">Dokunarak Kaz</p>
-                <h2 id="total-mined" class="text-3xl font-black text-white mt-1">0.00 PEPE</h2>
+                <p class="text-[10px] text-slate-400 uppercase tracking-widest font-bold">Dokunarak Kaz</p>
+                <h2 id="total-mined" class="text-3xl font-black text-white mt-1 tracking-tight">1500.00 PEPE</h2>
             </div>
 
-            <!-- Tıklama Butonu -->
+            <!-- Tıklama Butonu (Animasyonlu Rig) -->
             <div class="relative">
-                <div class="absolute inset-0 bg-emerald-500 rounded-full blur-xl opacity-20 animate-pulse"></div>
-                <button id="mine-btn" class="relative w-44 h-44 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-emerald-500/60 flex flex-col items-center justify-center shadow-2xl active:scale-95 transition-transform cursor-pointer">
-                    <i class="fa-solid fa-hammer text-4xl text-emerald-400 mb-2"></i>
-                    <span class="text-xs font-bold text-slate-200">GPU MINING</span>
-                    <span id="click-power" class="text-[10px] text-emerald-400 mt-1">+1.0 PEPE / Tık</span>
+                <div class="absolute inset-0 bg-emerald-500 rounded-full blur-2xl opacity-15 animate-pulse"></div>
+                <button id="mine-btn" class="relative w-44 h-44 rounded-full bg-gradient-to-b from-slate-800 to-slate-900 border-4 border-emerald-500/50 flex flex-col items-center justify-center shadow-2xl active:scale-95 transition-transform cursor-pointer group">
+                    <i class="fa-solid fa-hammer text-4xl text-emerald-400 mb-2 group-hover:scale-110 transition-transform"></i>
+                    <span class="text-xs font-black text-slate-200">GPU MINING</span>
+                    <span id="click-power" class="text-[10px] text-emerald-400 mt-1 font-semibold">+1.0 PEPE / Tık</span>
                 </button>
             </div>
 
             <!-- Enerji Barı -->
-            <div class="w-full max-w-xs bg-slate-800 rounded-full p-1 border border-slate-700">
-                <div id="energy-bar" class="bg-gradient-to-r from-emerald-600 to-emerald-400 h-2.5 rounded-full transition-all duration-200" style="width: 100%;"></div>
-                <div class="flex justify-between text-[10px] text-slate-400 px-1 mt-1">
-                    <span>Enerji</span>
-                    <span id="energy-text">1000 / 1000</span>
+            <div class="w-full max-w-xs glass rounded-2xl p-2.5 border border-slate-800 shadow-lg">
+                <div class="flex justify-between text-[11px] text-slate-300 font-bold px-1 mb-1.5">
+                    <span class="flex items-center"><i class="fa-solid fa-bolt text-amber-400 mr-1.5"></i> Enerji</span>
+                    <span id="energy-text" class="text-emerald-400">1000 / 1000</span>
+                </div>
+                <div class="w-full bg-slate-900 rounded-full h-2 p-0.5 border border-slate-800">
+                    <div id="energy-bar" class="bg-gradient-to-r from-emerald-600 to-emerald-400 h-1.5 rounded-full transition-all duration-200" style="width: 100%;"></div>
                 </div>
             </div>
         </div>
 
         <!-- 2. SEKME: KAZAN & REKLAM (EARN) -->
         <div id="tab-earn" class="tab-content flex-col space-y-4">
-            <h2 class="text-md font-bold text-white"><i class="fa-solid fa-rectangle-ad text-emerald-400 mr-2"></i>Reklam & Görevler</h2>
-            <p class="text-xs text-slate-400">Reklam ağları onaylı ödüllü video izleme sistemi. Reklam izleyerek anında PEPE kazan.</p>
+            <div>
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-rectangle-ad text-emerald-400 mr-2"></i>Görevler & Reklamlar</h2>
+                <p class="text-xs text-slate-400 mt-0.5">AdsGram onaylı ödüllü sistem ile ek gelir elde et.</p>
+            </div>
             
-            <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 flex items-center justify-between">
-                <div>
-                    <h3 class="font-bold text-sm text-white">Ödüllü Video İzle</h3>
-                    <p class="text-xs text-emerald-400 mt-0.5">+500 PEPE Ödül</p>
+            <div class="glass rounded-2xl p-4 flex items-center justify-between border border-slate-800 shadow-xl">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+                        <i class="fa-solid fa-play text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xs text-white">Ödüllü Video İzle</h3>
+                        <p class="text-[11px] text-emerald-400 font-semibold mt-0.5">+500 PEPE Ödül</p>
+                    </div>
                 </div>
-                <button onclick="watchAd()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold px-4 py-2 rounded-lg text-xs transition-colors cursor-pointer">
-                    İzle & Kazan
+                <button onclick="watchAd()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer">
+                    İzle
                 </button>
             </div>
         </div>
 
         <!-- 3. SEKME: MAĞAZA (SHOP) -->
-        <div id="tab-shop" class="tab-content flex-col space-y-3">
-            <h2 class="text-md font-bold text-white"><i class="fa-solid fa-shop text-emerald-400 mr-2"></i>Donanım Yükseltmeleri</h2>
+        <div id="tab-shop" class="tab-content flex-col space-y-4">
+            <div>
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-shop text-emerald-400 mr-2"></i>Donanım Mağazası</h2>
+                <p class="text-xs text-slate-400 mt-0.5">Pasif gelir (H/s) artıran madencilik rigleri kur.</p>
+            </div>
             
-            <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-3.5 flex items-center justify-between">
-                <div>
-                    <h3 class="font-bold text-sm text-white">ASUS RX 470 Rig</h3>
-                    <p class="text-xs text-slate-400">+5.0 H/s Pasif Gelir</p>
-                    <p class="text-xs text-emerald-400 font-semibold mt-1">Maliyet: <span id="rig1-cost">100</span> PEPE</p>
+            <div class="glass rounded-2xl p-4 flex items-center justify-between border border-slate-800 shadow-xl">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 flex items-center justify-center text-purple-400 border border-purple-500/20">
+                        <i class="fa-solid fa-server text-sm"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-xs text-white">ASUS RX 470 Rig</h3>
+                        <p class="text-[11px] text-slate-400">+5.0 H/s Pasif Kazanç</p>
+                        <p class="text-[11px] text-emerald-400 font-black mt-1">100 PEPE</p>
+                    </div>
                 </div>
-                <button onclick="buyRig()" class="bg-slate-700 hover:bg-emerald-500 hover:text-slate-950 text-white font-bold px-4 py-2 rounded-lg text-xs transition-colors cursor-pointer">
+                <button onclick="buyRig()" class="bg-slate-800 hover:bg-emerald-500 hover:text-slate-950 text-white font-black px-4 py-2.5 rounded-xl text-xs transition-all border border-slate-700 cursor-pointer">
                     Satın Al
                 </button>
             </div>
@@ -96,18 +114,21 @@
 
         <!-- 4. SEKME: CÜZDAN (WALLET) -->
         <div id="tab-wallet" class="tab-content flex-col space-y-4">
-            <h2 class="text-md font-bold text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i>Kripto Çekim Merkezi</h2>
-            <div class="bg-slate-800/80 border border-slate-700 rounded-xl p-4 space-y-3">
-                <p class="text-xs text-slate-300">Kazandığın PEPE'leri TON ağındaki cüzdanına (Tonkeeper vb.) komisyonsuz çek.</p>
+            <div>
+                <h2 class="text-base font-black text-white"><i class="fa-solid fa-wallet text-emerald-400 mr-2"></i>Cüzdan & Çekim</h2>
+                <p class="text-xs text-slate-400 mt-0.5">TON ağındaki cüzdanına (Tonkeeper) güvenle transfer et.</p>
+            </div>
+
+            <div class="glass rounded-2xl p-4 space-y-3.5 border border-slate-800 shadow-xl">
                 <div>
-                    <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Cüzdan Adresi (TON Ağı)</label>
-                    <input type="text" id="wallet-address" placeholder="UQ..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                    <label class="block text-[10px] text-slate-400 uppercase font-extrabold mb-1 tracking-wider">TON Cüzdan Adresi</label>
+                    <input type="text" id="wallet-address" placeholder="UQ..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
                 </div>
                 <div>
-                    <label class="block text-[10px] text-slate-400 uppercase font-bold mb-1">Miktar (Min: 5000 PEPE)</label>
-                    <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500">
+                    <label class="block text-[10px] text-slate-400 uppercase font-extrabold mb-1 tracking-wider">Çekim Miktarı (Min: 5000 PEPE)</label>
+                    <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500 transition-colors">
                 </div>
-                <button onclick="requestWithdraw()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-bold py-3 rounded-lg text-xs transition-colors cursor-pointer">
+                <button onclick="requestWithdraw()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer">
                     Çekim Talebi Oluştur
                 </button>
             </div>
@@ -115,23 +136,39 @@
 
     </main>
 
+    <!-- ÖZEL BİLDİRİM MODALI (POPUP) -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="glass w-full max-w-xs rounded-3xl p-6 text-center space-y-4 border border-slate-700 shadow-2xl animate-in fade-in zoom-in duration-200">
+            <div id="modal-icon" class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl border border-emerald-500/30">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <div>
+                <h3 id="modal-title" class="font-black text-white text-base">İşlem Başarılı</h3>
+                <p id="modal-desc" class="text-xs text-slate-300 mt-1.5 leading-relaxed">Çekim talebiniz sıraya alındı.</p>
+            </div>
+            <button onclick="closeModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-2.5 rounded-xl text-xs transition-all cursor-pointer">
+                Tamam
+            </button>
+        </div>
+    </div>
+
     <!-- ALT NAVİGASYON ÇUBUĞU -->
-    <nav class="absolute bottom-0 left-0 right-0 bg-slate-900 border-t border-slate-800 flex justify-around p-3 z-50">
-        <button onclick="switchTab('mine')" class="nav-btn text-emerald-400 flex flex-col items-center space-y-1 cursor-pointer" data-target="mine">
+    <nav class="absolute bottom-0 left-0 right-0 glass border-t border-slate-800/80 flex justify-around p-3 z-40 backdrop-blur-xl">
+        <button onclick="switchTab('mine')" class="nav-btn text-emerald-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="mine">
             <i class="fa-solid fa-hammer text-base"></i>
-            <span class="text-[10px]">Madenci</span>
+            <span class="text-[10px] font-bold">Madenci</span>
         </button>
-        <button onclick="switchTab('earn')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer" data-target="earn">
+        <button onclick="switchTab('earn')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="earn">
             <i class="fa-solid fa-rectangle-ad text-base"></i>
-            <span class="text-[10px]">Kazan</span>
+            <span class="text-[10px] font-bold">Kazan</span>
         </button>
-        <button onclick="switchTab('shop')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer" data-target="shop">
+        <button onclick="switchTab('shop')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="shop">
             <i class="fa-solid fa-shop text-base"></i>
-            <span class="text-[10px]">Mağaza</span>
+            <span class="text-[10px] font-bold">Mağaza</span>
         </button>
-        <button onclick="switchTab('wallet')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer" data-target="wallet">
+        <button onclick="switchTab('wallet')" class="nav-btn text-slate-400 flex flex-col items-center space-y-1 cursor-pointer transition-colors" data-target="wallet">
             <i class="fa-solid fa-wallet text-base"></i>
-            <span class="text-[10px]">Cüzdan</span>
+            <span class="text-[10px] font-bold">Cüzdan</span>
         </button>
     </nav>
 
@@ -156,6 +193,26 @@
                     btn.classList.add('text-emerald-400');
                 }
             });
+        }
+
+        function showModal(title, desc, isSuccess = true) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            let iconDiv = document.getElementById('modal-icon');
+            if (isSuccess) {
+                iconDiv.className = "w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl border border-emerald-500/30";
+                iconDiv.innerHTML = '<i class="fa-solid fa-check"></i>';
+            } else {
+                iconDiv.className = "w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto text-xl border border-rose-500/30";
+                iconDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+            }
+            document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('custom-modal').classList.add('flex');
+        }
+
+        function closeModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+            document.getElementById('custom-modal').classList.remove('flex');
         }
 
         document.getElementById('mine-btn').addEventListener('click', () => {
@@ -187,7 +244,7 @@
         function watchAd() {
             gameState.balance += 500;
             updateUI();
-            alert("Reklam başarıyla izlendi: +500 PEPE eklendi!");
+            showModal("Ödül Eklendi!", "Reklam başarıyla izlendi, +500 PEPE hesabınıza eklendi.", true);
         }
 
         function buyRig() {
@@ -196,32 +253,32 @@
                 gameState.balance -= cost;
                 gameState.hashrate += 5.0;
                 updateUI();
-                alert("Rig başarıyla kuruldu! Pasif kazanç aktif.");
+                showModal("Rig Kuruldu!", "ASUS RX 470 madencilik rigi aktif edildi, pasif kazancınız arttı.", true);
             } else {
-                alert("Yetersiz PEPE bakiyesi!");
+                showModal("Yetersiz Bakiye", "Bu rigi satın almak için yeterli PEPE bakiyeniz bulunmuyor.", false);
             }
         }
 
         function requestWithdraw() {
-            let address = document.getElementById('wallet-address').value;
+            let address = document.getElementById('wallet-address').value.trim();
             let amount = parseFloat(document.getElementById('withdraw-amount').value);
             
             if (!address.startsWith('UQ') && !address.startsWith('EQ')) {
-                alert("Geçersiz TON adresi! 'UQ' veya 'EQ' ile başlamalı.");
+                showModal("Geçersiz Adres", "Tonkeeper cüzdan adresiniz 'UQ' veya 'EQ' ile başlamalıdır.", false);
                 return;
             }
             if (amount < 5000) {
-                alert("Minimum çekim 5000 PEPE'dir!");
+                showModal("Limit Hatası", "Minimum çekim miktarı 5000 PEPE'dir.", false);
                 return;
             }
             if (gameState.balance < amount) {
-                alert("Bakiyeniz bu tutar için yetersiz!");
+                showModal("Yetersiz Bakiye", "Hesabınızda bu tutarı çekecek kadar PEPE bulunmuyor.", false);
                 return;
             }
 
             gameState.balance -= amount;
             updateUI();
-            alert("Çekim talebiniz sıraya alındı. Tonkeeper cüzdanınıza gönderilecektir.");
+            showModal("Talep Oluşturuldu", "Çekim talebiniz başarıyla sıraya alındı. Tonkeeper cüzdanınıza gönderilecektir.", true);
         }
 
         updateUI();
