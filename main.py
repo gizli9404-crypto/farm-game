@@ -15,23 +15,19 @@ def index():
 def serve_static(path):
     return send_from_directory(PUBLIC_DIR, path)
 
-# 2. Telegram Botunu Arka Planda Çalıştıran Fonksiyon
+# 2. Telegram Botunu Başlatan Fonksiyon
 def run_telegram_bot():
     try:
-        # Buraya kendi bot başlatma kodunu ekleyeceksin.
-        # Örnek (Telebot veya python-telegram-bot kullanıyorsan):
-        # import bot_dosyasi
-        # bot_dosyasi.bot.infinity_polling()
+        # Buraya kendi bot kodunu yazacaksın (Örn: bot.infinity_polling())
         print("Telegram bot arka planda başlatıldı.")
     except Exception as e:
         print(f"Bot başlatılırken hata oluştu: {e}")
 
-if __name__ == "__main__":
-    # Botu web uygulamasını engellememesi için arka planda (Thread ile) başlatıyoruz
-    bot_thread = threading.Thread(target=run_telegram_bot)
-    bot_thread.daemon = True
-    bot_thread.start()
+# Gunicorn veya doğrudan çalıştırma fark etmeksizin botu arka planda tetikle
+bot_thread = threading.Thread(target=run_telegram_bot)
+bot_thread.daemon = True
+bot_thread.start()
 
-    # Flask Sunucusunu Railway portuyla ayağa kaldır
+if __name__ == "__main__":
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
