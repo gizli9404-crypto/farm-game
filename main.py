@@ -1,9 +1,9 @@
 import os
+import threading
 from flask import Flask, send_from_directory
 
+# 1. Flask Ayarları
 app = Flask(__name__)
-
-# Kök dizin ve public klasörü
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PUBLIC_DIR = os.path.join(BASE_DIR, 'public')
 
@@ -15,6 +15,23 @@ def index():
 def serve_static(path):
     return send_from_directory(PUBLIC_DIR, path)
 
+# 2. Telegram Botunu Arka Planda Çalıştıran Fonksiyon
+def run_telegram_bot():
+    try:
+        # Buraya kendi bot başlatma kodunu ekleyeceksin.
+        # Örnek (Telebot veya python-telegram-bot kullanıyorsan):
+        # import bot_dosyasi
+        # bot_dosyasi.bot.infinity_polling()
+        print("Telegram bot arka planda başlatıldı.")
+    except Exception as e:
+        print(f"Bot başlatılırken hata oluştu: {e}")
+
 if __name__ == "__main__":
+    # Botu web uygulamasını engellememesi için arka planda (Thread ile) başlatıyoruz
+    bot_thread = threading.Thread(target=run_telegram_bot)
+    bot_thread.daemon = True
+    bot_thread.start()
+
+    # Flask Sunucusunu Railway portuyla ayağa kaldır
     port = int(os.environ.get("PORT", 8080))
     app.run(host="0.0.0.0", port=port)
