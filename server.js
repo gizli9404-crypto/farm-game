@@ -1,49 +1,87 @@
+const { Telegraf, Markup } = require('telegraf');
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
 
+// Kendi Telegram Bot Token'ını buraya yazacaksın (BotFather'dan aldığın token)
+const BOT_TOKEN = 'BURAYA_BOT_TOKENINI_YAZ';
+const ADMIN_CHAT_ID = 'BURAYA_KENDI_TELEGRAM_ID_YAZ'; // Bildirimlerin geleceği senin veya kanalının ID'si
+
+const bot = new Telegraf(BOT_TOKEN);
 const app = express();
+
 app.use(express.json());
 app.use(cors());
-
-// Statik dosyalar için (Frontend arayüzü)
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Örnek kullanıcı veritabanı (Bellekte tutulur)
-let users = {};
+// Bellekte tutulan geçici kullanıcı veritabanı
+let users = {
+    "user_123": { balance: 10000, address: "", network: "" }
+};
 
-// Kullanıcı verisini getir veya oluştur
-app.post('/api/sync', (req, res) => {
-    const { userId } = req.body;
-    if (!users[userId]) {
-        users[userId] = {
-            balance: 0,
-            energy: 100,
-            maxEnergy: 100,
-            miningPower: 1,
-            lastUpdate: Date.now()
-        };
-    }
-    res.json(users[userId]);
-});
+// Çekim Talebi Oluşturma Endpoint'i (Mini App'ten gelir)
+app.post('/api/withdraw', async (req, res) => {
+    const { userId, amount, address, network } = req.body;
 
-// Madencilik tıklama / kazanç endpoint'i
-app.post('/api/mine', (req, res) => {
-    const { userId, clicks } = req.body;
-    let user = users[userId];
-
-    if (!user) {
-        return res.status(400).json({ error: "Kullanıcı bulunamadı!" });
+    if (!users[userId] || users[userId].balance < amount) {
+        return res.status(400).json({ success: false, message: "Yetersiz bakiye!" });
     }
 
-    // Basit kazanç hesaplama (Tıklama başına güç)
-    const earned = (clicks || 1) * user.miningPower;
-    user.balance += earned;
+    // Kullanıcının bakiyesinden düş
+    users[userId].balance -= amount;
+    users[userId].address = address;
 
-    res.json({ success: true, balance: user.balance });
+    // Admin kanalına butonlu bildirim gönder
+    try {
+        await bot.telegram.sendMessage(ADMIN_CHAT_ID, 
+            `📢 **Yeni Çekim Talebi!**\n\n` +
+            `👤 **Kullanıcı ID:** \`${userId}\`\n` +
+            `💰 **Miktar:** \`${amount} PEPE\`\n` +
+            `🌐 **Ağ:** \`${network}\`\n` +
+            `📍 **Adres:** \`${address}\``, 
+            {
+                parse_mode: 'Markdown',
+                ...Markup.inlineKeyboard([
+                    [
+                        Markup.button.callback('Onayla ✅', `approve_${userId}_${amount}`),
+                        Markup.button.callback('Reddet ❌', `reject_${userId}_${amount}`)
+                    ]
+                ])
+            }
+        );
+
+        res.json({ success: true, message: "Çekim talebiniz alındı, admin onayına gönderildi." });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: "Sunucu hatası oluştu." });
+    }
 });
+
+// Telegram Admin Buton Yanıtları (Onay / Red)
+bot.action(/approve_(.+)_(.+)/, async (ctx) => {
+    const userId = ctx.match[1];
+    const amount = ctx.match[2];
+
+    await ctx.editMessageText(`✅ **Talep Onaylandı!**\n\nKullanıcıya (${userId}) ${amount} PEPE ödemesi yapıldı ve onaylandı.`);
+    // İsteğe bağlı: Burada kullanıcıya bot üzerinden özel mesaj atılabilir.
+});
+
+bot.action(/reject_(.+)_(.+)/, async (ctx) => {
+    const userId = ctx.match[1];
+    const amount = ctx.match[2];
+
+    // Reddedilirse bakiyeyi kullanıcıya iade et
+    if (users[userId]) {
+        users[userId].balance += parseFloat(amount);
+    }
+
+    await ctx.editMessageText(`❌ **Talep Reddedildi!**\n\nİşlem iptal edildi, miktar kullanıcının hesabına iade edildi.`);
+});
+
+// Botu başlat
+bot.launch();
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Bot sunucusu ${PORT} portunda çalışıyor!`);
+    console.log(`🚀 Sistem ${PORT} portunda başarıyla çalışıyor!`);
 });
