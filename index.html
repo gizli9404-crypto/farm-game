@@ -18,13 +18,12 @@
         .tab-content.active { display: flex; }
         
         .glass-panel { 
-            background: rgba(15, 23, 42, 0.75); 
-            backdrop-filter: blur(16px); 
+            background: rgba(15, 23, 42, 0.85); 
+            backdrop-filter: blur(20px); 
             border: 1px solid rgba(255, 255, 255, 0.08); 
-            box-weight: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
         .glass-card { 
-            background: rgba(30, 41, 59, 0.5); 
+            background: rgba(30, 41, 59, 0.6); 
             border: 1px solid rgba(255, 255, 255, 0.06); 
         }
         
@@ -38,6 +37,12 @@
             50% { filter: drop-shadow(0 0 22px rgba(16, 185, 129, 0.5)); }
         }
         .wheel-glow { animation: neon-pulse 4s infinite ease-in-out; }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeIn 0.3s ease-in-out forwards; }
     </style>
 </head>
 <body class="flex flex-col h-screen justify-between overflow-hidden">
@@ -45,13 +50,13 @@
     <!-- ÜST HEADER BÖLGESİ -->
     <header class="p-4 glass-panel border-b border-slate-800/80 z-20 space-y-3">
         <div class="flex justify-between items-center">
-            <div class="flex bg-slate-950/80 p-1 rounded-xl border border-slate-800/80 shadow-inner">
+            <div class="flex bg-slate-950/90 p-1 rounded-xl border border-slate-800/80 shadow-inner">
                 <button class="px-3.5 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-black text-xs shadow-md">PEPE</button>
                 <button class="px-3.5 py-1.5 rounded-lg text-slate-400 font-bold text-xs hover:text-white transition-colors">TON</button>
             </div>
             <div class="flex space-x-2">
-                <button onclick="switchTab('wallet')" class="text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl font-bold border border-slate-700/60 transition-all shadow">Geçmiş</button>
-                <button onclick="switchTab('wallet')" class="text-xs bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black px-3.5 py-1.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all">Çekim Yap</button>
+                <button onclick="switchTab('wallet')" class="text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl font-bold border border-slate-700/60 transition-all shadow">Çekim</button>
+                <button onclick="switchTab('invite')" class="text-xs bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black px-3.5 py-1.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all"><i class="fa-solid fa-user-plus mr-1"></i> Davet Et</button>
             </div>
         </div>
 
@@ -64,14 +69,14 @@
                 <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">AdsGram Partner 🤝</span>
             </div>
             <div class="flex items-baseline space-x-2">
-                <span id="balance" class="text-2xl font-black text-white tracking-tight">0.0000</span>
+                <span id="balance" class="text-2xl font-black text-white tracking-tight">150.0000</span>
                 <span class="text-xs font-bold text-emerald-400">PEPE</span>
             </div>
             <div class="w-full bg-slate-950/90 h-2 rounded-full overflow-hidden p-0.5 border border-slate-800/80">
-                <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-[0%] rounded-full transition-all duration-500 shadow-sm"></div>
+                <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-[3%] rounded-full transition-all duration-500 shadow-sm"></div>
             </div>
             <div class="flex justify-between text-[10px] text-slate-400 font-semibold">
-                <span id="progress-text">0.00 / 5,000 PEPE (0%)</span>
+                <span id="progress-text">150.00 / 5,000 PEPE (3.0%)</span>
                 <span class="text-emerald-400 font-bold"><i class="fa-solid fa-shield-halved mr-1"></i>Güvenli Mod</span>
             </div>
         </div>
@@ -103,42 +108,20 @@
             </div>
         </div>
 
-        <!-- 2. SEKME: SPIN (ÇARK - HATASIZ SENKRONİZASYON) -->
-        <div id="tab-spin" class="tab-content active flex-col items-center space-y-3">
-            
+        <!-- 2. SEKME: SPIN (ÇARK) -->
+        <div id="tab-spin" class="tab-content flex-col items-center space-y-3">
             <div class="relative w-64 h-64 flex items-center justify-center my-1 wheel-glow">
-                <!-- Üst Sabit Ok İşareti (Gösterge) -->
                 <div class="absolute -top-3.5 z-30 text-amber-400 text-2xl filter drop-shadow-[0_3px_6px_rgba(0,0,0,0.9)]">
                     <i class="fa-solid fa-caret-down"></i>
                 </div>
-                
-                <!-- Çark Dış Premium Çerçeve -->
                 <div class="w-60 h-60 rounded-full p-1.5 bg-gradient-to-tr from-slate-800 via-emerald-500/30 to-amber-500/40 shadow-2xl flex items-center justify-center relative">
-                    
-                    <!-- SVG ÇARK (6 Dilim / Her dilim tam 60 derece)
-                         DİZİLİM (Saat yönünde sırayla):
-                         Dilim 0 (Üst-Sağ): 100 PEPE  (Merkez Açı: 30°)
-                         Dilim 1 (Sağ):     BOŞ       (Merkez Açı: 90°)
-                         Dilim 2 (Alt-Sağ): 250 PEPE  (Merkez Açı: 150°)
-                         Dilim 3 (Alt-Sol): 1000 🏆   (Merkez Açı: 210°)
-                         Dilim 4 (Sol):     BOŞ       (Merkez Açı: 270°)
-                         Dilim 5 (Üst-Sol): 50 PEPE   (Merkez Açı: 330°)
-                    -->
                     <svg id="svg-wheel" class="w-full h-full rounded-full overflow-hidden shadow-inner" viewBox="0 0 100 100">
-                        <!-- Dilim 0: 100 PEPE -->
                         <path d="M50 50 L50 3 A47 47 0 0 1 90.7 26.5 Z" fill="#0284c7" stroke="#0b0f19" stroke-width="1.5"/>
-                        <!-- Dilim 1: BOŞ -->
                         <path d="M50 50 L90.7 26.5 A47 47 0 0 1 90.7 73.5 Z" fill="#1e293b" stroke="#0b0f19" stroke-width="1.5"/>
-                        <!-- Dilim 2: 250 PEPE -->
                         <path d="M50 50 L90.7 73.5 A47 47 0 0 1 50 97 Z" fill="#7c3aed" stroke="#0b0f19" stroke-width="1.5"/>
-                        <!-- Dilim 3: 1000 PEPE -->
                         <path d="M50 50 L50 97 A47 47 0 0 1 9.3 73.5 Z" fill="#d97706" stroke="#0b0f19" stroke-width="1.5"/>
-                        <!-- Dilim 4: BOŞ -->
                         <path d="M50 50 L9.3 73.5 A47 47 0 0 1 9.3 26.5 Z" fill="#1e293b" stroke="#0b0f19" stroke-width="1.5"/>
-                        <!-- Dilim 5: 50 PEPE -->
                         <path d="M50 50 L9.3 26.5 A47 47 0 0 1 50 3 Z" fill="#059669" stroke="#0b0f19" stroke-width="1.5"/>
-
-                        <!-- Yazılar (Dilimlerin Tam Ortasına Konumlandırıldı) -->
                         <g font-size="6.5" font-weight="900" text-anchor="middle" dominant-baseline="middle">
                             <text x="73" y="27" fill="#e0f2fe">100 PEPE</text>
                             <text x="78" y="53" fill="#94a3b8">BOŞ</text>
@@ -148,19 +131,15 @@
                             <text x="30" y="27" fill="#ecfdf5">50 PEPE</text>
                         </g>
                     </svg>
-
-                    <!-- Orta Merkez Rozeti -->
                     <div class="absolute w-12 h-12 bg-slate-950 rounded-full border-2 border-amber-400 z-20 shadow-2xl flex items-center justify-center text-amber-400 text-sm">
                         <i class="fa-solid fa-gem"></i>
                     </div>
                 </div>
             </div>
-
             <div class="text-center">
-                <span id="ticket-count" class="text-sm font-black text-emerald-400 tracking-wide">0 Biletiniz Var</span>
+                <span id="ticket-count" class="text-sm font-black text-emerald-400 tracking-wide">2 Biletiniz Var</span>
                 <p class="text-[10px] text-slate-400 mt-0.5">Hatasız senkronize adil çark sistemi.</p>
             </div>
-
             <div class="w-full max-w-xs space-y-2">
                 <button onclick="switchTab('home')" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-slate-950 font-black py-2.5 rounded-xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer flex items-center justify-center">
                     <i class="fa-solid fa-play mr-2"></i> REKLAM İZLE & BİLET KAZAN
@@ -180,29 +159,113 @@
             </div>
         </div>
 
-        <!-- 4. SEKME: INVITE -->
+        <!-- 4. SEKME: INVITE (YENİLENMİŞ & PROFESYONEL) -->
         <div id="tab-invite" class="tab-content flex-col space-y-3">
-            <h2 class="text-base font-black text-white">Arkadaşını Davet Et</h2>
-            <p class="text-xs text-slate-400">Davet ettiğin her arkadaşın için **+2 Bilet** kazan!</p>
-            <button onclick="showModal('Davet Linki', 'Özel referans linkiniz kopyalandı!')" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow cursor-pointer">Linki Kopyala</button>
-        </div>
+            <div class="flex justify-between items-center">
+                <h2 class="text-base font-black text-white">Arkadaşını Davet Et</h2>
+                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">+2 Bilet / Kişi</span>
+            </div>
+            
+            <div class="glass-card p-4 rounded-2xl space-y-3 border-slate-800/80 shadow-lg">
+                <div class="text-xs text-slate-300 leading-relaxed">
+                    Bağlantınızı arkadaşlarınızla paylaşın. Her katılımda hem siz hem arkadaşınız anında ödül kazanın!
+                </div>
+                <div class="flex space-x-2">
+                    <input type="text" readonly id="ref-link" value="https://t.me/SanalMinerProBot?start=ref_98412" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-2 text-[11px] text-emerald-400 font-mono focus:outline-none">
+                    <button onclick="copyRefLink()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow transition-all cursor-pointer whitespace-nowrap"><i class="fa-solid fa-copy mr-1"></i> Kopyala</button>
+                </div>
+            </div>
 
-        <!-- 5. SEKME: RANK -->
-        <div id="tab-rank" class="tab-content flex-col space-y-3">
-            <h2 class="text-base font-black text-white">Liderlik Tablosu</h2>
-            <div class="glass-card p-3.5 rounded-2xl space-y-2 text-xs border-slate-800/80">
-                <div class="flex justify-between items-center bg-slate-900/60 p-2.5 rounded-xl border border-slate-800"><span class="text-emerald-400 font-bold">🥇 Topluluk Lideri</span><span class="text-white font-black">24,100 PEPE</span></div>
-                <div class="flex justify-between items-center bg-emerald-500/10 p-2.5 rounded-xl border border-emerald-500/30"><span class="text-emerald-400 font-bold">📍 Siz</span><span id="rank-balance" class="text-emerald-400 font-black">0 PEPE</span></div>
+            <div class="glass-card p-4 rounded-2xl space-y-2.5 border-slate-800/80">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-bold">Davet Edilen Arkadaşlar</span>
+                    <span id="ref-count" class="text-white font-black bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">0 Kişi</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400 font-bold">Kazanılan Toplam Bonus</span>
+                    <span class="text-emerald-400 font-black bg-emerald-500/10 px-2.5 py-1 rounded-lg border border-emerald-500/20">0 PEPE</span>
+                </div>
             </div>
         </div>
 
-        <!-- CÜZDAN -->
+        <!-- 5. SEKME: RANK (CANLI SENKRONİZE LİDERLİK TABLOSU) -->
+        <div id="tab-rank" class="tab-content flex-col space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-base font-black text-white">Canlı Liderlik Tablosu</h2>
+                <div class="flex items-center space-x-1.5 text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2.5 py-1 rounded-full border border-emerald-500/20">
+                    <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+                    <span>Canlı Akış</span>
+                </div>
+            </div>
+            
+            <div class="glass-card p-3 rounded-2xl space-y-2 text-xs border-slate-800/80 shadow-lg">
+                <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-amber-400 font-black">🥇</span>
+                        <span class="text-white font-bold">CryptoKing_77</span>
+                    </div>
+                    <span class="text-emerald-400 font-black">34,500 PEPE</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-slate-300 font-black">🥈</span>
+                        <span class="text-white font-bold">TonMaster99</span>
+                    </div>
+                    <span class="text-emerald-400 font-black">28,100 PEPE</span>
+                </div>
+                <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-slate-800">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-amber-600 font-black">🥉</span>
+                        <span class="text-white font-bold">AnadoluMiner</span>
+                    </div>
+                    <span class="text-emerald-400 font-black">19,400 PEPE</span>
+                </div>
+
+                <!-- Kullanıcının Kendi Sıralaması -->
+                <div class="flex justify-between items-center bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/30 mt-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="text-emerald-400 font-black">📍</span>
+                        <span class="text-emerald-300 font-bold">Siz (142. Sıra)</span>
+                    </div>
+                    <span id="rank-balance" class="text-emerald-400 font-black">150 PEPE</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- CÜZDAN & CANLI ÇEKİM AKIŞI -->
         <div id="tab-wallet" class="tab-content flex-col space-y-3">
             <h2 class="text-base font-black text-white">Cüzdan & Çekim İşlemleri</h2>
-            <div class="glass-card p-4 rounded-2xl space-y-3 border-slate-800/80">
-                <input type="text" id="wallet-addr" placeholder="TON Cüzdan Adresi (UQ...)" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
-                <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
-                <button onclick="requestWithdraw()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow cursor-pointer">Çekim Talebi Ver (Min: 5000 PEPE)</button>
+            
+            <div class="glass-card p-4 rounded-2xl space-y-3 border-slate-800/80 shadow-lg">
+                <div class="space-y-1">
+                    <label class="text-[10px] text-slate-400 font-bold uppercase">TON Cüzdan Adresi</label>
+                    <input type="text" id="wallet-addr" placeholder="UQ... veya EQ..." class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <div class="space-y-1">
+                    <label class="text-[10px] text-slate-400 font-bold uppercase">Çekim Miktarı (Min: 5000 PEPE)</label>
+                    <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
+                </div>
+                <button onclick="requestWithdraw()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow cursor-pointer transition-all hover:opacity-90">
+                    <i class="fa-solid fa-paper-plane mr-1"></i> Çekim Talebi Ver
+                </button>
+            </div>
+
+            <!-- Canlı Ödeme Akışı & Son İşlemler (Detaylı Bilgi) -->
+            <div class="glass-card p-3.5 rounded-2xl space-y-2.5 border-slate-800/80">
+                <div class="flex justify-between items-center text-xs border-b border-slate-800/80 pb-2">
+                    <span class="font-bold text-white flex items-center"><i class="fa-solid fa-clock-rotate-left text-emerald-400 mr-1.5"></i> Canlı Ödeme Akışı</span>
+                    <span class="text-[10px] text-emerald-400 font-semibold">Anlık Güncelleniyor</span>
+                </div>
+                <div id="live-withdrawals" class="space-y-2 text-[11px]">
+                    <div class="flex justify-between items-center bg-slate-950/60 p-2 rounded-xl border border-slate-800/60 animate-fade">
+                        <span class="text-slate-300 font-medium">UQv2...81aF (5,000 PEPE)</span>
+                        <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Ödendi ✅</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-950/60 p-2 rounded-xl border border-slate-800/60 animate-fade">
+                        <span class="text-slate-300 font-medium">EQdc...39kL (12,000 PEPE)</span>
+                        <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Ödendi ✅</span>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -269,6 +332,17 @@
             document.getElementById('progress-text').innerText = `${gameState.balance.toFixed(2)} / 5,000 PEPE (${percentage.toFixed(1)}%)`;
         }
 
+        function copyRefLink() {
+            let copyText = document.getElementById("ref-link");
+            navigator.clipboard.writeText(copyText.value);
+            showModal("Başarılı 📋", "Özel davet bağlantınız panoya kopyalandı!");
+            let countEl = document.getElementById("ref-count");
+            let currentRefs = parseInt(countEl.innerText);
+            countEl.innerText = (currentRefs + 1) + " Kişi";
+            gameState.tickets += 2;
+            updateUI();
+        }
+
         function watchAdTask(amount, counterId, limit) {
             let countEl = document.getElementById(counterId);
             let currentCount = parseInt(countEl.innerText);
@@ -297,14 +371,12 @@
             let prizeWon = 0;
             let prizeText = "";
 
-            // Çark dilimlerinin merkez açıları ile JavaScript olasılıkları tam senkronize:
-            // Dilimler: 100 PEPE (30°), BOŞ (90°), 250 PEPE (150°), 1000 PEPE (210°), BOŞ (270°), 50 PEPE (330°)
             if (rand < 35) {
                 targetCenterAngle = 330; // 50 PEPE
                 prizeWon = 50;
                 prizeText = "Çarktan 50 PEPE kazandınız!";
             } else if (rand < 65) {
-                targetCenterAngle = Math.random() < 0.5 ? 90 : 270; // BOŞ dilimler
+                targetCenterAngle = Math.random() < 0.5 ? 90 : 270; // BOŞ
                 prizeWon = 0;
                 prizeText = "Üzgünüm, bu çevirmede ödül çıkmadı (BOŞ)!";
             } else if (rand < 85) {
@@ -321,7 +393,6 @@
                 prizeText = "TEBRİKLER! Büyük İkramiye: 1000 PEPE Kazandınız! 🏆";
             }
 
-            // 6 tam tur (2160°) + okun gösterdiği hedef açı hesaplaması
             let extraSpins = 360 * 6;
             currentRotation = extraSpins + (360 - targetCenterAngle);
             wheel.style.transform = `rotate(${currentRotation}deg)`;
@@ -356,7 +427,15 @@
 
             gameState.balance -= amount;
             updateUI();
-            showModal("Talep Alındı", "Çekim talebiniz işleme alındı.");
+            showModal("Talep Alındı", "Çekim talebiniz blokzincir kuyruğuna eklendi.");
+
+            // Canlı akışa ekle
+            let liveList = document.getElementById('live-withdrawals');
+            let shortAddr = addr.substring(0, 4) + "..." + addr.substring(addr.length - 4);
+            let newItem = document.createElement('div');
+            newItem.className = "flex justify-between items-center bg-slate-950/60 p-2 rounded-xl border border-slate-800/60 animate-fade";
+            newItem.innerHTML = `<span class="text-slate-300 font-medium">${shortAddr} (${amount} PEPE)</span><span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded text-[10px]">İşleniyor ⏳</span>`;
+            liveList.prepend(newItem);
         }
 
         updateUI();
