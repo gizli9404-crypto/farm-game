@@ -1,35 +1,12 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <title>Animasyonlu Çarkıfelek</title>
-    <style>
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #f0f2f5; font-family: Arial, sans-serif; }
-        .wrapper { position: relative; width: 300px; height: 300px; }
-        .pointer { position: absolute; top: -20px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-bottom: 30px solid #e74c3c; z-index: 10; }
-        #wheel { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #333; background: conic-gradient(#ff5252 0deg 90deg, #ffeb3b 90deg 180deg, #4caf50 180deg 270deg, #2196f3 270deg 360deg); transition: transform 4s cubic-bezier(0.17, 0.67, 0.12, 0.99); }
-        button { margin-top: 25px; padding: 10px 20px; font-size: 16px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
-        button:active { background: #555; }
-    </style>
-</head>
-<body>
-
-    <div class="wrapper">
-        <div class="pointer"></div>
-        <div id="wheel"></div>
-    </div>
-    <button onclick="spinWheel()">Çarkı Çevir</button>
-
-    <script>
-        const wheel = document.getElementById("wheel");
-        let currentAngle = 0;
-
-        function spinWheel() {
-            const randomExtra = Math.floor(Math.random() * 3600) + 1440; 
-            currentAngle += randomExtra;
-            wheel.style.transform = `rotate(${currentAngle}deg)`;
-        }
-    </script>
-
-</body>
-</html>
+<div class="wheel-container">
+  <div class="pointer"></div>
+  <div id="wheel" class="wheel">
+    <div class="slice" style="--i:1; --clr:#f87171;">PEPE</div>
+    <div class="slice" style="--i:2; --clr:#fb923c;">0.1 ETH</div>
+    <div class="slice" style="--i:3; --clr:#facc15;">1000 PEPE</div>
+    <div class="slice" style="--i:4; --clr:#4ade80;">BOOS</div>
+    <div class="slice" style="--i:5; --clr:#38bdf8;">500 PEPE</div>
+    <div class="slice" style="--i:6; --clr:#c084fc;">TRY</div>
+  </div>
+</div>
+<button onclick="spinWheel()">Çarkı Çevir</button>
