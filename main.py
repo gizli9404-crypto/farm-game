@@ -3,7 +3,7 @@ const { Telegraf } = require('telegraf');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-const BOT_TOKEN = process.env.BOT_TOKEN || "BURAYA_BOT_TOKEN_YAZ";
+const BOT_TOKEN = process.env.BOT_TOKEN || "8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM";
 const bot = new Telegraf(BOT_TOKEN);
 const app = express();
 const PORT = process.env.PORT || 3000;
