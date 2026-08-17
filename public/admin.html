@@ -70,7 +70,8 @@
                 <label class="text-[10px] text-slate-400 font-black uppercase tracking-wider">Yönetici Gizli Şifresi</label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-500"><i class="fa-solid fa-lock text-xs"></i></span>
-                    <input type="password" id="secret-input" placeholder="Gizli Şifrenizi Girin..." class="w-full bg-slate-950/90 border border-slate-800 rounded-2xl py-3 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-emerald-500 transition-all shadow-inner">
+                    <!-- Şifre varsayılan olarak "123" yapıldı -->
+                    <input type="password" id="secret-input" value="123" placeholder="Gizli Şifrenizi Girin..." class="w-full bg-slate-950/90 border border-slate-800 rounded-2xl py-3 pl-10 pr-4 text-xs text-white focus:outline-none focus:border-emerald-500 transition-all shadow-inner">
                 </div>
             </div>
             <button onclick="checkAuth()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-500 hover:opacity-95 text-slate-950 font-black py-3 rounded-2xl text-xs transition-all shadow-lg shadow-emerald-500/20 cursor-pointer flex items-center justify-center">
@@ -309,7 +310,6 @@
 
         function updateChart(users) {
             if(!analyticsChartInstance) return;
-            // Bakiyeye göre sırala ve ilk 5 kullanıcıyı al
             let sorted = [...users].sort((a,b) => (b.balance || 0) - (a.balance || 0)).slice(0, 5);
             analyticsChartInstance.data.labels = sorted.map(u => '@' + (u.username || 'Anonim'));
             analyticsChartInstance.data.datasets[0].data = sorted.map(u => u.balance || 0);
@@ -335,7 +335,6 @@
                         updateChart(data);
                     }
                 }).catch(e => {
-                    // Fallback / Örnek Veri Simülasyonu
                     let mockUsers = [
                         { user_id: '101', username: 'CryptoKing_77', balance: 14500 },
                         { user_id: '102', username: 'TonMaster99', balance: 8200 },
