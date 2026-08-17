@@ -97,4 +97,76 @@
                 <input type="text" id="target-user-id" placeholder="Telegram ID (örn: 582910492)" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition-colors shadow-inner">
                 <div class="flex space-x-2">
                     <input type="number" id="target-amount" placeholder="Miktar (Örn: 1000)" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition-colors shadow-inner">
-                    <select id="target-type" class="bg-slate-900/90 border border-slate-800
+                    <select id="target-type" class="bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition-colors">
+                        <option value="balance">PEPE (Bakiye)</option>
+                        <option value="tickets">Bilet (Tickets)</option>
+                    </select>
+                </div>
+                <button onclick="modifyUserAsset()" class="w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 hover:opacity-90 text-slate-950 font-black rounded-xl text-xs transition shadow-lg shadow-amber-500/20 cursor-pointer flex items-center justify-center">
+                    <i class="fa-solid fa-bolt mr-2"></i> Varlığı Kullanıcıya Tanımla
+                </button>
+            </div>
+        </div>
+
+        <div class="glass p-6 rounded-2xl space-y-4 shadow-xl">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-wallet"></i></div>
+                    <h2 class="font-bold text-sm text-white">Bekleyen Çekim Talepleri</h2>
+                </div>
+                <span id="withdraw-count-badge" class="text-[10px] bg-amber-500/10 text-amber-400 font-bold px-2.5 py-1 rounded-full border border-amber-500/20">0 Talep</span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider">
+                        <tr>
+                            <th class="py-3 px-3">Kullanıcı</th>
+                            <th class="py-3 px-3">Miktar</th>
+                            <th class="py-3 px-3">Cüzdan Adresi & Ağ</th>
+                            <th class="py-3 px-3 text-right">Aksiyon</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdraw-table-body">
+                        <tr>
+                            <td colspan="4" class="py-6 text-center text-slate-500 italic">Veriler yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="glass p-6 rounded-2xl space-y-4 shadow-xl">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-users-line"></i></div>
+                    <h2 class="font-bold text-sm text-white">Kayıtlı Tüm Kullanıcılar</h2>
+                </div>
+                <div class="w-full sm:w-64">
+                    <input type="text" id="user-search" onkeyup="filterUsers()" placeholder="Kullanıcı adı veya ID ara..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl px-3 py-2 text-xs text-slate-200 focus:outline-none focus:border-emerald-500 shadow-inner">
+                </div>
+            </div>
+            
+            <div class="overflow-x-auto max-h-96 overflow-y-auto">
+                <table class="w-full text-left text-xs text-slate-300">
+                    <thead class="border-b border-slate-800 text-slate-400 uppercase text-[10px] tracking-wider sticky top-0 bg-slate-950/90 backdrop-blur-md">
+                        <tr>
+                            <th class="py-3 px-3">Telegram ID</th>
+                            <th class="py-3 px-3">Kullanıcı Adı</th>
+                            <th class="py-3 px-3">Bakiye (PEPE)</th>
+                            <th class="py-3 px-3">Bilet</th>
+                            <th class="py-3 px-3">Cüzdan</th>
+                        </tr>
+                    </thead>
+                    <tbody id="all-users-table-body">
+                        <tr>
+                            <td colspan="5" class="py-6 text-center text-slate-500 italic">Kullanıcılar yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="toast" class="fixed bottom-6 right-6 z
