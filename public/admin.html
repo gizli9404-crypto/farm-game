@@ -1,185 +1,28 @@
 <!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Miner Pro — Admin Control & Live Logs</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-6">
-    <div class="max-w-7xl mx-auto space-y-6">
-        <!-- Üst Bilgi -->
-        <header class="bg-slate-900 border border-slate-800 p-4 rounded-xl flex justify-between items-center shadow-lg">
-            <div>
-                <h1 class="text-xl font-bold text-emerald-400">🛡️ Sanal Miner Pro — Admin Control</h1>
-                <p class="text-xs text-slate-400">Veritabanı & Bot Worker Canlı Senkronize</p>
-            </div>
-            <button onclick="loadAdminData()" class="bg-emerald-600 hover:bg-emerald-500 px-4 py-2 rounded-lg text-sm font-semibold transition">Yenile</button>
-        </header>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <!-- 1. Bakiye Düzenleme Paneli -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg space-y-4">
-                <h2 class="text-md font-bold text-amber-400">💰 Kullanıcı Bakiye / Puan Düzenleme</h2>
-                <form id="update-balance-form" class="space-y-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Kullanıcı Telegram ID</label>
-                        <input type="text" id="telegram_id" required placeholder="Örn: 8256539395" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">İşlem Türü</label>
-                        <select id="action" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                            <option value="set">Sabitle (Eşitle)</option>
-                            <option value="add">Ekle (+)</option>
-                            <option value="sub">Çıkar (-)</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Miktar (PEPE)</label>
-                        <input type="number" id="amount" step="any" required placeholder="1000" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-500 py-2.5 rounded-lg text-sm font-bold transition">Bakiyeyi Anlık Güncelle</button>
-                </form>
-            </div>
-
-            <!-- 2. Aktif Çekimler Tablosu -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg space-y-4 md:col-span-2">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-md font-bold text-emerald-400">💳 Çekimler (Aktif)</h2>
-                    <span id="withdrawal-count" class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300">0 Talep</span>
-                </div>
-                <div class="overflow-x-auto max-h-60 overflow-y-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-950 text-slate-400 uppercase">
-                            <tr>
-                                <th class="p-2">Kimden</th>
-                                <th class="p-2">Tutar</th>
-                                <th class="p-2">Cüzdan / Durum</th>
-                            </tr>
-                        </thead>
-                        <tbody id="withdrawals-tbody" class="divide-y divide-slate-800">
-                            <tr><td colspan="3" class="p-4 text-center text-slate-500">Henüz çekim talebi yok.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- 3. Kayıtlı Kullanıcılar Listesi -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg space-y-4">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-md font-bold text-cyan-400">👥 Kayıtlı Kullanıcılar</h2>
-                    <span id="user-count" class="text-xs bg-slate-800 px-2 py-1 rounded text-slate-300">0 Kullanıcı</span>
-                </div>
-                <div class="overflow-x-auto max-h-60 overflow-y-auto">
-                    <table class="w-full text-left text-xs">
-                        <thead class="bg-slate-950 text-slate-400 uppercase">
-                            <tr>
-                                <th class="p-2">Kullanıcı</th>
-                                <th class="p-2">Telegram ID</th>
-                                <th class="p-2 text-right">Bakiye</th>
-                            </tr>
-                        </thead>
-                        <tbody id="users-tbody" class="divide-y divide-slate-800">
-                            <tr><td colspan="3" class="p-4 text-center text-slate-500">Kayıtlı kullanıcı bulunamadı.</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 4. Toplu Duyuru Gönder -->
-            <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl shadow-lg space-y-4">
-                <h2 class="text-md font-bold text-purple-400">📢 Telegram Bot Duyuru Gönder</h2>
-                <form id="broadcast-form" class="space-y-3">
-                    <div>
-                        <label class="block text-xs text-slate-400 mb-1">Duyuru Metni</label>
-                        <textarea id="broadcast-msg" rows="3" required placeholder="Tüm kullanıcılara bildirim olarak gönderilecek metin..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2.5 text-sm text-white focus:outline-none focus:border-purple-500"></textarea>
-                    </div>
-                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 py-2.5 rounded-lg text-sm font-bold transition">Toplu Bildirim Gönder</button>
-                </form>
-            </div>
-        </div>
-    </div>
+<html>
+<body>
+    <h1>Oyun Ekranı</h1>
+    <p>Bakiyen: <span id="balance">0</span></p>
+    <button onclick="addMoney()">10 Puan Kazan</button>
 
     <script>
-        async function loadAdminData() {
-            try {
-                // Çekimleri Getir
-                const resW = await fetch('/api/withdrawals');
-                const dataW = await resW.json();
-                if (dataW.success && dataW.withdrawals.length > 0) {
-                    document.getElementById('withdrawal-count').innerText = dataW.withdrawals.length + ' Talep';
-                    const tbody = document.getElementById('withdrawals-tbody');
-                    tbody.innerHTML = dataW.withdrawals.map(w => `
-                        <tr>
-                            <td class="p-2 font-medium">@${w.username || w.telegram_id}</td>
-                            <td class="p-2 text-emerald-400 font-bold">${w.amount} PEPE</td>
-                            <td class="p-2 text-slate-400 truncate max-w-xs">${w.wallet}</td>
-                        </tr>
-                    `).join('');
-                }
-
-                // Kullanıcıları Getir
-                const resU = await fetch('/api/leaderboard');
-                const users = await resU.json();
-                if (Array.isArray(users) && users.length > 0) {
-                    document.getElementById('user-count').innerText = users.length + ' Kullanıcı';
-                    const tbody = document.getElementById('users-tbody');
-                    tbody.innerHTML = users.map(u => `
-                        <tr>
-                            <td class="p-2 font-medium">@${u.username || 'Kullanıcı'}</td>
-                            <td class="p-2 text-slate-400">${u.telegram_id}</td>
-                            <td class="p-2 text-right text-amber-400 font-bold">${u.balance} PEPE</td>
-                        </tr>
-                    `).join('');
-                }
-            } catch (err) {
-                console.error('Veri yükleme hatası:', err);
-            }
+        const telegram_id = "12345"; // Bunu kendi ID'nle değiştir
+        
+        function addMoney() {
+            fetch('/api/update-balance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: telegram_id, amount: 10 })
+            }).then(() => location.reload());
         }
 
-        // Bakiye Güncelleme Form İşlemi
-        document.getElementById('update-balance-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const telegram_id = document.getElementById('telegram_id').value;
-            const action = document.getElementById('action').value;
-            const amount = parseFloat(document.getElementById('amount').value);
-
-            const res = await fetch('/api/admin/update-balance', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_id, action, amount })
-            });
-            const result = await res.json();
-            if (result.success) {
-                alert('İşlem Başarılı! Yeni Bakiye: ' + result.new_balance + ' PEPE');
-                loadAdminData();
-            } else {
-                alert('Hata: ' + result.error);
-            }
+        fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ telegram_id: telegram_id })
+        }).then(res => res.json()).then(data => {
+            document.getElementById('balance').innerText = data.balance;
         });
-
-        // Toplu Duyuru Form İşlemi
-        document.getElementById('broadcast-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const message = document.getElementById('broadcast-msg').value;
-
-            const res = await fetch('/api/broadcast', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message })
-            });
-            const result = await res.json();
-            if (result.success) {
-                alert('Duyuru başarıyla ' + result.sent_count + ' kullanıcıya gönderildi!');
-                document.getElementById('broadcast-msg').value = '';
-            } else {
-                alert('Hata: ' + result.error);
-            }
-        });
-
-        window.onload = loadAdminData;
     </script>
 </body>
 </html>
