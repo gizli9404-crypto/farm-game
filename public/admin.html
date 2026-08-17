@@ -2,62 +2,58 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Sanal Miner Pro - Yönetim Paneli</title>
+    <title>Sanal Miner Pro - Gelişmiş Yönetim Paneli</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen p-6 font-sans">
-    <div class="max-w-5xl mx-auto space-y-6">
+    <div class="max-w-6xl mx-auto space-y-6">
         
         <!-- Üst Başlık ve Şifre Giriş Alanı -->
         <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl gap-4 shadow-xl">
             <div>
-                <h1 class="text-2xl font-black text-emerald-400">⚡ Sanal Miner Pro - Admin</h1>
-                <p class="text-xs text-slate-400 mt-1">Sistem verilerini yönetin ve çekim taleplerini inceleyin.</p>
+                <h1 class="text-2xl font-black text-emerald-400">⚡ Sanal Miner Pro - Admin Panel</h1>
+                <p class="text-xs text-slate-400 mt-1">Bütün aktiviteleri görüntüleyin, bakiyeleri düzenleyin ve talepleri yönetin.</p>
             </div>
             <div class="flex space-x-2 w-full md:w-auto">
                 <input type="password" id="admin-pass" placeholder="Admin Şifresi" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-sm text-white focus:outline-none focus:border-emerald-500 w-full md:w-64">
-                <button onclick="loadAllData()" class="bg-emerald-500 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm whitespace-nowrap hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/10">Verileri Getir</button>
+                <button onclick="loadAllData()" class="bg-emerald-500 text-slate-950 font-bold px-5 py-2 rounded-xl text-sm whitespace-nowrap hover:bg-emerald-400 transition-all shadow-lg shadow-emerald-500/10">Verileri Yenile</button>
             </div>
         </div>
 
         <!-- Sekmeler (Tabs) -->
-        <div class="flex space-x-3 border-b border-slate-800 pb-3">
-            <button onclick="switchTab('withdrawals')" id="tab-withdrawals-btn" class="px-5 py-2 rounded-xl text-sm font-bold bg-emerald-500 text-slate-950 transition-all">Çekim Talepleri</button>
-            <button onclick="switchTab('users')" id="tab-users-btn" class="px-5 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all">Kullanıcı Listesi</button>
+        <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-3">
+            <button onclick="switchTab('withdrawals')" id="tab-withdrawals-btn" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500 text-slate-950 transition-all">Çekim Talepleri</button>
+            <button onclick="switchTab('ads')" id="tab-ads-btn" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all">Anlık Reklam İzleyenler</button>
+            <button onclick="switchTab('users')" id="tab-users-btn" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all">Kullanıcı Yönetimi & Bakiyeler</button>
         </div>
 
         <!-- Çekim Talepleri Sekmesi -->
         <div id="withdrawals-section" class="space-y-3">
-            <div class="text-slate-500 text-sm p-4 bg-slate-900/50 border border-slate-800/50 rounded-xl">Şifreyi girip "Verileri Getir" butonuna basarak çekim taleplerini listeleyin.</div>
+            <div class="text-slate-500 text-sm p-4 bg-slate-900/50 border border-slate-800/50 rounded-xl">Şifreyi girip verileri getirin.</div>
         </div>
 
-        <!-- Kullanıcılar Sekmesi (Baştan gizli) -->
+        <!-- Anlık Reklamlar Sekmesi -->
+        <div id="ads-section" class="space-y-3 hidden">
+            <div class="text-slate-500 text-sm p-4 bg-slate-900/50 border border-slate-800/50 rounded-xl">Şifreyi girip verileri getirin.</div>
+        </div>
+
+        <!-- Kullanıcılar Sekmesi -->
         <div id="users-section" class="space-y-3 hidden">
-            <div class="text-slate-500 text-sm p-4 bg-slate-900/50 border border-slate-800/50 rounded-xl">Şifreyi girip "Verileri Getir" butonuna basarak kullanıcıları listeleyin.</div>
+            <div class="text-slate-500 text-sm p-4 bg-slate-900/50 border border-slate-800/50 rounded-xl">Şifreyi girip verileri getirin.</div>
         </div>
 
     </div>
 
     <script>
-        let cachedData = { withdrawals: [], users: [] };
+        let cachedData = { withdrawals: [], ads: [], users: [] };
 
         function switchTab(tab) {
-            const wSec = document.getElementById('withdrawals-section');
-            const uSec = document.getElementById('users-section');
-            const wBtn = document.getElementById('tab-withdrawals-btn');
-            const uBtn = document.getElementById('tab-users-btn');
-
-            if (tab === 'withdrawals') {
-                wSec.classList.remove('hidden');
-                uSec.classList.add('hidden');
-                wBtn.className = "px-5 py-2 rounded-xl text-sm font-bold bg-emerald-500 text-slate-950 transition-all shadow-lg shadow-emerald-500/10";
-                uBtn.className = "px-5 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all";
-            } else {
-                uSec.classList.remove('hidden');
-                wSec.classList.add('hidden');
-                uBtn.className = "px-5 py-2 rounded-xl text-sm font-bold bg-emerald-500 text-slate-950 transition-all shadow-lg shadow-emerald-500/10";
-                wBtn.className = "px-5 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all";
-            }
+            ['withdrawals', 'ads', 'users'].forEach(t => {
+                document.getElementById(`${t}-section`).classList.add('hidden');
+                document.getElementById(`tab-${t}-btn`).className = "px-4 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all";
+            });
+            document.getElementById(`${tab}-section`).classList.remove('hidden');
+            document.getElementById(`tab-${tab}-btn`).className = "px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500 text-slate-950 transition-all shadow-lg shadow-emerald-500/10";
         }
 
         async function loadAllData() {
@@ -68,82 +64,103 @@
             }
 
             try {
-                // Çekim taleplerini çek
-                const resW = await fetch(`/api/admin/withdrawals?secret=${pass}`);
-                // Kullanıcıları çek
-                const resU = await fetch(`/api/admin/users?secret=${pass}`);
+                const [resW, resA, resU] = await Promise.all([
+                    fetch(`/api/admin/withdrawals?secret=${pass}`),
+                    fetch(`/api/admin/ads?secret=${pass}`),
+                    fetch(`/api/admin/users?secret=${pass}`)
+                ]);
 
-                if (!resW.ok || !resU.ok) {
+                if (!resW.ok || !resA.ok || !resU.ok) {
                     alert("Yetkisiz erişim veya yanlış şifre!");
                     return;
                 }
 
                 cachedData.withdrawals = await resW.json();
+                cachedData.ads = await resA.json();
                 cachedData.users = await resU.json();
 
                 renderWithdrawals();
+                renderAds();
                 renderUsers();
             } catch (err) {
-                alert("Veriler çekilirken bir hata oluştu: " + err);
+                alert("Veriler çekilirken hata oluştu: " + err);
             }
         }
 
         function renderWithdrawals() {
             const container = document.getElementById('withdrawals-section');
-            container.innerHTML = "";
-
-            if (cachedData.withdrawals.length === 0) {
-                container.innerHTML = '<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center text-slate-400 text-sm">Henüz bekleyen çekim talebi bulunmuyor.</div>';
-                return;
-            }
-
+            container.innerHTML = cachedData.withdrawals.length === 0 ? '<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center text-slate-400 text-sm">Talep yok.</div>' : '';
             cachedData.withdrawals.forEach(item => {
                 container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm shadow-md hover:border-slate-700 transition-all">
-                        <div class="space-y-1">
-                            <div class="flex items-center gap-2">
-                                <span class="font-black text-emerald-400 text-base">${item.amount} PEPE</span>
-                                <span class="bg-slate-800 text-slate-300 text-xs px-2.5 py-0.5 rounded-md">ID: ${item.user_id}</span>
-                            </div>
-                            <div class="text-xs text-slate-400">Kullanıcı: <span class="text-white font-medium">@${item.username}</span></div>
-                            <div class="text-xs text-slate-300 font-mono bg-slate-950 p-2 rounded-lg border border-slate-800 mt-1">Cüzdan: ${item.wallet}</div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm shadow-md">
+                        <div>
+                            <div class="font-black text-emerald-400 text-base">${item.amount} PEPE <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">ID: ${item.user_id}</span></div>
+                            <div class="text-xs text-slate-400 mt-1">Kullanıcı: @${item.username}</div>
+                            <div class="text-xs text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800 mt-1">Cüzdan: ${item.wallet}</div>
                         </div>
-                        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap">${item.status}</span>
-                    </div>
-                `;
+                        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-xl text-xs font-bold">${item.status}</span>
+                    </div>`;
+            });
+        }
+
+        function renderAds() {
+            const container = document.getElementById('ads-section');
+            container.innerHTML = cachedData.ads.length === 0 ? '<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center text-slate-400 text-sm">Henüz reklam izleyen yok.</div>' : '';
+            cachedData.ads.forEach(ad => {
+                container.innerHTML += `
+                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center text-sm shadow-md">
+                        <div>
+                            <div class="font-bold text-white">@${ad.username} <span class="text-xs text-slate-400">(ID: ${ad.user_id})</span></div>
+                            <div class="text-xs text-slate-500 mt-0.5">Zaman: ${ad.timestamp}</div>
+                        </div>
+                        <div class="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-xl text-emerald-400 font-black text-xs">
+                            +${ad.reward} Ödül
+                        </div>
+                    </div>`;
             });
         }
 
         function renderUsers() {
             const container = document.getElementById('users-section');
-            container.innerHTML = "";
-
-            if (cachedData.users.length === 0) {
-                container.innerHTML = '<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center text-slate-400 text-sm">Kayıtlı kullanıcı bulunamadı.</div>';
-                return;
-            }
-
+            container.innerHTML = cachedData.users.length === 0 ? '<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center text-slate-400 text-sm">Kullanıcı bulunamadı.</div>' : '';
             cachedData.users.forEach(user => {
                 container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm shadow-md hover:border-slate-700 transition-all">
-                        <div class="space-y-1">
-                            <div class="font-bold text-white text-base">${user.full_name || 'İsimsiz'} <span class="text-xs text-slate-400 font-normal">(@${user.username})</span></div>
-                            <div class="text-xs text-slate-400">Telegram ID: <span class="text-slate-300 font-mono">${user.user_id}</span></div>
-                            <div class="text-xs text-slate-300 font-mono bg-slate-950 p-2 rounded-lg border border-slate-800 mt-1">Cüzdan: ${user.wallet || 'Tanımlanmamış'}</div>
+                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm shadow-md">
+                        <div>
+                            <div class="font-bold text-white text-base">${user.full_name || 'İsimsiz'} <span class="text-xs text-slate-400">(@${user.username})</span></div>
+                            <div class="text-xs text-slate-400">ID: ${user.user_id} | Bilet: ${user.tickets}</div>
+                            <div class="text-xs text-slate-300 font-mono bg-slate-950 p-1.5 rounded border border-slate-800 mt-1">Cüzdan: ${user.wallet || 'Yok'}</div>
                         </div>
-                        <div class="flex gap-3 text-right">
-                            <div class="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-xl">
-                                <div class="text-[10px] text-emerald-500 font-bold uppercase">Bakiye</div>
-                                <div class="text-sm font-black text-emerald-400">${user.balance} PEPE</div>
+                        <div class="flex items-center gap-2">
+                            <div class="text-right">
+                                <span class="text-[10px] text-slate-400 block">Bakiye (PEPE)</span>
+                                <input type="number" step="any" id="bal-input-${user.user_id}" value="${user.balance}" class="bg-slate-950 border border-slate-800 text-emerald-400 font-bold px-3 py-1.5 rounded-xl w-32 text-sm focus:outline-none focus:border-emerald-500">
                             </div>
-                            <div class="bg-indigo-500/10 border border-indigo-500/20 px-3 py-1.5 rounded-xl">
-                                <div class="text-[10px] text-indigo-400 font-bold uppercase">Bilet</div>
-                                <div class="text-sm font-black text-indigo-300">${user.tickets}</div>
-                            </div>
+                            <button onclick="updateUserBalance(${user.user_id})" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold px-4 py-2 rounded-xl text-xs transition-all mt-4">Kaydet</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
+        }
+
+        async function updateUserBalance(userId) {
+            const pass = document.getElementById('admin-pass').value;
+            const newBalance = document.getElementById(`bal-input-${userId}`).value;
+
+            try {
+                const res = await fetch('/api/admin/update_balance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ secret: pass, user_id: userId, balance: parseFloat(newBalance) })
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    alert("Kullanıcı bakiyesi başarıyla güncellendi!");
+                } else {
+                    alert("Hata: " + data.message);
+                }
+            } catch (err) {
+                alert("Bağlantı hatası: " + err);
+            }
         }
     </script>
 </body>
