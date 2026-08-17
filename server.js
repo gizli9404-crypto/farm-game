@@ -112,11 +112,11 @@ const handleWithdrawals = (req, res) => {
 };
 app.get(['/api/withdrawals', '/api/geri-cekilmeler', '/api/cekimler'], handleWithdrawals);
 
-// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (Hatalı/boşluklu yollar temizlendi)
+// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (Güncellendi: 500 hatalarını önleyen esnek yapı)
 const handleLeaderboard = (req, res) => {
     db.all(`SELECT telegram_id, username, balance, tickets, wallet FROM users ORDER BY balance DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
-        res.json(rows);
+        res.json({ success: true, users: rows, data: rows });
     });
 };
 app.get([
