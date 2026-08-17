@@ -10,7 +10,6 @@ CHANNEL_ID = "@sanal_miner_duyuru"
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__, template_folder='public')
 
-# Veritabanı Yolu Sabitleme
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.path.join(BASE_DIR, 'miner.db')
 
@@ -60,18 +59,12 @@ def send_welcome(message):
     
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
-    
-    # Kullanıcı var mı kontrol et, yoksa ekle, varsa bilgilerini güncelle
-    cursor.execute('SELECT user_id, balance FROM users WHERE user_id = ?', (user_id,))
-    row = cursor.fetchone()
-    if not row:
+    cursor.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,))
+    if not cursor.fetchone():
         cursor.execute('INSERT INTO users (user_id, username, full_name, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?, ?)', 
                        (user_id, username, full_name, 0.0, 0, ""))
-        print(f"--> YENİ KULLANICI EKLENDİ: {user_id} (@{username})")
     else:
         cursor.execute('UPDATE users SET username = ?, full_name = ? WHERE user_id = ?', (username, full_name, user_id))
-        print(f"--> KULLANICI ZATEN VAR: {user_id}, Bakiye: {row[1]}")
-        
     conn.commit()
     conn.close()
     
@@ -119,7 +112,6 @@ def update_user():
         conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
         
-        # Kullanıcı veritabanında yoksa otomatik oluştur (Mini app üzerinden veri gelirse kaybolmasın)
         cursor.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,))
         if not cursor.fetchone():
             cursor.execute('INSERT INTO users (user_id, username, full_name, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?, ?)', 
@@ -197,6 +189,7 @@ def withdraw():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
+# --- ADMIN PANELİ GELİŞMİŞ APİ'LERİ ---
 SECRET_KEY = "SizinGucluSifreniz123"
 
 @app.route('/api/admin/users', methods=['GET'])
@@ -238,6 +231,7 @@ def admin_ads():
     
     return jsonify([{"id": r[0], "user_id": r[1], "username": r[2], "timestamp": r[3], "reward": r[4]} for r in rows]), 200
 
+# Kullanıcıya bakiye ekleme / çıkarma veya doğrudan ayarlama
 @app.route('/api/admin/update_balance', methods=['POST'])
 def admin_update_balance():
     data = request.json
@@ -245,15 +239,23 @@ def admin_update_balance():
         return jsonify({"error": "Yetkisiz erişim!"}), 403
         
     user_id = data.get('user_id')
-    new_balance = data.get('balance')
+    amount = data.get('amount') # Eklemek veya çıkarmak istenen miktar
+    action = data.get('action', 'set') # 'set' (direkt eşitle), 'add' (üzerine ekle), 'sub' (çıkar)
     
     try:
         conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
-        cursor.execute('UPDATE users SET balance = ? WHERE user_id = ?', (new_balance, user_id))
+        
+        if action == 'add':
+            cursor.execute('UPDATE users SET balance = balance + ? WHERE user_id = ?', (amount, user_id))
+        elif action == 'sub':
+            cursor.execute('UPDATE users SET balance = MAX(0, balance - ?) WHERE user_id = ?', (amount, user_id))
+        else:
+            cursor.execute('UPDATE users SET balance = ? WHERE user_id = ?', (amount, user_id))
+            
         conn.commit()
         conn.close()
-        return jsonify({"status": "success", "message": "Bakiye güncellendi"})
+        return jsonify({"status": "success", "message": "Bakiye başarıyla güncellendi!"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
