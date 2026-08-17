@@ -5,7 +5,7 @@ from flask import Flask, jsonify, request, render_template
 import telebot
 
 # Bot Token ve Kanal Bilgileri
-TOKEN = "8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4QuD40d3LFM"
+TOKEN = "8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM"
 CHANNEL_ID = "@sanal_miner_duyuru"
 
 bot = telebot.TeleBot(TOKEN)
