@@ -1,18 +1,138 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanal Miner - Admin Paneli</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; }
+        .container { max-width: 800px; margin: auto; }
+        .card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        input, textarea, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; font-size: 16px; box-sizing: border-box; }
+        input, textarea { background: #334155; color: #fff; }
+        button { background: #3b82f6; color: #fff; font-weight: bold; cursor: pointer; }
+        button:hover { background: #2563eb; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px; border-bottom: 1px solid #334155; text-align: left; font-size: 14px; }
+        th { background: #334155; }
+    </style>
+</head>
 <body>
-    <h1>Admin Paneli</h1>
-    <table border="1">
-        <thead><tr><th>ID</th><th>Username</th><th>Balance</th></tr></thead>
-        <tbody id="user-list"></tbody>
-    </table>
+    <div class="container">
+        <h1>Admin Paneli</h1>
+
+        <!-- Bakiye Güncelleme -->
+        <div class="card">
+            <h3>Kullanıcı Bakiye Yönetimi</h3>
+            <input type="text" id="adminTgId" placeholder="Telegram ID">
+            <input type="number" id="adminAmount" placeholder="Miktar">
+            <button onclick="updateBalance('add')">Bakiye Ekle</button>
+            <button onclick="updateBalance('sub')" style="background: #ef4444; margin-top: 5px;">Bakiye Düş</button>
+        </div>
+
+        <!-- Duyuru Gönder -->
+        <div class="card">
+            <h3>Toplu Duyuru Gönder</h3>
+            <textarea id="broadcastMsg" rows="3" placeholder="Duyuru mesajınızı yazın..."></textarea>
+            <button onclick="sendBroadcast()" style="background: #10b981;">Tüm Kullanıcılara Gönder</button>
+        </div>
+
+        <!-- Çekim Talepleri -->
+        <div class="card">
+            <h3>Çekim Talepleri</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kullanıcı</th>
+                        <th>Miktar</th>
+                        <th>Cüzdan</th>
+                        <th>Durum</th>
+                    </tr>
+                </thead>
+                <tbody id="withdrawTable">
+                    <tr><td colspan="4" style="text-align: center;">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
     <script>
-        fetch('/api/users').then(res => res.json()).then(data => {
-            const list = document.getElementById('user-list');
-            data.forEach(u => {
-                list.innerHTML += `<tr><td>${u.telegram_id}</td><td>${u.username}</td><td>${u.balance}</td></tr>`;
-            });
-        });
+        // Bakiye Güncelle
+        async function updateBalance(action) {
+            const telegram_id = document.getElementById('adminTgId').value.trim();
+            const amount = parseFloat(document.getElementById('adminAmount').value);
+
+            if (!telegram_id || isNaN(amount)) return alert("Lütfen tüm alanları doldurun!");
+
+            try {
+                const res = await fetch('/api/admin/update-balance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegram_id, action, amount })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(`İşlem başarılı! Yeni Bakiye: ${data.new_balance}`);
+                } else {
+                    alert("Hata: " + data.error);
+                }
+            } catch (e) {
+                alert("Sunucu bağlantı hatası.");
+            }
+        }
+
+        // Toplu Duyuru
+        async function sendBroadcast() {
+            const message = document.getElementById('broadcastMsg').value.trim();
+            if (!message) return alert("Mesaj boş olamaz!");
+
+            try {
+                const res = await fetch('/api/broadcast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(`Duyuru ${data.sent_count} kullanıcıya başarıyla gönderildi.`);
+                } else {
+                    alert("Hata: " + data.error);
+                }
+            } catch (e) {
+                alert("Duyuru gönderilemedi.");
+            }
+        }
+
+        // Çekim Taleplerini Listele
+        async function loadWithdrawals() {
+            try {
+                const res = await fetch('/api/withdrawals');
+                const data = await res.json();
+                if (data.success) {
+                    const tbody = document.getElementById('withdrawTable');
+                    tbody.innerHTML = "";
+                    if (data.withdrawals.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="4" style="text-align: center;">Henüz çekim talebi yok.</td></tr>`;
+                        return;
+                    }
+                    data.withdrawals.forEach(w => {
+                        tbody.innerHTML += `
+                            <tr>
+                                <td>@${w.username || w.telegram_id}</td>
+                                <td>${w.amount} PEPE</td>
+                                <td style="word-break: break-all; max-width: 150px;">${w.wallet}</td>
+                                <td>${w.status}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (e) {
+                console.error("Çekimler yüklenemedi:", e);
+            }
+        }
+
+        loadWithdrawals();
+        setInterval(loadWithdrawals, 10000); // Her 10 saniyede bir yenile
     </script>
 </body>
 </html>
