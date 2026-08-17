@@ -2,199 +2,90 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Sanal Miner Pro - Canlı Yönetim Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanal Miner Pro - Canlı Admin Panel</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #0f172a; color: #ffffff; padding: 20px; }
+        .header { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 22px; color: #38bdf8; }
+        .badge { background: #22c55e; padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .card { background: #1e293b; border-radius: 12px; padding: 20px; margin-bottom: 15px; border: 1px solid #334155; display: flex; justify-content: space-between; align-items: center; }
+        .user-info h3 { color: #f8fafc; font-size: 18px; margin-bottom: 5px; }
+        .user-info p { color: #94a3b8; font-size: 14px; margin-bottom: 3px; }
+        .actions { display: flex; gap: 10px; align-items: center; }
+        input { background: #0f172a; border: 1px solid #475569; color: white; padding: 8px; border-radius: 6px; width: 100px; }
+        button { padding: 8px 14px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; }
+        .btn-add { background: #22c55e; color: white; }
+        .btn-sub { background: #ef4444; color: white; }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen p-4 md:p-6 font-sans">
-    <div class="max-w-6xl mx-auto space-y-6">
-        
-        <!-- Üst Bilgi -->
-        <div class="flex flex-col md:flex-row justify-between items-center bg-slate-900 border border-slate-800 p-6 rounded-2xl gap-4 shadow-xl">
-            <div>
-                <h1 class="text-2xl font-black text-emerald-400 flex items-center gap-2">
-                    ⚡ Sanal Miner Pro - Canlı Admin Panel
-                    <span class="w-3 h-3 bg-emerald-500 rounded-full animate-ping"></span>
-                </h1>
-                <p class="text-xs text-slate-400 mt-1">Uygulamaya giren tüm kullanıcılar anlık olarak burada listelenir ve her 3 saniyede bir güncellenir.</p>
-            </div>
-            <div class="flex items-center gap-2 bg-slate-950 border border-slate-800 px-4 py-2 rounded-xl text-xs text-emerald-400 font-bold">
-                🟢 Otomatik Canlı Mod Aktif
-            </div>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ Sanal Miner Pro - Canlı Admin Panel</h1>
+            <span class="badge">Aktif Veritabanı Modu</span>
         </div>
 
-        <!-- Sekmeler -->
-        <div class="flex flex-wrap gap-2 border-b border-slate-800 pb-3">
-            <button onclick="switchTab('users')" id="tab-users-btn" class="px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500 text-slate-950 transition-all shadow-lg">Kullanıcılar & Bakiyeler</button>
-            <button onclick="switchTab('withdrawals')" id="tab-withdrawals-btn" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all">Çekim Talepleri</button>
-            <button onclick="switchTab('ads')" id="tab-ads-btn" class="px-4 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all">Reklam Aktiviteleri</button>
+        <div id="users-list">
+            <p style="text-align: center; color: #94a3b8;">Veriler yükleniyor...</p>
         </div>
-
-        <!-- 1. Kullanıcı Yönetimi Sekmesi -->
-        <div id="users-section" class="space-y-4">
-            <input type="text" id="search-user" onkeyup="filterUsers()" placeholder="🔍 Kullanıcı adı, isim veya ID ile anlık ara..." class="w-full bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-emerald-500">
-            <div id="users-container" class="space-y-3">
-                <div class="text-slate-500 text-sm p-6 bg-slate-900/50 border border-slate-800/50 rounded-xl text-center">Veriler yükleniyor...</div>
-            </div>
-        </div>
-
-        <!-- 2. Çekim Talepleri Sekmesi -->
-        <div id="withdrawals-section" class="space-y-3 hidden">
-            <div class="text-slate-500 text-sm p-6 bg-slate-900/50 border border-slate-800/50 rounded-xl text-center">Yükleniyor...</div>
-        </div>
-
-        <!-- 3. Reklamlar Sekmesi -->
-        <div id="ads-section" class="space-y-3 hidden">
-            <div class="text-slate-500 text-sm p-6 bg-slate-900/50 border border-slate-800/50 rounded-xl text-center">Yükleniyor...</div>
-        </div>
-
     </div>
 
     <script>
-        const SECRET_KEY = "SizinGucluSifreniz123"; // Şifre arka plana sabitlendi, manuel yazmana gerek kalmadı.
-        let cachedData = { users: [], withdrawals: [], ads: [] };
+        const SECRET = "SizinGucluSifreniz123";
 
-        function switchTab(tab) {
-            ['users', 'withdrawals', 'ads'].forEach(t => {
-                document.getElementById(`${t}-section`).classList.add('hidden');
-                document.getElementById(`tab-${t}-btn`).className = "px-4 py-2 rounded-xl text-sm font-bold bg-slate-900 text-slate-400 hover:text-white transition-all";
-            });
-            document.getElementById(`${tab}-section`).classList.remove('hidden');
-            document.getElementById(`tab-${tab}-btn`).className = "px-4 py-2 rounded-xl text-sm font-bold bg-emerald-500 text-slate-950 transition-all shadow-lg";
-        }
+        function loadUsers() {
+            fetch(`/api/admin/users?secret=${SECRET}`)
+                .then(res => res.json())
+                .then(users => {
+                    const listDiv = document.getElementById('users-list');
+                    if (users.length === 0) {
+                        listDiv.innerHTML = '<p style="text-align: center; color: #94a3b8;">Henüz kayıtlı kullanıcı yok.</p>';
+                        return;
+                    }
 
-        async function loadAllData() {
-            try {
-                const [resU, resW, resA] = await Promise.all([
-                    fetch(`/api/admin/users?secret=${SECRET_KEY}`),
-                    fetch(`/api/admin/withdrawals?secret=${SECRET_KEY}`),
-                    fetch(`/api/admin/ads?secret=${SECRET_KEY}`)
-                ]);
-
-                if (resU.ok) cachedData.users = await resU.json();
-                if (resW.ok) cachedData.withdrawals = await resW.json();
-                if (resA.ok) cachedData.ads = await resA.json();
-
-                renderUsers(cachedData.users);
-                renderWithdrawals();
-                renderAds();
-            } catch (err) {
-                console.error("Veri çekme hatası:", err);
-            }
-        }
-
-        function renderUsers(users) {
-            const container = document.getElementById('users-container');
-            if (!users || users.length === 0) {
-                container.innerHTML = '<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center text-slate-400 text-sm">Henüz sisteme giren kullanıcı bulunmuyor.</div>';
-                return;
-            }
-            
-            container.innerHTML = '';
-            users.forEach(user => {
-                container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 shadow-md">
-                        <div>
-                            <div class="font-bold text-white text-base">${user.full_name || 'İsimsiz'} <span class="text-xs text-emerald-400">(@${user.username})</span></div>
-                            <div class="text-xs text-slate-400 mt-0.5">ID: <code class="text-slate-200">${user.user_id}</code> | Bilet: <strong class="text-amber-400">${user.tickets}</strong></div>
-                            <div class="text-xs text-slate-300 font-mono bg-slate-950 px-2 py-1 rounded border border-slate-800 mt-1">Cüzdan: ${user.wallet || 'Yok'}</div>
-                        </div>
-                        <div class="flex flex-col sm:flex-row items-end sm:items-center gap-2 w-full md:w-auto">
-                            <div class="text-right w-full sm:w-auto">
-                                <span class="text-[10px] text-slate-400 block">Bakiye: <strong class="text-emerald-400 text-sm">${user.balance} PEPE</strong></span>
-                                <input type="number" step="any" id="amount-${user.user_id}" placeholder="Miktar" class="bg-slate-950 border border-slate-800 text-white font-bold px-3 py-1.5 rounded-xl w-full sm:w-28 text-sm focus:outline-none focus:border-emerald-500 mt-1">
+                    let html = '';
+                    users.forEach(u => {
+                        html += `
+                            <div class="card">
+                                <div class="user-info">
+                                    <h3>${u.full_name || u.username} (@${u.username})</h3>
+                                    <p><b>ID:</b> ${u.user_id} | <b>Bilet:</b> ${u.tickets} Adet</p>
+                                    <p><b>Bakiye:</b> <span style="color: #4ade80;">${u.balance} PEPE</span></p>
+                                    <p><b>Cüzdan:</b> ${u.wallet || 'Yok'}</p>
+                                </div>
+                                <div class="actions">
+                                    <input type="number" id="amt_${u.user_id}" placeholder="Miktar" value="10">
+                                    <button class="btn-add" onclick="updateBalance(${u.user_id}, 'add')">+ Ekle</button>
+                                    <button class="btn-sub" onclick="updateBalance(${u.user_id}, 'sub')">- Çıkar</button>
+                                </div>
                             </div>
-                            <div class="flex gap-1 mt-2 sm:mt-5">
-                                <button onclick="modifyBalance(${user.user_id}, 'add')" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition-all" title="Ekle">+ Ekle</button>
-                                <button onclick="modifyBalance(${user.user_id}, 'sub')" class="bg-rose-600 hover:bg-rose-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition-all" title="Çıkar">- Çıkar</button>
-                                <button onclick="modifyBalance(${user.user_id}, 'set')" class="bg-sky-600 hover:bg-sky-500 text-white font-bold px-3 py-1.5 rounded-xl text-xs transition-all" title="Sabitle">= Sabitle</button>
-                            </div>
-                        </div>
-                    </div>`;
+                        `;
+                    });
+                    listDiv.innerHTML = html;
+                })
+                .catch(err => console.error("Admin veri çekme hatası:", err));
+        }
+
+        function updateBalance(userId, action) {
+            const amount = parseFloat(document.getElementById(`amt_${userId}`).value) || 0;
+            fetch('/api/admin/update_balance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ secret: SECRET, user_id: userId, amount: amount, action: action })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(data.message);
+                loadUsers();
             });
         }
 
-        function filterUsers() {
-            const query = document.getElementById('search-user').value.toLowerCase();
-            const filtered = cachedData.users.filter(u => 
-                u.full_name?.toLowerCase().includes(query) || 
-                u.username?.toLowerCase().includes(query) || 
-                String(u.user_id).includes(query)
-            );
-            renderUsers(filtered);
-        }
-
-        async function modifyBalance(userId, action) {
-            const inputVal = document.getElementById(`amount-${userId}`).value;
-            const amount = parseFloat(inputVal);
-
-            if (isNaN(amount)) {
-                alert("Lütfen geçerli bir miktar girin!");
-                return;
-            }
-
-            try {
-                const res = await fetch('/api/admin/update_balance', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ secret: SECRET_KEY, user_id: userId, amount: amount, action: action })
-                });
-                const data = await res.json();
-                if (res.ok) {
-                    loadAllData(); // Hemen ekranı güncelle
-                } else {
-                    alert("Hata: " + data.message);
-                }
-            } catch (err) {
-                alert("Bağlantı hatası: " + err);
-            }
-        }
-
-        function renderWithdrawals() {
-            const container = document.getElementById('withdrawals-section');
-            if (!cachedData.withdrawals || cachedData.withdrawals.length === 0) {
-                container.innerHTML = '<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center text-slate-400 text-sm">Bekleyen talep yok.</div>';
-                return;
-            }
-            container.innerHTML = '';
-            cachedData.withdrawals.forEach(item => {
-                container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-800 p-5 rounded-2xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-sm shadow-md">
-                        <div>
-                            <div class="font-black text-emerald-400 text-base">${item.amount} PEPE <span class="text-xs bg-slate-800 text-slate-300 px-2 py-0.5 rounded">ID: ${item.user_id}</span></div>
-                            <div class="text-xs text-slate-400 mt-1">Kullanıcı: @${item.username}</div>
-                            <div class="text-xs text-slate-300 font-mono bg-slate-950 p-2 rounded border border-slate-800 mt-1">Cüzdan: ${item.wallet}</div>
-                        </div>
-                        <span class="bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-xl text-xs font-bold">${item.status}</span>
-                    </div>`;
-            });
-        }
-
-        function renderAds() {
-            const container = document.getElementById('ads-section');
-            if (!cachedData.ads || cachedData.ads.length === 0) {
-                container.innerHTML = '<div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl text-center text-slate-400 text-sm">Henüz reklam izleyen yok.</div>';
-                return;
-            }
-            container.innerHTML = '';
-            cachedData.ads.forEach(ad => {
-                container.innerHTML += `
-                    <div class="bg-slate-900 border border-slate-800 p-4 rounded-2xl flex justify-between items-center text-sm shadow-md">
-                        <div>
-                            <div class="font-bold text-white">@${ad.username} <span class="text-xs text-slate-400">(ID: ${ad.user_id})</span></div>
-                            <div class="text-xs text-slate-500 mt-0.5">Zaman: ${ad.timestamp}</div>
-                        </div>
-                        <div class="bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-xl text-emerald-400 font-black text-xs">
-                            +${ad.reward} Ödül
-                        </div>
-                    </div>`;
-            });
-        }
-
-        // Sayfa açılır açılmaz verileri çek
-        loadAllData();
-
-        // Her 3 saniyede bir otomatik olarak arka planda yenile (Canlı Sistem)
-        setInterval(loadAllData, 3000);
+        // Sayfa açıldığında yükle ve her 3 saniyede bir canlı güncelle
+        loadUsers();
+        setInterval(loadUsers, 3000);
     </script>
 </body>
 </html>
