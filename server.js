@@ -49,18 +49,19 @@ db.serialize(() => {
     )`);
 });
 
-// 0. ADMIN GİRİŞ DOĞRULAMA (Eksik olan kısım eklendi)
-app.post(['/api/admin/login', '/api/admin/giris'], (req, res) => {
-    const { password } = req.body;
-    // Railway değişkenlerinden veya varsayılan olarak '123'den alır
+// 0. ADMIN GİRİŞ DOĞRULAMA (Şifre Kontrolü)
+const handleAdminLogin = (req, res) => {
+    const { password, sifre } = req.body || req.query;
     const ADMIN_SECRET = process.env.ADMIN_SECRET || '123';
 
-    if (password === ADMIN_SECRET) {
+    if (password === ADMIN_SECRET || sifre === ADMIN_SECRET) {
         res.json({ success: true, message: 'Giriş başarılı' });
     } else {
         res.status(401).json({ success: false, error: 'Hatalı Yönetici Şifresi!' });
     }
-});
+};
+app.post(['/api/admin/login', '/api/admin/giris'], handleAdminLogin);
+app.get(['/api/admin/login', '/api/admin/giris'], handleAdminLogin);
 
 // 1. KULLANICI GİRİŞİ / SENKRONİZASYONU
 app.post(['/api/user/login', '/api/kullanici/giris'], (req, res) => {
@@ -111,14 +112,22 @@ const handleWithdrawals = (req, res) => {
 };
 app.get(['/api/withdrawals', '/api/geri çekilmeler', '/api/geri-cekilmeler', '/api/cekimler'], handleWithdrawals);
 
-// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU
+// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (Türkçe karakterli yollar eklendi)
 const handleLeaderboard = (req, res) => {
-    db.all(`SELECT telegram_id, username, balance, tickets FROM users ORDER BY balance DESC`, [], (err, rows) => {
-        if (err) return res.status(500).json({ json: [], error: err.message });
+    db.all(`SELECT telegram_id, username, balance, tickets, wallet FROM users ORDER BY balance DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
         res.json(rows);
     });
 };
-app.get(['/api/leaderboard', '/api/lider tahtası', '/api/lider-tahtasi', '/api/users', '/api/kullanicilar'], handleLeaderboard);
+app.get([
+    '/api/leaderboard', 
+    '/api/lider tahtası', 
+    '/api/lider-tahtasi', 
+    '/api/users', 
+    '/api/kullanicilar',
+    '/api/admin/kullanıcılar',
+    '/api/admin/kullanicilar'
+], handleLeaderboard);
 
 // 5. ADMIN BAKIYE GÜNCELLEME
 app.post(['/api/admin/update-balance', '/api/admin/bakiye-guncelle'], (req, res) => {
