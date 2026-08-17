@@ -3,10 +3,11 @@
 <body>
     <h1>Oyun Ekranı</h1>
     <p>Bakiyen: <span id="balance">0</span></p>
-    <button onclick="addMoney()">10 Puan Kazan</button>
+    <button onclick="addMoney()">Puan Kazan</button>
 
     <script>
-        const telegram_id = "8256539395"; // Bunu kendi ID'nle değiştir
+        // Telegram Web App üzerinden ID al
+        const telegram_id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "8256539395";
         
         function addMoney() {
             fetch('/api/update-balance', {
