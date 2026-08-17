@@ -90,21 +90,23 @@ def admin_page():
 def get_user(user_id):
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
-    cursor.execute('SELECT balance, tickets FROM users WHERE user_id = ?', (user_id,))
+    cursor.execute('SELECT balance, tickets, wallet FROM users WHERE user_id = ?', (user_id,))
     row = cursor.fetchone()
     conn.close()
     
     if row:
-        return jsonify({"balance": row[0], "tickets": row[1]}), 200
-    return jsonify({"balance": 0.0, "tickets": 0}), 200
+        return jsonify({"balance": row[0], "tickets": row[1], "wallet": row[2]}), 200
+    return jsonify({"balance": 0.0, "tickets": 0, "wallet": ""}), 200
 
 @app.route('/api/user/update', methods=['POST'])
 def update_user():
     try:
         data = request.json
-        user_id = data.get('telegram_id')
+        user_id = data.get('telegram_id') or data.get('user_id')
         balance = data.get('balance')
         tickets = data.get('tickets')
+        wallet = data.get('wallet')
+        username = data.get('username', 'MiniAppUser')
         
         if not user_id:
             return jsonify({"status": "error", "message": "Kullanıcı ID bulunamadı!"}), 400
@@ -114,13 +116,18 @@ def update_user():
         
         cursor.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,))
         if not cursor.fetchone():
-            cursor.execute('INSERT INTO users (user_id, username, full_name, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?, ?)', 
-                           (user_id, "MiniAppUser", "Mini App", balance or 0.0, tickets or 0, ""))
+            cursor.execute('''
+                INSERT INTO users (user_id, username, full_name, balance, tickets, wallet) 
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (user_id, username, username, balance or 0.0, tickets or 0, wallet or ""))
         else:
             cursor.execute('''
-                UPDATE users SET balance = COALESCE(?, balance), tickets = COALESCE(?, tickets)
+                UPDATE users SET 
+                    balance = COALESCE(?, balance), 
+                    tickets = COALESCE(?, tickets),
+                    wallet = COALESCE(?, wallet)
                 WHERE user_id = ?
-            ''', (balance, tickets, user_id))
+            ''', (balance, tickets, wallet, user_id))
             
         conn.commit()
         conn.close()
@@ -189,7 +196,7 @@ def withdraw():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
-# --- ADMIN PANELİ GELİŞMİŞ APİ'LERİ ---
+# --- ADMIN API'LERİ ---
 SECRET_KEY = "SizinGucluSifreniz123"
 
 @app.route('/api/admin/users', methods=['GET'])
@@ -231,7 +238,6 @@ def admin_ads():
     
     return jsonify([{"id": r[0], "user_id": r[1], "username": r[2], "timestamp": r[3], "reward": r[4]} for r in rows]), 200
 
-# Kullanıcıya bakiye ekleme / çıkarma veya doğrudan ayarlama
 @app.route('/api/admin/update_balance', methods=['POST'])
 def admin_update_balance():
     data = request.json
@@ -239,8 +245,8 @@ def admin_update_balance():
         return jsonify({"error": "Yetkisiz erişim!"}), 403
         
     user_id = data.get('user_id')
-    amount = data.get('amount') # Eklemek veya çıkarmak istenen miktar
-    action = data.get('action', 'set') # 'set' (direkt eşitle), 'add' (üzerine ekle), 'sub' (çıkar)
+    amount = data.get('amount')
+    action = data.get('action', 'set')
     
     try:
         conn = sqlite3.connect(DB_PATH, check_same_thread=False)
