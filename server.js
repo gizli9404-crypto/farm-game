@@ -1,271 +1,44 @@
-const express = require('express');
-const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const axios = require('axios');
-const fs = require('fs');
+const dbPath = path.join(__dirname, 'database.db');
+const db = new sqlite3.Database(dbPath);
 
-const app = express();
-const PORT = process.env.PORT || 8080;
-
-// Telegram Bot Bilgileri
-const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
-const ADMIN_CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru';
-
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
-
-// SQLite Veritabanı Bağlantısı (Railway Volume Uyumlu)
-const dbDir = '/app/data';
-if (!fs.existsSync(dbDir)){
-    fs.mkdirSync(dbDir, { recursive: true });
-}
-
-const dbPath = path.join(dbDir, 'database.db');
-const db = new sqlite3.Database(dbPath, (err) => {
-    if (err) console.error('Veritabanı bağlantı hatası:', err.message);
-    else console.log('SQLite veritabanına bağlandı:', dbPath);
-});
-
-// Tabloların Oluşturulması
+// Veritabanı ve Tablo Başlatma
 db.serialize(() => {
+    // 1. Tabloyu oluştur (eğer yoksa)
     db.run(`CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        telegram_id TEXT UNIQUE,
+        telegram_id TEXT PRIMARY KEY,
         username TEXT,
         balance REAL DEFAULT 0,
         tickets INTEGER DEFAULT 0,
-        wallet TEXT DEFAULT ''
-    )`);
+        wallet TEXT
+    )`, (err) => {
+        if (err) console.error("Tablo oluşturma hatası:", err);
+    });
 
-    db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
+    // 2. 'tickets' sütunu yoksa ekle (Hata almamak için sütun kontrolü)
+    db.all("PRAGMA table_info(users)", (err, columns) => {
+        if (err) return;
+        
+        const hasTickets = columns.find(col => col.name === 'tickets');
+        if (!hasTickets) {
+            db.run(`ALTER TABLE users ADD COLUMN tickets INTEGER DEFAULT 0`, (err) => {
+                if (err) console.error("Tickets sütunu eklenirken hata:", err);
+                else console.log("Tickets sütunu başarıyla veritabanına eklendi.");
+            });
+        }
+    });
+
+    // Çekim talepleri için tablo (eğer henüz eklemediyseniz)
+    db.run(`CREATE TABLE IF NOT EXISTS withdraws (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         telegram_id TEXT,
         username TEXT,
         amount REAL,
         wallet TEXT,
-        status TEXT DEFAULT 'Bekliyor',
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        network TEXT,
+        status TEXT DEFAULT 'pending'
     )`);
 });
 
-// 0. ADMIN GİRİŞ DOĞRULAMA
-const handleAdminLogin = (req, res) => {
-    const password = req.body.password || req.body.sifre || req.body.secret || req.query.password || req.query.sifre || req.query.secret;
-    const ADMIN_SECRET = process.env.ADMIN_SECRET || '123';
-
-    if (password === ADMIN_SECRET || password === '123' || !password) {
-        res.json({ success: true, message: 'Giriş başarılı' });
-    } else {
-        res.status(401).json({ success: false, error: 'Hatalı Yönetici Şifresi!' });
-    }
-};
-app.post(['/api/admin/login', '/api/admin/giris', '/api/admin/auth'], handleAdminLogin);
-app.get(['/api/admin/login', '/api/admin/giris', '/api/admin/auth'], handleAdminLogin);
-
-// 1. KULLANICI GİRİŞİ / SENKRONİZASYONU (Verilerin Kalıcı Saklandığı Yer)
-app.post(['/api/user/login', '/api/kullanici/giris'], (req, res) => {
-    const { telegram_id, username } = req.body;
-    if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
-
-    db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegram_id], (err, row) => {
-        if (err) return res.status(500).json({ success: false, error: err.message });
-
-        if (row) {
-            res.json({ success: true, balance: row.balance, tickets: row.tickets, wallet: row.wallet, username: row.username });
-        } else {
-            db.run(`INSERT INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, 0, 0, '')`, [telegram_id, username || 'Kullanıcı'], function(err) {
-                if (err) return res.status(500).json({ success: false, error: err.message });
-                res.json({ success: true, balance: 0, tickets: 0, wallet: '', username: username });
-            });
-        }
-    });
-});
-
-// 2. ÇEKİM TALEBİ OLUŞTURMA
-app.post(['/api/withdraw', '/api/cekim'], (req, res) => {
-    const { telegram_id, username, amount, wallet } = req.body;
-    
-    db.run(`INSERT INTO withdrawals (telegram_id, username, amount, wallet) VALUES (?, ?, ?, ?)`,
-        [telegram_id, username || 'Bilinmiyor', amount, wallet],
-        function(err) {
-            if (err) return res.status(500).json({ success: false, error: err.message });
-            
-            const msg = `🔔 **YENİ ÇEKİM TALEBİ**\n\n👤 Kullanıcı: @${username || telegram_id}\n💰 Miktar: ${amount} PEPE\n💳 Cüzdan: \`${wallet}\``;
-            axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                chat_id: ADMIN_CHANNEL_ID,
-                text: msg,
-                parse_mode: 'Markdown'
-            }).catch(e => console.log('Telegram bildirim hatası:', e.message));
-
-            res.json({ success: true, message: 'Çekim talebi alındı.' });
-        }
-    );
-});
-
-// 3. ÇEKİMLERİ GETİRME
-const handleWithdrawals = (req, res) => {
-    db.all(`SELECT * FROM withdrawals ORDER BY id DESC`, [], (err, rows) => {
-        if (err) return res.status(500).json({ success: false, error: err.message });
-        res.json({ success: true, withdrawals: rows });
-    });
-};
-app.get(['/api/withdrawals', '/api/geri-cekilmeler', '/api/cekimler'], handleWithdrawals);
-
-// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU
-const handleLeaderboard = (req, res) => {
-    db.all(`SELECT telegram_id, username, balance, tickets, wallet FROM users ORDER BY balance DESC`, [], (err, rows) => {
-        if (err) {
-            console.error('Veritabanı okuma hatası:', err.message);
-            return res.status(500).json({ success: false, error: err.message });
-        }
-        res.json(rows); 
-    });
-};
-app.get([
-    '/api/leaderboard', 
-    '/api/users', 
-    '/api/kullanicilar',
-    '/api/admin/users',
-    '/api/admin/kullanicilar',
-    '/api/admin/kullanıcılar'
-], handleLeaderboard);
-
-// 5. ADMIN BAKIYE GÜNCELLEME
-app.post(['/api/admin/update-balance', '/api/admin/bakiye-guncelle'], (req, res) => {
-    const { telegram_id, action, amount } = req.body;
-
-    db.get(`SELECT balance FROM users WHERE telegram_id = ?`, [telegram_id], (err, row) => {
-        if (err) return res.status(500).json({ success: false, error: err.message });
-
-        let currentBalance = row ? row.balance : 0;
-        let newBalance = currentBalance;
-
-        if (action === 'set') newBalance = amount;
-        else if (action === 'add') newBalance = currentBalance + amount;
-        else if (action === 'sub') newBalance = Math.max(0, currentBalance - amount);
-
-        if (row) {
-            db.run(`UPDATE users SET balance = ? WHERE telegram_id = ?`, [newBalance, telegram_id], (err) => {
-                if (err) return res.status(500).json({ success: false, error: err.message });
-                res.json({ success: true, new_balance: newBalance });
-            });
-        } else {
-            db.run(`INSERT INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, ?, 0, '')`, [telegram_id, 'Kullanıcı', newBalance], (err) => {
-                if (err) return res.status(500).json({ success: false, error: err.message });
-                res.json({ success: true, new_balance: newBalance });
-            });
-        }
-    });
-});
-
-// 6. TOPLU DUYURU GÖNDERME
-app.post(['/api/broadcast', '/api/duyuru'], async (req, res) => {
-    const { message } = req.body;
-    if (!message) return res.status(400).json({ success: false, error: 'Mesaj boş olamaz.' });
-
-    db.all(`SELECT telegram_id FROM users`, [], async (err, rows) => {
-        if (err) return res.status(500).json({ success: false, error: err.message });
-
-        let successCount = 0;
-        for (const row of rows) {
-            try {
-                await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                    chat_id: row.telegram_id,
-                    text: `📢 **DUYURU**\n\n${message}`,
-                    parse_mode: 'Markdown'
-                });
-                successCount++;
-            } catch (e) {
-                console.log(`Mesaj gönderilemedi (${row.telegram_id}):`, e.message);
-            }
-        }
-        res.json({ success: true, sent_count: successCount });
-    });
-});
-
-// 8. KULLANICI BİLGİLERİNİ GÜNCELLEME
-const handleUserUpdate = (req, res) => {
-    const { telegram_id, username, balance, tickets, wallet } = req.body;
-    if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
-
-    db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegram_id], (err, row) => {
-        if (err) return res.status(500).json({ success: false, error: err.message });
-
-        if (row) {
-            db.run(`UPDATE users SET username = ?, balance = ?, tickets = ?, wallet = ? WHERE telegram_id = ?`, 
-                [username || row.username, balance ?? row.balance, tickets ?? row.tickets, wallet ?? row.wallet, telegram_id], function(err) {
-                if (err) return res.status(500).json({ success: false, error: err.message });
-                res.json({ success: true, message: 'Kullanıcı güncellendi.' });
-            });
-        } else {
-            db.run(`INSERT INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?)`, 
-                [telegram_id, username || 'Kullanıcı', balance || 0, tickets || 0, wallet || ''], function(err) {
-                if (err) return res.status(500).json({ sunucu_error: err.message });
-                res.json({ success: true, message: 'Yeni kullanıcı oluşturuldu ve güncellendi.' });
-            });
-        }
-    });
-};
-app.post(['/api/user/update', '/api/kullanici/guncelle'], handleUserUpdate);
-
-// 9. KULLANICI ETKİLEŞİM / LOG KAYIT SİSTEMİ
-const handleUserLog = (req, res) => {
-    const { telegram_id, action, details } = req.body;
-    console.log(`[LOG] Telegram ID: ${telegram_id}, İşlem: ${action}, Detay: ${details || '-'}`);
-    res.json({ success: true, message: 'Log kaydedildi.' });
-};
-app.post(['/api/user/log', '/api/kullanici/log'], handleUserLog);
-
-// 10. TEKİL KULLANICI VERİSİNİ GETİRME
-const handleGetSingleUser = (req, res) => {
-    const telegramId = req.params.telegramId || req.params.id;
-    db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegramId], (err, row) => {
-        if (err) return res.status(500).json({ success: false, error: err.message });
-        if (!row) return res.status(404).json({ success: false, error: 'Kullanıcı bulunamadı' });
-        res.json({ success: true, balance: row.balance, tickets: row.tickets, wallet: row.wallet, username: row.username });
-    });
-};
-app.get(['/api/user/:telegramId', '/api/kullanici/:telegramId'], handleGetSingleUser);
-
-// --- TELEGRAM BOT WEBHOOK / POLLING (Buton ve /start Komutuna Yanıt Vermesi İçin) ---
-let lastUpdateId = 0;
-const checkTelegramUpdates = async () => {
-    try {
-        const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=30`);
-        const updates = response.data.result;
-        
-        for (const update of updates) {
-            lastUpdateId = update.update_id;
-            if (update.message && update.message.text) {
-                const chatId = update.message.chat.id;
-                const text = update.message.text;
-                const username = update.message.from.username || 'Kullanıcı';
-
-                // Veritabanına kullanıcıyı kaydet
-                db.run(`INSERT OR IGNORE INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, 0, 0, '')`, [chatId.toString(), username]);
-
-                if (text.startsWith('/start')) {
-                    await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                        chat_id: chatId,
-                        text: "🚀 **Sanal Miner Pro**'ya hoş geldin!\n\nBulut madenciliğine başlamak ve ödülleri toplamak için aşağıdaki butona tıklayın:",
-                        parse_mode: 'Markdown',
-                        reply_markup: {
-                            inline_keyboard: [
-                                [{ text: "⛏️ Madencilik Uygulamasını Aç", web_app: { url: `https://${process.env.RAILWAY_STATIC_URL || 'miner-production-32ee.up.railway.app'}` } }]
-                            ]
-                        }
-                    });
-                }
-            }
-        }
-    } catch (e) {
-        // Hata durumunda sessizce devam et
-    }
-};
-
-setInterval(checkTelegramUpdates, 2000);
-
-app.listen(PORT, () => {
-    console.log(`Server ${PORT} portunda çalışıyor.`);
-});
+// ... Buradan sonra mevcut Express.js uygulama kodlarınız (app.listen vb.) gelecek ...
