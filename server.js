@@ -110,9 +110,9 @@ const handleWithdrawals = (req, res) => {
         res.json({ success: true, withdrawals: rows });
     });
 };
-app.get(['/api/withdrawals', '/api/geri çekilmeler', '/api/geri-cekilmeler', '/api/cekimler'], handleWithdrawals);
+app.get(['/api/withdrawals', '/api/geri-cekilmeler', '/api/cekimler'], handleWithdrawals);
 
-// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (Türkçe karakterli yollar eklendi)
+// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (Hatalı/boşluklu yollar temizlendi)
 const handleLeaderboard = (req, res) => {
     db.all(`SELECT telegram_id, username, balance, tickets, wallet FROM users ORDER BY balance DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
@@ -121,12 +121,11 @@ const handleLeaderboard = (req, res) => {
 };
 app.get([
     '/api/leaderboard', 
-    '/api/lider tahtası', 
-    '/api/lider-tahtasi', 
     '/api/users', 
     '/api/kullanicilar',
-    '/api/admin/kullanıcılar',
-    '/api/admin/kullanicilar'
+    '/api/admin/users',
+    '/api/admin/kullanicilar',
+    '/api/admin/kullanıcılar'
 ], handleLeaderboard);
 
 // 5. ADMIN BAKIYE GÜNCELLEME
@@ -205,7 +204,7 @@ const handleUserUpdate = (req, res) => {
         }
     });
 };
-app.post(['/api/user/update', '/api/kullanici/guncelle', '/api/kullanıcı/güncelleme'], handleUserUpdate);
+app.post(['/api/user/update', '/api/kullanici/guncelle'], handleUserUpdate);
 
 // 9. KULLANICI ETKİLEŞİM / LOG KAYIT SİSTEMİ
 const handleUserLog = (req, res) => {
@@ -213,7 +212,7 @@ const handleUserLog = (req, res) => {
     console.log(`[LOG] Telegram ID: ${telegram_id}, İşlem: ${action}, Detay: ${details || '-'}`);
     res.json({ success: true, message: 'Log kaydedildi.' });
 };
-app.post(['/api/user/log', '/api/kullanici/log', '/api/kullanıcı/günlük'], handleUserLog);
+app.post(['/api/user/log', '/api/kullanici/log'], handleUserLog);
 
 // 10. TEKİL KULLANICI VERİSİNİ GETİRME
 const handleGetSingleUser = (req, res) => {
@@ -224,7 +223,7 @@ const handleGetSingleUser = (req, res) => {
         res.json({ success: true, balance: row.balance, tickets: row.tickets, wallet: row.wallet, username: row.username });
     });
 };
-app.get(['/api/user/:telegramId', '/api/kullanici/:telegramId', '/api/kullanıcı/:telegramId'], handleGetSingleUser);
+app.get(['/api/user/:telegramId', '/api/kullanici/:telegramId'], handleGetSingleUser);
 
 // 7. OTOMATİK HATA TAKİP VE KANAL BİLDİRİM SİSTEMİ (WATCHDOG)
 let alertSent = false;
