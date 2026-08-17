@@ -2,231 +2,91 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Miner Pro - Yönetim ve Canlı Log Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body { background: #030712; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .glass-panel { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glass-card { background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(255, 255, 255, 0.06); }
-    </style>
+    <title>Sanal Miner Pro — Admin Control</title>
+    <link rel="stylesheet" href="style.css"> <!-- Kendi stil dosyanız -->
 </head>
-<body class="min-h-screen p-4 md:p-8">
+<body>
+    <div class="admin-container">
+        <h1>Sanal Miner Pro — Admin Control & Live Logs</h1>
 
-    <!-- GİRİŞ EKRANI -->
-    <div id="auth-screen" class="max-w-md mx-auto mt-20 glass-panel p-6 rounded-3xl shadow-2xl space-y-4">
-        <div class="text-center space-y-2">
-            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl mx-auto flex items-center justify-center text-xl border border-emerald-500/30">
-                <i class="fa-solid fa-lock"></i>
-            </div>
-            <h1 class="text-lg font-black text-white">Admin Paneli & Canlı Log</h1>
-            <p class="text-xs text-slate-400">Gizli şifrenizi girerek yönetim merkezine bağlanın.</p>
-        </div>
-        <div class="space-y-3">
-            <input type="password" id="secret-input" placeholder="Gizli Şifre (Örn: SizinGucluSifreniz123)" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
-            <button onclick="checkAuth()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-lg cursor-pointer">Panele Bağlan</button>
-        </div>
-    </div>
-
-    <!-- ANA YÖNETİM PANELİ -->
-    <div id="admin-dashboard" class="max-w-7xl mx-auto space-y-6 hidden">
-        <!-- Üst Bar -->
-        <div class="flex justify-between items-center glass-panel p-4 rounded-2xl shadow">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center font-black border border-emerald-500/30">
-                    <i class="fa-solid fa-shield-halved"></i>
-                </div>
-                <div>
-                    <h1 class="text-sm font-black text-white">Sanal Miner Pro — Admin Control & Live Logs</h1>
-                    <p class="text-[10px] text-emerald-400 font-bold">Veritabanı & Bot Worker Canlı Senkronize 🟢</p>
-                </div>
-            </div>
-            <button onclick="location.reload()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
-                <i class="fa-solid fa-right-from-bracket mr-1"></i> Çıkış
-            </button>
+        <!-- DUYURU GÖNDERME ALANI -->
+        <div class="card">
+            <h3>📢 TELEGRAM BOT DUYURU GÖNDER</h3>
+            <textarea id="broadcastText" placeholder="Tüm kullanıcılara bildirim olarak gönderilecek metin..."></textarea>
+            <button id="sendBroadcastBtn" onclick="sendBroadcast()">Toplu Bildirim Gönder</button>
         </div>
 
-        <!-- İŞLEM & BAKİYE YÖNETİMİ -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div class="glass-card p-5 rounded-2xl space-y-4 shadow-lg">
-                <h2 class="text-xs font-black text-white uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-coins text-emerald-400 mr-2"></i> Kullanıcı Bakiye / Puan Düzenleme
-                </h2>
-                <div class="space-y-3 text-xs">
-                    <div>
-                        <label class="text-[10px] text-slate-400 font-bold uppercase">Kullanıcı Telegram ID</label>
-                        <input type="text" id="target-user-id" placeholder="Örn: 123456789" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mt-1 focus:outline-none focus:border-emerald-500">
-                    </div>
-                    <div class="grid grid-cols-2 gap-2">
-                        <div>
-                            <label class="text-[10px] text-slate-400 font-bold uppercase">İşlem Türü</label>
-                            <select id="balance-action" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mt-1 focus:outline-none focus:border-emerald-500">
-                                <option value="add">Ekle (+)</option>
-                                <option value="sub">Çıkar (-)</option>
-                                <option value="set">Sabitle (Eşitle)</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-[10px] text-slate-400 font-bold uppercase">Miktar (PEPE)</label>
-                            <input type="number" id="balance-amount" placeholder="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mt-1 focus:outline-none focus:border-emerald-500">
-                        </div>
-                    </div>
-                    <button onclick="updateUserBalance()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-slate-950 font-black py-2.5 rounded-xl transition-all shadow cursor-pointer">
-                        Bakiyeyi Anlık Güncelle
-                    </button>
-                </div>
-            </div>
-
-            <!-- Bot Duyuru Paneli -->
-            <div class="glass-card p-5 rounded-2xl space-y-4 shadow-lg">
-                <h2 class="text-xs font-black text-white uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-bullhorn text-amber-400 mr-2"></i> Telegram Bot Duyuru Gönder
-                </h2>
-                <div class="space-y-3 text-xs">
-                    <div>
-                        <label class="text-[10px] text-slate-400 font-bold uppercase">Duyuru Metni</label>
-                        <textarea id="broadcast-msg" rows="4" placeholder="Tüm kullanıcılara bildirim olarak gönderilecek metin..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mt-1 focus:outline-none focus:border-amber-500"></textarea>
-                    </div>
-                    <button onclick="sendBroadcast()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90 text-slate-950 font-black py-2.5 rounded-xl transition-all shadow cursor-pointer">
-                        Toplu Bildirim Gönder
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- TABLOLAR VE CANLI LOG AKIŞI -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
-            <!-- Kayıtlı Kullanıcılar -->
-            <div class="glass-card p-4 rounded-2xl space-y-3">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-xs font-black text-white uppercase"><i class="fa-solid fa-users text-blue-400 mr-1.5"></i> Kayıtlılar</h2>
-                    <button onclick="loadAdminData()" class="text-[10px] bg-slate-800 text-slate-300 px-2 py-1 rounded-lg"><i class="fa-solid fa-rotate"></i></button>
-                </div>
-                <div class="overflow-x-auto max-h-80 overflow-y-auto">
-                    <table class="w-full text-left text-[11px]">
-                        <thead class="text-slate-400 border-b border-slate-800 sticky top-0 bg-slate-900">
-                            <tr><th class="p-2">Kullanıcı</th><th class="p-2">Bakiye</th></tr>
-                        </thead>
-                        <tbody id="users-table-body" class="divide-y divide-slate-800/60"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Çekim Talepleri -->
-            <div class="glass-card p-4 rounded-2xl space-y-3">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-xs font-black text-white uppercase"><i class="fa-solid fa-wallet text-emerald-400 mr-1.5"></i> Çekimler</h2>
-                    <span class="text-[10px] text-emerald-400 font-bold">Aktif</span>
-                </div>
-                <div class="overflow-x-auto max-h-80 overflow-y-auto">
-                    <table class="w-full text-left text-[11px]">
-                        <thead class="text-slate-400 border-b border-slate-800 sticky top-0 bg-slate-900">
-                            <tr><th class="p-2">Kimden</th><th class="p-2">Tutar</th></tr>
-                        </thead>
-                        <tbody id="withdrawals-table-body" class="divide-y divide-slate-800/60"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- CANLI KULLANICI LOG EKRANI -->
-            <div class="glass-card p-4 rounded-2xl space-y-3">
-                <div class="flex justify-between items-center">
-                    <h2 class="text-xs font-black text-white uppercase"><i class="fa-solid fa-terminal text-amber-400 mr-1.5"></i> Canlı Bot Logları</h2>
-                    <span class="text-[10px] text-emerald-400 font-bold animate-pulse">● Anlık Akış</span>
-                </div>
-                <div id="live-logs-container" class="space-y-2 max-h-80 overflow-y-auto text-[11px] font-mono">
-                    <div class="bg-slate-950 p-2 rounded border border-slate-800 text-slate-400">Sistem Dinleniyor...</div>
-                </div>
-            </div>
+        <!-- ÇEKİMLER TABLOSU -->
+        <div class="card">
+            <h3>💳 ÇEKİMLER (Aktif)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Kimden</th>
+                        <th>Tutar</th>
+                        <th>Cüzdan / Durum</th>
+                    </tr>
+                </thead>
+                <tbody id="withdrawalsTableBody">
+                    <!-- Dinamik doldurulacak -->
+                </tbody>
+            </table>
         </div>
     </div>
 
     <script>
-        let secretKey = "";
-
-        function checkAuth() {
-            secretKey = document.getElementById('secret-input').value.trim();
-            fetch(`/api/admin/users?secret=${secretKey}`)
-                .then(res => {
-                    if(res.status === 200) {
-                        document.getElementById('auth-screen').classList.add('hidden');
-                        document.getElementById('admin-dashboard').classList.remove('hidden');
-                        loadAdminData();
-                        setInterval(loadAdminData, 5000); // Her 5 saniyede bir canlı veri ve logları tazele
-                    } else { alert("Hatalı Şifre!"); }
-                });
-        }
-
-        function loadAdminData() {
-            if(!secretKey) return;
-            
-            // Kullanıcılar
-            fetch(`/api/admin/users?secret=${secretKey}`)
-                .then(res => res.json())
-                .then(data => {
-                    let tbody = document.getElementById('users-table-body');
-                    tbody.innerHTML = "";
-                    data.forEach(u => {
-                        tbody.innerHTML += `<tr class="hover:bg-slate-800/40"><td class="p-2"><b>@${u.username || 'Anonim'}</b><br><span class="text-[9px] text-slate-500">${u.user_id}</span></td><td class="p-2 text-emerald-400 font-bold">${u.balance} PEPE</td></tr>`;
-                    });
-                });
-
-            // Çekimler
-            fetch(`/api/admin/withdrawals?secret=${secretKey}`)
-                .then(res => res.json())
-                .then(data => {
-                    let tbody = document.getElementById('withdrawals-table-body');
-                    tbody.innerHTML = "";
-                    data.forEach(w => {
-                        tbody.innerHTML += `<tr class="hover:bg-slate-800/40"><td class="p-2">@${w.username}</td><td class="p-2 text-emerald-400 font-bold">${w.amount} PEPE</td></tr>`;
-                    });
-                });
-
-            // Canlı Loglar
-            fetch(`/api/admin/logs?secret=${secretKey}`)
-                .then(res => res.json())
-                .then(logs => {
-                    let logContainer = document.getElementById('live-logs-container');
-                    logContainer.innerHTML = "";
-                    logs.forEach(l => {
-                        logContainer.innerHTML += `
-                            <div class="bg-slate-950/80 p-2 rounded border border-slate-800/80 space-y-1">
-                                <div class="flex justify-between text-[10px] text-slate-400">
-                                    <span class="text-emerald-400 font-bold">@${l.username}</span>
-                                    <span>${l.timestamp}</span>
-                                </div>
-                                <div class="text-white text-[11px] font-sans"><b>[${l.action}]</b> ${l.details}</div>
-                            </div>
+        // Çekim Taleplerini Tabloya Çekme Fonksiyonu
+        async function loadWithdrawals() {
+            try {
+                const response = await fetch('/api/withdrawals');
+                const data = await response.json();
+                if (data.success) {
+                    const tbody = document.getElementById('withdrawalsTableBody');
+                    tbody.innerHTML = '';
+                    data.withdrawals.forEach(item => {
+                        const tr = document.createElement('tr');
+                        tr.innerHTML = `
+                            <td>@${item.username || item.telegram_id}</td>
+                            <td>${item.amount} PEPE</td>
+                            <td>${item.wallet} (${item.status})</td>
                         `;
+                        tbody.appendChild(tr);
                     });
-                }).catch(e => {});
+                }
+            } catch (e) {
+                console.error('Çekimler yüklenirken hata:', e);
+            }
         }
 
-        function updateUserBalance() {
-            let user_id = document.getElementById('target-user-id').value.trim();
-            let amount = parseFloat(document.getElementById('balance-amount').value);
-            let action = document.getElementById('balance-action').value;
+        // Toplu Duyuru Gönderme Fonksiyonu
+        async function sendBroadcast() {
+            const message = document.getElementById('broadcastText').value;
+            if (!message) {
+                alert('Lütfen bir duyuru metni yazın!');
+                return;
+            }
 
-            fetch('/api/admin/update_balance', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ secret: secretKey, user_id, amount, action })
-            }).then(res => res.json()).then(data => {
-                alert(data.success ? "Bakiye başarıyla güncellendi!" : "Hata: " + data.error);
-                loadAdminData();
-            });
+            try {
+                const response = await fetch('/api/broadcast', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert(`Duyuru başarıyla ${data.sent_count} kullanıcıya gönderildi!`);
+                    document.getElementById('broadcastText').value = '';
+                } else {
+                    alert('Hata: ' + data.error);
+                }
+            } catch (e) {
+                alert('Bağlantı hatası oluştu.');
+            }
         }
 
-        function sendBroadcast() {
-            let message = document.getElementById('broadcast-msg').value.trim();
-            if(!message) return;
-            fetch('/api/admin/broadcast', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ message, secret: secretKey })
-            }).then(res => res.json()).then(data => alert("Duyuru gönderildi!"));
-        }
+        // Sayfa açıldığında ve her 5 saniyede bir çekimleri güncelle
+        loadWithdrawals();
+        setInterval(loadWithdrawals, 5000);
     </script>
 </body>
 </html>
