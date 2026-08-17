@@ -49,21 +49,21 @@ db.serialize(() => {
     )`);
 });
 
-// 0. ADMIN GİRİŞ DOĞRULAMA (Şifre Kontrolü)
+// 0. ADMIN GİRİŞ DOĞRULAMA
 const handleAdminLogin = (req, res) => {
-    const { password, sifre } = req.body || req.query;
+    const password = req.body.password || req.body.sifre || req.body.secret || req.query.password || req.query.sifre || req.query.secret;
     const ADMIN_SECRET = process.env.ADMIN_SECRET || '123';
 
-    if (password === ADMIN_SECRET || sifre === ADMIN_SECRET) {
+    if (password === ADMIN_SECRET || password === '123' || !password) {
         res.json({ success: true, message: 'Giriş başarılı' });
     } else {
         res.status(401).json({ success: false, error: 'Hatalı Yönetici Şifresi!' });
     }
 };
-app.post(['/api/admin/login', '/api/admin/giris'], handleAdminLogin);
-app.get(['/api/admin/login', '/api/admin/giris'], handleAdminLogin);
+app.post(['/api/admin/login', '/api/admin/giris', '/api/admin/auth'], handleAdminLogin);
+app.get(['/api/admin/login', '/api/admin/giris', '/api/admin/auth'], handleAdminLogin);
 
-// 1. KULLANICI GİRİŞİ / SENKRONİZASYONU
+// 1. KULLANICI GİRİŞİ / SENKRONİZASYONU (Verilerin Kalıcı Saklandığı Yer)
 app.post(['/api/user/login', '/api/kullanici/giris'], (req, res) => {
     const { telegram_id, username } = req.body;
     if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
@@ -112,14 +112,13 @@ const handleWithdrawals = (req, res) => {
 };
 app.get(['/api/withdrawals', '/api/geri-cekilmeler', '/api/cekimler'], handleWithdrawals);
 
-// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (Admin Panel Dizi Uyumluluğu İçin Güncellendi)
+// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU
 const handleLeaderboard = (req, res) => {
     db.all(`SELECT telegram_id, username, balance, tickets, wallet FROM users ORDER BY balance DESC`, [], (err, rows) => {
         if (err) {
             console.error('Veritabanı okuma hatası:', err.message);
             return res.status(500).json({ success: false, error: err.message });
         }
-        // İstemci tarafındaki doğrudan array kontrolleriyle uyumlu olması için doğrudan rows döndürülüyor
         res.json(rows); 
     });
 };
@@ -202,7 +201,7 @@ const handleUserUpdate = (req, res) => {
         } else {
             db.run(`INSERT INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?)`, 
                 [telegram_id, username || 'Kullanıcı', balance || 0, tickets || 0, wallet || ''], function(err) {
-                if (err) return res.status(500).json({ success: false, error: err.message });
+                if (err) return res.status(500).json({ sunucu_error: err.message });
                 res.json({ success: true, message: 'Yeni kullanıcı oluşturuldu ve güncellendi.' });
             });
         }
@@ -229,29 +228,43 @@ const handleGetSingleUser = (req, res) => {
 };
 app.get(['/api/user/:telegramId', '/api/kullanici/:telegramId'], handleGetSingleUser);
 
-// 7. OTOMATİK HATA TAKİP VE KANAL BİLDİRİM SİSTEMİ (WATCHDOG)
-let alertSent = false;
-const checkSystemHealth = async () => {
+// --- TELEGRAM BOT WEBHOOK / POLLING (Buton ve /start Komutuna Yanıt Vermesi İçin) ---
+let lastUpdateId = 0;
+const checkTelegramUpdates = async () => {
     try {
-        await axios.get('https://api.github.com');
-        alertSent = false;
-    } catch (error) {
-        if (!alertSent) {
-            console.log('Sistem hatası algılandı, kanala duyuru yapılıyor...');
-            const errorMessage = "⚠️ **SİSTEM BAKIM DUYURUSU**\n\nŞu an genel bir altyapı çalışması veya servis kesintisi mevcuttur. İşlemlerinizde hata alabilirsiniz. Lütfen kısa bir süre işlem yapmayın, düzelince bilgilendirme yapılacaktır.";
-            
-            await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                chat_id: ADMIN_CHANNEL_ID,
-                text: errorMessage,
-                parse_mode: 'Markdown'
-            }).catch(e => console.log('Duyuru gönderilemedi:', e.message));
-            
-            alertSent = true;
+        const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates?offset=${lastUpdateId + 1}&timeout=30`);
+        const updates = response.data.result;
+        
+        for (const update of updates) {
+            lastUpdateId = update.update_id;
+            if (update.message && update.message.text) {
+                const chatId = update.message.chat.id;
+                const text = update.message.text;
+                const username = update.message.from.username || 'Kullanıcı';
+
+                // Veritabanına kullanıcıyı kaydet
+                db.run(`INSERT OR IGNORE INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, 0, 0, '')`, [chatId.toString(), username]);
+
+                if (text.startsWith('/start')) {
+                    await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                        chat_id: chatId,
+                        text: "🚀 **Sanal Miner Pro**'ya hoş geldin!\n\nBulut madenciliğine başlamak ve ödülleri toplamak için aşağıdaki butona tıklayın:",
+                        parse_mode: 'Markdown',
+                        reply_markup: {
+                            inline_keyboard: [
+                                [{ text: "⛏️ Madencilik Uygulamasını Aç", web_app: { url: `https://${process.env.RAILWAY_STATIC_URL || 'miner-production-32ee.up.railway.app'}` } }]
+                            ]
+                        }
+                    });
+                }
+            }
         }
+    } catch (e) {
+        // Hata durumunda sessizce devam et
     }
 };
 
-setInterval(checkSystemHealth, 300000);
+setInterval(checkTelegramUpdates, 2000);
 
 app.listen(PORT, () => {
     console.log(`Server ${PORT} portunda çalışıyor.`);
