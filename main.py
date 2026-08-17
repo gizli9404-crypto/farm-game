@@ -86,7 +86,7 @@ def index():
 def admin_page():
     return render_template('admin.html')
 
-# Kullanıcı verisini getiren endpoint
+# Kullanıcı verisini getiren endpoint[cite: 2]
 @app.route('/api/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
@@ -99,7 +99,7 @@ def get_user(user_id):
         return jsonify({"balance": row[0], "tickets": row[1], "wallet": row[2]}), 200
     return jsonify({"balance": 0.0, "tickets": 0, "wallet": ""}), 200
 
-# Mini uygulamadan gelen verileri MERKEZİ VERİTABANINA anlık işleyen endpoint
+# Mini uygulamadan gelen verileri MERKEZİ VERİTABANINA anlık işleyen endpoint[cite: 2]
 @app.route('/api/user/update', methods=['POST'])
 def update_user():
     try:
@@ -266,6 +266,23 @@ def admin_update_balance():
         return jsonify({"status": "success", "message": "Bakiye başarıyla güncellendi!"})
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
+
+# Admin panelindeki 404 hatasını çözen bakiye endpoint'i eklenmiştir[cite: 2]
+@app.route('/api/admin/balance', methods=['POST'])
+def admin_balance_fix():
+    data = request.json
+    user_id = data.get('telegram_id') or data.get('user_id')
+    amount = data.get('amount', 0)
+    
+    try:
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET balance = balance + ? WHERE user_id = ?', (amount, user_id))
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True, "message": "Bakiye güncellendi"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
 
 def run_bot():
     try:
