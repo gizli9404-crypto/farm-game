@@ -61,7 +61,6 @@ def send_welcome(message):
     web_app = telebot.types.WebAppInfo(url="https://miner-production-32ee.up.railway.app")
     markup.add(telebot.types.InlineKeyboardButton("🚀 Sanal Miner App Aç", web_app=web_app))
     
-    # HATA ÇÖZÜLDÜ: Ters tırnak (`) yerine f-string ve çift tırnak kullanıldı[cite: 3]
     bot.send_message(
         message.chat.id, 
         f"Selam {full_name}! Sanal Miner Pro'ya hoş geldin. Madenciliğe başlamak için aşağıdaki butona tıkla:", 
@@ -73,7 +72,11 @@ def send_welcome(message):
 def index():
     return render_template('index.html')
 
-# Frontend (HTML) için Kullanıcı Verisi Çekme API'si[cite: 3]
+# ADMIN PANELİ İÇİN EKLENEN ROTA
+@app.route('/admin.html')
+def admin_page():
+    return render_template('admin.html')
+
 @app.route('/api/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     conn = sqlite3.connect('miner.db', check_same_thread=False)
@@ -86,7 +89,6 @@ def get_user(user_id):
         return jsonify({"balance": row[0], "tickets": row[1]}), 200
     return jsonify({"balance": 0.0, "tickets": 0}), 200
 
-# Frontend (HTML) için Bakiye ve Bilet Güncelleme API'si[cite: 3]
 @app.route('/api/user/update', methods=['POST'])
 def update_user():
     try:
