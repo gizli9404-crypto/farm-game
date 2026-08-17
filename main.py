@@ -202,6 +202,43 @@ def withdraw():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
+# --- LİDERLİK TABLOSU API'Sİ (Eksikti, eklendi) ---
+@app.route('/api/leaderboard', methods=['GET'])
+def leaderboard():
+    try:
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('SELECT username, full_name, balance FROM users ORDER BY balance DESC LIMIT 10')
+        rows = cursor.fetchall()
+        conn.close()
+        
+        result = []
+        for r in rows:
+            name = r[0] if r[0] and r[0] != "Bulunmuyor" else (r[1] if r[1] else "Anonim")
+            result.append({"username": name, "balance": r[2]})
+            
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# --- CANLI KAZANIM AKIŞI API'Sİ (Eksikti, eklendi) ---
+@app.route('/api/live_activity', methods=['GET'])
+def live_activity():
+    try:
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('SELECT username, reward, timestamp FROM ad_activity ORDER BY id DESC LIMIT 10')
+        rows = cursor.fetchall()
+        conn.close()
+        
+        result = []
+        for r in rows:
+            result.append({"username": r[0] or "Anonim", "reward": r[1], "timestamp": r[2]})
+            
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 # --- ADMIN API'LERİ ---
 SECRET_KEY = "SizinGucluSifreniz123"
 
