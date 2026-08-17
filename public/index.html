@@ -1,29 +1,126 @@
 <!DOCTYPE html>
-<html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanal Miner & Mini App</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #0f172a; color: #fff; margin: 0; padding: 20px; text-align: center; }
+        .card { background: #1e293b; padding: 20px; border-radius: 12px; margin-bottom: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); }
+        input, button { width: 100%; padding: 12px; margin-top: 10px; border-radius: 8px; border: none; font-size: 16px; box-sizing: border-box; }
+        input { background: #334155; color: #fff; }
+        button { background: #3b82f6; color: #fff; font-weight: bold; cursor: pointer; }
+        button:hover { background: #2563eb; }
+        .balance { font-size: 24px; color: #10b981; font-weight: bold; }
+    </style>
+</head>
 <body>
-    <h1>Oyun Ekranı</h1>
-    <p>Bakiyen: <span id="balance">0</span></p>
-    <button onclick="addMoney()">Puan Kazan</button>
+
+    <div class="card">
+        <h2>Hoş Geldin, <span id="username">Kullanıcı</span></h2>
+        <p>Bakiyeniz:</p>
+        <div class="balance"><span id="balance">0</span> PEPE</div>
+        <p>Bilet Adedi: <b id="tickets">0</b></p>
+    </div>
+
+    <div class="card">
+        <h3>Cüzdan ve Çekim İşlemleri</h3>
+        <input type="text" id="walletInput" placeholder="TON / PEPE Cüzdan Adresinizi Girin">
+        <button onclick="saveWallet()">Cüzdanı Kaydet</button>
+        <button onclick="requestWithdraw()" style="background: #10b981; margin-top: 15px;">Çekim Talebi Ver</button>
+    </div>
 
     <script>
-        // Telegram Web App üzerinden ID al
-        const telegram_id = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || "8256539395";
-        
-        function addMoney() {
-            fetch('/api/update-balance', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_id: telegram_id, amount: 10 })
-            }).then(() => location.reload());
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        let userData = {
+            telegram_id: tg.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id.toString() : "123456789",
+            username: tg.initDataUnsafe?.user?.username || "TestKullanici",
+            balance: 0,
+            tickets: 0,
+            wallet: ""
+        };
+
+        // Kullanıcı Verilerini Sunucudan Çek ve Senkronize Et
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/user/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegram_id: userData.telegram_id, username: userData.username })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    userData.balance = data.balance;
+                    userData.tickets = data.tickets;
+                    userData.wallet = data.wallet || "";
+                    userData.username = data.username || userData.username;
+
+                    document.getElementById('balance').innerText = userData.balance;
+                    document.getElementById('tickets').innerText = userData.tickets;
+                    document.getElementById('username').innerText = userData.username;
+                    if (userData.wallet) {
+                        document.getElementById('walletInput').value = userData.wallet;
+                    }
+                }
+            } catch (e) {
+                console.error("Veri yüklenirken hata:", e);
+            }
         }
 
-        fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ telegram_id: telegram_id })
-        }).then(res => res.json()).then(data => {
-            document.getElementById('balance').innerText = data.balance;
-        });
+        // Cüzdan Kaydetme
+        async function saveWallet() {
+            const wallet = document.getElementById('walletInput').value.trim();
+            if (!wallet) return alert("Lütfen geçerli bir cüzdan adresi girin!");
+
+            userData.wallet = wallet;
+            try {
+                const response = await fetch('/api/user/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(userData)
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert("Cüzdan başarıyla kaydedildi!");
+                } else {
+                    alert("Hata: " + data.error);
+                }
+            } catch (e) {
+                alert("Bağlantı hatası!");
+            }
+        }
+
+        // Çekim Talebi
+        async function requestWithdraw() {
+            if (!userData.wallet) return alert("Önce cüzdan adresinizi kaydetmelisiniz!");
+            if (userData.balance <= 0) return alert("Yetersiz bakiye!");
+
+            try {
+                const response = await fetch('/api/withdraw', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        telegram_id: userData.telegram_id,
+                        username: userData.username,
+                        amount: userData.balance,
+                        wallet: userData.wallet
+                    })
+                });
+                const data = await response.json();
+                if (data.success) {
+                    alert("Çekim talebiniz yöneticiye iletildi!");
+                } else {
+                    alert("Hata: " + data.error);
+                }
+            } catch (e) {
+                alert("Çekim talebi gönderilemedi.");
+            }
+        }
+
+        loadUserData();
     </script>
 </body>
 </html>
