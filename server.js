@@ -41,7 +41,7 @@ db.serialize(() => {
 });
 
 // 1. KULLANICI GİRİŞİ / SENKRONİZASYONU
-app.post('/api/user/login', (req, res) => {
+app.post(['/api/user/login', '/api/kullanici/giris'], (req, res) => {
     const { telegram_id, username } = req.body;
     if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
 
@@ -60,7 +60,7 @@ app.post('/api/user/login', (req, res) => {
 });
 
 // 2. ÇEKİM TALEBİ OLUŞTURMA
-app.post('/api/withdraw', (req, res) => {
+app.post(['/api/withdraw', '/api/cekim'], (req, res) => {
     const { telegram_id, username, amount, wallet } = req.body;
     
     db.run(`INSERT INTO withdrawals (telegram_id, username, amount, wallet) VALUES (?, ?, ?, ?)`,
@@ -80,28 +80,26 @@ app.post('/api/withdraw', (req, res) => {
     );
 });
 
-// 3. ÇEKİMLERİ GETİRME (Desteklenen tüm rotalar)
-const getWithdrawals = (req, res) => {
+// 3. ÇEKİMLERİ GETİRME (Tüm olası yol varyasyonları)
+const handleWithdrawals = (req, res) => {
     db.all(`SELECT * FROM withdrawals ORDER BY id DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
         res.json({ success: true, withdrawals: rows });
     });
 };
-app.get('/api/withdrawals', getWithdrawals);
-app.get('/api/geri çekilmeler', getWithdrawals);
+app.get(['/api/withdrawals', '/api/geri çekilmeler', '/api/geri-cekilmeler', '/api/cekimler'], handleWithdrawals);
 
-// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU VE ADMIN LİSTESİ
-const getLeaderboard = (req, res) => {
+// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU
+const handleLeaderboard = (req, res) => {
     db.all(`SELECT telegram_id, username, balance FROM users ORDER BY balance DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ json: [], error: err.message });
         res.json(rows);
     });
 };
-app.get('/api/leaderboard', getLeaderboard);
-app.get('/api/lider tahtası', getLeaderboard);
+app.get(['/api/leaderboard', '/api/lider tahtası', '/api/lider-tahtasi', '/api/users', '/api/kullanicilar'], handleLeaderboard);
 
 // 5. ADMIN BAKIYE GÜNCELLEME
-app.post('/api/admin/update-balance', (req, res) => {
+app.post(['/api/admin/update-balance', '/api/admin/bakiye-guncelle'], (req, res) => {
     const { telegram_id, action, amount } = req.body;
 
     db.get(`SELECT balance FROM users WHERE telegram_id = ?`, [telegram_id], (err, row) => {
@@ -129,7 +127,7 @@ app.post('/api/admin/update-balance', (req, res) => {
 });
 
 // 6. TOPLU DUYURU GÖNDERME
-app.post('/api/broadcast', async (req, res) => {
+app.post(['/api/broadcast', '/api/duyuru'], async (req, res) => {
     const { message } = req.body;
     if (!message) return res.status(400).json({ success: false, error: 'Mesaj boş olamaz.' });
 
@@ -154,7 +152,7 @@ app.post('/api/broadcast', async (req, res) => {
 });
 
 // 8. KULLANICI BİLGİLERİNİ GÜNCELLEME
-const updateUser = (req, res) => {
+const handleUserUpdate = (req, res) => {
     const { telegram_id, balance } = req.body;
     if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
 
@@ -163,20 +161,18 @@ const updateUser = (req, res) => {
         res.json({ success: true, message: 'Kullanıcı güncellendi.' });
     });
 };
-app.post('/api/user/update', updateUser);
-app.post('/api/kullanıcı/güncelleme', updateUser);
+app.post(['/api/user/update', '/api/kullanici/guncelle', '/api/kullanıcı/güncelleme'], handleUserUpdate);
 
 // 9. KULLANICI ETKİLEŞİM / LOG KAYIT SİSTEMİ
-const logUser = (req, res) => {
+const handleUserLog = (req, res) => {
     const { telegram_id, action, details } = req.body;
     console.log(`[LOG] Telegram ID: ${telegram_id}, İşlem: ${action}, Detay: ${details || '-'}`);
     res.json({ success: true, message: 'Log kaydedildi.' });
 };
-app.post('/api/user/log', logUser);
-app.post('/api/kullanıcı/günlük', logUser);
+app.post(['/api/user/log', '/api/kullanici/log', '/api/kullanıcı/günlük'], handleUserLog);
 
-// 10. TEKİL KULLANICI VERİSİNİ GETİRME (Hem İngilizce hem Türkçe / Parametreli)
-const getSingleUser = (req, res) => {
+// 10. TEKİL KULLANICI VERİSİNİ GETİRME
+const handleGetSingleUser = (req, res) => {
     const telegramId = req.params.telegramId || req.params.id;
     db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegramId], (err, row) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
@@ -184,8 +180,7 @@ const getSingleUser = (req, res) => {
         res.json({ success: true, user: row });
     });
 };
-app.get('/api/user/:telegramId', getSingleUser);
-app.get('/api/kullanıcı/:telegramId', getSingleUser);
+app.get(['/api/user/:telegramId', '/api/kullanici/:telegramId', '/api/kullanıcı/:telegramId'], handleGetSingleUser);
 
 // 7. OTOMATİK HATA TAKİP VE KANAL BİLDİRİM SİSTEMİ (WATCHDOG)
 let alertSent = false;
