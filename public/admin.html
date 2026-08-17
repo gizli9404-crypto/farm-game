@@ -3,178 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Miner Pro - Yönetici Paneli</title>
-    <!-- Tailwind CSS -->
+    <title>Sanal Miner Pro - Elite Admin Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #030712; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        body { 
+            background: linear-gradient(135deg, #030712 0%, #0f172a 100%); 
+            color: #f8fafc; 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+        }
+        .glass { 
+            background: rgba(15, 23, 42, 0.85); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col pb-12">
 
-    <!-- Üst Bar -->
-    <header class="glass border-b border-slate-800 p-4 flex justify-between items-center sticky top-0 z-50">
+    <header class="glass border-b border-slate-800 p-4 sticky top-0 z-50 flex justify-between items-center shadow-lg">
         <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 rounded-xl bg-red-600/20 text-red-500 flex items-center justify-center font-bold text-lg">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-red-600 to-rose-500 text-white flex items-center justify-center font-bold text-base shadow-lg shadow-red-500/20">
                 <i class="fa-solid fa-shield-halved"></i>
             </div>
             <div>
-                <h1 class="font-bold text-sm">Admin Control Center</h1>
-                <p class="text-[10px] text-slate-400">Sanal Miner Pro v2.5</p>
+                <h1 class="font-black text-sm tracking-wide">Elite Admin Control</h1>
+                <p class="text-[10px] text-slate-400 flex items-center mt-0.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping mr-1.5"></span> Sistem Çevrim içi & Güvenli
+                </p>
             </div>
         </div>
-        <button onclick="loadAdminData()" class="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-bold rounded-xl transition flex items-center space-x-2">
-            <i class="fa-solid fa-rotate"></i> <span>Verileri Yenile</span>
-        </button>
+        <div class="flex items-center space-x-2">
+            <button onclick="loadAdminData(); showToast('Veriler güncellendi!', 'success');" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-xs font-bold rounded-xl transition border border-slate-700 flex items-center space-x-2 shadow cursor-pointer">
+                <i class="fa-solid fa-rotate text-blue-400"></i> <span class="hidden sm:inline">Yenile</span>
+            </button>
+        </div>
     </header>
 
-    <!-- İçerik -->
-    <main class="container mx-auto px-4 py-6 space-y-6 flex-grow max-w-5xl">
+    <main class="container mx-auto px-4 py-6 space-y-6 flex-grow max-w-6xl">
         
-        <!-- İstatistik Kartları -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div class="glass p-5 rounded-2xl">
-                <p class="text-xs text-slate-400 mb-1">Toplam Kullanıcı</p>
-                <h3 id="stat-users" class="text-2xl font-black text-blue-400">0</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass p-5 rounded-2xl relative overflow-hidden shadow-lg group hover:border-blue-500/50 transition-all">
+                <div class="absolute -right-4 -bottom-4 text-blue-500/10 text-6xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-users"></i></div>
+                <p class="text-xs text-slate-400 font-semibold mb-1">Toplam Kullanıcı</p>
+                <h3 id="stat-users" class="text-3xl font-black text-blue-400 tracking-tight">0</h3>
+                <span class="text-[10px] text-blue-400/80 bg-blue-500/10 px-2 py-0.5 rounded-md mt-2 inline-block">Aktif Bot Tabanı</span>
             </div>
-            <div class="glass p-5 rounded-2xl">
-                <p class="text-xs text-slate-400 mb-1">Dağıtılan Toplam PEPE</p>
-                <h3 id="stat-balance" class="text-2xl font-black text-emerald-400">0</h3>
+            <div class="glass p-5 rounded-2xl relative overflow-hidden shadow-lg group hover:border-emerald-500/50 transition-all">
+                <div class="absolute -right-4 -bottom-4 text-emerald-500/10 text-6xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-coins"></i></div>
+                <p class="text-xs text-slate-400 font-semibold mb-1">Dağıtılan Toplam PEPE</p>
+                <h3 id="stat-balance" class="text-3xl font-black text-emerald-400 tracking-tight">0</h3>
+                <span class="text-[10px] text-emerald-400/80 bg-emerald-500/10 px-2 py-0.5 rounded-md mt-2 inline-block">Tüm Cüzdanlar Toplamı</span>
             </div>
-            <div class="glass p-5 rounded-2xl">
-                <p class="text-xs text-slate-400 mb-1">Bekleyen Çekimler</p>
-                <h3 id="stat-withdraws" class="text-2xl font-black text-yellow-400">0</h3>
+            <div class="glass p-5 rounded-2xl relative overflow-hidden shadow-lg group hover:border-amber-500/50 transition-all">
+                <div class="absolute -right-4 -bottom-4 text-amber-500/10 text-6xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-wallet"></i></div>
+                <p class="text-xs text-slate-400 font-semibold mb-1">Bekleyen Çekimler</p>
+                <h3 id="stat-withdraws" class="text-3xl font-black text-amber-400 tracking-tight">0</h3>
+                <span class="text-[10px] text-amber-400/80 bg-amber-500/10 px-2 py-0.5 rounded-md mt-2 inline-block">Onay Bekleyen Talep</span>
             </div>
-            <div class="glass p-5 rounded-2xl">
-                <p class="text-xs text-slate-400 mb-1">Aktif Sistem Durumu</p>
-                <h3 class="text-xl font-bold text-emerald-500 flex items-center mt-1">
-                    <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse mr-2"></span> Çevrim içi
+            <div class="glass p-5 rounded-2xl relative overflow-hidden shadow-lg group hover:border-purple-500/50 transition-all">
+                <div class="absolute -right-4 -bottom-4 text-purple-500/10 text-6xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-server"></i></div>
+                <p class="text-xs text-slate-400 font-semibold mb-1">Sunucu Durumu</p>
+                <h3 class="text-2xl font-bold text-purple-400 tracking-tight mt-1 flex items-center">
+                    <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping mr-2"></span> Kararlı
                 </h3>
+                <span class="text-[10px] text-purple-400/80 bg-purple-500/10 px-2 py-0.5 rounded-md mt-2 inline-block">Railway Node.js</span>
             </div>
         </div>
 
-        <!-- Hızlı İşlemler / Eklentiler -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <!-- Duyuru Gönder -->
-            <div class="glass p-6 rounded-2xl space-y-4">
-                <h2 class="font-bold text-sm flex items-center"><i class="fa-solid fa-bullhorn text-blue-400 mr-2"></i> Tüm Kullanıcılara Duyuru Gönder</h2>
-                <textarea id="broadcast-text" rows="3" placeholder="Bot kullanıcılarına iletilecek mesaj..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none"></textarea>
-                <button onclick="sendBroadcast()" class="w-full py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl text-xs transition">Duyuruyu Yayınla</button>
-            </div>
-
-            <!-- Kullanıcıya Bakiye Ekle / Düzenle -->
-            <div class="glass p-6 rounded-2xl space-y-4">
-                <h2 class="font-bold text-sm flex items-center"><i class="fa-solid fa-coins text-yellow-400 mr-2"></i> Kullanıcıya Bakiye / Bilet Tanımla</h2>
-                <input type="text" id="target-user-id" placeholder="Telegram ID (örn: 12345678)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none">
-                <div class="flex space-x-2">
-                    <input type="number" id="target-amount" placeholder="Miktar (PEPE / Bilet)" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none">
-                    <select id="target-type" class="bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-slate-200 focus:outline-none">
-                        <option value="balance">PEPE</option>
-                        <option value="tickets">Bilet</option>
-                    </select>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="glass p-6 rounded-2xl space-y-4 shadow-xl">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-bullhorn"></i></div>
+                    <h2 class="font-bold text-sm text-white">Bot Duyuru Sistemi</h2>
                 </div>
-                <button onclick="modifyUserAsset()" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition">Varlık Güncelle</button>
+                <p class="text-xs text-slate-400">Botu kullanan tüm aktif kullanıcılara anlık bildirim mesajı gönderin.</p>
+                <textarea id="broadcast-text" rows="3" placeholder="Örn: 🚀 Büyük güncelleme yayında! Çark ödülleri 2 katına çıkarıldı..." class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-blue-500 transition-colors shadow-inner"></textarea>
+                <button onclick="sendBroadcast()" class="w-full py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:opacity-90 text-white font-black rounded-xl text-xs transition shadow-lg shadow-blue-500/20 cursor-pointer flex items-center justify-center">
+                    <i class="fa-solid fa-paper-plane mr-2"></i> Duyuruyu Herkese Yayınla
+                </button>
             </div>
-        </div>
 
-        <!-- Çekim Talepleri Tablosu -->
-        <div class="glass p-6 rounded-2xl space-y-4">
-            <h2 class="font-bold text-sm flex items-center"><i class="fa-solid fa-wallet text-purple-400 mr-2"></i> Bekleyen Çekim Talepleri</h2>
-            <div class="overflow-x-auto">
-                <table class="w-full text-left text-xs text-slate-300">
-                    <thead class="border-b border-slate-800 text-slate-400 uppercase">
-                        <tr>
-                            <th class="py-3 px-2">Kullanıcı</th>
-                            <th class="py-3 px-2">Miktar</th>
-                            <th class="py-3 px-2">Cüzdan / Ağ</th>
-                            <th class="py-3 px-2 text-right">İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody id="withdraw-table-body">
-                        <tr>
-                            <td colspan="4" class="py-4 text-center text-slate-500">Kayıt bulunamadı veya yükleniyor...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-    </main>
-
-    <script>
-        function loadAdminData() {
-            fetch('/api/admin/stats')
-                .then(res => res.json())
-                .then(data => {
-                    if(data.success) {
-                        document.getElementById('stat-users').innerText = data.totalUsers || 0;
-                        document.getElementById('stat-balance').innerText = data.totalBalance || 0;
-                        document.getElementById('stat-withdraws').innerText = data.pendingWithdraws || 0;
-                        
-                        let tbody = document.getElementById('withdraw-table-body');
-                        tbody.innerHTML = "";
-                        if(data.withdraws && data.withdraws.length > 0) {
-                            data.withdraws.forEach(w => {
-                                tbody.innerHTML += `
-                                    <tr class="border-b border-slate-800/50">
-                                        <td class="py-3 px-2">${w.username} (${w.telegram_id})</td>
-                                        <td class="py-3 px-2 text-emerald-400 font-bold">${w.amount} PEPE</td>
-                                        <td class="py-3 px-2">${w.wallet} [${w.network}]</td>
-                                        <td class="py-3 px-2 text-right">
-                                            <button onclick="approveWithdraw('${w.id}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg font-bold">Onayla</button>
-                                        </td>
-                                    </tr>`;
-                            });
-                        } else {
-                            tbody.innerHTML = `<tr><td colspan="4" class="py-4 text-center text-slate-500">Bekleyen çekim talebi yok.</td></tr>`;
-                        }
-                    }
-                })
-                .catch(err => console.error("Veri çekilemedi:", err));
-        }
-
-        function sendBroadcast() {
-            let text = document.getElementById('broadcast-text').value;
-            if(!text) { alert("Lütfen duyuru metni girin."); return; }
-            fetch('/api/admin/broadcast', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ message: text })
-            }).then(res => res.json()).then(data => {
-                alert(data.success ? "Duyuru gönderildi!" : "Hata oluştu.");
-            });
-        }
-
-        function modifyUserAsset() {
-            let userId = document.getElementById('target-user-id').value;
-            let amount = document.getElementById('target-amount').value;
-            let type = document.getElementById('target-type').value;
-            if(!userId || !amount) { alert("Lütfen tüm alanları doldurun."); return; }
-            
-            fetch('/api/admin/modify', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ telegram_id: userId, amount: Number(amount), type: type })
-            }).then(res => res.json()).then(data => {
-                alert(data.success ? "İşlem başarılı!" : "Kullanıcı bulunamadı.");
-                loadAdminData();
-            });
-        }
-
-        function approveWithdraw(id) {
-            fetch('/api/admin/withdraw/approve', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id: id })
-            }).then(res => res.json()).then(data => {
-                loadAdminData();
-            });
-        }
-
-        window.onload = loadAdminData;
-    </script>
-</body>
-</html>
+            <div class="glass p-6 rounded-2xl space-y-4 shadow-xl">
+                <div class="flex items-center space-x-3">
+                    <div class="w-8 h-8 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold text-sm"><i class="fa-solid fa-coins"></i></div>
+                    <h2 class="font-bold text-sm text-white">Kullanıcı Varlık Yönetimi</h2>
+                </div>
+                <p class="text-xs text-slate-400">Belirli bir kullanıcının ID'sini girerek hesabına bakiye veya bilet ekleyin.</p>
+                <input type="text" id="target-user-id" placeholder="Telegram ID (örn: 582910492)" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition-colors shadow-inner">
+                <div class="flex space-x-2">
+                    <input type="number" id="target-amount" placeholder="Miktar (Örn: 1000)" class="w-full bg-slate-900/90 border border-slate-800 rounded-xl p-3 text-xs text-slate-200 focus:outline-none focus:border-amber-500 transition-colors shadow-inner">
+                    <select id="target-type" class="bg-slate-900/90 border border-slate-800
