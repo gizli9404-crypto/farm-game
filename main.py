@@ -4,18 +4,16 @@ import threading
 from flask import Flask, jsonify, request, render_template
 import telebot
 
-# Bot Token ve Kanal Bilgileri
 TOKEN = "8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM"
 CHANNEL_ID = "@sanal_miner_duyuru"
 
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__, template_folder='public')
 
-# --- VERİTABANI YOLU SABİTLEME (Hata Çözümü) ---
+# Veritabanı Yolu Sabitleme
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DB_PATH = os.path.join(BASE_DIR, 'miner.db')
 
-# --- 1. VERİTABANI KURULUMU ---
 def init_db():
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
@@ -53,7 +51,6 @@ def init_db():
 
 init_db()
 
-# --- 2. TELEBOT / BOT KOMUTLARI ---
 @bot.message_handler(commands=['start'])
 def send_welcome(message):
     user = message.from_user
@@ -63,11 +60,19 @@ def send_welcome(message):
     
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
-    cursor.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,))
-    if not cursor.fetchone():
+    
+    # Kullanıcı var mı kontrol et, yoksa ekle, varsa bilgilerini güncelle
+    cursor.execute('SELECT user_id, balance FROM users WHERE user_id = ?', (user_id,))
+    row = cursor.fetchone()
+    if not row:
         cursor.execute('INSERT INTO users (user_id, username, full_name, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?, ?)', 
                        (user_id, username, full_name, 0.0, 0, ""))
-        conn.commit()
+        print(f"--> YENİ KULLANICI EKLENDİ: {user_id} (@{username})")
+    else:
+        cursor.execute('UPDATE users SET username = ?, full_name = ? WHERE user_id = ?', (username, full_name, user_id))
+        print(f"--> KULLANICI ZATEN VAR: {user_id}, Bakiye: {row[1]}")
+        
+    conn.commit()
     conn.close()
     
     markup = telebot.types.InlineKeyboardMarkup()
@@ -80,7 +85,6 @@ def send_welcome(message):
         reply_markup=markup
     )
 
-# --- 3. FLASK WEB ROUTES & API ---
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -114,10 +118,18 @@ def update_user():
             
         conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
-        cursor.execute('''
-            UPDATE users SET balance = COALESCE(?, balance), tickets = COALESCE(?, tickets)
-            WHERE user_id = ?
-        ''', (balance, tickets, user_id))
+        
+        # Kullanıcı veritabanında yoksa otomatik oluştur (Mini app üzerinden veri gelirse kaybolmasın)
+        cursor.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,))
+        if not cursor.fetchone():
+            cursor.execute('INSERT INTO users (user_id, username, full_name, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?, ?)', 
+                           (user_id, "MiniAppUser", "Mini App", balance or 0.0, tickets or 0, ""))
+        else:
+            cursor.execute('''
+                UPDATE users SET balance = COALESCE(?, balance), tickets = COALESCE(?, tickets)
+                WHERE user_id = ?
+            ''', (balance, tickets, user_id))
+            
         conn.commit()
         conn.close()
         
@@ -185,7 +197,6 @@ def withdraw():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
-# --- 4. ADMIN PANELİ APİ'LERİ ---
 SECRET_KEY = "SizinGucluSifreniz123"
 
 @app.route('/api/admin/users', methods=['GET'])
@@ -246,7 +257,6 @@ def admin_update_balance():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
-# --- 5. BOT POLLING ---
 def run_bot():
     try:
         bot.infinity_polling(none_stop=True)
