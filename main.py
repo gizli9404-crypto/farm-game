@@ -3,7 +3,7 @@ import os
 import threading
 import telebot
 
-TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', 'SENIN_BOT_TOKENINI_BURAYA_YAZ')
+TOKEN = os.environ.get('TELEGRAM_BOT_TOKEN', '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM')
 bot = telebot.TeleBot(TOKEN)
 
 app = Flask(__name__, static_folder='public')
