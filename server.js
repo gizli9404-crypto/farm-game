@@ -1,49 +1,58 @@
-// Örnek Express.js Backend Rotaları
+const express = require('express');
+const cors = require('cors');
+const path = require('path');
 
-// 1. Kullanıcı bakiye güncelleme rotası
-app.post('/api/admin/balance', async (req, res) => {
-    try {
-        const { telegram_id, amount } = req.body;
-        // Veritabanınızda kullanıcıyı bulup bakiyesini güncelleyin (Örn: MongoDB / PostgreSQL / SQLite)
-        let user = await User.findOne({ telegram_id });
-        if (!user) {
-            // Kullanıcı yoksa geçici oluştur veya hata dön
-            return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı" });
-        }
-        
-        user.balance += amount;
-        if (user.balance < 0) user.balance = 0;
-        await user.save();
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-        res.json({ success: true, new_balance: user.balance });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
+app.use(express.json());
+app.use(cors());
+
+// Statik dosyaları (oyun ve admin paneli) public klasöründen sun
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Geçici Bellek (Veritabanı bağlayana kadar işlemleri burada tutar)
+let db = {
+    users: {
+        "8256539395": { telegram_id: "8256539395", username: "Jacker_lord", balance: 120 }
+    },
+    activeBroadcast: "Sanal Miner Pro'ya hoş geldiniz!"
+};
+
+// 1. Bakiye Güncelleme Rotası (+ / -)
+app.post('/api/admin/balance', (req, res) => {
+    const { telegram_id, amount } = req.body;
+    if (!db.users[telegram_id]) {
+        db.users[telegram_id] = { telegram_id, username: "Jacker_lord", balance: 0 };
+    }
+    
+    db.users[telegram_id].balance += amount;
+    if (db.users[telegram_id].balance < 0) db.users[telegram_id].balance = 0;
+
+    res.json({ success: true, new_balance: db.users[telegram_id].balance });
+});
+
+// 2. Çekim Onaylama Rotası
+app.post('/api/admin/withdraw/approve', (req, res) => {
+    res.json({ success: true, message: "Ödeme başarıyla onaylandı" });
+});
+
+// 3. Duyuru Kaydetme Rotası
+app.post('/api/admin/broadcast', (req, res) => {
+    const { message } = req.body;
+    if (message) {
+        db.activeBroadcast = message;
+        res.json({ success: true, message: "Duyuru güncellendi" });
+    } else {
+        res.status(400).json({ success: false, error: "Boş duyuru olamaz" });
     }
 });
 
-// 2. Çekim onayla rotası
-app.post('/api/admin/withdraw/approve', async (req, res) => {
-    try {
-        // Çekim kuyruğunu güncelleyin veya veritabanından düşüm yapın
-        res.json({ success: true, message: "Ödeme onaylandı" });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
-
-// 3. Duyuru yayınla rotası
-let activeBroadcast = "";
-app.post('/api/admin/broadcast', async (req, res) => {
-    try {
-        const { message } = req.body;
-        activeBroadcast = message; // Anlık duyuruyu hafızada veya DB'de saklayın
-        res.json({ success: true, message: "Duyuru kaydedildi" });
-    } catch (err) {
-        res.status(500).json({ success: false, error: err.message });
-    }
-});
-
-// Mini uygulama tarafının duyuruyu okuması için rota
+// 4. Duyuruyu Okuma Rotası (Oyun tarafı için)
 app.get('/api/broadcast', (req, res) => {
-    res.json({ broadcast: activeBroadcast });
+    res.json({ broadcast: db.activeBroadcast });
+});
+
+app.listen(PORT, () => {
+    console.log(`Sunucu ${PORT} portunda aktif!`);
 });
