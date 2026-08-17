@@ -117,7 +117,7 @@
     <main class="flex-1 overflow-y-auto p-4 pb-24 flex flex-col justify-start">
         
         <!-- 1. SEKME: HOME (GÖREVLER) -->
-        <div id="tab-home" class="tab-content flex-col space-y-3">
+        <div id="tab-home" class="tab-content active flex-col space-y-3">
             <div class="flex space-x-4 border-b border-slate-800/80 pb-2">
                 <span class="text-xs font-black text-emerald-400 border-b-2 border-emerald-400 pb-1 cursor-pointer">🎁 Ücretsiz Görevler</span>
                 <span onclick="switchTab('spin'); playClickSound();" class="text-xs font-bold text-slate-400 light-theme:text-slate-600 pb-1 cursor-pointer hover:text-slate-200">📄 Şans Çarkı</span>
@@ -413,7 +413,7 @@
         function saveUserData() {
             localStorage.setItem('sanal_miner_balance_' + telegramId, gameState.balance);
             localStorage.setItem('sanal_miner_tickets_' + telegramId, gameState.tickets);
-            syncToDatabase(); // Anlık merkezi veritabanı senkronizasyonu
+            syncToDatabase();
         }
 
         let currentRotation = 0;
@@ -492,160 +492,157 @@
             });
         }
 
-        function showModal(title, desc, isJackpot = false, isError = false) {
+        function updateUI() {
+            document.getElementById('balance').innerText = gameState.balance.toFixed(4);
+            document.getElementById('rank-balance').innerText = gameState.balance.toFixed(2) + " PEPE";
+            document.getElementById('ticket-count').innerText = gameState.tickets + " Biletiniz Var";
+            
+            let progressPercent = Math.min((gameState.balance / 5000) * 100, 100);
+            document.getElementById('progress-bar').style.width = progressPercent + '%';
+            document.getElementById('progress-text').innerText = `${gameState.balance.toFixed(2)} / 5,000 PEPE (${progressPercent.toFixed(1)}%)`;
+        }
+
+        function showModal(title, desc, isSuccess = true) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-desc').innerText = desc;
             let iconDiv = document.getElementById('modal-icon');
-            
-            if(isJackpot) {
-                iconDiv.className = "w-12 h-12 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mx-auto text-xl border border-amber-500/30 shadow-inner";
-                iconDiv.innerHTML = '<i class="fa-solid fa-trophy"></i>';
-                playSound('jackpot');
-                confetti({ particleCount: 150, spread: 90, origin: { y: 0.6 } });
-            } else if(isError) {
-                iconDiv.className = "w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto text-xl border border-rose-500/30 shadow-inner";
-                iconDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-                playSound('error');
-            } else {
+            if(isSuccess) {
                 iconDiv.className = "w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl border border-emerald-500/30 shadow-inner";
                 iconDiv.innerHTML = '<i class="fa-solid fa-check"></i>';
-                playSound('win');
+            } else {
+                iconDiv.className = "w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto text-xl border border-rose-500/30 shadow-inner";
+                iconDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
             }
-            document.getElementById('custom-modal').classList.add('flex');
             document.getElementById('custom-modal').classList.remove('hidden');
+            document.getElementById('custom-modal').classList.add('flex');
         }
 
         function closeModal() {
-            document.getElementById('custom-modal').classList.add('hidden');
             document.getElementById('custom-modal').classList.remove('flex');
+            document.getElementById('custom-modal').classList.add('hidden');
         }
 
-        function updateUI() {
-            document.getElementById('balance').innerText = gameState.balance.toFixed(4);
-            document.getElementById('ticket-count').innerText = `${gameState.tickets} Biletiniz Var`;
-            document.getElementById('rank-balance').innerText = Math.floor(gameState.balance) + " PEPE";
-            let percentage = Math.min((gameState.balance / 5000) * 100, 100);
-            document.getElementById('progress-bar').style.width = percentage + '%';
-            document.getElementById('progress-text').innerText = `${gameState.balance.toFixed(2)} / 5,000 PEPE (${percentage.toFixed(1)}%)`;
-        }
-
-        function copyRefLink() {
-            let copyText = document.getElementById("ref-link");
-            navigator.clipboard.writeText(copyText.value);
-            showModal("Başarılı 📋", "Özel davet bağlantınız panoya kopyalandı!");
-        }
-
-        function shareViaTelegram() {
-            let refUrl = document.getElementById("ref-link").value;
-            let shareText = "🚀 Sanal Miner Pro'ya katıl, birlikte PEPE ve TON kazanalım! Hemen tıkla:";
-            
-            if (tg && tg.openTelegramLink) {
-                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${encodeURIComponent(shareText)}`);
-            } else {
-                window.open(`https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${encodeURIComponent(shareText)}`, '_blank');
-            }
-        }
-
-        function watchAdTask(amount, counterId, limit) {
+        function watchAdTask(taskId, counterId, maxLimit) {
             let countEl = document.getElementById(counterId);
             let currentCount = parseInt(countEl.innerText);
-            if (currentCount >= limit) {
-                showModal("Günlük Limit", "Bu sağlayıcı için günlük izleme sınırına ulaştınız.", false, true);
+            if(currentCount >= maxLimit) {
+                showModal("Limit Doldu", "Bugünkü reklam izleme limitine ulaştınız.", false);
+                playSound('error');
                 return;
             }
-            countEl.innerText = currentCount + 1;
-            gameState.tickets += amount;
-            updateUI();
-            saveUserData(); 
-            showModal("Tebrikler! 🎟️", `Reklam izlendi, hesabınıza +${amount} Bilet eklendi ve kaydedildi.`);
+            
+            showModal("Reklam Yükleniyor", "Sponsorlu reklam oynatılıyor, lütfen bekleyin...", true);
+            setTimeout(() => {
+                currentCount++;
+                countEl.innerText = currentCount;
+                gameState.tickets += 1;
+                saveUserData();
+                updateUI();
+                playSound('win');
+                showModal("Tebrikler! 🎉", "Reklam başarıyla tamamlandı ve hesabınıza +1 bilet eklendi!", true);
+            }, 2000);
         }
 
         function spinWheel() {
             if (isSpinning) return;
-            if (gameState.tickets <= 0) {
-                showModal("Biletiniz Kalmadı", "Çevirim yapmak için reklam izleyerek bilet kazanmalısın.", false, true);
+            if (gameState.tickets < 1) {
+                showModal("Yetersiz Bilet", "Çarkı çevirmek için en az 1 biletiniz olmalıdır. Ücretsiz görevlerden bilet kazanabilirsiniz.", false);
+                playSound('error');
                 return;
             }
 
             isSpinning = true;
-            let spinBtn = document.getElementById('spin-btn');
-            spinBtn.classList.add('opacity-50', 'cursor-not-allowed');
-
             gameState.tickets -= 1;
+            saveUserData();
             updateUI();
 
+            let prizes = [50, 0, 250, 1000, 0, 100];
+            let randomIndex = Math.floor(Math.random() * prizes.length);
+            let prize = prizes[randomIndex];
+
+            let sliceDegree = 360 / prizes.length;
+            let targetDegree = 360 - (randomIndex * sliceDegree) - (sliceDegree / 2);
+            let extraSpins = 360 * 5; 
+            currentRotation = extraSpins + targetDegree;
+
             let wheel = document.getElementById('svg-wheel');
-            let rand = Math.random() * 100;
-            let targetCenterAngle = 0;
-            let prizeWon = 0;
-            let prizeText = "";
-            let isJackpot = false;
-
-            if (rand < 35) {
-                targetCenterAngle = 330; prizeWon = 50; prizeText = "Çarktan 50 PEPE kazandınız!";
-            } else if (rand < 65) {
-                targetCenterAngle = Math.random() < 0.5 ? 90 : 270; prizeWon = 0; prizeText = "Üzgünüm, bu çevirmede ödül çıkmadı (BOŞ)!";
-            } else if (rand < 85) {
-                targetCenterAngle = 30; prizeWon = 100; prizeText = "Çarktan 100 PEPE kazandınız!";
-            } else if (rand < 95) {
-                targetCenterAngle = 150; prizeWon = 250; prizeText = "Çarktan 250 PEPE kazandınız!";
-            } else {
-                targetCenterAngle = 210; prizeWon = 1000; prizeText = "MUHTEŞEM! Büyük İkramiye 1000 PEPE Kazandınız! 🏆"; isJackpot = true;
-            }
-
-            let extraSpins = 360 * 6;
-            currentRotation = extraSpins + (360 - targetCenterAngle);
             wheel.style.transform = `rotate(${currentRotation}deg)`;
+            playSound('click');
 
             setTimeout(() => {
-                if (prizeWon > 0) {
-                    gameState.balance += prizeWon;
-                    showModal("Ödül Kazandınız! 🎰", prizeText, isJackpot);
-                } else {
-                    showModal("Şansınızı Deneyin", prizeText, false, true);
-                }
-                updateUI();
-                saveUserData(); 
                 isSpinning = false;
-                spinBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                if (prize > 0) {
+                    gameState.balance += prize;
+                    saveUserData();
+                    updateUI();
+                    playSound(prize >= 1000 ? 'jackpot' : 'win');
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
+                    }
+                    showModal("Çark Sonucu! 🎁", `Tebrikler! Çarktan ${prize} PEPE kazandınız!`, true);
+                } else {
+                    playSound('error');
+                    showModal("Şansınızı Deneyin", "Maalesef bu çevirmede ödül çıkmadı, tekrar deneyin.", false);
+                }
             }, 5000);
         }
 
+        function copyRefLink() {
+            let copyText = document.getElementById("ref-link");
+            copyText.select();
+            copyText.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(copyText.value);
+            showModal("Kopyalandı!", "Referans bağlantınız panoya kopyalandı.", true);
+        }
+
+        function shareViaTelegram() {
+            let refUrl = document.getElementById("ref-link").value;
+            let text = encodeURIComponent("🚀 Sanal Miner Pro'ya katıl ve birlikte PEPE kazanmaya başla! 💎");
+            let telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${text}`;
+            window.open(telegramShareUrl, '_blank');
+        }
+
         function requestWithdraw() {
+            let network = document.getElementById('wallet-network').value;
             let addr = document.getElementById('wallet-addr').value.trim();
             let amount = parseFloat(document.getElementById('withdraw-amount').value);
-            let network = document.getElementById('wallet-network').value;
 
-            if (addr.length < 10) {
-                showModal("Geçersiz Adres", "Lütfen geçerli bir cüzdan adresi giriniz.", false, true);
+            if (!addr) {
+                showModal("Hata", "Lütfen geçerli bir cüzdan adresi girin.", false);
+                playSound('error');
                 return;
             }
-            if (amount < 5000) {
-                showModal("Limit Hatası", "Minimum çekim miktarı 5000 PEPE'dir.", false, true);
+            if (isNaN(amount) || amount < 5000) {
+                showModal("Geçersiz Miktar", "Minimum çekim miktarı 5,000 PEPE'dir.", false);
+                playSound('error');
                 return;
             }
             if (gameState.balance < amount) {
-                showModal("Yetersiz Bakiye", "Çekim için bakiyeniz henüz yeterli değil.", false, true);
+                showModal("Yetersiz Bakiye", "Hesabınızdaki bakiye talep edilen çekim miktarından düşük.", false);
+                playSound('error');
                 return;
             }
 
-            gameState.wallet = addr;
             gameState.balance -= amount;
+            gameState.wallet = addr;
+            saveUserData();
             updateUI();
-            saveUserData(); 
-            showModal("İşlem Başarılı 🤖", `Çekim talebiniz (${network}) kuyruğa eklendi.`);
 
-            let liveList = document.getElementById('live-withdrawals');
+            let logContainer = document.getElementById('live-withdrawals');
             let shortAddr = addr.substring(0, 4) + "..." + addr.substring(addr.length - 4);
-            let newItem = document.createElement('div');
-            newItem.className = "flex justify-between items-center bg-slate-950/60 light-theme:bg-slate-200 p-2 rounded-xl border border-slate-800/60 animate-fade";
-            newItem.innerHTML = `<span class="text-slate-300 light-theme:text-slate-800 font-medium">${shortAddr} (${amount} PEPE)</span><span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Onaylandı ✅</span>`;
-            liveList.prepend(newItem);
+            let newLog = document.createElement('div');
+            newLog.className = "flex justify-between items-center bg-slate-950/60 light-theme:bg-slate-200 p-2 rounded-xl border border-slate-800/60 animate-fade";
+            newLog.innerHTML = `<span class="text-slate-300 light-theme:text-slate-800 font-medium">${shortAddr} (${amount.toLocaleString()} PEPE)</span><span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded text-[10px]">İşleniyor ⏳</span>`;
+            logContainer.prepend(newLog);
+
+            playSound('win');
+            showModal("Talep Alındı", "Çekim talebiniz Telegram Bot Worker sistemine iletildi. Ağ onayından sonra cüzdanınıza aktarılacaktır.", true);
         }
 
-        // Sayfa açıldığında verileri yükle ve her 5 saniyede bir veritabanına otomatik arka plan senkronizasyonu yap
-        fetchUserData();
-        setInterval(syncToDatabase, 5000);
+        // Sayfa yüklendiğinde verileri getir
+        window.onload = function() {
+            fetchUserData();
+        };
     </script>
 </body>
 </html>
