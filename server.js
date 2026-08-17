@@ -10,6 +10,7 @@ const PORT = process.env.PORT || 8080;
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Railway üzerinde kalıcı veritabanı klasörü
 const dbDir = '/app/data';
 if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 const db = new sqlite3.Database(path.join(dbDir, 'database.db'));
@@ -18,6 +19,7 @@ db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (telegram_id TEXT PRIMARY KEY, username TEXT, balance REAL DEFAULT 0)`);
 });
 
+// API endpointleri
 app.post('/api/login', (req, res) => {
     const { telegram_id, username } = req.body;
     db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegram_id], (err, row) => {
