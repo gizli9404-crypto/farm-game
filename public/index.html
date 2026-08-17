@@ -139,31 +139,25 @@
             </div>
         </div>
 
-        <!-- 2. SEKME: SPIN (ÇARK) - Dikey Sığdırma Optimizasyonu -->
+        <!-- 2. SEKME: SPIN (ÇARK) -->
         <div id="tab-spin" class="tab-content flex-col items-center justify-center space-y-2 my-auto">
-            <!-- Anlık Kazananlar Kayan Şeridi -->
             <div class="w-full bg-slate-900/80 light-theme:bg-slate-200 border border-slate-800 rounded-xl p-1.5 text-[10px] text-emerald-400 flex items-center space-x-2 overflow-hidden whitespace-nowrap shadow-sm">
                 <i class="fa-solid fa-bullhorn text-amber-400 ml-1"></i>
                 <span id="ticker-winners" class="font-medium animate-pulse">CryptoKing_77 çarktan 1,000 PEPE kazandı! | TonMaster99 250 PEPE kazandı!</span>
             </div>
 
-            <!-- Çark Alanı -->
             <div class="relative w-36 h-36 flex items-center justify-center wheel-glow my-1">
-                <!-- Üst İşaretçi -->
                 <div class="absolute -top-2.5 z-30 text-amber-400 text-xl filter drop-shadow-[0_2px_4px_rgba(0,0,0,0.9)] animate-bounce">
                     <i class="fa-solid fa-caret-down"></i>
                 </div>
-                <!-- Çark Çerçevesi ve SVG -->
                 <div class="w-32 h-32 rounded-full p-1 bg-gradient-to-tr from-slate-900 via-emerald-500/40 to-amber-500/50 shadow-2xl flex items-center justify-center relative">
                     <svg id="svg-wheel" class="w-full h-full rounded-full overflow-hidden shadow-inner" viewBox="0 0 100 100">
-                        <!-- Dilimler -->
                         <path d="M50 50 L50 3 A47 47 0 0 1 90.7 26.5 Z" fill="#0369a1" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L90.7 26.5 A47 47 0 0 1 90.7 73.5 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L90.7 73.5 A47 47 0 0 1 50 97 Z" fill="#6d28d9" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L50 97 A47 47 0 0 1 9.3 73.5 Z" fill="#b45309" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L9.3 73.5 A47 47 0 0 1 9.3 26.5 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
                         <path d="M50 50 L9.3 26.5 A47 47 0 0 1 50 3 Z" fill="#047857" stroke="#0f172a" stroke-width="1.5"/>
-                        <!-- Metinler -->
                         <g font-size="6" font-weight="900" text-anchor="middle" dominant-baseline="middle">
                             <text x="73" y="27" fill="#e0f2fe">50 PEPE</text>
                             <text x="78" y="53" fill="#94a3b8">BOŞ</text>
@@ -173,7 +167,6 @@
                             <text x="30" y="27" fill="#ecfdf5">100 PEPE</text>
                         </g>
                     </svg>
-                    <!-- Orta Taş -->
                     <div class="absolute w-7 h-7 bg-slate-950 rounded-full border-2 border-amber-400 z-20 shadow-2xl flex items-center justify-center text-amber-400 text-[10px]">
                         <i class="fa-solid fa-gem animate-pulse"></i>
                     </div>
@@ -218,26 +211,8 @@
                     <i class="fa-brands fa-telegram mr-2 text-base"></i> Telegram'da Arkadaş Davet Et
                 </button>
                 <div class="flex space-x-2 pt-1">
-                    <input type="text" readonly id="ref-link" value="https://t.me/SanalMinerProBot?start=ref_98412" class="w-full bg-slate-950/90 light-theme:bg-slate-100 border border-slate-800 rounded-xl px-3 py-2 text-[11px] text-emerald-400 font-mono focus:outline-none">
+                    <input type="text" readonly id="ref-link" value="https://t.me/SanalMinerProBot?start=ref_8256539395" class="w-full bg-slate-950/90 light-theme:bg-slate-100 border border-slate-800 rounded-xl px-3 py-2 text-[11px] text-emerald-400 font-mono focus:outline-none">
                     <button onclick="copyRefLink(); playClickSound();" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3.5 py-2 rounded-xl text-xs shadow transition-all cursor-pointer whitespace-nowrap"><i class="fa-solid fa-copy mr-1"></i> Kopyala</button>
-                </div>
-            </div>
-
-            <div class="glass-card p-3 rounded-2xl space-y-2 border-slate-800/80">
-                <div class="text-xs font-bold text-white light-theme:text-slate-900">Nasıl Çalışır?</div>
-                <div class="space-y-1.5 text-[11px] text-slate-300">
-                    <div class="flex items-center space-x-2">
-                        <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-[9px]">1</span>
-                        <span>"Telegram'da Arkadaş Davet Et" butonuna tıkla.</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-[9px]">2</span>
-                        <span>Açılan Telegram ekranından arkadaşını seç ve gönder.</span>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <span class="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-[9px]">3</span>
-                        <span>Arkadaşın botu başlattığında +2 bilet otomatik gelsin!</span>
-                    </div>
                 </div>
             </div>
         </div>
@@ -260,25 +235,10 @@
                     </div>
                     <span class="text-emerald-400 font-black">34,500 PEPE</span>
                 </div>
-                <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-slate-300 light-theme:text-slate-700 font-black">🥈</span>
-                        <span class="text-white light-theme:text-slate-900 font-bold">TonMaster99</span>
-                    </div>
-                    <span class="text-emerald-400 font-black">28,100 PEPE</span>
-                </div>
-                <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-amber-600 font-black">🥉</span>
-                        <span class="text-white light-theme:text-slate-900 font-bold">AnadoluMiner</span>
-                    </div>
-                    <span class="text-emerald-400 font-black">19,400 PEPE</span>
-                </div>
-
                 <div class="flex justify-between items-center bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/30 mt-2">
                     <div class="flex items-center space-x-2">
                         <span class="text-emerald-400 font-black">📍</span>
-                        <span class="text-emerald-300 light-theme:text-emerald-700 font-bold">Siz (142. Sıra)</span>
+                        <span class="text-emerald-300 light-theme:text-emerald-700 font-bold">Siz (Jacker_lord)</span>
                     </div>
                     <span id="rank-balance" class="text-emerald-400 font-black">0 PEPE</span>
                 </div>
@@ -312,19 +272,6 @@
                     <i class="fa-solid fa-robot mr-1.5"></i> Telegram Bot ile Çekim Talebi Oluştur
                 </button>
             </div>
-
-            <div class="glass-card p-3 rounded-2xl space-y-2 border-slate-800/80">
-                <div class="flex justify-between items-center text-xs border-b border-slate-800/80 pb-2">
-                    <span class="font-bold text-white light-theme:text-slate-900 flex items-center"><i class="fa-solid fa-terminal text-emerald-400 mr-1.5"></i> Bot Worker Log & Canlı Akış</span>
-                    <span class="text-[10px] text-emerald-400 font-semibold animate-pulse">● Canlı</span>
-                </div>
-                <div id="live-withdrawals" class="space-y-2 text-[11px]">
-                    <div class="flex justify-between items-center bg-slate-950/60 light-theme:bg-slate-200 p-2 rounded-xl border border-slate-800/60 animate-fade">
-                        <span class="text-slate-300 light-theme:text-slate-800 font-medium">UQv2...81aF (5,000 PEPE)</span>
-                        <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Onaylandı ✅</span>
-                    </div>
-                </div>
-            </div>
         </div>
 
     </main>
@@ -352,128 +299,51 @@
         <button onclick="switchTab('rank'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
     </nav>
 
-    <!-- MERKEZİ VERİTABANI & LOCALSTORAGE ENTEGRASYON MANTIĞI -->
+    <!-- KALICI SUNUCU VE VERİTABANI BAĞLANTI MANTIĞI -->
     <script>
-        let gameState = { balance: 370.00, tickets: 1, wallet: "" };
-        let telegramId = "test_user_123"; 
-        let username = "TestUser";
+        let gameState = { balance: 0, tickets: 1, wallet: "" };
+        let telegramId = "8256539395"; 
+        let username = "Jacker_lord";
 
         const tg = window.Telegram?.WebApp;
         if (tg) {
             tg.expand();
             if (tg.initDataUnsafe?.user?.id) {
                 telegramId = tg.initDataUnsafe.user.id.toString();
-                username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "MiniAppUser";
+                username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "Jacker_lord";
             }
         }
 
-        function syncToDatabase() {
-            fetch('/api/user/update', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    telegram_id: telegramId,
-                    username: username,
-                    balance: gameState.balance,
-                    tickets: gameState.tickets,
-                    wallet: gameState.wallet
-                })
-            }).catch(err => console.error("Veritabanı senkronizasyon hatası:", err));
-        }
-
+        // Sunucudan gerçek verileri al
         function fetchUserData() {
-            let savedBalance = localStorage.getItem('sanal_miner_balance_' + telegramId);
-            let savedTickets = localStorage.getItem('sanal_miner_tickets_' + telegramId);
-            
-            if (savedBalance !== null) {
-                gameState.balance = parseFloat(savedBalance);
-            }
-            if (savedTickets !== null) {
-                gameState.tickets = parseInt(savedTickets);
-            }
-            updateUI();
-
             fetch(`/api/user/${telegramId}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.balance !== undefined) {
-                        gameState.balance = data.balance;
-                        gameState.tickets = data.tickets;
-                        gameState.wallet = data.wallet || "";
+                    if (data.success && data.user) {
+                        gameState.balance = data.user.balance;
+                        gameState.tickets = data.user.tickets || 1;
+                        gameState.wallet = data.user.wallet || "";
                         updateUI();
-                        saveUserData();
                     }
                 })
-                .catch(err => console.log("Sunucudan veri çekilemedi, yerel hafıza kullanılıyor."));
+                .catch(err => console.log("Sunucu bağlantı hatası:", err));
         }
 
-        function saveUserData() {
-            localStorage.setItem('sanal_miner_balance_' + telegramId, gameState.balance);
-            localStorage.setItem('sanal_miner_tickets_' + telegramId, gameState.tickets);
-            syncToDatabase();
-        }
-
-        let currentRotation = 0;
-        let isSpinning = false;
-
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playSound(type) {
-            if (!audioCtx) return;
-            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+        function updateUI() {
+            document.getElementById('balance').innerText = gameState.balance.toFixed(4);
+            document.getElementById('rank-balance').innerText = gameState.balance.toFixed(2) + " PEPE";
+            document.getElementById('ticket-count').innerText = gameState.tickets + " Biletiniz Var";
             
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            let now = audioCtx.currentTime;
-
-            if (type === 'click') {
-                osc.type = 'sine';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
-                gain.gain.setValueAtTime(0.05, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.05);
-                osc.start(now);
-                osc.stop(now + 0.05);
-            } else if (type === 'win') {
-                osc.type = 'triangle';
-                osc.frequency.setValueAtTime(300, now);
-                osc.frequency.setValueAtTime(500, now + 0.1);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.4);
-                osc.start(now);
-                osc.stop(now + 0.4);
-            } else if (type === 'jackpot') {
-                osc.type = 'square';
-                osc.frequency.setValueAtTime(250, now);
-                osc.frequency.setValueAtTime(450, now + 0.15);
-                osc.frequency.setValueAtTime(650, now + 0.3);
-                gain.gain.setValueAtTime(0.12, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.7);
-                osc.start(now);
-                osc.stop(now + 0.7);
-            } else if (type === 'error') {
-                osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, now);
-                gain.gain.setValueAtTime(0.1, now);
-                gain.gain.linearRampToValueAtTime(0, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
-            }
+            let percent = Math.min((gameState.balance / 5000) * 100, 100);
+            document.getElementById('progress-bar').style.width = percent + '%';
+            document.getElementById('progress-text').innerText = gameState.balance.toFixed(2) + " / 5,000 PEPE (" + percent.toFixed(1) + "%)";
         }
-
-        function playClickSound() { playSound('click'); }
 
         function toggleTheme() {
             let body = document.body;
             let icon = document.getElementById('theme-icon');
             body.classList.toggle('light-theme');
-            if(body.classList.contains('light-theme')) {
-                icon.className = "fa-solid fa-sun";
-            } else {
-                icon.className = "fa-solid fa-moon";
-            }
+            icon.className = body.classList.contains('light-theme') ? "fa-solid fa-sun" : "fa-solid fa-moon";
         }
 
         function switchTab(tabId) {
@@ -489,27 +359,14 @@
             });
         }
 
-        function updateUI() {
-            document.getElementById('balance').innerText = gameState.balance.toFixed(4);
-            document.getElementById('rank-balance').innerText = gameState.balance.toFixed(2) + " PEPE";
-            document.getElementById('ticket-count').innerText = gameState.tickets + " Biletiniz Var";
-            
-            let progressPercent = Math.min((gameState.balance / 5000) * 100, 100);
-            document.getElementById('progress-bar').style.width = progressPercent + '%';
-            document.getElementById('progress-text').innerText = `${gameState.balance.toFixed(2)} / 5,000 PEPE (${progressPercent.toFixed(1)}%)`;
-        }
-
         function showModal(title, desc, isSuccess = true) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-desc').innerText = desc;
             let iconDiv = document.getElementById('modal-icon');
-            if(isSuccess) {
-                iconDiv.className = "w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl border border-emerald-500/30 shadow-inner";
-                iconDiv.innerHTML = '<i class="fa-solid fa-check"></i>';
-            } else {
-                iconDiv.className = "w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center mx-auto text-xl border border-rose-500/30 shadow-inner";
-                iconDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
-            }
+            iconDiv.className = isSuccess 
+                ? "w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl border border-emerald-500/30 shadow-inner"
+                : "w-12 h-12 rounded-2xl bg-red-500/20 text-red-400 flex items-center justify-center mx-auto text-xl border border-red-500/30 shadow-inner";
+            iconDiv.innerHTML = isSuccess ? '<i class="fa-solid fa-check"></i>' : '<i class="fa-solid fa-xmark"></i>';
             document.getElementById('custom-modal').classList.remove('hidden');
             document.getElementById('custom-modal').classList.add('flex');
         }
@@ -519,125 +376,31 @@
             document.getElementById('custom-modal').classList.add('hidden');
         }
 
-        function watchAdTask(taskId, counterId, maxLimit) {
-            let countEl = document.getElementById(counterId);
-            let currentCount = parseInt(countEl.innerText);
-            if(currentCount >= maxLimit) {
-                showModal("Limit Doldu", "Bugünkü reklam izleme limitine ulaştınız.", false);
-                playSound('error');
-                return;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (!audioCtx) return;
+            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            let now = audioCtx.currentTime;
+            if (type === 'click') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(400, now);
+                osc.frequency.exponentialRampToValueAtTime(800, now + 0.05);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.linearRampToValueAtTime(0, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
             }
-            
-            showModal("Reklam Yükleniyor", "Sponsorlu reklam oynatılıyor, lütfen bekleyin...", true);
-            setTimeout(() => {
-                currentCount++;
-                countEl.innerText = currentCount;
-                gameState.tickets += 1;
-                saveUserData();
-                updateUI();
-                playSound('win');
-                showModal("Tebrikler! 🎉", "Reklam başarıyla tamamlandı ve hesabınıza +1 bilet eklendi!", true);
-            }, 2000);
         }
+        function playClickSound() { playSound('click'); }
 
-        function spinWheel() {
-            if (isSpinning) return;
-            if (gameState.tickets < 1) {
-                showModal("Yetersiz Bilet", "Çarkı çevirmek için en az 1 biletiniz olmalıdır. Ücretsiz görevlerden bilet kazanabilirsiniz.", false);
-                playSound('error');
-                return;
-            }
-
-            isSpinning = true;
-            gameState.tickets -= 1;
-            saveUserData();
-            updateUI();
-
-            let prizes = [50, 0, 250, 1000, 0, 100];
-            let randomIndex = Math.floor(Math.random() * prizes.length);
-            let prize = prizes[randomIndex];
-
-            let sliceDegree = 360 / prizes.length;
-            let targetDegree = 360 - (randomIndex * sliceDegree) - (sliceDegree / 2);
-            let extraSpins = 360 * 5; 
-            currentRotation = extraSpins + targetDegree;
-
-            let wheel = document.getElementById('svg-wheel');
-            wheel.style.transform = `rotate(${currentRotation}deg)`;
-            playSound('click');
-
-            setTimeout(() => {
-                isSpinning = false;
-                if (prize > 0) {
-                    gameState.balance += prize;
-                    saveUserData();
-                    updateUI();
-                    playSound(prize >= 1000 ? 'jackpot' : 'win');
-                    if (typeof confetti === 'function') {
-                        confetti({ particleCount: 80, spread: 70, origin: { y: 0.6 } });
-                    }
-                    showModal("Çark Sonucu! 🎁", `Tebrikler! Çarktan ${prize} PEPE kazandınız!`, true);
-                } else {
-                    playSound('error');
-                    showModal("Şansınızı Deneyin", "Maalesef bu çevirmede ödül çıkmadı, tekrar deneyin.", false);
-                }
-            }, 5000);
-        }
-
-        function copyRefLink() {
-            let copyText = document.getElementById("ref-link");
-            copyText.select();
-            copyText.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(copyText.value);
-            showModal("Kopyalandı!", "Referans bağlantınız panoya kopyalandı.", true);
-        }
-
-        function shareViaTelegram() {
-            let refUrl = document.getElementById("ref-link").value;
-            let text = encodeURIComponent("🚀 Sanal Miner Pro'ya katıl ve birlikte PEPE kazanmaya başla! 💎");
-            let telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${text}`;
-            window.open(telegramShareUrl, '_blank');
-        }
-
-        function requestWithdraw() {
-            let network = document.getElementById('wallet-network').value;
-            let addr = document.getElementById('wallet-addr').value.trim();
-            let amount = parseFloat(document.getElementById('withdraw-amount').value);
-
-            if (!addr) {
-                showModal("Hata", "Lütfen geçerli bir cüzdan adresi girin.", false);
-                playSound('error');
-                return;
-            }
-            if (isNaN(amount) || amount < 5000) {
-                showModal("Geçersiz Miktar", "Minimum çekim miktarı 5,000 PEPE'dir.", false);
-                playSound('error');
-                return;
-            }
-            if (gameState.balance < amount) {
-                showModal("Yetersiz Bakiye", "Hesabınızdaki bakiye talep edilen çekim miktarından düşük.", false);
-                playSound('error');
-                return;
-            }
-
-            gameState.balance -= amount;
-            gameState.wallet = addr;
-            saveUserData();
-            updateUI();
-
-            let logContainer = document.getElementById('live-withdrawals');
-            let shortAddr = addr.substring(0, 4) + "..." + addr.substring(addr.length - 4);
-            let newLog = document.createElement('div');
-            newLog.className = "flex justify-between items-center bg-slate-950/60 light-theme:bg-slate-200 p-2 rounded-xl border border-slate-800/60 animate-fade";
-            newLog.innerHTML = `<span class="text-slate-300 light-theme:text-slate-800 font-medium">${shortAddr} (${amount.toLocaleString()} PEPE)</span><span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded text-[10px]">İşleniyor ⏳</span>`;
-            logContainer.prepend(newLog);
-
-            playSound('win');
-            showModal("Talep Alındı", "Çekim talebiniz Telegram Bot Worker sistemine iletildi. Ağ onayından sonra cüzdanınıza aktarılacaktır.", true);
-        }
-
+        // Sayfa yüklendiğinde verileri çek
         window.onload = function() {
             fetchUserData();
+            switchTab('spin');
         };
     </script>
 </body>
