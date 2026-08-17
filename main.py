@@ -86,6 +86,7 @@ def index():
 def admin_page():
     return render_template('admin.html')
 
+# Kullanıcı verisini getiren endpoint
 @app.route('/api/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
@@ -98,6 +99,7 @@ def get_user(user_id):
         return jsonify({"balance": row[0], "tickets": row[1], "wallet": row[2]}), 200
     return jsonify({"balance": 0.0, "tickets": 0, "wallet": ""}), 200
 
+# Mini uygulamadan gelen verileri MERKEZİ VERİTABANINA anlık işleyen endpoint
 @app.route('/api/user/update', methods=['POST'])
 def update_user():
     try:
@@ -132,7 +134,7 @@ def update_user():
         conn.commit()
         conn.close()
         
-        return jsonify({"status": "success", "message": "Güncellendi"}), 200
+        return jsonify({"status": "success", "message": "Merkezi veritabanına kaydedildi"}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
