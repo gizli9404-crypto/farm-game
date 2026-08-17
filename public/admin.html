@@ -1,27 +1,17 @@
 <!DOCTYPE html>
 <html>
 <body>
-    <h1>Oyun Ekranı</h1>
-    <p>Bakiyen: <span id="balance">0</span></p>
-    <button onclick="addMoney()">10 Puan Kazan</button>
-
+    <h1>Admin Paneli</h1>
+    <table border="1">
+        <thead><tr><th>ID</th><th>Username</th><th>Balance</th></tr></thead>
+        <tbody id="user-list"></tbody>
+    </table>
     <script>
-        const telegram_id = "12345"; // Bunu kendi ID'nle değiştir
-        
-        function addMoney() {
-            fetch('/api/update-balance', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_id: telegram_id, amount: 10 })
-            }).then(() => location.reload());
-        }
-
-        fetch('/api/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ telegram_id: telegram_id })
-        }).then(res => res.json()).then(data => {
-            document.getElementById('balance').innerText = data.balance;
+        fetch('/api/users').then(res => res.json()).then(data => {
+            const list = document.getElementById('user-list');
+            data.forEach(u => {
+                list.innerHTML += `<tr><td>${u.telegram_id}</td><td>${u.username}</td><td>${u.balance}</td></tr>`;
+            });
         });
     </script>
 </body>
