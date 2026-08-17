@@ -35,6 +35,16 @@ def init_db():
             status TEXT DEFAULT 'Beklemede'
         )
     ''')
+    # Reklam aktivitelerini takip etmek için yeni tablo
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ad_activity (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            username TEXT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            reward REAL
+        )
+    ''')
     conn.commit()
     conn.close()
 
@@ -72,7 +82,6 @@ def send_welcome(message):
 def index():
     return render_template('index.html')
 
-# ADMIN PANELİ İÇİN EKLENEN ROTA
 @app.route('/admin.html')
 def admin_page():
     return render_template('admin.html')
@@ -113,6 +122,32 @@ def update_user():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
+# Reklam izlendiğinde tetiklenecek örnek API (Uygulamanızdan buraya istek atabilirsiniz)
+@app.route('/api/ad/watched', methods=['POST'])
+def ad_watched():
+    try:
+        data = request.json
+        user_id = data.get('user_id')
+        reward = data.get('reward', 0.5)
+        
+        conn = sqlite3.connect('miner.db', check_same_thread=False)
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT username FROM users WHERE user_id = ?', (user_id,))
+        user_row = cursor.fetchone()
+        username = user_row[0] if user_row and user_row[0] else "Bilinmiyor"
+        
+        # Reklam aktivitesini kaydet
+        cursor.execute('INSERT INTO ad_activity (user_id, username, reward) VALUES (?, ?, ?)', (user_id, username, reward))
+        # Kullanıcı bakiyesini artır
+        cursor.execute('UPDATE users SET balance = balance + ? WHERE user_id = ?', (reward, user_id))
+        
+        conn.commit()
+        conn.close()
+        return jsonify({"status": "success", "message": "Ödül eklendi"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
+
 @app.route('/api/withdraw', methods=['POST'])
 def withdraw():
     try:
@@ -146,15 +181,16 @@ def withdraw():
         except Exception as ex:
             print(f"Kanal mesajı hatası: {ex}")
             
-        return jsonify({"status": "success", "message": "Çekim talebiniz başarıyla alındı ve kanala bildirildi."}), 200
+        return jsonify({"status": "success", "message": "Çekim talebiniz başarıyla alındı."}), 200
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
 # --- 4. ADMIN PANELİ APİ'LERİ ---
+SECRET_KEY = "SizinGucluSifreniz123" # Güvenliğiniz için burayı değiştirebilirsiniz
+
 @app.route('/api/admin/users', methods=['GET'])
 def admin_users():
-    secret = request.args.get('secret')
-    if secret != "SizinGucluSifreniz123":
+    if request.args.get('secret') != SECRET_KEY:
         return jsonify({"error": "Yetkisiz erişim!"}), 403
     
     conn = sqlite3.connect('miner.db', check_same_thread=False)
@@ -163,22 +199,11 @@ def admin_users():
     rows = cursor.fetchall()
     conn.close()
     
-    users_list = []
-    for row in rows:
-        users_list.append({
-            "user_id": row[0],
-            "username": row[1],
-            "full_name": row[2],
-            "balance": row[3],
-            "tickets": row[4],
-            "wallet": row[5]
-        })
-    return jsonify(users_list), 200
+    return jsonify([{"user_id": r[0], "username": r[1], "full_name": r[2], "balance": r[3], "tickets": r[4], "wallet": r[5]} for r in rows]), 200
 
 @app.route('/api/admin/withdrawals', methods=['GET'])
 def admin_withdrawals():
-    secret = request.args.get('secret')
-    if secret != "SizinGucluSifreniz123":
+    if request.args.get('secret') != SECRET_KEY:
         return jsonify({"error": "Yetkisiz erişim!"}), 403
     
     conn = sqlite3.connect('miner.db', check_same_thread=False)
@@ -187,17 +212,41 @@ def admin_withdrawals():
     rows = cursor.fetchall()
     conn.close()
     
-    withdrawals_list = []
-    for row in rows:
-        withdrawals_list.append({
-            "id": row[0],
-            "user_id": row[1],
-            "username": row[2],
-            "amount": row[3],
-            "wallet": row[4],
-            "status": row[5]
-        })
-    return jsonify(withdrawals_list), 200
+    return jsonify([{"id": r[0], "user_id": r[1], "username": r[2], "amount": r[3], "wallet": r[4], "status": r[5]} for r in rows]), 200
+
+# Anlık reklam izleme loglarını çeken API
+@app.route('/api/admin/ads', methods=['GET'])
+def admin_ads():
+    if request.args.get('secret') != SECRET_KEY:
+        return jsonify({"error": "Yetkisiz erişim!"}), 403
+        
+    conn = sqlite3.connect('miner.db', check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, user_id, username, timestamp, reward FROM ad_activity ORDER BY id DESC LIMIT 50')
+    rows = cursor.fetchall()
+    conn.close()
+    
+    return jsonify([{"id": r[0], "user_id": r[1], "username": r[2], "timestamp": r[3], "reward": r[4]} for r in rows]), 200
+
+# Admin panelinden kullanıcı bakiyesini doğrudan güncelleme API'si
+@app.route('/api/admin/update_balance', methods=['POST'])
+def admin_update_balance():
+    data = request.json
+    if data.get('secret') != SECRET_KEY:
+        return jsonify({"error": "Yetkisiz erişim!"}), 403
+        
+    user_id = data.get('user_id')
+    new_balance = data.get('balance')
+    
+    try:
+        conn = sqlite3.connect('miner.db', check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('UPDATE users SET balance = ? WHERE user_id = ?', (new_balance, user_id))
+        conn.commit()
+        conn.close()
+        return jsonify({"status": "success", "message": "Bakiye güncellendi"})
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
 
 # --- 5. BOT POLLING ---
 def run_bot():
