@@ -221,7 +221,7 @@
             </div>
         </div>
 
-        <!-- 5. SEKME: RANK -->
+        <!-- 5. SEKME: RANK (CANLI LİDERLİK TABLOSU) -->
         <div id="tab-rank" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
                 <h2 class="text-base font-black text-white light-theme:text-slate-900">Canlı Liderlik Tablosu</h2>
@@ -232,13 +232,12 @@
             </div>
             
             <div class="glass-card p-3 rounded-2xl space-y-2 text-xs border-slate-800/80 shadow-lg">
-                <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <span class="text-amber-400 font-black">🥇</span>
-                        <span class="text-white light-theme:text-slate-900 font-bold">CryptoKing_77</span>
-                    </div>
-                    <span class="text-emerald-400 font-black">34,500 PEPE</span>
+                <!-- Canlı API Verileriyle Dolacak Liste Alanı -->
+                <div id="leaderboard-list" class="space-y-2">
+                    <div class="text-center text-slate-400 py-4 text-xs">Yükleniyor...</div>
                 </div>
+
+                <!-- Kullanıcının Kendi Sıralama Durumu -->
                 <div class="flex justify-between items-center bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/30 mt-2">
                     <div class="flex items-center space-x-2">
                         <span class="text-emerald-400 font-black">📍</span>
@@ -300,7 +299,7 @@
         <button onclick="switchTab('spin'); playClickSound();" class="nav-btn text-emerald-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="spin"><i class="fa-solid fa-dharmachakra text-xs"></i><span class="text-[9px] font-bold">SPIN</span></button>
         <button onclick="switchTab('shop'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="shop"><i class="fa-solid fa-star text-xs"></i><span class="text-[9px] font-bold">SHOP</span></button>
         <button onclick="switchTab('invite'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="invite"><i class="fa-solid fa-globe text-xs"></i><span class="text-[9px] font-bold">INVITE</span></button>
-        <button onclick="switchTab('rank'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
+        <button onclick="switchTab('rank'); fetchLeaderboard(); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
     </nav>
 
     <!-- MERKEZİ VERİTABANI & BOT LOG ENTEGRASYONU -->
@@ -360,11 +359,44 @@
                         gameState.wallet = data.wallet || "";
                         updateUI();
                     } else {
-                        // İlk kez giriş yapıyorsa logla
                         sendActivityLog("START", "Kullanıcı bota /start verdi ve sisteme kayıt oldu.");
                     }
                 })
                 .catch(err => console.log("Sunucu bağlantı hatası, yerel mod."));
+        }
+
+        // Canlı Liderlik Tablosunu /api/leaderboard adresinden çeken fonksiyon
+        function fetchLeaderboard() {
+            fetch('/api/leaderboard')
+                .then(res => res.json())
+                .then(data => {
+                    let listEl = document.getElementById('leaderboard-list');
+                    if (!data || data.length === 0) {
+                        listEl.innerHTML = '<div class="text-center text-slate-400 py-3 text-xs">Henüz liderlik tablosu verisi yok.</div>';
+                        return;
+                    }
+
+                    let html = '';
+                    data.forEach((user, index) => {
+                        let rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
+                        let isMe = user.telegram_id === telegramId || user.username === username;
+                        
+                        html += `
+                            <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border ${isMe ? 'border-emerald-500/50 bg-emerald-500/10' : 'border-slate-800'}">
+                                <div class="flex items-center space-x-2">
+                                    <span class="text-amber-400 font-black">${rankIcon}</span>
+                                    <span class="text-white light-theme:text-slate-900 font-bold">${user.username || 'Anonim'}</span>
+                                </div>
+                                <span class="text-emerald-400 font-black">${Number(user.balance).toFixed(2)} PEPE</span>
+                            </div>
+                        `;
+                    });
+                    listEl.innerHTML = html;
+                })
+                .catch(err => {
+                    console.error("Liderlik tablosu yüklenemedi:", err);
+                    document.getElementById('leaderboard-list').innerHTML = '<div class="text-center text-red-400 py-3 text-xs">Sıralama yüklenirken hata oluştu.</div>';
+                });
         }
 
         function saveUserData() {
@@ -403,6 +435,10 @@
                 btn.classList.add('text-slate-400');
                 if(btn.getAttribute('data-target') === tabId) btn.classList.add('text-emerald-400');
             });
+            // Eğer RANK sekmesine geçildiyse liderlik tablosunu tetikle
+            if(tabId === 'rank') {
+                fetchLeaderboard();
+            }
         }
 
         function updateUI() {
@@ -503,6 +539,7 @@
 
         window.onload = function() {
             fetchUserData();
+            fetchLeaderboard();
             sendActivityLog("APP_OPEN", "Kullanıcı Mini App uygulamasını açtı.");
         };
     </script>
