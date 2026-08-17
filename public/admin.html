@@ -65,7 +65,7 @@
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800 gap-3">
                     <div>
                         <div id="admin-username" class="text-xs font-bold text-white">Engin Güven (@Jacker_lord)</div>
-                        <div id="admin-meta" class="text-[10px] text-slate-400 mt-0.5">ID: 8256539395 | Bakiye: 120 PEPE</div>
+                        <div id="admin-meta" class="text-[10px] text-slate-400 mt-0.5">ID: 8256539395 | Bakiye: <span id="target-balance">120</span> PEPE</div>
                     </div>
                     <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
                         <input type="number" id="admin-amount-input" value="10" class="w-20 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white text-center focus:outline-none focus:border-emerald-500 font-bold">
@@ -117,7 +117,7 @@
                     <i class="fa-solid fa-terminal mr-1.5"></i> Admin İşlem Günlüğü
                 </h2>
                 <div id="admin-logs" class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 flex-1 overflow-y-auto font-mono text-[11px] text-emerald-400 space-y-1">
-                    <div>[13:22] Admin paneli hazır.</div>
+                    <div>[13:22] Admin paneli hazır ve sunucuya bağlandı.</div>
                 </div>
             </section>
 
@@ -125,8 +125,10 @@
 
     </main>
 
-    <!-- JAVASCRIPT İŞLEVSELLİK -->
+    <!-- CANLI API BAĞLANTI SCRİPTİ -->
     <script>
+        const targetUserId = "8256539395"; // Sizin Telegram ID'niz
+
         function logAction(msg) {
             let logs = document.getElementById('admin-logs');
             let time = new Date().toLocaleTimeString();
@@ -136,31 +138,76 @@
             logs.scrollTop = logs.scrollHeight;
         }
 
+        // Bakiye Ekle / Çıkar API İsteği
         function modifyBalance(action) {
-            let val = parseFloat(document.getElementById('admin-amount-input').value) || 0;
-            if(action === 'sub') val = -val;
-            logAction(`Kullanıcı bakiyesi ${val > 0 ? '+' + val : val} PEPE olarak güncellendi.`);
-            alert(`İşlem başarılı: Bakiye güncellendi.`);
+            let amountVal = parseFloat(document.getElementById('admin-amount-input').value) || 0;
+            let finalAmount = action === 'sub' ? -amountVal : amountVal;
+
+            fetch('/api/admin/balance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: targetUserId, amount: finalAmount })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    document.getElementById('target-balance').innerText = data.new_balance;
+                    logAction(`Bakiye güncellendi: ${finalAmount > 0 ? '+' + finalAmount : finalAmount} PEPE. Yeni Toplam: ${data.new_balance}`);
+                    alert("İşlem başarılı: Bakiye güncellendi!");
+                } else {
+                    alert("Hata: " + (data.error || "İşlem yapılamadı."));
+                }
+            })
+            .catch(err => {
+                logAction(`Hata: Sunucu bağlantısı kurulamadı.`);
+                alert("Sunucu bağlantı hatası! Lütfen backend loglarını kontrol edin.");
+            });
         }
 
+        // Ödeme Onayla API İsteği
         function approveWithdraw(btn) {
-            let parent = btn.closest('div.flex');
-            parent.style.opacity = '0.5';
-            btn.disabled = true;
-            btn.innerHTML = '<i class="fa-solid fa-check-double mr-1"></i> Ödendi';
-            btn.className = "w-full sm:w-auto bg-slate-800 text-slate-400 font-bold px-4 py-2 rounded-xl text-xs cursor-not-allowed";
-            logAction(`Çekim talebi onaylandı ve cüzdana transfer edildi.`);
+            fetch('/api/admin/withdraw/approve', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: targetUserId })
+            })
+            .then(res => res.json())
+            .then(data => {
+                let parent = btn.closest('div.flex');
+                parent.style.opacity = '0.5';
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-check-double mr-1"></i> Ödendi';
+                btn.className = "w-full sm:w-auto bg-slate-800 text-slate-400 font-bold px-4 py-2 rounded-xl text-xs cursor-not-allowed";
+                logAction(`Çekim talebi onaylandı ve ödendi olarak işaretlendi.`);
+                alert("Ödeme başarıyla onaylandı!");
+            })
+            .catch(err => {
+                alert("Ödeme onaylanırken bir hata oluştu.");
+            });
         }
 
+        // Duyuru Yayınla API İsteği
         function sendBroadcast() {
             let text = document.getElementById('broadcast-text').value.trim();
             if(!text) {
                 alert("Lütfen bir duyuru metni girin.");
                 return;
             }
-            logAction(`Yeni duyuru mini uygulamada yayınlandı: "${text.substring(0, 25)}..."`);
-            document.getElementById('broadcast-text').value = "";
-            alert("Duyuru tüm kullanıcılara canlı olarak iletildi!");
+
+            fetch('/api/admin/broadcast', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ message: text })
+            })
+            .then(res => res.json())
+            .then(data => {
+                logAction(`Yeni duyuru yayınlandı: "${text.substring(0, 25)}..."`);
+                document.getElementById('broadcast-text').value = "";
+                alert("Duyuru tüm kullanıcılara canlı olarak iletildi!");
+            })
+            .catch(err => {
+                alert("Duyuru gönderilemedi.");
+            });
         }
     </script>
 </body>
