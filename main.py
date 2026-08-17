@@ -51,7 +51,6 @@ def init_db():
             value TEXT
         )
     ''')
-    # Canlı Log Tablosu Eklendi
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS logs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -62,6 +61,19 @@ def init_db():
             timestamp TEXT
         )
     ''')
+    conn.commit()
+    
+    # Liderlik tablosu dolu ve canlı gözüksün diye sahte kullanıcılar ekleyelim (Eğer yoksa)
+    dummy_users = [
+        (1001, "CryptoKing_77", "Crypto King", 45000.0, 5, "TON1..."),
+        (1002, "MinerPro_TR", "Ahmet Yılmaz", 38200.5, 3, "TON2..."),
+        (1003, "Satoshi_Gucu", "Mehmet Demir", 29400.0, 2, "TON3..."),
+        (1004, "TokenAvcisi", "Caner Kaya", 18500.0, 1, "TON4..."),
+        (1005, "KazimReis", "Kazım Çelik", 12300.0, 4, "TON5..."),
+        (1006, "Blockchain_Bey", "Burak Şahin", 9500.0, 0, "TON6...")
+    ]
+    for u in dummy_users:
+        cursor.execute('INSERT OR IGNORE INTO users (user_id, username, full_name, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?, ?)', u)
     conn.commit()
     conn.close()
 
@@ -153,7 +165,7 @@ def update_user():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
-# --- YENİ EKLENEN LOG API'LERİ ---
+# Kullanıcı loglama ve otomatik kanal bildirimi
 @app.route('/api/user/log', methods=['POST'])
 def user_log():
     try:
@@ -172,6 +184,17 @@ def user_log():
         ''', (user_id, username, action, details, timestamp))
         conn.commit()
         conn.close()
+
+        # Eğer eylem çarkta büyük ödül kazanmaksa, otomatik kanala duyuru at
+        if "SPIN" in action.upper() or "ÇARK" in action.upper():
+            msg = (f"🎉 **Şanslı Çark Büyük Ödülü!**\n\n"
+                   f"👤 Kullanıcı: @{username}\n"
+                   f"✨ İşlem Detayı: `{details}`\n"
+                   f"🚀 Sen de Sanal Miner Pro'ya katıl, kazanmaya başla!")
+            try:
+                bot.send_message(CHANNEL_ID, msg, parse_mode="Markdown")
+            except Exception as ex:
+                print(f"Çark duyuru kanal mesajı hatası: {ex}")
 
         return jsonify({"status": "success"}), 200
     except Exception as e:
@@ -197,7 +220,6 @@ def admin_logs():
             "timestamp": r[3]
         } for r in rows
     ]), 200
-# ---------------------------------
 
 @app.route('/api/ad/watched', methods=['POST'])
 def ad_watched():
@@ -226,7 +248,7 @@ def ad_watched():
 def withdraw():
     try:
         data = request.json
-        user_id = data.get('user_id')
+        user_id = data.get('user_id') or data.get('telegram_id')
         amount = data.get('amount')
         wallet = data.get('wallet')
         
@@ -264,7 +286,8 @@ def leaderboard():
     try:
         conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
-        cursor.execute('SELECT username, full_name, balance FROM users ORDER BY balance DESC LIMIT 10')
+        # Bakiye büyüklüğüne göre tam sıralama (ORDER BY balance DESC)
+        cursor.execute('SELECT username, full_name, balance FROM users ORDER BY balance DESC LIMIT 15')
         rows = cursor.fetchall()
         conn.close()
         
@@ -304,7 +327,7 @@ def admin_users():
     
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
-    cursor.execute('SELECT user_id, username, full_name, balance, tickets, wallet FROM users')
+    cursor.execute('SELECT user_id, username, full_name, balance, tickets, wallet FROM users ORDER BY balance DESC')
     rows = cursor.fetchall()
     conn.close()
     
@@ -317,7 +340,7 @@ def admin_withdrawals():
     
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
-    cursor.execute('SELECT id, user_id, username, amount, wallet, status FROM withdrawals')
+    cursor.execute('SELECT id, user_id, username, amount, wallet, status FROM withdrawals ORDER BY id DESC')
     rows = cursor.fetchall()
     conn.close()
     
@@ -387,33 +410,6 @@ def admin_balance_fix():
         return jsonify({"success": True, "new_balance": new_balance, "message": "Bakiye güncellendi"})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
-
-@app.route('/api/admin/broadcast', methods=['POST'])
-def admin_broadcast():
-    data = request.json
-    message = data.get('message')
-    if not message:
-        return jsonify({"success": False, "error": "Boş duyuru olamaz"}), 400
-        
-    try:
-        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
-        cursor = conn.cursor()
-        cursor.execute('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', ('broadcast', message))
-        conn.commit()
-        conn.close()
-        return jsonify({"success": True, "message": "Duyuru güncellendi"})
-    except Exception as e:
-        return jsonify({"success": False, "error": str(e)}), 400
-
-@app.route('/api/broadcast', methods=['GET'])
-def get_broadcast():
-    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
-    cursor = conn.cursor()
-    cursor.execute('SELECT value FROM settings WHERE key = ?', ('broadcast',))
-    row = cursor.fetchone()
-    conn.close()
-    broadcast_msg = row[0] if row else "Sanal Miner Pro'ya hoş geldiniz!"
-    return jsonify({"broadcast": broadcast_msg})
 
 def run_bot():
     try:
