@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const axios = require('axios');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
@@ -14,10 +15,17 @@ const ADMIN_CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru';
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// SQLite Veritabanı Bağlantısı
-const db = new sqlite3.Database('./database.db', (err) => {
+// SQLite Veritabanı Bağlantısı (Railway Volume Uyumlu)
+// Eğer /app/data klasörü yoksa oluşturuyoruz
+const dbDir = '/app/data';
+if (!fs.existsSync(dbDir)){
+    fs.mkdirSync(dbDir, { recursive: true });
+}
+
+const dbPath = path.join(dbDir, 'database.db');
+const db = new sqlite3.Database(dbPath, (err) => {
     if (err) console.error('Veritabanı bağlantı hatası:', err.message);
-    else console.log('SQLite veritabanına bağlandı.');
+    else console.log('SQLite veritabanına bağlandı:', dbPath);
 });
 
 // Tabloların Oluşturulması
@@ -80,7 +88,7 @@ app.post(['/api/withdraw', '/api/cekim'], (req, res) => {
     );
 });
 
-// 3. ÇEKİMLERİ GETİRME (Tüm olası yol varyasyonları)
+// 3. ÇEKİMLERİ GETİRME
 const handleWithdrawals = (req, res) => {
     db.all(`SELECT * FROM withdrawals ORDER BY id DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
