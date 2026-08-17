@@ -265,7 +265,7 @@
                 </div>
                 <div class="space-y-1">
                     <label class="text-[10px] text-slate-400 light-theme:text-slate-600 font-bold uppercase">Cüzdan Adresi</label>
-                    <input type="text" id="wallet-addr" placeholder="UQ... veya 0x..." class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
+                    <input type="text" id="wallet-addr" placeholder="UQ... atau 0x..." class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <div class="space-y-1">
                     <label class="text-[10px] text-slate-400 light-theme:text-slate-600 font-bold uppercase">Çekim Miktarı (Min: 5000 PEPE)</label>
@@ -302,7 +302,7 @@
         <button onclick="switchTab('rank'); fetchLeaderboard(); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
     </nav>
 
-    <!-- MERKEZİ VERİTABANI & BOT LOG ENTEGRASYONU -->
+    <!-- MERKEZİ VERİTABANI & NAN KORUMALI LOG ENTEGRASYONU -->
     <script>
         let gameState = { balance: 0.00, tickets: 0, wallet: "" };
         let telegramId = "user_" + Math.floor(Math.random() * 1000000); 
@@ -317,6 +317,20 @@
             }
         }
 
+        // Yerel Hafızadan Veriyi Güvenli Yükleme (NaN Önleyici)
+        function initLocalData() {
+            let savedBalance = localStorage.getItem('local_balance_' + telegramId);
+            let savedTickets = localStorage.getItem('local_tickets_' + telegramId);
+
+            if (savedBalance !== null && !isNaN(savedBalance)) {
+                gameState.balance = Number(savedBalance);
+            }
+            if (savedTickets !== null && !isNaN(savedTickets)) {
+                gameState.tickets = Number(savedTickets);
+            }
+        }
+
+        // Sunucuya ve Admin Paneli Log Sistemine Bildirim Gönderen Fonksiyon
         function sendActivityLog(actionType, details) {
             fetch('/api/user/log', {
                 method: 'POST',
@@ -335,6 +349,14 @@
         }
 
         function syncToDatabase() {
+            // NaN ve geçersiz değerlerin sunucuya gitmesini engelle
+            gameState.balance = isNaN(Number(gameState.balance)) ? 0 : Number(gameState.balance);
+            gameState.tickets = isNaN(Number(gameState.tickets)) ? 0 : Number(gameState.tickets);
+
+            // Yerel hafızaya anında yedekle
+            localStorage.setItem('local_balance_' + telegramId, gameState.balance);
+            localStorage.setItem('local_tickets_' + telegramId, gameState.tickets);
+
             fetch('/api/user/update', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -352,18 +374,27 @@
             fetch(`/api/user/${telegramId}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.balance !== undefined) {
-                        gameState.balance = data.balance;
-                        gameState.tickets = data.tickets;
+                    if (data && data.balance !== undefined && !isNaN(data.balance)) {
+                        gameState.balance = Number(data.balance);
+                        gameState.tickets = (data.tickets !== undefined && !isNaN(data.tickets)) ? Number(data.tickets) : gameState.tickets;
                         gameState.wallet = data.wallet || "";
+                        
+                        // Güncel veriyi yerel depolamaya da işle
+                        localStorage.setItem('local_balance_' + telegramId, gameState.balance);
+                        localStorage.setItem('local_tickets_' + telegramId, gameState.tickets);
+                        
                         updateUI();
                     } else {
                         sendActivityLog("START", "Kullanıcı bota /start verdi ve sisteme kayıt oldu.");
                     }
                 })
-                .catch(err => console.log("Sunucu bağlantı hatası, yerel mod."));
+                .catch(err => {
+                    console.log("Sunucu bağlantı hatası, yerel güvenli bakiye kullanılıyor.");
+                    updateUI();
+                });
         }
 
+        // Canlı Liderlik Tablosunu /api/leaderboard adresinden çeken fonksiyon
         function fetchLeaderboard() {
             fetch('/api/leaderboard')
                 .then(res => res.json())
@@ -385,7 +416,7 @@
                                     <span class="text-amber-400 font-black">${rankIcon}</span>
                                     <span class="text-white light-theme:text-slate-900 font-bold">${user.username || 'Anonim'}</span>
                                 </div>
-                                <span class="text-emerald-400 font-black">${Number(user.balance).toFixed(2)} PEPE</span>
+                                <span class="text-emerald-400 font-black">${Number(user.balance || 0).toFixed(2)} PEPE</span>
                             </div>
                         `;
                     });
@@ -433,12 +464,17 @@
                 btn.classList.add('text-slate-400');
                 if(btn.getAttribute('data-target') === tabId) btn.classList.add('text-emerald-400');
             });
+            // Eğer RANK sekmesine geçildiyse liderlik tablosunu tetikle
             if(tabId === 'rank') {
                 fetchLeaderboard();
             }
         }
 
         function updateUI() {
+            // NaN koruma filtresi
+            gameState.balance = isNaN(Number(gameState.balance)) ? 0 : Number(gameState.balance);
+            gameState.tickets = isNaN(Number(gameState.tickets)) ? 0 : Number(gameState.tickets);
+
             document.getElementById('balance').innerText = gameState.balance.toFixed(4);
             document.getElementById('rank-balance').innerText = gameState.balance.toFixed(2) + " PEPE";
             document.getElementById('ticket-count').innerText = gameState.tickets + " Biletiniz Var";
@@ -460,7 +496,7 @@
 
         function watchAdTask(taskId, counterId, maxLimit) {
             let countEl = document.getElementById(counterId);
-            let currentCount = parseInt(countEl.innerText);
+            let currentCount = parseInt(countEl.innerText) || 0;
             if(currentCount >= maxLimit) { showModal("Limit", "Günlük sınır.", false); return; }
             
             showModal("Reklam", "Sponsorlu reklam izleniyor...", true);
@@ -520,7 +556,7 @@
             let addr = document.getElementById('wallet-addr').value.trim();
             let amount = parseFloat(document.getElementById('withdraw-amount').value);
 
-            if (!addr || amount < 5000 || gameState.balance < amount) {
+            if (!addr || isNaN(amount) || amount < 5000 || gameState.balance < amount) {
                 showModal("Hata", "Adres veya bakiye yetersiz (Min: 5000 PEPE).", false);
                 return;
             }
@@ -535,7 +571,9 @@
         }
 
         window.onload = function() {
-            fetchUserData();
+            initLocalData();   // Sayfa açılır açılmaz yerel hafızadan güvenli veriyi çek (NaN önleyici)
+            updateUI();        // Arayüzü anında güncelle
+            fetchUserData();   // Sunucudan güncel veriyi senkronize et
             fetchLeaderboard();
             sendActivityLog("APP_OPEN", "Kullanıcı Mini App uygulamasını açtı.");
         };
