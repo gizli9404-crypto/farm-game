@@ -11,9 +11,13 @@ CHANNEL_ID = "@sanal_miner_duyuru"
 bot = telebot.TeleBot(TOKEN)
 app = Flask(__name__, template_folder='public')
 
+# --- VERİTABANI YOLU SABİTLEME (Hata Çözümü) ---
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'miner.db')
+
 # --- 1. VERİTABANI KURULUMU ---
 def init_db():
-    conn = sqlite3.connect('miner.db', check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
@@ -35,7 +39,6 @@ def init_db():
             status TEXT DEFAULT 'Beklemede'
         )
     ''')
-    # Reklam aktivitelerini takip etmek için yeni tablo
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS ad_activity (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -58,7 +61,7 @@ def send_welcome(message):
     username = user.username or "Bulunmuyor"
     full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
     
-    conn = sqlite3.connect('miner.db', check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,))
     if not cursor.fetchone():
@@ -88,7 +91,7 @@ def admin_page():
 
 @app.route('/api/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
-    conn = sqlite3.connect('miner.db', check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('SELECT balance, tickets FROM users WHERE user_id = ?', (user_id,))
     row = cursor.fetchone()
@@ -109,7 +112,7 @@ def update_user():
         if not user_id:
             return jsonify({"status": "error", "message": "Kullanıcı ID bulunamadı!"}), 400
             
-        conn = sqlite3.connect('miner.db', check_same_thread=False)
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
         cursor.execute('''
             UPDATE users SET balance = COALESCE(?, balance), tickets = COALESCE(?, tickets)
@@ -122,7 +125,6 @@ def update_user():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
-# Reklam izlendiğinde tetiklenecek örnek API (Uygulamanızdan buraya istek atabilirsiniz)
 @app.route('/api/ad/watched', methods=['POST'])
 def ad_watched():
     try:
@@ -130,16 +132,14 @@ def ad_watched():
         user_id = data.get('user_id')
         reward = data.get('reward', 0.5)
         
-        conn = sqlite3.connect('miner.db', check_same_thread=False)
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
         
         cursor.execute('SELECT username FROM users WHERE user_id = ?', (user_id,))
         user_row = cursor.fetchone()
         username = user_row[0] if user_row and user_row[0] else "Bilinmiyor"
         
-        # Reklam aktivitesini kaydet
         cursor.execute('INSERT INTO ad_activity (user_id, username, reward) VALUES (?, ?, ?)', (user_id, username, reward))
-        # Kullanıcı bakiyesini artır
         cursor.execute('UPDATE users SET balance = balance + ? WHERE user_id = ?', (reward, user_id))
         
         conn.commit()
@@ -159,7 +159,7 @@ def withdraw():
         if not user_id or not amount or not wallet:
             return jsonify({"status": "error", "message": "Eksik parametre!"}), 400
         
-        conn = sqlite3.connect('miner.db', check_same_thread=False)
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
         
         cursor.execute('SELECT username FROM users WHERE user_id = ?', (user_id,))
@@ -186,14 +186,14 @@ def withdraw():
         return jsonify({"status": "error", "message": str(e)}), 400
 
 # --- 4. ADMIN PANELİ APİ'LERİ ---
-SECRET_KEY = "SizinGucluSifreniz123" # Güvenliğiniz için burayı değiştirebilirsiniz
+SECRET_KEY = "SizinGucluSifreniz123"
 
 @app.route('/api/admin/users', methods=['GET'])
 def admin_users():
     if request.args.get('secret') != SECRET_KEY:
         return jsonify({"error": "Yetkisiz erişim!"}), 403
     
-    conn = sqlite3.connect('miner.db', check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('SELECT user_id, username, full_name, balance, tickets, wallet FROM users')
     rows = cursor.fetchall()
@@ -206,7 +206,7 @@ def admin_withdrawals():
     if request.args.get('secret') != SECRET_KEY:
         return jsonify({"error": "Yetkisiz erişim!"}), 403
     
-    conn = sqlite3.connect('miner.db', check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('SELECT id, user_id, username, amount, wallet, status FROM withdrawals')
     rows = cursor.fetchall()
@@ -214,13 +214,12 @@ def admin_withdrawals():
     
     return jsonify([{"id": r[0], "user_id": r[1], "username": r[2], "amount": r[3], "wallet": r[4], "status": r[5]} for r in rows]), 200
 
-# Anlık reklam izleme loglarını çeken API
 @app.route('/api/admin/ads', methods=['GET'])
 def admin_ads():
     if request.args.get('secret') != SECRET_KEY:
         return jsonify({"error": "Yetkisiz erişim!"}), 403
         
-    conn = sqlite3.connect('miner.db', check_same_thread=False)
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
     cursor = conn.cursor()
     cursor.execute('SELECT id, user_id, username, timestamp, reward FROM ad_activity ORDER BY id DESC LIMIT 50')
     rows = cursor.fetchall()
@@ -228,7 +227,6 @@ def admin_ads():
     
     return jsonify([{"id": r[0], "user_id": r[1], "username": r[2], "timestamp": r[3], "reward": r[4]} for r in rows]), 200
 
-# Admin panelinden kullanıcı bakiyesini doğrudan güncelleme API'si
 @app.route('/api/admin/update_balance', methods=['POST'])
 def admin_update_balance():
     data = request.json
@@ -239,7 +237,7 @@ def admin_update_balance():
     new_balance = data.get('balance')
     
     try:
-        conn = sqlite3.connect('miner.db', check_same_thread=False)
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
         cursor.execute('UPDATE users SET balance = ? WHERE user_id = ?', (new_balance, user_id))
         conn.commit()
