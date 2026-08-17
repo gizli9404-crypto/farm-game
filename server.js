@@ -2,13 +2,13 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const axios = require('axios'); // Telegram bildirimleri için
+const axios = require('axios');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Bot ve Kanal Bilgileri (Kendi Telegram Bot Token ve Kanal ID'nizi buraya yazın)
-const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
+// Telegram Bot Bilgileri
+const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || 'BURAYA_BOT_TOKEN_YAZIN';
 const ADMIN_CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru';
 
 app.use(bodyParser.json());
@@ -40,18 +40,15 @@ db.serialize(() => {
     )`);
 });
 
-// ÇEKİM TALEBİ OLUŞTURMA ENDPOINT'İ
+// 1. ÇEKİM TALEBİ OLUŞTURMA
 app.post('/api/withdraw', (req, res) => {
     const { telegram_id, username, amount, wallet } = req.body;
     
     db.run(`INSERT INTO withdrawals (telegram_id, username, amount, wallet) VALUES (?, ?, ?, ?)`,
         [telegram_id, username || 'Bilinmiyor', amount, wallet],
         function(err) {
-            if (err) {
-                return res.status(500).json({ success: false, error: err.message });
-            }
+            if (err) return res.status(500).json({ success: false, error: err.message });
             
-            // Telegram Kanalına/Grubuna Bilgilendirme Gönderimi
             const msg = `🔔 **YENİ ÇEKİM TALEBİ**\n\n👤 Kullanıcı: @${username || telegram_id}\n💰 Miktar: ${amount} PEPE\n💳 Cüzdan: \`${wallet}\``;
             axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 chat_id: ADMIN_CHANNEL_ID,
@@ -64,17 +61,51 @@ app.post('/api/withdraw', (req, res) => {
     );
 });
 
-// ADMIN PANELİ İÇİN ÇEKİM LİSTESİNİ GETİRME
+// 2. ADMIN PANELİ İÇİN ÇEKİMLERİ GETİRME
 app.get('/api/withdrawals', (req, res) => {
     db.all(`SELECT * FROM withdrawals ORDER BY id DESC`, [], (err, rows) => {
-        if (err) {
-            return res.status(500).json({ success: false, error: err.message });
-        }
+        if (err) return res.status(500).json({ success: false, error: err.message });
         res.json({ success: true, withdrawals: rows });
     });
 });
 
-// TOPLU DUYURU / BİLDİRİM GÖNDERME ENDPOINT'İ
+// 3. KULLANICI LİSTESİ / LİDERLİK TABLOSU
+app.get('/api/leaderboard', (req, res) => {
+    db.all(`SELECT telegram_id, username, balance FROM users ORDER BY balance DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ json: [], error: err.message });
+        res.json(rows);
+    });
+});
+
+// 4. ADMIN BAKIYE GÜNCELLEME
+app.post('/api/admin/update-balance', (req, res) => {
+    const { telegram_id, action, amount } = req.body;
+
+    db.get(`SELECT balance FROM users WHERE telegram_id = ?`, [telegram_id], (err, row) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+
+        let currentBalance = row ? row.balance : 0;
+        let newBalance = currentBalance;
+
+        if (action === 'set') newBalance = amount;
+        else if (action === 'add') newBalance = currentBalance + amount;
+        else if (action === 'sub') newBalance = Math.max(0, currentBalance - amount);
+
+        if (row) {
+            db.run(`UPDATE users SET balance = ? WHERE telegram_id = ?`, [newBalance, telegram_id], (err) => {
+                if (err) return res.status(500).json({ success: false, error: err.message });
+                res.json({ success: true, new_balance: newBalance });
+            });
+        } else {
+            db.run(`INSERT INTO users (telegram_id, username, balance) VALUES (?, ?, ?)`, [telegram_id, 'Kullanıcı', newBalance], (err) => {
+                if (err) return res.status(500).json({ success: false, error: err.message });
+                res.json({ success: true, new_balance: newBalance });
+            });
+        }
+    });
+});
+
+// 5. TOPLU DUYURU GÖNDERME
 app.post('/api/broadcast', async (req, res) => {
     const { message } = req.body;
     if (!message) return res.status(400).json({ success: false, error: 'Mesaj boş olamaz.' });
