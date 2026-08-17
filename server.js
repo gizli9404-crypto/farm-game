@@ -1,89 +1,104 @@
 const express = require('express');
-const cors = require('cors');
+const bodyParser = require('body-parser');
+const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const fs = require('fs');
+const axios = require('axios'); // Telegram bildirimleri için
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(express.json());
-app.use(cors());
+// Bot ve Kanal Bilgileri (Kendi Telegram Bot Token ve Kanal ID'nizi buraya yazın)
+const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || 'SÜTUN_TOKEN_BURAYA';
+const ADMIN_CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru';
+
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Kalıcı Veritabanı Dosyası Yolu
-const DB_FILE = path.join(__dirname, 'database.json');
-
-// Veritabanını oku veya yoksa ilk oluştur
-function readDB() {
-    if (!fs.existsSync(DB_FILE)) {
-        const initialData = {
-            users: {
-                "8256539395": { telegram_id: "8256539395", username: "Jacker_lord", balance: 120 }
-            },
-            activeBroadcast: "Sanal Miner Pro'ya hoş geldiniz!"
-        };
-        fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
-        return initialData;
-    }
-    return JSON.parse(fs.readFileSync(DB_FILE, 'utf8'));
-}
-
-// Veritabanına yaz
-function writeDB(data) {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2));
-}
-
-// 1. Kullanıcı Bilgilerini Getir (Oyun tarafı için)
-app.get('/api/user/:telegram_id', (req, res) => {
-    let db = readDB();
-    let userId = req.params.telegram_id;
-    if (!db.users[userId]) {
-        db.users[userId] = { telegram_id: userId, username: "Kullanıcı", balance: 0 };
-        writeDB(db);
-    }
-    res.json({ success: true, user: db.users[userId] });
+// SQLite Veritabanı Bağlantısı
+const db = new sqlite3.Database('./database.db', (err) => {
+    if (err) console.error('Veritabanı bağlantı hatası:', err.message);
+    else console.log('SQLite veritabanına bağlandı.');
 });
 
-// 2. Admin Bakiye Güncelleme (+ / -)
-app.post('/api/admin/balance', (req, res) => {
-    let db = readDB();
-    const { telegram_id, amount } = req.body;
-    
-    if (!db.users[telegram_id]) {
-        db.users[telegram_id] = { telegram_id, username: "Jacker_lord", balance: 0 };
-    }
-    
-    db.users[telegram_id].balance += amount;
-    if (db.users[telegram_id].balance < 0) db.users[telegram_id].balance = 0;
-    
-    writeDB(db);
-    res.json({ success: true, new_balance: db.users[telegram_id].balance });
+// Tabloların Oluşturulması
+db.serialize(() => {
+    db.run(`CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        telegram_id TEXT UNIQUE,
+        username TEXT,
+        balance REAL DEFAULT 0
+    )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        telegram_id TEXT,
+        username TEXT,
+        amount REAL,
+        wallet TEXT,
+        status TEXT DEFAULT 'Bekliyor',
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
 });
 
-// 3. Çekim Onaylama
-app.post('/api/admin/withdraw/approve', (req, res) => {
-    res.json({ success: true, message: "Ödeme başarıyla onaylandı" });
+// ÇEKİM TALEBİ OLUŞTURMA ENDPOINT'İ
+app.post('/api/withdraw', (req, res) => {
+    const { telegram_id, username, amount, wallet } = req.body;
+    
+    db.run(`INSERT INTO withdrawals (telegram_id, username, amount, wallet) VALUES (?, ?, ?, ?)`,
+        [telegram_id, username || 'Bilinmiyor', amount, wallet],
+        function(err) {
+            if (err) {
+                return res.status(500).json({ success: false, error: err.message });
+            }
+            
+            // Telegram Kanalına/Grubuna Bilgilendirme Gönderimi
+            const msg = `🔔 **YENİ ÇEKİM TALEBİ**\n\n👤 Kullanıcı: @${username || telegram_id}\n💰 Miktar: ${amount} PEPE\n💳 Cüzdan: \`${wallet}\``;
+            axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                chat_id: ADMIN_CHANNEL_ID,
+                text: msg,
+                parse_mode: 'Markdown'
+            }).catch(e => console.log('Telegram bildirim hatası:', e.message));
+
+            res.json({ success: true, message: 'Çekim talebi alındı.' });
+        }
+    );
 });
 
-// 4. Duyuru Kaydetme
-app.post('/api/admin/broadcast', (req, res) => {
-    let db = readDB();
+// ADMIN PANELİ İÇİN ÇEKİM LİSTESİNİ GETİRME
+app.get('/api/withdrawals', (req, res) => {
+    db.all(`SELECT * FROM withdrawals ORDER BY id DESC`, [], (err, rows) => {
+        if (err) {
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        res.json({ success: true, withdrawals: rows });
+    });
+});
+
+// TOPLU DUYURU / BİLDİRİM GÖNDERME ENDPOINT'İ
+app.post('/api/broadcast', async (req, res) => {
     const { message } = req.body;
-    if (message) {
-        db.activeBroadcast = message;
-        writeDB(db);
-        res.json({ success: true, message: "Duyuru güncellendi" });
-    } else {
-        res.status(400).json({ success: false, error: "Boş duyuru olamaz" });
-    }
-});
+    if (!message) return res.status(400).json({ success: false, error: 'Mesaj boş olamaz.' });
 
-// 5. Duyuruyu Okuma (Oyun tarafı için)
-app.get('/api/broadcast', (req, res) => {
-    let db = readDB();
-    res.json({ broadcast: db.activeBroadcast });
+    db.all(`SELECT telegram_id FROM users`, [], async (err, rows) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+
+        let successCount = 0;
+        for (const row of rows) {
+            try {
+                await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    chat_id: row.telegram_id,
+                    text: `📢 **DUYURU**\n\n${message}`,
+                    parse_mode: 'Markdown'
+                });
+                successCount++;
+            } catch (e) {
+                console.log(`Mesaj gönderilemedi (${row.telegram_id}):`, e.message);
+            }
+        }
+        res.json({ success: true, sent_count: successCount });
+    });
 });
 
 app.listen(PORT, () => {
-    console.log(`Sunucu ${PORT} portunda ve kalıcı veritabanı aktif!`);
+    console.log(`Server ${PORT} portunda çalışıyor.`);
 });
