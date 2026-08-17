@@ -45,6 +45,12 @@ def init_db():
             reward REAL
         )
     ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )
+    ''')
     conn.commit()
     conn.close()
 
@@ -86,7 +92,6 @@ def index():
 def admin_page():
     return render_template('admin.html')
 
-# Kullanıcı verisini getiren endpoint[cite: 2]
 @app.route('/api/user/<int:user_id>', methods=['GET'])
 def get_user(user_id):
     conn = sqlite3.connect(DB_PATH, check_same_thread=False)
@@ -99,7 +104,6 @@ def get_user(user_id):
         return jsonify({"balance": row[0], "tickets": row[1], "wallet": row[2]}), 200
     return jsonify({"balance": 0.0, "tickets": 0, "wallet": ""}), 200
 
-# Mini uygulamadan gelen verileri MERKEZİ VERİTABANINA anlık işleyen endpoint[cite: 2]
 @app.route('/api/user/update', methods=['POST'])
 def update_user():
     try:
@@ -261,28 +265,63 @@ def admin_update_balance():
         else:
             cursor.execute('UPDATE users SET balance = ? WHERE user_id = ?', (amount, user_id))
             
+        cursor.execute('SELECT balance FROM users WHERE user_id = ?', (user_id,))
+        row = cursor.fetchone()
+        new_balance = row[0] if row else 0
+        
         conn.commit()
         conn.close()
-        return jsonify({"status": "success", "message": "Bakiye başarıyla güncellendi!"})
+        return jsonify({"success": True, "new_balance": new_balance, "message": "Bakiye başarıyla güncellendi!"})
     except Exception as e:
-        return jsonify({"status": "error", "message": str(e)}), 400
+        return jsonify({"success": False, "error": str(e)}), 400
 
-# Admin panelindeki 404 hatasını çözen bakiye endpoint'i eklenmiştir[cite: 2]
 @app.route('/api/admin/balance', methods=['POST'])
 def admin_balance_fix():
     data = request.json
     user_id = data.get('telegram_id') or data.get('user_id')
-    amount = data.get('amount', 0)
+    amount = float(data.get('amount', 0))
     
     try:
         conn = sqlite3.connect(DB_PATH, check_same_thread=False)
         cursor = conn.cursor()
         cursor.execute('UPDATE users SET balance = balance + ? WHERE user_id = ?', (amount, user_id))
+        
+        cursor.execute('SELECT balance FROM users WHERE user_id = ?', (user_id,))
+        row = cursor.fetchone()
+        new_balance = row[0] if row else 0
+        
         conn.commit()
         conn.close()
-        return jsonify({"success": True, "message": "Bakiye güncellendi"})
+        return jsonify({"success": True, "new_balance": new_balance, "message": "Bakiye güncellendi"})
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 400
+
+@app.route('/api/admin/broadcast', methods=['POST'])
+def admin_broadcast():
+    data = request.json
+    message = data.get('message')
+    if not message:
+        return jsonify({"success": False, "error": "Boş duyuru olamaz"}), 400
+        
+    try:
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)', ('broadcast', message))
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True, "message": "Duyuru güncellendi"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+@app.route('/api/broadcast', methods=['GET'])
+def get_broadcast():
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('SELECT value FROM settings WHERE key = ?', ('broadcast',))
+    row = cursor.fetchone()
+    conn.close()
+    broadcast_msg = row[0] if row else "Sanal Miner Pro'ya hoş geldiniz!"
+    return jsonify({"broadcast": broadcast_msg})
 
 def run_bot():
     try:
