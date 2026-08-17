@@ -112,11 +112,15 @@ const handleWithdrawals = (req, res) => {
 };
 app.get(['/api/withdrawals', '/api/geri-cekilmeler', '/api/cekimler'], handleWithdrawals);
 
-// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (Güncellendi: 500 hatalarını önleyen esnek yapı)
+// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (Admin Panel Dizi Uyumluluğu İçin Güncellendi)
 const handleLeaderboard = (req, res) => {
     db.all(`SELECT telegram_id, username, balance, tickets, wallet FROM users ORDER BY balance DESC`, [], (err, rows) => {
-        if (err) return res.status(500).json({ success: false, error: err.message });
-        res.json({ success: true, users: rows, data: rows });
+        if (err) {
+            console.error('Veritabanı okuma hatası:', err.message);
+            return res.status(500).json({ success: false, error: err.message });
+        }
+        // İstemci tarafındaki doğrudan array kontrolleriyle uyumlu olması için doğrudan rows döndürülüyor
+        res.json(rows); 
     });
 };
 app.get([
