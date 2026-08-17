@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Telegram Bot Bilgileri
-const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || 'BURAYA_BOT_TOKEN_YAZIN';
+const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
 const ADMIN_CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru';
 
 app.use(bodyParser.json());
