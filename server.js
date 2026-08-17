@@ -154,7 +154,7 @@ let alertSent = false;
 const checkSystemHealth = async () => {
     try {
         await axios.get('https://api.github.com');
-        alertSent = false; // Sistem normalse bayrağı sıfırla
+        alertSent = false;
     } catch (error) {
         if (!alertSent) {
             console.log('Sistem hatası algılandı, kanala duyuru yapılıyor...');
@@ -166,12 +166,11 @@ const checkSystemHealth = async () => {
                 parse_mode: 'Markdown'
             }).catch(e => console.log('Duyuru gönderilemedi:', e.message));
             
-            alertSent = true; // Aynı hata için sürekli bildirim atmaması için kilitlenir
+            alertSent = true;
         }
     }
 };
 
-// Her 5 dakikada bir (300,000 ms) kontrol et
 setInterval(checkSystemHealth, 300000);
 
 app.listen(PORT, () => {
