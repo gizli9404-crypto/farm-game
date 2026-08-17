@@ -5,7 +5,7 @@ const path = require('path');
 const axios = require('axios');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Telegram Bot Bilgileri
 const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || 'BURAYA_BOT_TOKEN_YAZIN';
@@ -40,7 +40,26 @@ db.serialize(() => {
     )`);
 });
 
-// 1. ÇEKİM TALEBİ OLUŞTURMA
+// 1. KULLANICI GİRİŞİ / SENKRONİZASYONU (Mini Uygulama Açıldığında Çalışır)
+app.post('/api/user/login', (req, res) => {
+    const { telegram_id, username } = req.body;
+    if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
+
+    db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegram_id], (err, row) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+
+        if (row) {
+            res.json({ success: true, balance: row.balance, username: row.username });
+        } else {
+            db.run(`INSERT INTO users (telegram_id, username, balance) VALUES (?, ?, 0)`, [telegram_id, username || 'Kullanıcı'], function(err) {
+                if (err) return res.status(500).json({ success: false, error: err.message });
+                res.json({ success: true, balance: 0, username: username });
+            });
+        }
+    });
+});
+
+// 2. ÇEKİM TALEBİ OLUŞTURMA
 app.post('/api/withdraw', (req, res) => {
     const { telegram_id, username, amount, wallet } = req.body;
     
@@ -61,7 +80,7 @@ app.post('/api/withdraw', (req, res) => {
     );
 });
 
-// 2. ADMIN PANELİ İÇİN ÇEKİMLERİ GETİRME
+// 3. ADMIN PANELİ İÇİN ÇEKİMLERİ GETİRME
 app.get('/api/withdrawals', (req, res) => {
     db.all(`SELECT * FROM withdrawals ORDER BY id DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
@@ -69,7 +88,7 @@ app.get('/api/withdrawals', (req, res) => {
     });
 });
 
-// 3. KULLANICI LİSTESİ / LİDERLİK TABLOSU
+// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU
 app.get('/api/leaderboard', (req, res) => {
     db.all(`SELECT telegram_id, username, balance FROM users ORDER BY balance DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ json: [], error: err.message });
@@ -77,7 +96,7 @@ app.get('/api/leaderboard', (req, res) => {
     });
 });
 
-// 4. ADMIN BAKIYE GÜNCELLEME
+// 5. ADMIN BAKIYE GÜNCELLEME
 app.post('/api/admin/update-balance', (req, res) => {
     const { telegram_id, action, amount } = req.body;
 
@@ -105,7 +124,7 @@ app.post('/api/admin/update-balance', (req, res) => {
     });
 });
 
-// 5. TOPLU DUYURU GÖNDERME
+// 6. TOPLU DUYURU GÖNDERME
 app.post('/api/broadcast', async (req, res) => {
     const { message } = req.body;
     if (!message) return res.status(400).json({ success: false, error: 'Mesaj boş olamaz.' });
@@ -129,6 +148,31 @@ app.post('/api/broadcast', async (req, res) => {
         res.json({ success: true, sent_count: successCount });
     });
 });
+
+// 7. OTOMATİK HATA TAKİP VE KANAL BİLDİRİM SİSTEMİ (WATCHDOG)
+let alertSent = false;
+const checkSystemHealth = async () => {
+    try {
+        await axios.get('https://api.github.com');
+        alertSent = false; // Sistem normalse bayrağı sıfırla
+    } catch (error) {
+        if (!alertSent) {
+            console.log('Sistem hatası algılandı, kanala duyuru yapılıyor...');
+            const errorMessage = "⚠️ **SİSTEM BAKIM DUYURUSU**\n\nŞu an genel bir altyapı çalışması veya servis kesintisi mevcuttur. İşlemlerinizde hata alabilirsiniz. Lütfen kısa bir süre işlem yapmayın, düzelince bilgilendirme yapılacaktır.";
+            
+            await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                chat_id: ADMIN_CHANNEL_ID,
+                text: errorMessage,
+                parse_mode: 'Markdown'
+            }).catch(e => console.log('Duyuru gönderilemedi:', e.message));
+            
+            alertSent = true; // Aynı hata için sürekli bildirim atmaması için kilitlenir
+        }
+    }
+};
+
+// Her 5 dakikada bir (300,000 ms) kontrol et
+setInterval(checkSystemHealth, 300000);
 
 app.listen(PORT, () => {
     console.log(`Server ${PORT} portunda çalışıyor.`);
