@@ -123,7 +123,7 @@
                 <span onclick="switchTab('spin'); playClickSound();" class="text-xs font-bold text-slate-400 light-theme:text-slate-600 pb-1 cursor-pointer hover:text-slate-200">📄 Şans Çarkı</span>
             </div>
             <div class="bg-slate-900/60 light-theme:bg-slate-200 p-3 rounded-2xl border border-slate-800/80 text-xs text-slate-300 light-theme:text-slate-700 leading-relaxed shadow-sm">
-                📢 <b class="text-white light-theme:text-slate-900">AdsGram Entegrasyonu:</b> Reklam onay sürecinden sonra buradaki görevler otomatik API üzerinden ödüllendirecektir.
+                📢 <b class="text-white light-theme:text-slate-900">AdsGram Entegrasyonu:</b> Reklam onay sürecinden sonra buradaki görevler otomatik olarak bilet kazandıracaktır.
             </div>
             <div class="space-y-2.5">
                 <div class="glass-card p-3.5 rounded-2xl flex items-center justify-between border-slate-800/80 shadow">
@@ -139,7 +139,7 @@
             </div>
         </div>
 
-        <!-- 2. SEKME: SPIN (DÜZELTİLMİŞ ÖZEL ÇARK & CANLI AKIŞ ŞERİDİ) -->
+        <!-- 2. SEKME: SPIN (ÇARK) -->
         <div id="tab-spin" class="tab-content flex-col items-center space-y-2">
             <!-- Anlık Kazananlar Kayan Şeridi -->
             <div class="w-full bg-slate-900/80 light-theme:bg-slate-200 border border-slate-800 rounded-xl p-1.5 text-[10px] text-emerald-400 flex items-center space-x-2 overflow-hidden whitespace-nowrap">
@@ -284,10 +284,10 @@
             </div>
         </div>
 
-        <!-- CÜZDAN & OTOMATİK BOT ÇEKİM İŞLEMLERİ -->
+        <!-- CÜZDAN & ÇEKİM İŞLEMLERİ -->
         <div id="tab-wallet" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
-                <h2 class="text-base font-black text-white light-theme:text-slate-900">Cüzdan & Otomatik Bot Çekim</h2>
+                <h2 class="text-base font-black text-white light-theme:text-slate-900">Cüzdan & Çekim İşlemleri</h2>
                 <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">Bot Worker: Online 🟢</span>
             </div>
             
@@ -308,7 +308,7 @@
                     <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
                 </div>
                 <button onclick="requestWithdraw(); playClickSound();" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow cursor-pointer transition-all hover:opacity-90 flex items-center justify-center">
-                    <i class="fa-solid fa-robot mr-1.5"></i> Telegram Bot ile Otomatik Çekim Yap
+                    <i class="fa-solid fa-robot mr-1.5"></i> Telegram Bot ile Çekim Talebi Oluştur
                 </button>
             </div>
 
@@ -320,7 +320,7 @@
                 <div id="live-withdrawals" class="space-y-2 text-[11px]">
                     <div class="flex justify-between items-center bg-slate-950/60 light-theme:bg-slate-200 p-2 rounded-xl border border-slate-800/60 animate-fade">
                         <span class="text-slate-300 light-theme:text-slate-800 font-medium">UQv2...81aF (5,000 PEPE)</span>
-                        <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Bot Onayladı ✅</span>
+                        <span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Onaylandı ✅</span>
                     </div>
                 </div>
             </div>
@@ -351,12 +351,10 @@
         <button onclick="switchTab('rank'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
     </nav>
 
-    <!-- VERİTABANI VE TELEGRAM ENTEGRASYON MANTIĞI -->
+    <!-- TARAYICI LOCALSTORAGE ENTEGRASYON MANTIĞI -->
     <script>
         let gameState = { balance: 0.00, tickets: 0 };
         let telegramId = "test_user_123"; 
-        let currentRotation = 0;
-        let isSpinning = false;
 
         const tg = window.Telegram?.WebApp;
         if (tg) {
@@ -366,37 +364,28 @@
             }
         }
 
-        // Sunucudan (Veritabanından) Kullanıcı Verisini Çek
-        async function fetchUserData() {
-            try {
-                let res = await fetch(`/api/user/${telegramId}`);
-                if (res.ok) {
-                    let data = await res.json();
-                    gameState.balance = data.balance || 0;
-                    gameState.tickets = data.tickets || 0;
-                    updateUI();
-                }
-            } catch (e) {
-                console.error("Veritabanı bağlantı hatası:", e);
+        // Tarayıcı hafızasından kullanıcı verisini yükle
+        function fetchUserData() {
+            let savedBalance = localStorage.getItem('sanal_miner_balance_' + telegramId);
+            let savedTickets = localStorage.getItem('sanal_miner_tickets_' + telegramId);
+            
+            if (savedBalance !== null) {
+                gameState.balance = parseFloat(savedBalance);
             }
+            if (savedTickets !== null) {
+                gameState.tickets = parseInt(savedTickets);
+            }
+            updateUI();
         }
 
-        // Sunucuya (Veritabanına) Veriyi Kaydet
-        async function saveUserData() {
-            try {
-                await fetch('/api/user/update', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        telegram_id: telegramId, 
-                        balance: gameState.balance, 
-                        tickets: gameState.tickets 
-                    })
-                });
-            } catch (e) {
-                console.error("Veri kaydedilemedi:", e);
-            }
+        // Verileri tarayıcı hafızasına kalıcı olarak kaydet
+        function saveUserData() {
+            localStorage.setItem('sanal_miner_balance_' + telegramId, gameState.balance);
+            localStorage.setItem('sanal_miner_tickets_' + telegramId, gameState.tickets);
         }
+
+        let currentRotation = 0;
+        let isSpinning = false;
 
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
@@ -536,7 +525,7 @@
             gameState.tickets += amount;
             updateUI();
             saveUserData(); 
-            showModal("Tebrikler! 🎟️", `Reklam izlendi, hesabınıza +${amount} Bilet eklendi ve veritabanına işlendi.`);
+            showModal("Tebrikler! 🎟️", `Reklam izlendi, hesabınıza +${amount} Bilet eklendi ve kaydedildi.`);
         }
 
         function spinWheel() {
@@ -611,16 +600,17 @@
             gameState.balance -= amount;
             updateUI();
             saveUserData(); 
-            showModal("Bot Worker Başlatıldı 🤖", `Çekim talebiniz (${network}) Telegram bot worker kuyruğuna aktarıldı.`);
+            showModal("İşlem Başarılı 🤖", `Çekim talebiniz (${network}) kuyruğa eklendi.`);
 
             let liveList = document.getElementById('live-withdrawals');
             let shortAddr = addr.substring(0, 4) + "..." + addr.substring(addr.length - 4);
             let newItem = document.createElement('div');
             newItem.className = "flex justify-between items-center bg-slate-950/60 light-theme:bg-slate-200 p-2 rounded-xl border border-slate-800/60 animate-fade";
-            newItem.innerHTML = `<span class="text-slate-300 light-theme:text-slate-800 font-medium">${shortAddr} (${amount} PEPE)</span><span class="text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded text-[10px]">Bot İşliyor ⏳</span>`;
+            newItem.innerHTML = `<span class="text-slate-300 light-theme:text-slate-800 font-medium">${shortAddr} (${amount} PEPE)</span><span class="text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">Onaylandı ✅</span>`;
             liveList.prepend(newItem);
         }
 
+        // Sayfa açıldığında verileri yükle
         fetchUserData();
     </script>
 </body>
