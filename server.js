@@ -27,7 +27,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
     else console.log('SQLite veritabanına bağlandı:', dbPath);
 });
 
-// Tabloların Oluşturulması (Tickets ve Wallet sütunları eklendi/güncellendi)
+// Tabloların Oluşturulması
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,6 +47,19 @@ db.serialize(() => {
         status TEXT DEFAULT 'Bekliyor',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
+});
+
+// 0. ADMIN GİRİŞ DOĞRULAMA (Eksik olan kısım eklendi)
+app.post(['/api/admin/login', '/api/admin/giris'], (req, res) => {
+    const { password } = req.body;
+    // Railway değişkenlerinden veya varsayılan olarak '123'den alır
+    const ADMIN_SECRET = process.env.ADMIN_SECRET || '123';
+
+    if (password === ADMIN_SECRET) {
+        res.json({ success: true, message: 'Giriş başarılı' });
+    } else {
+        res.status(401).json({ success: false, error: 'Hatalı Yönetici Şifresi!' });
+    }
 });
 
 // 1. KULLANICI GİRİŞİ / SENKRONİZASYONU
@@ -160,7 +173,7 @@ app.post(['/api/broadcast', '/api/duyuru'], async (req, res) => {
     });
 });
 
-// 8. KULLANICI BİLGİLERİNİ GÜNCELLEME (Bakiye, Bilet ve Cüzdan senkronizasyonu için güncellendi)
+// 8. KULLANICI BİLGİLERİNİ GÜNCELLEME
 const handleUserUpdate = (req, res) => {
     const { telegram_id, username, balance, tickets, wallet } = req.body;
     if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
