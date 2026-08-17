@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 // Telegram Bot Bilgileri
-const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || 'BURAYA_BOT_TOKEN_YAZIN';
+const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
 const ADMIN_CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru';
 
 app.use(bodyParser.json());
@@ -149,6 +149,34 @@ app.post('/api/broadcast', async (req, res) => {
     });
 });
 
+// 8. KULLANICI BİLGİLERİNİ GÜNCELLEME (Eksik Endpoint Eklendi)
+app.post('/api/user/update', (req, res) => {
+    const { telegram_id, balance } = req.body;
+    if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
+
+    db.run(`UPDATE users SET balance = ? WHERE telegram_id = ?`, [balance, telegram_id], function(err) {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true, message: 'Kullanıcı güncellendi.' });
+    });
+});
+
+// 9. KULLANICI ETKİLEŞİM / LOG KAYIT SİSTEMİ (Eksik Endpoint Eklendi)
+app.post('/api/user/log', (req, res) => {
+    const { telegram_id, action, details } = req.body;
+    console.log(`[LOG] Telegram ID: ${telegram_id}, İşlem: ${action}, Detay: ${details || '-'}`);
+    res.json({ success: true, message: 'Log kaydedildi.' });
+});
+
+// 10. TEKİL KULLANICI VERİSİNİ GETİRME (Eksik Endpoint Eklendi)
+app.get('/api/user/:telegramId', (req, res) => {
+    const telegramId = req.params.telegramId;
+    db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegramId], (err, row) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        if (!row) return res.status(404).json({ success: false, error: 'Kullanıcı bulunamadı' });
+        res.json({ success: true, user: row });
+    });
+});
+
 // 7. OTOMATİK HATA TAKİP VE KANAL BİLDİRİM SİSTEMİ (WATCHDOG)
 let alertSent = false;
 const checkSystemHealth = async () => {
@@ -176,3 +204,4 @@ setInterval(checkSystemHealth, 300000);
 app.listen(PORT, () => {
     console.log(`Server ${PORT} portunda çalışıyor.`);
 });
+```[cite: 2]
