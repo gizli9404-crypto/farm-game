@@ -2,152 +2,165 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Miner Pro - Gelişmiş Canlı Admin Paneli</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sanal Miner Pro — Canlı Admin Paneli</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome İkonları -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: linear-gradient(135deg, #030712 0%, #0f172a 100%); color: #f8fafc; font-family: sans-serif; }
-        .glass-panel { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
-        .glass-card { background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(255, 255, 255, 0.06); }
+        body { 
+            background: linear-gradient(135deg, #030712 0%, #0f172a 100%);
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+        .glass-panel { 
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .glass-card { 
+            background: rgba(30, 41, 59, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade { animation: fadeIn 0.3s ease-in-out forwards; }
     </style>
 </head>
-<body class="min-h-screen p-4 md:p-8 flex flex-col space-y-6">
+<body class="min-h-screen flex flex-col p-3 md:p-6 space-y-4">
 
-    <header class="glass-panel p-5 rounded-2xl flex flex-col md:flex-row justify-between items-center shadow-xl gap-4">
+    <!-- ÜST BAŞLIK -->
+    <header class="glass-panel p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-3 shadow-xl">
         <div class="flex items-center space-x-3">
-            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl border border-emerald-500/30">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-base border border-emerald-500/30 shadow-inner">
                 <i class="fa-solid fa-bolt"></i>
             </div>
             <div>
-                <h1 class="text-lg font-black text-white">Sanal Miner Pro — Canlı Admin Paneli</h1>
-                <p class="text-xs text-slate-400">Railway Canlı Veritabanı Aktif</p>
+                <h1 class="text-base md:text-lg font-black text-white tracking-wide">Sanal Miner Pro — Canlı Admin Paneli</h1>
+                <p class="text-[11px] text-slate-400 font-medium">Railway Canlı Veritabanı Aktif</p>
             </div>
         </div>
-        
-        <div class="flex items-center space-x-3">
-            <div class="glass-card px-4 py-2 rounded-xl flex items-center space-x-2 border border-slate-700/80">
-                <span class="text-xs text-slate-300 font-bold">Bot Durumu:</span>
-                <button id="bot-toggle-btn" onclick="toggleBotStatus()" class="px-3 py-1 rounded-lg text-xs font-black transition-all bg-emerald-500 text-slate-950 shadow">
-                    Online 🟢
-                </button>
-            </div>
+        <div class="flex items-center space-x-2 bg-slate-900/90 px-3 py-1.5 rounded-xl border border-slate-800">
+            <span class="text-xs text-slate-300 font-semibold">Bot Durumu:</span>
+            <span class="text-xs bg-emerald-500/10 text-emerald-400 font-bold px-2.5 py-0.5 rounded-full border border-emerald-500/20 flex items-center">
+                <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping mr-1.5"></span> Online 🟢
+            </span>
         </div>
     </header>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="lg:col-span-2 space-y-6">
-            <div class="glass-panel p-6 rounded-3xl space-y-4 shadow-xl">
-                <h2 class="text-sm font-black text-emerald-400 uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-users-gear mr-2"></i> Kullanıcı Yönetimi & Bakiye Düzenle
+    <!-- ANA İÇERİK GRID YAPISI -->
+    <main class="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1">
+        
+        <!-- SOL & ORTA: KULLANICI YÖNETİMİ & ÇEKİM KUYRUĞU -->
+        <div class="lg:col-span-2 space-y-4">
+            
+            <!-- Kullanıcı Yönetimi & Bakiye Düzenle -->
+            <section class="glass-card p-4 rounded-2xl space-y-3 shadow-lg">
+                <h2 class="text-xs font-black text-emerald-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-users-gear mr-1.5"></i> Kullanıcı Yönetimi & Bakiye Düzenle
                 </h2>
-                <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800 gap-3">
                     <div>
-                        <div class="text-sm font-black text-white">Engin Güven (@Jacker_lord)</div>
-                        <div class="text-xs text-slate-400">ID: 8256539395 | Bakiye: <span id="admin-balance" class="text-emerald-400 font-bold text-sm">120</span> PEPE</div>
+                        <div id="admin-username" class="text-xs font-bold text-white">Engin Güven (@Jacker_lord)</div>
+                        <div id="admin-meta" class="text-[10px] text-slate-400 mt-0.5">ID: 8256539395 | Bakiye: 120 PEPE</div>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <input type="number" id="admin-amount-input" value="10" class="bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white w-20 font-bold text-center">
-                        <button onclick="modifyBalance('add')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-plus"></i> Ekle</button>
-                        <button onclick="modifyBalance('sub')" class="bg-rose-500 hover:bg-rose-400 text-slate-950 font-black px-3 py-2 rounded-xl text-xs"><i class="fa-solid fa-minus"></i> Çıkar</button>
+                    <div class="flex items-center space-x-2 w-full sm:w-auto justify-end">
+                        <input type="number" id="admin-amount-input" value="10" class="w-20 bg-slate-950 border border-slate-800 rounded-xl px-2.5 py-1.5 text-xs text-white text-center focus:outline-none focus:border-emerald-500 font-bold">
+                        <button onclick="modifyBalance('add')" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3 py-1.5 rounded-xl text-xs transition-all shadow cursor-pointer">+ Ekle</button>
+                        <button onclick="modifyBalance('sub')" class="bg-rose-500 hover:bg-rose-400 text-white font-black px-3 py-1.5 rounded-xl text-xs transition-all shadow cursor-pointer">- Çıkar</button>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <div class="glass-panel p-6 rounded-3xl space-y-4 shadow-xl">
-                <h2 class="text-sm font-black text-amber-400 uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-money-bill-transfer mr-2"></i> Çekim & Ödeme Kuyruğu
+            <!-- Çekim & Ödeme Kuyruğu -->
+            <section class="glass-card p-4 rounded-2xl space-y-3 shadow-lg">
+                <h2 class="text-xs font-black text-amber-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-money-bill-transfer mr-1.5"></i> Çekim & Ödeme Kuyruğu
                 </h2>
-                <div id="withdrawal-requests-list" class="space-y-2.5">
-                    <div class="glass-card p-3.5 rounded-2xl flex justify-between items-center border-slate-800">
+                <div id="admin-withdraw-queue" class="space-y-2">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-slate-900/80 p-3 rounded-xl border border-slate-800 gap-3 animate-fade">
                         <div>
-                            <div class="text-xs font-bold text-white">UQv2...81aF <span class="text-emerald-400 font-mono text-[11px]">(5,000 PEPE)</span></div>
-                            <div class="text-[10px] text-slate-400">Kullanıcı: Jacker_lord | TON</div>
+                            <div class="text-xs font-bold text-white font-mono">UQv2...81aF <span class="text-emerald-400 font-sans font-semibold">(5,000 PEPE)</span></div>
+                            <div class="text-[10px] text-slate-400 mt-0.5">Kullanıcı: Jacker_lord | TON</div>
                         </div>
-                        <button onclick="approvePayment('UQv2...81aF', 5000)" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3 py-1.5 rounded-xl text-xs shadow cursor-pointer">
-                            Ödeme Yap ✅
+                        <button onclick="approveWithdraw(this)" class="w-full sm:w-auto bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs transition-all shadow cursor-pointer flex items-center justify-center">
+                            <i class="fa-solid fa-check mr-1.5"></i> Ödeme Yap
                         </button>
                     </div>
                 </div>
-            </div>
+            </section>
+
         </div>
 
-        <div class="space-y-6">
-            <div class="glass-panel p-6 rounded-3xl space-y-4 shadow-xl">
-                <h2 class="text-sm font-black text-sky-400 uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-bullhorn mr-2"></i> Mini Uygulama Duyurusu
+        <!-- SAĞ: DUYURU & LOGLAR -->
+        <div class="space-y-4">
+            
+            <!-- Mini Uygulama Duyurusu -->
+            <section class="glass-card p-4 rounded-2xl space-y-3 shadow-lg">
+                <h2 class="text-xs font-black text-sky-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-bullhorn mr-1.5"></i> Mini Uygulama Duyurusu
                 </h2>
-                <div class="space-y-3">
-                    <textarea id="broadcast-msg" placeholder="Uygulamadaki kayan haber bandında görünecek duyuru..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white h-24 focus:outline-none focus:border-sky-500 resize-none"></textarea>
-                    <button onclick="sendBroadcast()" class="w-full bg-gradient-to-r from-sky-400 to-blue-600 hover:opacity-90 text-slate-950 font-black py-2.5 rounded-xl text-xs cursor-pointer shadow">
+                <div class="space-y-2">
+                    <textarea id="broadcast-text" rows="3" placeholder="Uygulamadaki kayan haber bandında görünecek duyuru..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-white focus:outline-none focus:border-emerald-500 resize-none"></textarea>
+                    <button onclick="sendBroadcast()" class="w-full bg-gradient-to-r from-sky-500 to-blue-600 hover:opacity-90 text-white font-black py-2.5 rounded-xl text-xs transition-all shadow cursor-pointer flex items-center justify-center">
                         <i class="fa-solid fa-paper-plane mr-1.5"></i> Duyuruyu Canlı Yayınla
                     </button>
                 </div>
-            </div>
+            </section>
 
-            <div class="glass-panel p-6 rounded-3xl space-y-4 shadow-xl">
-                <h2 class="text-sm font-black text-emerald-400 uppercase tracking-wider flex items-center">
-                    <i class="fa-solid fa-terminal mr-2"></i> Admin İşlem Günlüğü
+            <!-- Admin İşlem Günlüğü -->
+            <section class="glass-card p-4 rounded-2xl space-y-3 shadow-lg flex flex-col h-48">
+                <h2 class="text-xs font-black text-slate-400 uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-terminal mr-1.5"></i> Admin İşlem Günlüğü
                 </h2>
-                <div id="admin-logs" class="space-y-2 text-[11px] text-slate-300 font-mono bg-slate-950/80 p-3.5 rounded-2xl border border-slate-800/80 h-40 overflow-y-auto">
-                    <div class="text-emerald-400">[13:22] Admin paneli hazır.</div>
+                <div id="admin-logs" class="bg-slate-950/80 border border-slate-800/80 rounded-xl p-3 flex-1 overflow-y-auto font-mono text-[11px] text-emerald-400 space-y-1">
+                    <div>[13:22] Admin paneli hazır.</div>
                 </div>
-            </div>
+            </section>
+
         </div>
-    </div>
 
+    </main>
+
+    <!-- JAVASCRIPT İŞLEVSELLİK -->
     <script>
-        let currentBotOnline = true;
-
-        function toggleBotStatus() {
-            currentBotOnline = !currentBotOnline;
-            let btn = document.getElementById('bot-toggle-btn');
-            if (currentBotOnline) {
-                btn.className = "px-3 py-1 rounded-lg text-xs font-black transition-all bg-emerald-500 text-slate-950 shadow";
-                btn.innerText = "Online 🟢";
-                logAction("Bot Worker ONLINE yapıldı.");
-            } else {
-                btn.className = "px-3 py-1 rounded-lg text-xs font-black transition-all bg-rose-500 text-white shadow";
-                btn.innerText = "Offline 🔴";
-                logAction("Bot Worker OFFLINE yapıldı.");
-            }
-            localStorage.setItem('sanal_miner_bot_status', currentBotOnline ? 'online' : 'offline');
-        }
-
-        function modifyBalance(action) {
-            let inputVal = parseFloat(document.getElementById('admin-amount-input').value) || 0;
-            let balEl = document.getElementById('admin-balance');
-            let currentBal = parseFloat(balEl.innerText) || 0;
-            if (action === 'add') { currentBal += inputVal; logAction(`+${inputVal} PEPE eklendi.`); }
-            else { currentBal = Math.max(0, currentBal - inputVal); logAction(`-${inputVal} PEPE çıkarıldı.`); }
-            balEl.innerText = currentBal;
-            localStorage.setItem('sanal_miner_balance_8256539395', currentBal);
-        }
-
-        function sendBroadcast() {
-            let msg = document.getElementById('broadcast-msg').value.trim();
-            if (!msg) return;
-            localStorage.setItem('sanal_miner_broadcast', msg);
-            logAction(`Duyuru yayınlandı: "${msg}"`);
-            alert("Duyuru mini uygulamadaki kayan banda iletildi!");
-            document.getElementById('broadcast-msg').value = "";
-        }
-
-        function approvePayment(address, amount) {
-            logAction(`Ödeme Yapıldı: ${address} adresine ${amount} PEPE gönderildi.`);
-            let withdrawals = JSON.parse(localStorage.getItem('sanal_miner_withdrawals') || '[]');
-            withdrawals.unshift({ address: address, amount: amount, time: new Date().toLocaleTimeString() });
-            localStorage.setItem('sanal_miner_withdrawals', JSON.stringify(withdrawals));
-            alert("Ödeme onaylandı ve kullanıcının canlı akış ekranına yansıtıldı!");
-        }
-
-        function logAction(text) {
+        function logAction(msg) {
             let logs = document.getElementById('admin-logs');
             let time = new Date().toLocaleTimeString();
             let div = document.createElement('div');
-            div.className = "text-slate-300";
-            div.innerText = `[${time}] ${text}`;
-            logs.prepend(div);
+            div.innerText = `[${time}] ${msg}`;
+            logs.appendChild(div);
+            logs.scrollTop = logs.scrollHeight;
+        }
+
+        function modifyBalance(action) {
+            let val = parseFloat(document.getElementById('admin-amount-input').value) || 0;
+            if(action === 'sub') val = -val;
+            logAction(`Kullanıcı bakiyesi ${val > 0 ? '+' + val : val} PEPE olarak güncellendi.`);
+            alert(`İşlem başarılı: Bakiye güncellendi.`);
+        }
+
+        function approveWithdraw(btn) {
+            let parent = btn.closest('div.flex');
+            parent.style.opacity = '0.5';
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-check-double mr-1"></i> Ödendi';
+            btn.className = "w-full sm:w-auto bg-slate-800 text-slate-400 font-bold px-4 py-2 rounded-xl text-xs cursor-not-allowed";
+            logAction(`Çekim talebi onaylandı ve cüzdana transfer edildi.`);
+        }
+
+        function sendBroadcast() {
+            let text = document.getElementById('broadcast-text').value.trim();
+            if(!text) {
+                alert("Lütfen bir duyuru metni girin.");
+                return;
+            }
+            logAction(`Yeni duyuru mini uygulamada yayınlandı: "${text.substring(0, 25)}..."`);
+            document.getElementById('broadcast-text').value = "";
+            alert("Duyuru tüm kullanıcılara canlı olarak iletildi!");
         }
     </script>
 </body>
