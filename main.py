@@ -51,6 +51,17 @@ def init_db():
             value TEXT
         )
     ''')
+    # Canlı Log Tablosu Eklendi
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT,
+            username TEXT,
+            action TEXT,
+            details TEXT,
+            timestamp TEXT
+        )
+    ''')
     conn.commit()
     conn.close()
 
@@ -142,6 +153,52 @@ def update_user():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
+# --- YENİ EKLENEN LOG API'LERİ ---
+@app.route('/api/user/log', methods=['POST'])
+def user_log():
+    try:
+        data = request.json
+        user_id = data.get('telegram_id')
+        username = data.get('username', 'Bilinmiyor')
+        action = data.get('action', 'INFO')
+        details = data.get('details', '')
+        timestamp = data.get('timestamp', '')
+
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO logs (user_id, username, action, details, timestamp)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (user_id, username, action, details, timestamp))
+        conn.commit()
+        conn.close()
+
+        return jsonify({"status": "success"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
+
+@app.route('/api/admin/logs', methods=['GET'])
+def admin_logs():
+    SECRET_KEY = "SizinGucluSifreniz123"
+    if request.args.get('secret') != SECRET_KEY:
+        return jsonify({"error": "Yetkisiz erişim!"}), 403
+
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('SELECT username, action, details, timestamp FROM logs ORDER BY id DESC LIMIT 50')
+    rows = cursor.fetchall()
+    conn.close()
+
+    return jsonify([
+        {
+            "username": r[0],
+            "action": r[1],
+            "details": r[2],
+            "timestamp": r[3]
+        } for r in rows
+    ]), 200
+# ---------------------------------
+
 @app.route('/api/ad/watched', methods=['POST'])
 def ad_watched():
     try:
@@ -202,7 +259,6 @@ def withdraw():
     except Exception as e:
         return jsonify({"status": "error", "message": str(e)}), 400
 
-# --- LİDERLİK TABLOSU API'Sİ (Eksikti, eklendi) ---
 @app.route('/api/leaderboard', methods=['GET'])
 def leaderboard():
     try:
@@ -221,7 +277,6 @@ def leaderboard():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# --- CANLI KAZANIM AKIŞI API'Sİ (Eksikti, eklendi) ---
 @app.route('/api/live_activity', methods=['GET'])
 def live_activity():
     try:
