@@ -80,16 +80,28 @@ app.post('/api/withdraw', (req, res) => {
     );
 });
 
-// 3. ADMIN PANELİ İÇİN ÇEKİMLERİ GETİRME
+// 3. ADMIN PANELİ İÇİN ÇEKİMLERİ GETİRME (İngilizce & Türkçe Destekli)
 app.get('/api/withdrawals', (req, res) => {
     db.all(`SELECT * FROM withdrawals ORDER BY id DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
         res.json({ success: true, withdrawals: rows });
     });
 });
+app.get('/api/geri çekilmeler', (req, res) => {
+    db.all(`SELECT * FROM withdrawals ORDER BY id DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true, withdrawals: rows });
+    });
+});
 
-// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU
+// 4. KULLANICI LİSTESİ / LİDERLİK TABLOSU (İngilizce & Türkçe Destekli)
 app.get('/api/leaderboard', (req, res) => {
+    db.all(`SELECT telegram_id, username, balance FROM users ORDER BY balance DESC`, [], (err, rows) => {
+        if (err) return res.status(500).json({ json: [], error: err.message });
+        res.json(rows);
+    });
+});
+app.get('/api/lider tahtası', (req, res) => {
     db.all(`SELECT telegram_id, username, balance FROM users ORDER BY balance DESC`, [], (err, rows) => {
         if (err) return res.status(500).json({ json: [], error: err.message });
         res.json(rows);
@@ -159,9 +171,23 @@ app.post('/api/user/update', (req, res) => {
         res.json({ success: true, message: 'Kullanıcı güncellendi.' });
     });
 });
+app.post('/api/kullanıcı/güncelleme', (req, res) => {
+    const { telegram_id, balance } = req.body;
+    if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
+
+    db.run(`UPDATE users SET balance = ? WHERE telegram_id = ?`, [balance, telegram_id], function(err) {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+        res.json({ success: true, message: 'Kullanıcı güncellendi.' });
+    });
+});
 
 // 9. KULLANICI ETKİLEŞİM / LOG KAYIT SİSTEMİ
 app.post('/api/user/log', (req, res) => {
+    const { telegram_id, action, details } = req.body;
+    console.log(`[LOG] Telegram ID: ${telegram_id}, İşlem: ${action}, Detay: ${details || '-'}`);
+    res.json({ success: true, message: 'Log kaydedildi.' });
+});
+app.post('/api/kullanıcı/günlük', (req, res) => {
     const { telegram_id, action, details } = req.body;
     console.log(`[LOG] Telegram ID: ${telegram_id}, İşlem: ${action}, Detay: ${details || '-'}`);
     res.json({ success: true, message: 'Log kaydedildi.' });
