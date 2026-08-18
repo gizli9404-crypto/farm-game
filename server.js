@@ -34,6 +34,9 @@ bot.start((ctx) => {
     const username = ctx.from.username || 'User_' + telegramId.slice(-4);
     const firstName = ctx.from.first_name || '';
 
+    // Gelen kullanıcının gerçek chat_id'sini konsola yazdıralım ki loglardan görebilesin
+    console.log(`Botu başlatan kullanıcı ID'si: ${telegramId}`);
+
     db.run(
         `INSERT INTO users (telegram_id, username, balance, streak_day) VALUES (?, ?, 5, 1) 
          ON CONFLICT(telegram_id) DO UPDATE SET username = excluded.username`,
@@ -86,7 +89,13 @@ function logSystemError(errMessage) {
     const errorText = typeof errMessage === 'object' ? errMessage.message : errMessage;
     console.error("[SİSTEM HATASI]:", errorText);
     db.run("INSERT INTO system_logs (log_type, message) VALUES ('HATA', ?)", [errorText], () => {
-        try { bot.telegram.sendMessage(ADMIN_CHAT_ID, `🚨 KRİTİK SİSTEM HATASI:\n\n${errorText}`); } catch(e) {}
+        try { 
+            if (ADMIN_CHAT_ID) {
+                bot.telegram.sendMessage(ADMIN_CHAT_ID, `🚨 KRİTİK SİSTEM HATASI:\n\n${errorText}`); 
+            }
+        } catch(e) {
+            console.error("Admin hata bildirimi gönderilemedi (Chat bulunamadı olabilir):", e.message);
+        }
     });
 }
 
@@ -312,4 +321,4 @@ app.post('/api/withdraw', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server aktif: ${PORT}`));
+app.listen(PORT, '0.0.0.0', () => console.log(`Server aktif: ${PORT}`));
