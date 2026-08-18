@@ -1,76 +1,297 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Admin Panel v2.0</title>
+    <title>Elite Binance & Otonom Kontrol v3.0</title>
     <style>
         :root {
-            --bg-color: #0f172a;
-            --card-bg: #1e293b;
-            --accent-color: #3b82f6;
-            --text-color: #f1f5f9;
-            --sidebar-width: 250px;
+            --bg-deep: #090d16;
+            --bg-card: #131b2e;
+            --bg-card-hover: #1a2540;
+            --accent-green: #10b981;
+            --accent-blue: #3b82f6;
+            --accent-gold: #f59e0b;
+            --accent-danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: #1e293b;
         }
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; display: flex; }
-        .sidebar { width: var(--sidebar-width); height: 100vh; background-color: var(--card-bg); padding: 20px; border-right: 1px solid #334155; }
-        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
-        .card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
-        .card h3 { margin-top: 0; color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; }
-        .card p { font-size: 1.8rem; font-weight: bold; margin: 10px 0 0; }
-        input, textarea, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
-        button { background: var(--accent-color); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        button:hover { background: #2563eb; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
-        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background-color: var(--bg-card);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px;
+        }
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+            margin-bottom: 40px;
+        }
+        .nav-links { display: flex; flex-direction: column; gap: 8px; }
+        .nav-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: var(--accent-blue);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* Main Content */
+        .main-container {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            max-height: 100vh;
+        }
+        .header-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            background: linear-gradient(90deg, #f59e0b, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Metrics Grid */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .metric-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 14px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        .metric-card:hover { transform: translateY(-3px); }
+        .metric-card h4 { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .metric-card .value { font-size: 2rem; font-weight: 700; margin-top: 10px; color: var(--text-main); }
+        .metric-card::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 4px; height: 100%;
+            background: var(--accent-blue);
+        }
+        .metric-card.green::after { background: var(--accent-green); }
+        .metric-card.gold::after { background: var(--accent-gold); }
+
+        /* Action Panels Grid */
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+        }
+        .panel h3 { font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
+        
+        /* Inputs & Buttons */
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: var(--bg-deep);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: white;
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        input:focus, textarea:focus { border-color: var(--accent-blue); }
+        button {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: opacity 0.2s, transform 0.1s;
+        }
+        button:active { transform: scale(0.98); }
+        .btn-blue { background: var(--accent-blue); color: white; }
+        .btn-green { background: var(--accent-green); color: white; }
+        .btn-blue:hover, .btn-green:hover { opacity: 0.9; }
+
+        /* Tables */
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 24px;
+            margin-bottom: 30px;
+        }
+        .table-container h3 { margin-bottom: 15px; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+        th, td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+        tbody tr:hover { background-color: var(--bg-card-hover); }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        .badge.pending { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); }
+        .badge.success { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
+        .badge.error { background: rgba(239, 68, 68, 0.15); color: var(--accent-danger); }
     </style>
 </head>
 <body>
+
     <div class="sidebar">
-        <h2>👑 Elite Admin</h2>
-        <nav>
-            <p>Dashboard</p>
-            <p>Kullanıcılar</p>
-            <p>Çekimler</p>
-            <p style="color: var(--accent-color);">Sistem Logları</p>
-        </nav>
+        <div>
+            <div class="logo-area">
+                👑 <span>ELITE ADMIN</span>
+            </div>
+            <div class="nav-links">
+                <a class="nav-item active">📊 Kontrol Paneli</a>
+                <a class="nav-item">👥 Kullanıcılar</a>
+                <a class="nav-item">💸 Çekim Talepleri</a>
+                <a class="nav-item">🛡️ Sistem Logları</a>
+            </div>
+        </div>
+        <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">
+            Sistem Durumu: <span style="color: var(--accent-green);">● Çevrimiçi</span>
+        </div>
     </div>
-    <div class="main-content">
-        <h1>Kontrol Merkezi</h1>
-        <div class="dashboard-grid">
-            <div class="card"><h3>Toplam Kullanıcı</h3><p id="totalUsers">0</p></div>
-            <div class="card"><h3>Toplam Bakiye</h3><p id="totalBalance">0</p></div>
-            <div class="card"><h3>Bekleyen Çekim</h3><p id="pendingWithdraws">0</p></div>
-        </div>
 
-        <div class="dashboard-grid">
-            <div class="card">
-                <h3>Otonom Duyuru</h3>
-                <textarea id="broadcastMsg" rows="3" placeholder="Duyuru metni..."></textarea>
-                <button onclick="sendBroadcast()">Kanalda Yayınla</button>
+    <div class="main-container">
+        <div class="header-title">👑 ELITE BINANCE & OTONOM KONTROL MERKEZİ</div>
+
+        <!-- Metrik Kartları -->
+        <div class="metrics-grid">
+            <div class="metric-card gold">
+                <h4>Toplam Kullanıcı</h4>
+                <div class="value" id="totalUsersCount">0</div>
             </div>
-            <div class="card">
-                <h3>Manuel Bakiye Yönetimi</h3>
-                <input type="text" id="targetId" placeholder="Telegram ID">
-                <input type="number" id="targetAmount" placeholder="Miktar">
-                <button onclick="addBalance()">Bakiye Ekle/Düzenle</button>
+            <div class="metric-card green">
+                <h4>Toplam Sistem Bakiyesi</h4>
+                <div class="value" id="totalBalanceSum">0</div>
+            </div>
+            <div class="metric-card">
+                <h4>Bekleyen Çekimler</h4>
+                <div class="value" id="pendingCount">0</div>
             </div>
         </div>
 
-        <div class="card">
-            <h3>Sistem Logları (Son 20)</h3>
-            <table id="logsTable">
-                <thead><tr><th>Zaman</th><th>Tip</th><th>Mesaj</th></tr></thead>
-                <tbody></tbody>
+        <!-- Kontrol Panelleri -->
+        <div class="action-grid">
+            <div class="panel">
+                <h3>📢 Otonom Kanal Duyurusu</h3>
+                <textarea id="broadcastMsg" rows="3" placeholder="Kanalda yayınlanacak duyuru mesajını buraya yazın..."></textarea>
+                <button class="btn-blue" onclick="sendBroadcast()">Kanala Gönder</button>
+            </div>
+
+            <div class="panel">
+                <h3>💳 Manuel Bakiye Yönetimi</h3>
+                <input type="text" id="targetId" placeholder="Kullanıcı Telegram ID">
+                <input type="number" id="targetAmount" placeholder="Yüklenecek Miktar (Örn: 50)">
+                <button class="btn-green" onclick="addBalance()">Bakiyeyi Güncelle / Yükle</button>
+            </div>
+        </div>
+
+        <!-- Bekleyen Çekim Talepleri Tablosu -->
+        <div class="table-container">
+            <h3>⏳ Bekleyen Çekim Talepleri</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Kullanıcı</th>
+                        <th>Miktar</th>
+                        <th>Cüzdan</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="withdrawsTableBody">
+                    <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Bekleyen talep bulunmuyor.</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Canlı Sistem Logları Tablosu -->
+        <div class="table-container">
+            <h3>🛡️ Canlı Sistem Logları (Son Olaylar)</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Zaman</th>
+                        <th>Tür</th>
+                        <th>Detay / Mesaj</th>
+                    </tr>
+                </thead>
+                <tbody id="logsTableBody">
+                    <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Log kaydı yükleniyor...</td></tr>
+                </tbody>
             </table>
         </div>
     </div>
+
     <script>
-        // API bağlantı kodları buraya eklenecek
-        console.log("Admin Panel Aktif");
+        // Örnek arayüz etkileşim fonksiyonları (Backend uçlarına göre entegre edilebilir)
+        function sendBroadcast() {
+            const msg = document.getElementById('broadcastMsg').value;
+            if(!msg) return alert('Lütfen bir mesaj yazın!');
+            alert('Duyuru kanala gönderilmek üzere kuyruğa alındı.');
+            document.getElementById('broadcastMsg').value = '';
+        }
+
+        function addBalance() {
+            const id = document.getElementById('targetId').value;
+            const amount = document.getElementById('targetAmount').value;
+            if(!id || !amount) return alert('Lütfen tüm alanları doldurun!');
+            alert(`Kullanıcı (${id}) için ${amount} bakiye güncelleme isteği gönderildi.`);
+        }
     </script>
 </body>
 </html>
