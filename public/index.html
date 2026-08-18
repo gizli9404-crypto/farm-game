@@ -77,7 +77,7 @@
 
     <script>
         let tg = window.Telegram?.WebApp;
-        let telegramId = "825653935"; // Test için varsayılan ID (Gerçekte Telegram'dan alınır)
+        let telegramId = "825653935"; // Test için varsayılan ID
         let username = "Jacker_lord";
 
         if (tg) {
@@ -91,7 +91,7 @@
         document.getElementById('user-telegram-id').innerText = telegramId;
         document.getElementById('ref-link').value = `https://t.me/sanal_miner_test_bot?start=ref_${telegramId}`;
 
-        // Backend'den Canlı Veri Çekme (Admin panelinin değiştirdiği bakiye buraya yansır)
+        // Backend'den Canlı Veri Çekme
         function fetchUserData() {
             fetch(`/api/user/${telegramId}`)
                 .then(res => res.json())
@@ -130,7 +130,6 @@
         }
 
         function triggerMining() {
-            // Backend'e kazanç bildirimi gönderilebilir
             showModal("Kazım", "Kazım verisi işleniyor...");
             fetchUserData();
         }
@@ -144,15 +143,26 @@
                 return;
             }
 
-            fetch('/api/user/withdraw', {
+            // Doğru backend yolu '/api/withdraw' olarak ayarlandı
+            fetch('/api/withdraw', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_id: telegramId, amount: amount, wallet: address })
+                body: JSON.stringify({ 
+                    telegram_id: telegramId, 
+                    username: username, 
+                    amount: amount, 
+                    wallet: address, 
+                    network: "TON" 
+                })
             })
             .then(res => res.json())
             .then(data => {
-                showModal("Başarılı", "Çekim talebiniz sıraya alındı.");
-                fetchUserData();
+                if (data.success) {
+                    showModal("Başarılı", data.message || "Çekim talebiniz başarıyla alındı!");
+                    fetchUserData();
+                } else {
+                    showModal("Hata", data.error || "İşlem başarısız oldu.");
+                }
             })
             .catch(err => {
                 showModal("Hata", "İşlem sırasında sunucu hatası oluştu.");
@@ -165,7 +175,7 @@
             showModal("Başarılı", "Referans bağlantısı kopyalandı!");
         }
 
-        // Sayfa açıldığında ve her 5 saniyede bir veritabanı ile senkronize ol (Admin panelinden atılan para anında gelsin)
+        // Sayfa açıldığında ve her 5 saniyede bir senkronizasyon
         fetchUserData();
         setInterval(fetchUserData, 5000);
     </script>
