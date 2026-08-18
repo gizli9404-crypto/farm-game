@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Binance & Otonom Kontrol v4.0</title>
+    <title>Elite Binance & Otonom Kontrol v4.1</title>
     <style>
         :root {
             --bg-deep: #090d16;
@@ -168,6 +168,18 @@
         }
         th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
         tbody tr:hover { background-color: var(--bg-card-hover); }
+
+        /* Canlı Akış / Duyuru Alanı Kartı */
+        .live-feed-box {
+            background: var(--bg-deep);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            max-height: 150px;
+            overflow-y: auto;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
     </style>
 </head>
 <body>
@@ -179,11 +191,11 @@
                 <a class="nav-item active" onclick="switchTab('dashboard', this)">📊 Kontrol Paneli</a>
                 <a class="nav-item" onclick="switchTab('users', this)">👥 Kullanıcılar</a>
                 <a class="nav-item" onclick="switchTab('withdraws', this)">💸 Çekim Talepleri</a>
-                <a class="nav-item" onclick="switchTab('logs', this)">🛡️ Sistem Logları</a>
+                <a class="nav-item" onclick="switchTab('logs', this)">🛡️ Sistem Logları & Hatalar</a>
             </div>
         </div>
         <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">
-            Sistem Durumu: <span style="color: var(--accent-green);">● Çevrimiçi</span>
+            Sistem Durumu: <span id="systemStatusIndicator" style="color: var(--accent-green);">● Çevrimiçi</span>
         </div>
     </div>
 
@@ -209,9 +221,11 @@
 
             <div class="action-grid">
                 <div class="panel">
-                    <h3>📢 Otonom & Motivasyon Kanal Duyurusu</h3>
-                    <textarea id="broadcastMsg" rows="3" placeholder="Kanalda yayınlanacak duyuruyu yazın..."></textarea>
-                    <button class="btn-blue" onclick="sendBroadcast()">Kanala Hemen Gönder</button>
+                    <h3>📢 Otonom & Otomatik Duyuru Akışı</h3>
+                    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Para çekme talepleri, onaylar ve sistem uyarıları burada otomatik yayınlanır:</p>
+                    <div id="autoBroadcastFeed" class="live-feed-box">
+                        [Sistem] Otonom duyuru motoru aktif edildi...
+                    </div>
                 </div>
 
                 <div class="panel">
@@ -272,7 +286,7 @@
         <!-- 4. LOGLAR SEKMESİ -->
         <div id="logs" class="section-view">
             <div class="table-container">
-                <h3>🛡️ Canlı Sistem Logları</h3>
+                <h3>🛡️ Canlı Sistem Logları & Hata Takipçisi</h3>
                 <table>
                     <thead>
                         <tr>
@@ -291,6 +305,47 @@
     </div>
 
     <script>
+        // Log ve Duyuru Veri Tabanı Simülasyonu / State
+        let systemLogs = [];
+
+        function addSystemLog(type, message) {
+            const time = new Date().toLocaleTimeString();
+            systemLogs.unshift({ time, type, message });
+            
+            // Loglar tablosunu güncelle
+            updateLogsTable();
+            
+            // Kontrol panelindeki otomatik duyuru akışını güncelle
+            updateAutoFeed(type, message);
+
+            // Eğer hata ise sistem durumunu uyarılı yap
+            if(type.includes('HATA')) {
+                document.getElementById('systemStatusIndicator').style.color = 'var(--accent-danger)';
+                document.getElementById('systemStatusIndicator').innerText = '● Sunucu Hatası';
+            }
+        }
+
+        function updateLogsTable() {
+            const tbody = document.getElementById('logsTableBody');
+            if(systemLogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Log kaydı bulunmuyor.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = systemLogs.map(l => `
+                <tr>
+                    <td>${l.time}</td>
+                    <td><span style="color: ${l.type.includes('HATA') ? 'var(--accent-danger)' : (l.type.includes('ONAY') ? 'var(--accent-green)' : 'var(--accent-gold)')}; font-weight:bold;">${l.type}</span></td>
+                    <td>${l.message}</td>
+                </tr>
+            `).join('');
+        }
+
+        function updateAutoFeed(type, message) {
+            const feed = document.getElementById('autoBroadcastFeed');
+            const p = document.div ? '' : document.createElement('div');
+            feed.innerHTML = systemLogs.map(l => `<div style="margin-bottom: 6px;">[${l.time}] <b>${l.type}:</b> ${l.message}</div>`).join('');
+        }
+
         function switchTab(tabId, element) {
             document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
@@ -331,6 +386,7 @@
                 `).join('');
             } catch(e) {
                 console.error("Kullanıcılar yüklenirken hata:", e);
+                addSystemLog('SİSTEM HATASI', 'Kullanıcı listesi sunucudan çekilirken bağlantı hatası oluştu.');
             }
         }
 
@@ -354,16 +410,17 @@
                         <td style="color: var(--accent-gold); font-weight: bold;">${w.amount} ${w.currency}</td>
                         <td><code>${w.wallet}</code></td>
                         <td>
-                            <button class="btn-action" onclick="completeWithdraw(${w.id})">Ödendi İşaretle</button>
+                            <button class="btn-action" onclick="completeWithdraw(${w.id}, '${w.username || 'Kullanıcı'}', ${w.amount})">Ödendi İşaretle</button>
                         </td>
                     </tr>
                 `).join('');
             } catch(e) {
                 console.error("Çekim talepleri yüklenirken hata:", e);
+                addSystemLog('SİSTEM HATASI', 'Bekleyen çekim talepleri yüklenirken sunucu hatası alındı.');
             }
         }
 
-        async function completeWithdraw(id) {
+        async function completeWithdraw(id, username, amount) {
             if(!confirm(` #${id} numaralı çekim talebini 'Ödendi' olarak işaretlemek istiyor musunuz?`)) return;
 
             try {
@@ -374,22 +431,19 @@
                 });
                 const result = await res.json();
                 if(result.success) {
-                    alert('Çekim talebi başarıyla güncellendi!');
+                    // OTOMATİK DUYURU BURADA TETİKLENİR
+                    addSystemLog('PARA ÇEKME ONAYI', `@${username} kullanıcısının ${amount} tutarındaki çekim talebi onaylandı ve ödendi!`);
+                    alert('Çekim talebi başarıyla güncellendi ve genel duyuruya eklendi!');
                     loadWithdraws();
                 } else {
+                    addSystemLog('İŞLEM HATASI', `ID #${id} çekim tamamlama hatası: ${result.error}`);
                     alert('Hata: ' + (result.error || 'İşlem başarısız.'));
                 }
             } catch(e) {
                 console.error("Çekim tamamlama hatası:", e);
+                addSystemLog('SİSTEM HATASI', 'Çekim onaylanırken sunucu bağlantısı koptu.');
                 alert('Sunucu bağlantı hatası!');
             }
-        }
-
-        function sendBroadcast() {
-            const msg = document.getElementById('broadcastMsg').value;
-            if(!msg) return alert('Lütfen bir mesaj yazın!');
-            alert('Otonom motivasyon ve duyuru mesajı kanala başarıyla iletildi.');
-            document.getElementById('broadcastMsg').value = '';
         }
 
         async function addBalance() {
@@ -410,18 +464,24 @@
 
                 const result = await response.json();
                 if(result.success) {
+                    addSystemLog('BAKİYE GÜNCELLEME', `Admin tarafından ID: ${telegram_id} kullanıcısına ${amount} bakiye yüklendi.`);
                     alert(`Başarılı! Kullanıcıya ${amount} bakiye eklendi.`);
                     document.getElementById('targetId').value = '';
                     document.getElementById('targetAmount').value = '';
                     loadAllUsers();
                 } else {
+                    addSystemLog('HATA', `Bakiye yükleme başarısız: ${result.error}`);
                     alert('Hata: ' + (result.error || 'Bakiye eklenemedi.'));
                 }
             } catch(e) {
                 console.error("Bakiye yükleme hatası:", e);
+                addSystemLog('SİSTEM HATASI', 'Manuel bakiye yükleme sırasında ağ hatası oluştu.');
                 alert('Sunucu bağlantı hatası!');
             }
         }
+
+        // Örnek başlangıç logu ve otomatik duyuru simülasyonu
+        addSystemLog('SİSTEM', 'Elite Admin Otonom Kontrol Paneli başarıyla başlatıldı.');
 
         // Sayfa açıldığında temel verileri yükle
         loadAllUsers();
