@@ -105,7 +105,7 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
-// Admin Bekleyen Çekim Taleplerini Listeleme API'si (Ağ Bilgisi Dahil)
+// Admin Bekleyen Çekim Taleplerini Listeleme API'si
 app.get('/api/admin/withdraws', (req, res) => {
     db.all("SELECT id, telegram_id, username, amount, currency, network, wallet, status FROM withdrawals WHERE status = 'Bekliyor' ORDER BY id DESC", (err, rows) => {
         if (err) {
@@ -242,7 +242,7 @@ app.get('/api/my-withdrawals/:telegram_id', (req, res) => {
     const tid = req.params.telegram_id;
     db.all("SELECT amount, currency, network, status FROM withdrawals WHERE telegram_id = ? ORDER BY id DESC LIMIT 5", [tid], (err, rows) => {
         if (err) { logSystemError(err); return res.status(500).json([]); }
-        res.json(rows || [] );
+        res.json(rows || []);
     });
 });
 
@@ -254,7 +254,7 @@ app.post('/api/reward/claim', (req, res) => {
     });
 });
 
-// Güncellenmiş Binance Tarzı Çekim Talebi API'si (Ağ Desteği ve USD Dönüşümü ile)
+// Binance Standartlarında Çekim Talebi API'si (Ağ ve Kur Dönüşümlü)
 app.post('/api/withdraw', (req, res) => {
     const { telegram_id, amount, currency, network, wallet } = req.body;
     db.get("SELECT balance, username FROM users WHERE telegram_id = ?", [telegram_id], (err, user) => {
@@ -263,7 +263,7 @@ app.post('/api/withdraw', (req, res) => {
         db.run("UPDATE users SET balance = balance - ? WHERE telegram_id = ?", [amount, telegram_id], () => {
             db.run("INSERT INTO withdrawals (telegram_id, username, amount, currency, network, wallet) VALUES (?, ?, ?, ?, ?, ?)",
                 [telegram_id, user.username, amount, currency, network || 'BSC (BEP20)', wallet], () => {
-                res.json({ success: true, message: "Çekim talebiniz alındı! Binance üzerinden ödülünüz gönderilecektir." });
+                res.json({ success: true, message: "Çekim talebiniz başarıyla alındı! Binance cüzdanınıza aktarılıyor." });
             });
         });
     });
