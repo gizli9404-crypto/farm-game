@@ -4,13 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Sanal Miner Pro - Elite Ultimate Edition</title>
-    <!-- Telegram WebApp Kütüphanesi -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome İkonları -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Konfeti Kütüphanesi -->
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         body { 
@@ -69,7 +65,6 @@
 </head>
 <body class="flex flex-col h-screen justify-between overflow-hidden">
 
-    <!-- ÜST HEADER BÖLGESİ -->
     <header class="p-4 glass-panel border-b border-slate-800/80 z-20 space-y-3">
         <div class="flex justify-between items-center">
             <div class="flex bg-slate-950/90 light-theme:bg-slate-200 p-1 rounded-xl border border-slate-800/80 shadow-inner">
@@ -83,7 +78,6 @@
             </div>
         </div>
 
-        <!-- Bakiye Kartı -->
         <div class="glass-card p-3.5 rounded-2xl space-y-2.5 shadow-lg">
             <div class="flex justify-between items-center">
                 <span class="text-[10px] text-slate-400 light-theme:text-slate-600 uppercase font-black tracking-wider flex items-center">
@@ -107,10 +101,8 @@
         </div>
     </header>
 
-    <!-- ANA İÇERİK ALANI -->
     <main class="flex-1 overflow-y-auto p-4 pb-24 flex flex-col justify-start">
         
-        <!-- 1. SEKME: HOME (GÖREVLER) -->
         <div id="tab-home" class="tab-content active flex-col space-y-3">
             <div class="flex space-x-4 border-b border-slate-800/80 pb-2">
                 <span class="text-xs font-black text-emerald-400 border-b-2 border-emerald-400 pb-1 cursor-pointer">🎁 Ücretsiz Görevler</span>
@@ -133,9 +125,7 @@
             </div>
         </div>
 
-        <!-- 2. SEKME: SPIN (ÇARK) -->
         <div id="tab-spin" class="tab-content flex-col items-center space-y-2">
-            <!-- Anlık Kazananlar Kayan Şeridi -->
             <div class="w-full bg-slate-900/80 light-theme:bg-slate-200 border border-slate-800 rounded-xl p-1.5 text-[10px] text-emerald-400 flex items-center space-x-2 overflow-hidden whitespace-nowrap">
                 <i class="fa-solid fa-bullhorn text-amber-400 ml-1"></i>
                 <span id="ticker-winners" class="font-medium animate-pulse">CryptoKing_77 çarktan 1,000 PEPE kazandı! | TonMaster99 250 PEPE kazandı!</span>
@@ -182,7 +172,6 @@
             </div>
         </div>
 
-        <!-- 3. SEKME: SHOP -->
         <div id="tab-shop" class="tab-content flex-col space-y-3">
             <h2 class="text-base font-black text-white light-theme:text-slate-900">Mağaza & VIP Bot</h2>
             <div class="glass-card p-3.5 rounded-2xl space-y-2 border-slate-800/80 text-xs text-slate-300">
@@ -191,7 +180,6 @@
             </div>
         </div>
 
-        <!-- 4. SEKME: INVITE -->
         <div id="tab-invite" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
                 <h2 class="text-base font-black text-white light-theme:text-slate-900">Arkadaşını Davet Et</h2>
@@ -212,7 +200,6 @@
             </div>
         </div>
 
-        <!-- 5. SEKME: RANK (CANLI LİDERLİK TABLOSU - ADSGRAM UYUMLU) -->
         <div id="tab-rank" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
                 <h2 class="text-base font-black text-white light-theme:text-slate-900">Canlı Liderlik Tablosu</h2>
@@ -223,12 +210,10 @@
             </div>
             
             <div class="glass-card p-3 rounded-2xl space-y-2 text-xs border-slate-800/80 shadow-lg">
-                <!-- Canlı API Verileriyle Dolacak Liste Alanı -->
                 <div id="leaderboard-list" class="space-y-2">
                     <div class="text-center text-slate-400 py-4 text-xs">Yükleniyor...</div>
                 </div>
 
-                <!-- Kullanıcının Kendi Sıralama Durumu -->
                 <div class="flex justify-between items-center bg-emerald-500/10 p-3 rounded-xl border border-emerald-500/30 mt-2">
                     <div class="flex items-center space-x-2">
                         <span class="text-emerald-400 font-black">📍</span>
@@ -239,7 +224,6 @@
             </div>
         </div>
 
-        <!-- CÜZDAN & ÇEKİM İŞLEMLERİ -->
         <div id="tab-wallet" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
                 <h2 class="text-base font-black text-white light-theme:text-slate-900">Cüzdan & Çekim İşlemleri</h2>
@@ -270,7 +254,6 @@
 
     </main>
 
-    <!-- MODAL -->
     <div id="custom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-md z-50 hidden items-center justify-center p-4">
         <div class="glass-panel w-full max-w-xs rounded-3xl p-6 text-center space-y-4 border border-slate-700/80 shadow-2xl">
             <div id="modal-icon" class="w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mx-auto text-xl border border-emerald-500/30 shadow-inner">
@@ -284,7 +267,6 @@
         </div>
     </div>
 
-    <!-- ALT NAVİGASYON -->
     <nav class="absolute bottom-0 left-0 right-0 glass-panel border-t border-slate-800/80 flex justify-around p-2.5 z-40 backdrop-blur-xl">
         <button onclick="switchTab('home'); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="home"><i class="fa-solid fa-house text-xs"></i><span class="text-[9px] font-bold">HOME</span></button>
         <button onclick="switchTab('spin'); playClickSound();" class="nav-btn text-emerald-400 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="spin"><i class="fa-solid fa-dharmachakra text-xs"></i><span class="text-[9px] font-bold">SPIN</span></button>
@@ -293,7 +275,6 @@
         <button onclick="switchTab('rank'); fetchLeaderboard(); playClickSound();" class="nav-btn text-slate-400 light-theme:text-slate-600 flex flex-col items-center space-y-0.5 cursor-pointer transition-colors" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
     </nav>
 
-    <!-- SCRIPTS -->
     <script>
         let gameState = { balance: 0.00, tickets: 0, wallet: "" };
         let telegramId = "user_" + Math.floor(Math.random() * 1000000); 
