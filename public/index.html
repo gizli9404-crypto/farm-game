@@ -52,12 +52,12 @@
     <header class="p-4 glass-panel border-b border-slate-800/80 z-20 space-y-3">
         <div class="flex justify-between items-center">
             <div class="flex bg-slate-950/90 p-1 rounded-xl border border-slate-800/80 shadow-inner">
-                <button onclick="playClickSound()" class="px-3.5 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-black text-xs shadow-md">PEPE</button>
+                <button class="px-3.5 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-black text-xs shadow-md">PEPE</button>
             </div>
             <div class="flex space-x-2 items-center">
-                <button onclick="toggleTheme(); playClickSound();" class="text-xs bg-slate-800/80 hover:bg-slate-700 text-amber-400 px-2.5 py-1.5 rounded-xl border border-slate-700/60 transition-all shadow"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
-                <button onclick="switchTab('wallet'); playClickSound();" class="text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl font-bold border border-slate-700/60 transition-all shadow">Çekim</button>
-                <button onclick="switchTab('invite'); playClickSound();" class="text-xs bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black px-3.5 py-1.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all"><i class="fa-solid fa-user-plus mr-1"></i> Davet Et</button>
+                <button onclick="toggleTheme()" class="text-xs bg-slate-800/80 hover:bg-slate-700 text-amber-400 px-2.5 py-1.5 rounded-xl border border-slate-700/60 transition-all shadow"><i class="fa-solid fa-moon" id="theme-icon"></i></button>
+                <button onclick="switchTab('wallet')" class="text-xs bg-slate-800/80 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-xl font-bold border border-slate-700/60 transition-all shadow">Çekim</button>
+                <button onclick="switchTab('invite')" class="text-xs bg-gradient-to-r from-emerald-400 to-teal-500 text-slate-950 font-black px-3.5 py-1.5 rounded-xl shadow-lg shadow-emerald-500/20 transition-all"><i class="fa-solid fa-user-plus mr-1"></i> Davet Et</button>
             </div>
         </div>
 
@@ -92,7 +92,7 @@
         <div id="tab-home" class="tab-content active flex-col space-y-3">
             <div class="flex space-x-4 border-b border-slate-800/80 pb-2">
                 <span class="text-xs font-black text-emerald-400 border-b-2 border-emerald-400 pb-1 cursor-pointer">🎁 Ücretsiz Görevler</span>
-                <span onclick="switchTab('spin'); playClickSound();" class="text-xs font-bold text-slate-400 pb-1 cursor-pointer hover:text-slate-200">📄 Şans Çarkı</span>
+                <span onclick="switchTab('spin')" class="text-xs font-bold text-slate-400 pb-1 cursor-pointer hover:text-slate-200">📄 Şans Çarkı</span>
             </div>
             <div class="space-y-2.5">
                 <div class="glass-card p-3.5 rounded-2xl flex items-center justify-between border-slate-800/80 shadow">
@@ -100,10 +100,10 @@
                         <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-black text-xs border border-emerald-500/20 shadow-inner">ADS</div>
                         <div>
                             <div class="text-xs font-bold text-white">Sponsorlu Reklam Görevi</div>
-                            <div class="text-[10px] text-emerald-400 font-bold mt-0.5">+1 🎫 Bilet — <span id="ad1-count">0</span>/15 gün</div>
+                            <div class="text-[10px] text-emerald-400 font-bold mt-0.5">+1 🎫 Bilet</div>
                         </div>
                     </div>
-                    <button onclick="watchAdTask(); playClickSound();" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-md cursor-pointer transition-all">İzle</button>
+                    <button onclick="watchAdTask()" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-slate-950 font-black px-4 py-2 rounded-xl text-xs shadow-md cursor-pointer transition-all">İzle</button>
                 </div>
             </div>
         </div>
@@ -156,12 +156,12 @@
         <div id="tab-invite" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center"><h2 class="text-base font-black text-white">Arkadaşını Davet Et</h2></div>
             <div class="glass-card p-4 rounded-2xl space-y-3 border-slate-800/80 shadow-lg">
-                <button onclick="shareViaTelegram(); playClickSound();" class="w-full bg-gradient-to-r from-sky-400 to-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-lg cursor-pointer transition-all flex items-center justify-center">
+                <button onclick="shareViaTelegram()" class="w-full bg-gradient-to-r from-sky-400 to-blue-600 text-white font-black py-3 rounded-xl text-xs shadow-lg cursor-pointer transition-all flex items-center justify-center">
                     <i class="fa-brands fa-telegram mr-2 text-base"></i> Telegram'da Paylaş
                 </button>
                 <div class="flex space-x-2 pt-1">
-                    <input type="text" readonly id="ref-link" value="https://t.me/SanalMinerProBot" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-2 text-[11px] text-emerald-400 font-mono">
-                    <button onclick="copyRefLink(); playClickSound();" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs">Kopyala</button>
+                    <input type="text" readonly id="ref-link" value="https://t.me/sanal_miner_test_bot" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl px-3 py-2 text-[11px] text-emerald-400 font-mono">
+                    <button onclick="copyRefLink()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2 rounded-xl text-xs">Kopyala</button>
                 </div>
             </div>
         </div>
@@ -170,7 +170,7 @@
         <div id="tab-rank" class="tab-content flex-col space-y-3">
             <h2 class="text-base font-black text-white">Canlı Liderlik Tablosu</h2>
             <div class="glass-card p-3 rounded-2xl space-y-2 text-xs border-slate-800/80 shadow-lg">
-                <div id="leaderboard-list" class="space-y-2"></div>
+                <div id="leaderboard-list" class="space-y-2">Yükleniyor...</div>
             </div>
         </div>
 
@@ -178,9 +178,9 @@
         <div id="tab-wallet" class="tab-content flex-col space-y-3">
             <h2 class="text-base font-black text-white">Cüzdan & Çekim İşlemleri</h2>
             <div class="glass-card p-4 rounded-2xl space-y-3 border-slate-800/80 shadow-lg">
-                <input type="text" id="wallet-addr" placeholder="TON Cüzdan Adresi (UQ...)" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white">
-                <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white">
-                <button onclick="requestWithdraw(); playClickSound();" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow">Talep Oluştur</button>
+                <input type="text" id="wallet-addr" placeholder="Cüzdan Adresi (BEP20 / TON)" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white">
+                <input type="number" id="withdraw-amount" placeholder="Çekilecek Miktar (PEPE)" class="w-full bg-slate-950/90 border border-slate-800 rounded-xl p-3 text-xs text-white">
+                <button onclick="requestWithdraw()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-slate-950 font-black py-3 rounded-xl text-xs shadow">Talep Oluştur</button>
             </div>
         </div>
     </main>
@@ -190,17 +190,17 @@
         <div class="glass-panel w-full max-w-xs rounded-3xl p-6 text-center space-y-4 border border-slate-700/80 shadow-2xl">
             <h3 id="modal-title" class="font-black text-white text-base">Bilgilendirme</h3>
             <p id="modal-desc" class="text-xs text-slate-300 mt-1.5">İşlem tamamlandı.</p>
-            <button onclick="closeModal(); playClickSound();" class="w-full bg-emerald-500 text-slate-950 font-black py-2.5 rounded-xl text-xs">Tamam</button>
+            <button onclick="closeModal()" class="w-full bg-emerald-500 text-slate-950 font-black py-2.5 rounded-xl text-xs">Tamam</button>
         </div>
     </div>
 
     <!-- ALT NAVİGASYON -->
     <nav class="absolute bottom-0 left-0 right-0 glass-panel border-t border-slate-800/80 flex justify-around p-2.5 z-40">
-        <button onclick="switchTab('home'); playClickSound();" class="nav-btn text-emerald-400 flex flex-col items-center space-y-0.5" data-target="home"><i class="fa-solid fa-house text-xs"></i><span class="text-[9px] font-bold">HOME</span></button>
-        <button onclick="switchTab('spin'); playClickSound();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5" data-target="spin"><i class="fa-solid fa-dharmachakra text-xs"></i><span class="text-[9px] font-bold">SPIN</span></button>
-        <button onclick="switchTab('shop'); playClickSound();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5" data-target="shop"><i class="fa-solid fa-star text-xs"></i><span class="text-[9px] font-bold">SHOP</span></button>
-        <button onclick="switchTab('invite'); playClickSound();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5" data-target="invite"><i class="fa-solid fa-globe text-xs"></i><span class="text-[9px] font-bold">INVITE</span></button>
-        <button onclick="switchTab('rank'); fetchLeaderboard(); playClickSound();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
+        <button onclick="switchTab('home')" class="nav-btn text-emerald-400 flex flex-col items-center space-y-0.5" data-target="home"><i class="fa-solid fa-house text-xs"></i><span class="text-[9px] font-bold">HOME</span></button>
+        <button onclick="switchTab('spin')" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5" data-target="spin"><i class="fa-solid fa-dharmachakra text-xs"></i><span class="text-[9px] font-bold">SPIN</span></button>
+        <button onclick="switchTab('shop')" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5" data-target="shop"><i class="fa-solid fa-star text-xs"></i><span class="text-[9px] font-bold">SHOP</span></button>
+        <button onclick="switchTab('invite')" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5" data-target="invite"><i class="fa-solid fa-globe text-xs"></i><span class="text-[9px] font-bold">INVITE</span></button>
+        <button onclick="switchTab('rank'); fetchLeaderboard();" class="nav-btn text-slate-400 flex flex-col items-center space-y-0.5" data-target="rank"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px] font-bold">RANK</span></button>
     </nav>
 
     <script>
@@ -217,48 +217,55 @@
             }
         }
 
-        // Veri Kaydetme ve Sunucu Senkronizasyonu (Verinin kaybolmama garantisi)
-        function syncToDatabase() {
-            fetch('/api/user/update', {
+        // Backend ile Giriş / Senkronizasyon
+        function syncUserLogin() {
+            fetch('/api/user/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    telegram_id: telegramId,
-                    username: username,
-                    balance: gameState.balance,
-                    tickets: gameState.tickets,
-                    wallet: gameState.wallet
-                })
-            }).catch(err => console.error("Kayıt hatası:", err));
+                body: JSON.stringify({ telegram_id: telegramId, username: username })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success) {
+                    gameState.balance = Number(data.balance || 0);
+                    gameState.tickets = Number(data.tickets || 3);
+                    gameState.wallet = data.wallet || "";
+                    updateUI();
+                }
+            })
+            .catch(err => console.error("Bağlantı hatası:", err));
         }
 
         function fetchUserData() {
-            fetch(`/api/user/${telegramId}`)
+            fetch(`/api/user/data?telegram_id=${telegramId}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data && data.balance !== undefined) {
+                    if (data && data.success) {
                         gameState.balance = Number(data.balance);
                         gameState.tickets = Number(data.tickets);
                         gameState.wallet = data.wallet || "";
                         updateUI();
                     }
                 }).catch(() => {
-                    // Bot ilk /start sinyali gönderimi
-                    syncToDatabase();
+                    syncUserLogin();
                 });
         }
 
         function fetchLeaderboard() {
-            fetch('/api/leaderboard')
+            fetch(`/api/rankings?telegram_id=${telegramId}`)
                 .then(res => res.json())
                 .then(data => {
                     let listEl = document.getElementById('leaderboard-list');
-                    if (!data || data.length === 0) return;
+                    if (!data || !data.topUsers || data.topUsers.length === 0) {
+                        listEl.innerHTML = `<div class="text-center text-muted">Henüz liderlik tablosu oluşmadı.</div>`;
+                        return;
+                    }
                     let html = '';
-                    data.forEach((user, index) => {
-                        html += `<div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-800">
-                            <span class="text-white font-bold">#${index + 1} ${user.username}</span>
-                            <span class="text-emerald-400 font-black">${Number(user.balance).toFixed(2)} PEPE</span>
+                    data.topUsers.forEach((user) => {
+                        let activeClass = user.isMe ? 'border-emerald-500 bg-emerald-500/10' : 'border-slate-800 bg-slate-900';
+                        html += `<div class="flex justify-between items-center p-2.5 rounded-xl border ${activeClass}">
+                            <span class="text-white font-bold">#${user.rank} @${user.username}</span>
+                            <span class="text-emerald-400 font-black">${Number(user.balance).toFixed(2)} PEPE (${user.tickets} 🎫)</span>
                         </div>`;
                     });
                     listEl.innerHTML = html;
@@ -270,6 +277,7 @@
             document.getElementById('ticket-count').innerText = gameState.tickets + " Biletiniz Var";
             let pct = Math.min((gameState.balance / 5000) * 100, 100);
             document.getElementById('progress-bar').style.width = pct + "%";
+            document.getElementById('progress-text').innerText = `${gameState.balance.toFixed(2)} / 5,000 PEPE (${pct.toFixed(1)}%)`;
         }
 
         function switchTab(tabId) {
@@ -293,36 +301,88 @@
         }
 
         function watchAdTask() {
-            gameState.tickets += 1;
-            updateUI();
-            syncToDatabase();
-            showModal("Başarılı", "Reklam izlendi, +1 bilet eklendi!");
+            // Admin panel üzerinden ya da admin modify ile bilet eklenebilir, şimdilik simüle ediyoruz
+            fetch('/api/admin/modify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: telegramId, amount: 1, type: 'tickets' })
+            }).then(() => {
+                gameState.tickets += 1;
+                updateUI();
+                showModal("Başarılı", "Reklam simüle edildi, hesabınıza +1 bilet eklendi!");
+            });
         }
 
         function spinWheel() {
             if (gameState.tickets <= 0) {
-                showModal("Yetersiz Bilet", "Çarkı çevirmek için biletiniz olmalı!");
+                showModal("Yetersiz Bilet", "Çarkı çevirmek için biletiniz olmalı! Görevlerden bilet kazanabilirsiniz.");
                 return;
             }
             gameState.tickets -= 1;
-            let rewards = [50, 0, 250, 1000, 0, 100];
+            let rewards = [50, 0, 250, 100, 0, 100];
             let won = rewards[Math.floor(Math.random() * rewards.length)];
-            gameState.balance += won;
+            if (won > 0) {
+                gameState.balance += won;
+                confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+            }
             updateUI();
-            syncToDatabase();
-            showModal("Çark Sonucu", `Tebrikler! ${won} PEPE kazandınız.`);
+            
+            // Admin modify kullanarak sunucu tarafını da güncelleyelim
+            fetch('/api/admin/modify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: telegramId, amount: won, type: 'balance' })
+            });
+
+            showModal("Çark Sonucu", won > 0 ? `Tebrikler! ${won} PEPE kazandınız 🎉` : `Maalesef bu çevirmede ödül çıkmadı.`);
         }
 
         function requestWithdraw() {
-            syncToDatabase();
-            showModal("Talep Alındı", "Çekim talebiniz bota ve admin paneline iletildi.");
+            const wallet = document.getElementById('wallet-addr').value;
+            const amount = document.getElementById('withdraw-amount').value;
+
+            if (!wallet || !amount || amount <= 0) {
+                showModal("Hata", "Lütfen geçerli bir cüzdan adresi ve miktar girin.");
+                return;
+            }
+
+            fetch('/api/withdraw', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    telegram_id: telegramId,
+                    username: username,
+                    amount: Number(amount),
+                    wallet: wallet,
+                    network: 'BEP20'
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    showModal("Talep Alındı", "Çekim talebiniz başarıyla oluşturuldu ve yönetici paneline iletildi.");
+                } else {
+                    showModal("Hata", data.error || "Talep oluşturulamadı.");
+                }
+            });
+        }
+
+        function copyRefLink() {
+            const copyText = document.getElementById("ref-link");
+            copyText.select();
+            navigator.clipboard.writeText(copyText.value);
+            showModal("Kopyalandı", "Referans bağlantısı panoya kopyalandı!");
+        }
+
+        function shareViaTelegram() {
+            const text = encodeURIComponent("Sanal Miner Pro ile madenciliğe başla, PEPE ve ödülleri topla!");
+            window.open(`https://t.me/share/url?url=https://t.me/sanal_miner_test_bot&text=${text}`, '_blank');
         }
 
         function toggleTheme() { document.body.classList.toggle('light-theme'); }
-        function playClickSound() {}
 
         window.onload = () => {
-            fetchUserData();
+            syncUserLogin();
         };
     </script>
 </body>
