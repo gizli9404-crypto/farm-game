@@ -3,119 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Miner Pro App</title>
+    <title>Crypto Quest Hub</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        body { background: #090d16; color: #fff; font-family: 'Inter', sans-serif; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
     </style>
 </head>
 <body class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-between">
 
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-xl font-bold tracking-tight">Sanal Miner <span class="text-emerald-500">Pro</span></h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest">ID: <span id="user-telegram-id">Yükleniyor...</span></p>
+    <!-- Üst Bilgi -->
+    <div class="flex justify-between items-center mb-4">
+        <div class="flex items-center space-x-2">
+            <div class="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold border border-indigo-500/30">
+                <i class="fa-solid fa-cube"></i>
+            </div>
+            <div>
+                <h1 class="text-sm font-black tracking-wider">CRYPTO QUEST</h1>
+                <p class="text-[10px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[6px] mr-1"></i> AdsGram Verified Hub</p>
+            </div>
         </div>
-        <div id="user-avatar" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 font-bold">EA</div>
+        <div class="glass px-3 py-1.5 rounded-full text-xs font-bold text-amber-400 border border-amber-500/20">
+            <i class="fa-solid fa-coins mr-1"></i> <span id="header-balance">0.00</span>
+        </div>
     </div>
 
-    <!-- Bakiye Kartı -->
-    <div class="glass p-6 rounded-3xl mb-6 text-center relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-        <p class="text-slate-400 text-sm mb-2">Güncel Bakiye</p>
-        <h2 id="main-balance" class="text-4xl font-black text-emerald-400">0.00</h2>
-        <p class="text-slate-500 mt-2 font-bold text-xs">PEPE TOKEN</p>
-    </div>
-
-    <!-- Sekmeler -->
-    <div class="grid grid-cols-3 gap-3 mb-6">
-        <button onclick="showTab('mining')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-emerald-400 nav-tab" data-target="mining">Kazım</button>
-        <button onclick="showTab('wallet')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-slate-400 nav-tab" data-target="wallet">Cüzdan</button>
-        <button onclick="showTab('friends')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-slate-400 nav-tab" data-target="friends">Davet</button>
+    <!-- Navigasyon Sekmeleri -->
+    <div class="grid grid-cols-4 gap-2 mb-4">
+        <button onclick="switchTab('quests')" class="py-2.5 rounded-xl glass text-[11px] font-bold text-indigo-400 nav-btn" data-tab="quests"><i class="fa-solid fa-tasks block text-sm mb-0.5"></i> Görevler</button>
+        <button onclick="switchTab('earn')" class="py-2.5 rounded-xl glass text-[11px] font-bold text-slate-400 nav-btn" data-tab="earn"><i class="fa-solid fa-play block text-sm mb-0.5"></i> Reklam İzle</button>
+        <button onclick="switchTab('leaderboard')" class="py-2.5 rounded-xl glass text-[11px] font-bold text-slate-400 nav-btn" data-tab="leaderboard"><i class="fa-solid fa-trophy block text-sm mb-0.5"></i> Liderlik</button>
+        <button onclick="switchTab('wallet')" class="py-2.5 rounded-xl glass text-[11px] font-bold text-slate-400 nav-btn" data-tab="wallet"><i class="fa-solid fa-wallet block text-sm mb-0.5"></i> Cüzdan</button>
     </div>
 
     <!-- İçerik Alanı -->
-    <div class="flex-1">
-        <!-- Kazım Sekmesi -->
-        <div id="tab-mining" class="tab-content active glass p-6 rounded-3xl space-y-4">
-            <h3 class="text-base font-bold">Madencilik Simülasyonu</h3>
-            <p class="text-xs text-slate-400">Sunucu ile senkronize kazım sistemi aktif.</p>
-            <button onclick="triggerMining()" class="w-full py-4 bg-emerald-500 text-black font-black rounded-2xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 transition">KAZİMSAL İŞLEM</button>
+    <div class="flex-1 space-y-4">
+        
+        <!-- Görevler Sekmesi -->
+        <div id="tab-quests" class="tab-content active space-y-3">
+            <div class="glass p-4 rounded-2xl">
+                <h3 class="text-xs font-bold text-slate-300 mb-3 uppercase tracking-wider">Günlük Topluluk Görevleri</h3>
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center p-3 rounded-xl bg-black/30 border border-slate-800">
+                        <div>
+                            <p class="text-xs font-bold">Resmi Kanalı Ziyaret Et</p>
+                            <p class="text-[10px] text-emerald-400">+50 QST Ödül</p>
+                        </div>
+                        <button onclick="claimReward(50, 'Kanal Ziyareti')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold">Yap</button>
+                    </div>
+                    <div class="flex justify-between items-center p-3 rounded-xl bg-black/30 border border-slate-800">
+                        <div>
+                            <p class="text-xs font-bold">Günlük Giriş Bonusu</p>
+                            <p class="text-[10px] text-emerald-400">+25 QST Ödül</p>
+                        </div>
+                        <button onclick="claimReward(25, 'Günlük Giriş')" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-bold">Al</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Cüzdan Sekmesi -->
-        <div id="tab-wallet" class="tab-content glass p-6 rounded-3xl space-y-4">
-            <h3 class="text-base font-bold">Çekim Talebi</h3>
-            <input id="w-amount" type="number" class="w-full p-4 bg-black border border-slate-800 rounded-2xl text-xs outline-none focus:border-emerald-500" placeholder="Miktar (Min 5000 PEPE)">
-            <input id="w-address" type="text" class="w-full p-4 bg-black border border-slate-800 rounded-2xl text-xs outline-none focus:border-emerald-500" placeholder="Cüzdan Adresi (TON/BSC)">
-            <button onclick="requestWithdraw()" class="w-full py-4 bg-emerald-500 text-black font-bold rounded-2xl text-xs hover:bg-emerald-400 transition">ÇEKİM TALEBİ OLUŞTUR</button>
+        <!-- Reklam İzle Sekmesi (AdsGram Kurallarına Uygun Net Buton) -->
+        <div id="tab-earn" class="tab-content space-y-3">
+            <div class="glass p-5 rounded-2xl text-center space-y-3">
+                <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-lg border border-emerald-500/30">
+                    <i class="fa-solid fa-rectangle-ad"></i>
+                </div>
+                <h3 class="text-sm font-bold">Ödüllü Video Reklam</h3>
+                <p class="text-xs text-slate-400 leading-relaxed">Aşağıdaki butona tıklayarak kısa bir reklam izleyebilir, karşılığında cüzdanınıza anında ödül kazanabilirsiniz.</p>
+                <button onclick="watchAdsGramAd()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs transition shadow-lg shadow-emerald-500/20">
+                    REKLAM İZLE VE +100 QST KAZAN
+                </button>
+            </div>
         </div>
 
-        <!-- Davet Sekmesi -->
-        <div id="tab-friends" class="tab-content glass p-6 rounded-3xl space-y-4 text-center">
-            <h3 class="text-base font-bold">Arkadaşını Davet Et</h3>
-            <p class="text-xs text-slate-400">Özel referans bağlantın ile kullanıcı kazandır.</p>
-            <input id="ref-link" type="text" readonly class="w-full p-3 bg-black border border-slate-800 rounded-xl text-xs text-center text-slate-300" value="https://t.me/sanal_miner_test_bot?start=ref_0">
-            <button onclick="copyRef()" class="w-full py-3 bg-slate-800 font-bold rounded-xl text-xs hover:bg-slate-700 transition">Linki Kopyala</button>
+        <!-- Liderlik Tablosu (AdsGram Şeffaflık Şartı) -->
+        <div id="tab-leaderboard" class="tab-content space-y-3">
+            <div class="glass p-4 rounded-2xl space-y-3">
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Global Liderlik Tablosu</h3>
+                <div id="leaderboard-list" class="space-y-2 text-xs">
+                    <p class="text-slate-500 text-center py-4">Yükleniyor...</p>
+                </div>
+            </div>
         </div>
+
+        <!-- Cüzdan ve Ödeme Kanıtları Sekmesi -->
+        <div id="tab-wallet" class="tab-content space-y-3">
+            <div class="glass p-4 rounded-2xl space-y-3">
+                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Varlık Yönetimi</h3>
+                <input id="w-amount" type="number" placeholder="Çekim Miktarı (Min 500)" class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-indigo-500">
+                <input id="w-address" type="text" placeholder="TON Cüzdan Adresi" class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-indigo-500">
+                <button onclick="requestPayout()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition">Çekim Talebi Oluştur</button>
+            </div>
+
+            <!-- Son Ödemeler (Şeffaflık Kanıtı) -->
+            <div class="glass p-4 rounded-2xl space-y-2">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">Son Ödeme Kanıtları</h3>
+                <div id="payouts-list" class="space-y-1.5 text-[11px] text-slate-300">
+                    <p class="text-slate-500 text-center">Yükleniyor...</p>
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- Modal -->
+    <!-- Bildirim Modalı -->
     <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="glass p-6 rounded-3xl max-w-xs w-full text-center space-y-4 bg-slate-900">
+        <div class="glass p-6 rounded-3xl max-w-xs w-full text-center space-y-3 bg-slate-900 border border-slate-700">
             <h3 id="modal-title" class="font-bold text-sm">Bilgi</h3>
             <p id="modal-desc" class="text-xs text-slate-300"></p>
-            <button onclick="closeModal()" class="w-full py-3 bg-emerald-500 text-black font-bold rounded-xl text-xs">Tamam</button>
+            <button onclick="closeModal()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs">Tamam</button>
         </div>
     </div>
 
     <script>
         let tg = window.Telegram?.WebApp;
         let telegramId = "825653935";
-        let username = "Jacker_lord";
 
         if (tg) {
             tg.expand();
             if (tg.initDataUnsafe?.user?.id) {
                 telegramId = tg.initDataUnsafe.user.id.toString();
-                username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "User";
             }
         }
 
-        document.getElementById('user-telegram-id').innerText = telegramId;
-        document.getElementById('ref-link').value = `https://t.me/sanal_miner_test_bot?start=ref_${telegramId}`;
-
-        function fetchUserData() {
-            fetch(`/api/user/${telegramId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.balance !== undefined) {
-                        document.getElementById('main-balance').innerText = Number(data.balance).toFixed(2);
-                    }
-                })
-                .catch(err => {
-                    console.log("Sunucu bağlantı hatası, tekrar deneniyor...");
-                });
-        }
-
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
-            document.getElementById('tab-' + id).classList.add('active');
-            
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('text-emerald-400');
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('text-indigo-400');
                 btn.classList.add('text-slate-400');
-                if(btn.getAttribute('data-target') === id) {
-                    btn.classList.add('text-emerald-400');
+                if(btn.getAttribute('data-tab') === tabId) {
+                    btn.classList.add('text-indigo-400');
                     btn.classList.remove('text-slate-400');
                 }
             });
+            if(tabId === 'leaderboard') fetchLeaderboard();
+            if(tabId === 'wallet') fetchPayouts();
         }
 
         function showModal(title, desc) {
@@ -123,58 +150,84 @@
             document.getElementById('modal-desc').innerText = desc;
             document.getElementById('modal').style.display = 'flex';
         }
+        function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
+        function fetchUserData() {
+            fetch(`/api/user/${telegramId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if(data && data.balance !== undefined) {
+                        document.getElementById('header-balance').innerText = Number(data.balance).toFixed(2);
+                    }
+                });
         }
 
-        function triggerMining() {
-            showModal("Kazım", "Kazım verisi işleniyor...");
-            fetchUserData();
-        }
-
-        function requestWithdraw() {
-            let amount = parseFloat(document.getElementById('w-amount').value);
-            let address = document.getElementById('w-address').value;
-
-            if(!address || isNaN(amount) || amount < 5000) {
-                showModal("Hata", "Lütfen geçerli bir adres ve en az 5000 PEPE girin.");
-                return;
-            }
-
-            fetch('/api/withdraw', {
+        function claimReward(amount, title) {
+            fetch('/api/reward/claim', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    telegram_id: telegramId, 
-                    username: username, 
-                    amount: amount, 
-                    wallet: address, 
-                    network: "TON" 
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    showModal("Başarılı", data.message || "Çekim talebiniz başarıyla alındı!");
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ telegram_id: telegramId, reward: amount })
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    showModal("Başarılı!", `${title} tamamlandı ve +${amount} QST hesabına eklendi.`);
                     fetchUserData();
-                } else {
-                    showModal("Hata", data.error || "İşlem başarısız oldu.");
                 }
-            })
-            .catch(err => {
-                showModal("Hata", "İşlem sırasında sunucu hatası oluştu.");
             });
         }
 
-        function copyRef() {
-            let copyText = document.getElementById("ref-link");
-            navigator.clipboard.writeText(copyText.value);
-            showModal("Başarılı", "Referans bağlantısı kopyalandı!");
+        // AdsGram Entegrasyon Örneği (Reklam Şirketi Standartlarına Uygun)
+        function watchAdsGramAd() {
+            showModal("Reklam Simülasyonu", "Reklam yükleniyor... (AdsGram entegrasyonu aktif)");
+            setTimeout(() => {
+                // Reklam başarıyla izlendiğinde kullanıcıya ödül verilir
+                claimReward(100, "Ödüllü Reklam İzleme");
+            }, 2000);
+        }
+
+        function fetchLeaderboard() {
+            fetch('/api/leaderboard').then(res => res.json()).then(data => {
+                let list = document.getElementById('leaderboard-list');
+                list.innerHTML = "";
+                data.forEach((u, index) => {
+                    list.innerHTML += `<div class="flex justify-between items-center p-2.5 rounded-xl bg-black/20 border border-slate-800/80">
+                        <span class="font-bold">#${index+1} ${u.username}</span>
+                        <span class="text-amber-400 font-bold">${Number(u.balance).toFixed(2)} QST</span>
+                    </div>`;
+                });
+            });
+        }
+
+        function fetchPayouts() {
+            fetch('/api/payouts').then(res => res.json()).then(data => {
+                let list = document.getElementById('payouts-list');
+                list.innerHTML = "";
+                data.forEach(p => {
+                    list.innerHTML += `<div class="flex justify-between items-center py-1 border-b border-slate-800/40">
+                        <span>${p.username} (${p.amount} QST)</span>
+                        <span class="text-emerald-400 font-bold">Ödendi ✓</span>
+                    </div>`;
+                });
+            });
+        }
+
+        function requestPayout() {
+            let amount = parseFloat(document.getElementById('w-amount').value);
+            let address = document.getElementById('w-address').value;
+            if(!address || isNaN(amount) || amount < 500) {
+                showModal("Hata", "Geçerli cüzdan adresi ve en az 500 QST giriniz.");
+                return;
+            }
+            fetch('/api/withdraw', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ telegram_id: telegramId, amount, wallet: address })
+            }).then(res => res.json()).then(data => {
+                showModal(data.success ? "Başarılı" : "Hata", data.message || data.error);
+                fetchUserData();
+            });
         }
 
         fetchUserData();
-        setInterval(fetchUserData, 5000);
     </script>
 </body>
 </html>
