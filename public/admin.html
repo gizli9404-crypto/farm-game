@@ -3,132 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Miner Pro - Premium Admin Paneli</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Sanal Miner Pro - Yönetim Paneli</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #030712; color: #f8fafc; font-family: system-ui, sans-serif; }
-        .glass { background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.08); }
+        body { background-color: #f8f9fa; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .sidebar { min-height: 100vh; background: #212529; color: #fff; }
+        .sidebar a { color: #adb5bd; text-decoration: none; padding: 10px 20px; display: block; border-radius: 5px; margin-bottom: 5px; }
+        .sidebar a:hover, .sidebar a.active { background: #0d6efd; color: #fff; }
+        .card-stat { border-left: 4px solid #0d6efd; }
     </style>
 </head>
-<body class="p-6 space-y-6 max-w-7xl mx-auto">
+<body>
 
-    <!-- ÜST BAŞLIK -->
-    <div class="flex justify-between items-center glass p-6 rounded-2xl shadow-xl">
-        <div>
-            <h1 class="text-2xl font-black text-emerald-400"><i class="fa-solid fa-shield-halved mr-2"></i>Sanal Miner Pro Yönetim Paneli</h1>
-            <p class="text-xs text-slate-400 mt-1">Sistem istatistikleri, bakiye yönetimi ve bot API kontrolü</p>
-        </div>
-        <button onclick="loadAdminData()" class="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-xs transition-all shadow">
-            <i class="fa-solid fa-rotate mr-1.5"></i> Verileri Yenile
-        </button>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar collapse p-3">
+            <h4 class="text-center py-3"><i class="fa-solid fa-shield-halved"></i> Admin Panel</h4>
+            <hr>
+            <ul class="nav flex-column">
+                <li class="nav-item"><a href="#" class="active"><i class="fa-solid fa-chart-line me-2"></i> İstatistikler</a></li>
+                <li class="nav-item"><a href="#withdrawals-section"><i class="fa-solid fa-wallet me-2"></i> Çekim Talepleri</a></li>
+                <li class="nav-item"><a href="#users-section"><i class="fa-solid fa-users me-2"></i> Kullanıcı Yönetimi</a></li>
+                <li class="nav-item"><a href="#broadcast-section"><i class="fa-solid fa-bullhorn me-2"></i> Toplu Duyuru</a></li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <h2>Genel Durum & İstatistikler</h2>
+            <hr>
+            <div class="row text-white mb-4">
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-primary p-3 card-stat">
+                        <h5>Toplam Kullanıcı</h5>
+                        <h3 id="total-users">0</h3>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-success p-3 card-stat" style="border-left-color: #198754;">
+                        <h5>Toplam Dağıtılan Bakiye</h5>
+                        <h3 id="total-balance">0 PEPE</h3>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <div class="card bg-warning text-dark p-3 card-stat" style="border-left-color: #ffc107;">
+                        <h5>Bekleyen Çekimler</h5>
+                        <h3 id="pending-withdraws">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Çekim Talepleri -->
+            <h3 id="withdrawals-section" class="mt-5">Bekleyen Çekim Talepleri</h3>
+            <div class="table-responsive bg-white p-3 rounded shadow-sm mb-4">
+                <table class="table table-striped align-middle">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Kullanıcı</th>
+                            <th>Miktar</th>
+                            <th>Cüzdan</th>
+                            <th>Ağ</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdraws-table-body">
+                        <tr><td colspan="6" class="text-center">Yükleniyor...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Varlık Tanımlama / Düzenleme -->
+            <h3 class="mt-5">Kullanıcıya Bakiye / Bilet Ekle</h3>
+            <div class="card bg-white p-4 shadow-sm mb-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <input type="text" id="mod-telegram-id" class="form-control" placeholder="Telegram ID">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" id="mod-amount" class="form-control" placeholder="Miktar (Örn: 50)">
+                    </div>
+                    <div class="col-md-3">
+                        <select id="mod-type" class="form-select">
+                            <option value="balance">PEPE (Bakiye)</option>
+                            <option value="tickets">Bilet (Ticket)</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button onclick="modifyUser()" class="btn btn-success w-100">Tanımla</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Toplu Duyuru Gönder -->
+            <h3 id="broadcast-section" class="mt-5">Tüm Kullanıcılara Duyuru Gönder</h3>
+            <div class="card bg-white p-4 shadow-sm mb-4">
+                <div class="mb-3">
+                    <textarea id="broadcast-msg" class="form-control" rows="3" placeholder="Bot kullanıcılarına iletilecek duyuru metni..."></textarea>
+                </div>
+                <button onclick="sendBroadcast()" class="btn btn-primary"><i class="fa-solid fa-paper-plane me-1"></i> Gönder</button>
+            </div>
+        </main>
     </div>
+</div>
 
-    <!-- İSTATİSTİK KARTLARI -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="glass p-5 rounded-2xl space-y-1">
-            <span class="text-xs text-slate-400 font-bold">Toplam Kullanıcı</span>
-            <div id="stat-users" class="text-2xl font-black text-white">0</div>
-        </div>
-        <div class="glass p-5 rounded-2xl space-y-1">
-            <span class="text-xs text-slate-400 font-bold">Toplam Dağıtılan PEPE</span>
-            <div id="stat-balance" class="text-2xl font-black text-emerald-400">0.00 PEPE</div>
-        </div>
-        <div class="glass p-5 rounded-2xl space-y-1">
-            <span class="text-xs text-slate-400 font-bold">Aktif Bot Durumu</span>
-            <div class="text-2xl font-black text-emerald-400">Online 🟢</div>
-        </div>
-    </div>
+<script>
+    async function loadStats() {
+        try {
+            const res = await fetch('/api/admin/stats');
+            const data = await res.json();
+            if (data.success) {
+                document.getElementById('total-users').innerText = data.totalUsers;
+                document.getElementById('total-balance').innerText = `${Number(data.totalBalance).toFixed(2)} PEPE`;
+                document.getElementById('pending-withdraws').innerText = data.pendingWithdraws;
 
-    <!-- KULLANICI LİSTESİ VE YÖNETİMİ -->
-    <div class="glass p-6 rounded-2xl space-y-4">
-        <div class="flex justify-between items-center">
-            <h2 class="text-base font-black text-white"><i class="fa-solid fa-users mr-2 text-emerald-400"></i>Kullanıcı Veritabanı</h2>
-            <input type="text" id="search-input" placeholder="Kullanıcı Ara (ID veya Ad)..." onkeyup="filterUsers()" class="bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 w-64">
-        </div>
+                const tbody = document.getElementById('withdraws-table-body');
+                if (data.withdraws.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">Bekleyen çekim talebi bulunmuyor.</td></tr>`;
+                    return;
+                }
 
-        <div class="overflow-x-auto">
-            <table class="w-full text-left text-xs">
-                <thead class="bg-slate-900/80 text-slate-400 uppercase border-b border-slate-800">
+                tbody.innerHTML = data.withdraws.map(w => `
                     <tr>
-                        <th class="p-3">Telegram ID</th>
-                        <th class="p-3">Kullanıcı Adı</th>
-                        <th class="p-3">Bakiye (PEPE)</th>
-                        <th class="p-3">Bilet</th>
-                        <th class="p-3">Cüzdan</th>
-                        <th class="p-3 text-right">İşlemler</th>
-                    </tr>
-                </thead>
-                <tbody id="user-table-body" class="divide-y divide-slate-800/60">
-                    <!-- Dinamik Dolacak -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <script>
-        let allUsers = [];
-
-        function loadAdminData() {
-            fetch('/api/admin/users')
-                .then(res => res.json())
-                .then(data => {
-                    allUsers = data;
-                    renderTable(allUsers);
-                    calcStats(allUsers);
-                }).catch(err => console.error("Admin verileri alınamadı:", err));
-        }
-
-        function renderTable(users) {
-            let tbody = document.getElementById('user-table-body');
-            if (!users || users.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-500">Kayıt bulunamadı.</td></tr>`;
-                return;
-            }
-            let html = '';
-            users.forEach(u => {
-                html += `
-                    <tr class="hover:bg-slate-900/40 transition-colors">
-                        <td class="p-3 font-mono text-emerald-400">${u.telegram_id}</td>
-                        <td class="p-3 font-bold text-white">${u.username || 'Bilinmiyor'}</td>
-                        <td class="p-3 font-black">${Number(u.balance || 0).toFixed(2)} PEPE</td>
-                        <td class="p-3">${u.tickets || 0} 🎫</td>
-                        <td class="p-3 font-mono text-slate-400 text-[10px]">${u.wallet || 'Tanımlı Değil'}</td>
-                        <td class="p-3 text-right space-x-2">
-                            <button onclick="modifyBalance('${u.telegram_id}', 100)" class="bg-emerald-500/20 hover:bg-emerald-500 text-emerald-400 hover:text-slate-950 px-2.5 py-1.5 rounded-lg font-bold transition-all">+100 Pepe</button>
-                            <button onclick="modifyBalance('${u.telegram_id}', -100)" class="bg-rose-500/20 hover:bg-rose-500 text-rose-400 hover:text-slate-950 px-2.5 py-1.5 rounded-lg font-bold transition-all">-100 Pepe</button>
+                        <td>#${w.id}</td>
+                        <td>@${w.username} <br><small class="text-muted">${w.telegram_id}</small></td>
+                        <td><strong>${w.amount} PEPE</strong></td>
+                        <td><code>${w.wallet}</code></td>
+                        <td><span class="badge bg-secondary">${w.network}</span></td>
+                        <td>
+                            <button onclick="approveWithdraw(${w.id})" class="btn btn-sm btn-success">Onayla & Kanıt At</button>
                         </td>
                     </tr>
-                `;
-            });
-            tbody.innerHTML = html;
+                `).join('');
+            }
+        } catch (e) {
+            console.error('Veri çekilemedi');
+        }
+    }
+
+    async function approveWithdraw(id) {
+        if (!confirm('Bu çekimi onaylamak istediğinize emin misiniz? Kanala otomatik ödeme kanıtı gidecektir.')) return;
+        const res = await fetch('/api/admin/withdraw/approve', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id })
+        });
+        const data = await res.json();
+        alert(data.message || 'İşlem tamamlandı.');
+        loadStats();
+    }
+
+    async function modifyUser() {
+        const telegram_id = document.getElementById('mod-telegram-id').value;
+        const amount = document.getElementById('mod-amount').value;
+        const type = document.getElementById('mod-type').value;
+
+        if (!telegram_id || !amount) {
+            alert('Lütfen tüm alanları doldurun!');
+            return;
         }
 
-        function calcStats(users) {
-            document.getElementById('stat-users').innerText = users.length;
-            let totalB = users.reduce((acc, curr) => acc + Number(curr.balance || 0), 0);
-            document.getElementById('stat-balance').innerText = totalB.toFixed(2) + " PEPE";
-        }
+        const res = await fetch('/api/admin/modify', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ telegram_id, amount, type })
+        });
+        const data = await res.json();
+        alert(data.message || data.error);
+        loadStats();
+    }
 
-        function modifyBalance(telegramId, amount) {
-            fetch('/api/admin/modify', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegram_id: telegramId, amount: amount })
-            }).then(() => loadAdminData())
-              .catch(err => alert("İşlem başarısız: " + err));
-        }
+    async function sendBroadcast() {
+        const message = document.getElementById('broadcast-msg').value;
+        if (!message) return alert('Duyuru metni boş olamaz.');
 
-        function filterUsers() {
-            let query = document.getElementById('search-input').value.toLowerCase();
-            let filtered = allUsers.filter(u => 
-                (u.telegram_id && u.telegram_id.toLowerCase().includes(query)) ||
-                (u.username && u.username.toLowerCase().includes(query))
-            );
-            renderTable(filtered);
-        }
+        if (!confirm('Tüm bot kullanıcılarına bu mesajı göndermek istediğinize emin misiniz?')) return;
+        const res = await fetch('/api/admin/broadcast', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message })
+        });
+        const data = await res.json();
+        alert(`Duyuru başarıyla ${data.sentCount} kullanıcıya iletildi.`);
+        document.getElementById('broadcast-msg').value = '';
+    }
 
-        window.onload = loadAdminData;
-    </script>
+    loadStats();
+    setInterval(loadStats, 10000); // 10 saniyede bir otomatik yenile
+</script>
 </body>
 </html>
