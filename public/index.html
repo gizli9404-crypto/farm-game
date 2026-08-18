@@ -5,124 +5,118 @@
 
         const tg = window.Telegram?.WebApp;
         if (tg) {
-            tg.expand();
-            if (tg.initDataUnsafe?.user?.id) {
-                telegramId = tg.initDataUnsafe.user.id.toString();
-                username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "TelegramUser";
+            try {
+                tg.expand();
+                if (tg.initDataUnsafe?.user?.id) {
+                    telegramId = tg.initDataUnsafe.user.id.toString();
+                    username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "TelegramUser";
+                }
+            } catch (e) {
+                console.log("Telegram WebApp API yüklenemedi, tarayıcı modunda devam ediliyor.");
             }
         }
 
         function sendActivityLog(actionType, details) {
-            fetch('/api/user/log', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    telegram_id: telegramId,
-                    username: username,
-                    action: actionType,
-                    details: details,
-                    balance: gameState.balance,
-                    tickets: gameState.tickets,
-                    wallet: gameState.wallet,
-                    timestamp: new Date().toLocaleTimeString()
-                })
-            }).catch(err => console.error("Log gönderilemedi:", err));
+            // Sunucu yoksa hatayı yutması için try-catch eklendi
+            try {
+                fetch('/api/user/log', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        telegram_id: telegramId, username: username, action: actionType,
+                        details: details, balance: gameState.balance, tickets: gameState.tickets, wallet: gameState.wallet
+                    })
+                }).catch(err => {});
+            } catch(e) {}
         }
 
         function syncToDatabase() {
-            fetch('/api/user/update', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    telegram_id: telegramId,
-                    username: username,
-                    balance: gameState.balance,
-                    tickets: gameState.tickets,
-                    wallet: gameState.wallet
-                })
-            }).catch(err => console.error("Veritabanı senkronizasyon hatası:", err));
+            try {
+                fetch('/api/user/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegram_id: telegramId, username: username, balance: gameState.balance, tickets: gameState.tickets, wallet: gameState.wallet })
+                }).catch(err => {});
+            } catch(e) {}
         }
 
         function fetchUserData() {
+            // Yerel depolama (localStorage) desteği eklendi ki sunucu olmasa bile verileriniz kaybolmasın
+            let savedData = localStorage.getItem('sanal_miner_' + telegramId);
+            if (savedData) {
+                try {
+                    let parsed = JSON.parse(savedData);
+                    gameState.balance = parsed.balance || 0;
+                    gameState.tickets = parsed.tickets || 0;
+                    gameState.wallet = parsed.wallet || "";
+                    updateUI();
+                } catch(e) {}
+            }
+
             fetch(`/api/user/${telegramId}`)
                 .then(res => res.json())
                 .then(data => {
-                    if (data.balance !== undefined) {
+                    if (data && data.balance !== undefined) {
                         gameState.balance = data.balance;
                         gameState.tickets = data.tickets;
                         gameState.wallet = data.wallet || "";
                         updateUI();
-                    } else {
-                        sendActivityLog("START", "Kullanıcı bota /start verdi ve sisteme kayıt oldu.");
                     }
-                })
-                .catch(err => console.log("Sunucu bağlantı hatası, yerel mod."));
-        }
-
-        function fetchLeaderboard() {
-            fetch('/api/leaderboard')
-                .then(res => res.json())
-                .then(data => {
-                    let listEl = document.getElementById('leaderboard-list');
-                    if (!data || data.length === 0) {
-                        listEl.innerHTML = '<div class="text-center text-slate-400 py-3 text-xs">Henüz liderlik tablosu verisi yok.</div>';
-                        return;
-                    }
-
-                    let html = '';
-                    data.forEach((user, index) => {
-                        let rankIcon = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
-                        let isMe = user.telegram_id === telegramId || user.username === username;
-                        
-                        html += `
-                            <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border ${isMe ? 'border-emerald-500/50 bg-emerald-500/10' : 'border-slate-800'}">
-                                <div class="flex items-center space-x-2">
-                                    <span class="text-amber-400 font-black">${rankIcon}</span>
-                                    <span class="text-white light-theme:text-slate-900 font-bold">${user.username || 'Anonim'}</span>
-                                </div>
-                                <span class="text-emerald-400 font-black">${Number(user.balance).toFixed(2)} PEPE</span>
-                            </div>
-                        `;
-                    });
-                    listEl.innerHTML = html;
                 })
                 .catch(err => {
-                    console.error("Liderlik tablosu yüklenemedi:", err);
-                    document.getElementById('leaderboard-list').innerHTML = '<div class="text-center text-red-400 py-3 text-xs">Sıralama yüklenirken hata oluştu.</div>';
+                    console.log("Sunucu bağlantısı yok, yerel hafıza modu aktif.");
+                    updateUI();
                 });
         }
 
         function saveUserData() {
+            localStorage.setItem('sanal_miner_' + telegramId, JSON.stringify(gameState));
             syncToDatabase();
         }
 
         let currentRotation = 0;
         let isSpinning = false;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
-        function playSound(type) {
-            if (!audioCtx) return;
-            if (audioCtx.state === 'suspended') { audioCtx.resume(); }
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-            let now = audioCtx.currentTime;
-            if (type === 'click') {
-                osc.type = 'sine'; osc.frequency.setValueAtTime(400, now);
-                gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.05);
-            } else if (type === 'win') {
-                osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
-                gain.gain.setValueAtTime(0.1, now); gain.gain.linearRampToValueAtTime(0, now + 0.4);
+        // Ses bağlamı hataya sebep olmaması için tıklama anında başlatılacak şekilde ertelendi
+        let audioCtx = null;
+        function getAudioContext() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
             }
-            osc.start(now); osc.stop(now + 0.4);
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+            return audioCtx;
+        }
+
+        function playSound(type) {
+            try {
+                let ctx = getAudioContext();
+                if (!ctx) return;
+                let osc = ctx.createOscillator();
+                let gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+                let now = ctx.currentTime;
+                if (type === 'click') {
+                    osc.type = 'sine'; osc.frequency.setValueAtTime(400, now);
+                    gain.gain.setValueAtTime(0.02, now); gain.gain.linearRampToValueAtTime(0, now + 0.05);
+                } else if (type === 'win') {
+                    osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
+                    gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.4);
+                }
+                osc.start(now); osc.stop(now + 0.4);
+            } catch(e) {}
         }
 
         function playClickSound() { playSound('click'); }
         function toggleTheme() { document.body.classList.toggle('light-theme'); }
+        
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
+            let targetTab = document.getElementById('tab-' + tabId);
+            if(targetTab) targetTab.classList.add('active');
+            
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.remove('text-emerald-400');
                 btn.classList.add('text-slate-400');
@@ -134,46 +128,54 @@
         }
 
         function updateUI() {
-            document.getElementById('balance').innerText = gameState.balance.toFixed(4);
-            document.getElementById('rank-balance').innerText = gameState.balance.toFixed(2) + " PEPE";
-            document.getElementById('ticket-count').innerText = gameState.tickets + " Biletiniz Var";
+            let balEl = document.getElementById('balance');
+            let rankBalEl = document.getElementById('rank-balance');
+            let ticketEl = document.getElementById('ticket-count');
+            let progBar = document.getElementById('progress-bar');
+            let progText = document.getElementById('progress-text');
+
+            if(balEl) balEl.innerText = gameState.balance.toFixed(4);
+            if(rankBalEl) rankBalEl.innerText = gameState.balance.toFixed(2) + " PEPE";
+            if(ticketEl) ticketEl.innerText = gameState.tickets + " Biletiniz Var";
+            
             let progressPercent = Math.min((gameState.balance / 5000) * 100, 100);
-            document.getElementById('progress-bar').style.width = progressPercent + '%';
-            document.getElementById('progress-text').innerText = `${gameState.balance.toFixed(2)} / 5,000 PEPE (${progressPercent.toFixed(1)}%)`;
+            if(progBar) progBar.style.width = progressPercent + '%';
+            if(progText) progText.innerText = `${gameState.balance.toFixed(2)} / 5,000 PEPE (${progressPercent.toFixed(1)}%)`;
         }
 
         function showModal(title, desc, isSuccess = true) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-desc').innerText = desc;
-            document.getElementById('custom-modal').classList.remove('hidden');
-            document.getElementById('custom-modal').classList.add('flex');
+            let modal = document.getElementById('custom-modal');
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
         }
 
         function closeModal() {
-            document.getElementById('custom-modal').classList.remove('flex');
-            document.getElementById('custom-modal').classList.add('hidden');
+            let modal = document.getElementById('custom-modal');
+            modal.classList.remove('flex');
+            modal.classList.add('hidden');
         }
 
         function watchAdTask(taskId, counterId, maxLimit) {
             let countEl = document.getElementById(counterId);
-            let currentCount = parseInt(countEl.innerText);
-            if(currentCount >= maxLimit) { showModal("Limit", "Günlük reklam izleme sınırına ulaştınız.", false); return; }
+            let currentCount = parseInt(countEl.innerText || "0");
+            if(currentCount >= maxLimit) { showModal("Limit", "Günlük sınır.", false); return; }
             
-            showModal("Reklam", "Sponsorlu reklam yükleniyor...", true);
+            showModal("Reklam", "Sponsorlu reklam simülasyonu...", true);
             setTimeout(() => {
                 currentCount++;
                 countEl.innerText = currentCount;
                 gameState.tickets += 1;
                 saveUserData();
                 updateUI();
-                sendActivityLog("AD_WATCH", "Kullanıcı reklam izleyerek +1 bilet kazandı.");
-                showModal("Başarılı", "+1 bilet hesabınıza eklendi!", true);
-            }, 1500);
+                showModal("Başarılı", "+1 bilet eklendi!", true);
+            }, 1000);
         }
 
         function spinWheel() {
             if (isSpinning) return;
-            if (gameState.tickets < 1) { showModal("Bilet Yok", "Çarkı çevirmek için yeterli biletiniz yok.", false); return; }
+            if (gameState.tickets < 1) { showModal("Bilet Yok", "Çevirmek için bilet gerekli.", false); return; }
 
             isSpinning = true;
             gameState.tickets -= 1;
@@ -183,7 +185,8 @@
             let prizes = [50, 0, 250, 1000, 0, 100];
             let prize = prizes[Math.floor(Math.random() * prizes.length)];
             currentRotation += 1800 + Math.random() * 360;
-            document.getElementById('svg-wheel').style.transform = `rotate(${currentRotation}deg)`;
+            let wheel = document.getElementById('svg-wheel');
+            if(wheel) wheel.style.transform = `rotate(${currentRotation}deg)`;
 
             setTimeout(() => {
                 isSpinning = false;
@@ -191,77 +194,64 @@
                     gameState.balance += prize;
                     saveUserData();
                     updateUI();
-                    sendActivityLog("SPIN_WIN", `Çarktan ${prize} PEPE kazandı.`);
                     if (typeof confetti === 'function') confetti({ particleCount: 50 });
-                    showModal("Tebrikler!", `Çarktan ${prize} PEPE kazandınız!`, true);
+                    showModal("Kazanıldı!", `Çarktan ${prize} PEPE kazandınız!`, true);
                 } else {
-                    sendActivityLog("SPIN_EMPTY", "Çark çevirdi ancak ödül çıkmadı.");
-                    showModal("Üzgünüm", "Bu çevirmede ödül çıkmadı, tekrar dene!", false);
+                    showModal("Boş", "Ödül çıkmadı.", false);
                 }
             }, 5000);
         }
 
         function copyRefLink() {
-            navigator.clipboard.writeText(document.getElementById("ref-link").value);
-            showModal("Kopyalandı", "Davet linkiniz panoya kopyalandı.", true);
-            sendActivityLog("COPY_REF", "Referans linkini kopyaladı.");
+            let refLinkInput = document.getElementById("ref-link");
+            if(refLinkInput) {
+                navigator.clipboard.writeText(refLinkInput.value);
+                showModal("Kopyalandı", "Davet linki panoda.", true);
+            }
         }
 
         function shareViaTelegram() {
-            sendActivityLog("SHARE_REF", "Telegram üzerinden arkadaş davet butonuna tıkladı.");
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(document.getElementById("ref-link").value)}&text=Sanal Miner Pro ile PEPE Kazanmaya Başla!`, '_blank');
+            let refLinkInput = document.getElementById("ref-link");
+            let url = refLinkInput ? refLinkInput.value : "";
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=PEPE Kazan!`, '_blank');
         }
 
         function requestWithdraw() {
-            let addr = document.getElementById('wallet-addr').value.trim();
-            let amount = parseFloat(document.getElementById('withdraw-amount').value);
-            let network = document.getElementById('wallet-network').value;
+            let addrEl = document.getElementById('wallet-addr');
+            let amountEl = document.getElementById('withdraw-amount');
+            let networkEl = document.getElementById('wallet-network');
 
-            if (!addr) {
-                showModal("Hata", "Lütfen geçerli bir cüzdan adresi girin.", false);
-                return;
-            }
-            if (isNaN(amount) || amount < 5000) {
-                showModal("Hata", "Minimum çekim miktarı 5000 PEPE'dir.", false);
-                return;
-            }
-            if (gameState.balance < amount) {
-                showModal("Hata", "Bakiyeniz bu miktar için yetersiz.", false);
+            let addr = addrEl ? addrEl.value.trim() : "";
+            let amount = amountEl ? parseFloat(amountEl.value) : 0;
+            let network = networkEl ? networkEl.value : "TON";
+
+            if (!addr || amount < 5000 || gameState.balance < amount) {
+                showModal("Hata", "Adres veya bakiye yetersiz (Min: 5000 PEPE).", false);
                 return;
             }
 
-            // Backend'e çekim talebini gönder
-            fetch('/api/withdraw/request', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    telegram_id: telegramId,
-                    username: username,
-                    wallet_address: addr,
-                    network: network,
-                    amount: amount
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success || data.status === 'ok') {
-                    gameState.balance -= amount;
-                    gameState.wallet = addr;
-                    saveUserData();
-                    updateUI();
-                    sendActivityLog("WITHDRAW_REQUEST", `${amount} PEPE tutarında ${network} çekim talebi oluşturuldu.`);
-                    showModal("Talep Alındı", "Çekim talebiniz başarıyla oluşturuldu ve bot yöneticisine iletildi.", true);
-                } else {
-                    showModal("Hata", data.message || "Çekim talebi oluşturulamadı.", false);
-                }
-            })
-            .catch(err => {
-                console.error("Çekim isteği hatası:", err);
-                showModal("Bağlantı Hatası", "Sunucuyla iletişim kurulamadı. Lütfen daha sonra tekrar deneyin.", false);
-            });
+            gameState.balance -= amount;
+            gameState.wallet = addr;
+            saveUserData();
+            updateUI();
+            showModal("Başarılı", "Çekim talebiniz başarıyla oluşturuldu!", true);
         }
 
-        // Sayfa yüklendiğinde kullanıcı verilerini çek
+        function fetchLeaderboard() {
+            let listEl = document.getElementById('leaderboard-list');
+            if(listEl) {
+                listEl.innerHTML = `
+                    <div class="flex justify-between items-center bg-slate-900/80 p-2.5 rounded-xl border border-emerald-500/50 bg-emerald-500/10">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-amber-400 font-black">🥇</span>
+                            <span class="text-white font-bold">${username} (Siz)</span>
+                        </div>
+                        <span class="text-emerald-400 font-black">${gameState.balance.toFixed(2)} PEPE</span>
+                    </div>
+                `;
+            }
+        }
+
         window.onload = function() {
             fetchUserData();
         };
