@@ -17,11 +17,11 @@ const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || '825653935';
 
 const bot = new Telegraf(BOT_TOKEN);
 
-// Telegram Kanalına Butonlu ve Şık Bildirim Atma Fonksiyonu
+// Telegram Kanalına Butonlu ve Şık Bildirim Atma Fonksiyonu (HTML Modu)
 async function sendTelegramChannelMessage(text, replyMarkup = null) {
     try {
         await bot.telegram.sendMessage(CHANNEL_ID, text, { 
-            parse_mode: 'Markdown',
+            parse_mode: 'HTML',
             reply_markup: replyMarkup 
         });
     } catch (error) {
@@ -107,7 +107,7 @@ setInterval(() => {
             ? rows.map(r => `• Kullanıcı: @${r.username ? r.username.replace(/^@/, '') : 'Kullanıcı'} ➔ ${r.amount} ${r.currency} (Ödendi)`).join('\n')
             : `• @CryptoKing_99 ➔ 50 USDT (Ödendi)\n• @Satoshi_TR ➔ 30 USDT (Ödendi)\n• @BinanceWhale ➔ 25 USDT (Ödendi)`;
 
-        let motivationalMsg = `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!`;
+        let motivationalMsg = `🔥 <b>GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!</b>\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!`;
         
         const inlineKeyboard = {
             inline_keyboard: [
@@ -141,7 +141,7 @@ app.get('/api/admin/withdraws', (req, res) => {
     });
 });
 
-// Admin Çekim Talebini Onaylama API'si (KANALA BUTONLU OTOMATİK BİLDİRİM GÖNDERİR)
+// Admin Çekim Talebini Onaylama API'si (HTML Destekli Kanal Mesajı)
 app.post('/api/admin/withdraws/complete', (req, res) => {
     const { id } = req.body;
     
@@ -160,10 +160,10 @@ app.post('/api/admin/withdraws/complete', (req, res) => {
             let cleanUsername = withdraw.username ? withdraw.username.replace(/^@/, '') : 'Kullanıcı';
 
             let channelMessage = 
-`🚀 Yeni Ödeme Başarıyla Yapıldı!\n\n` +
+`🚀 <b>Yeni Ödeme Başarıyla Yapıldı!</b>\n\n` +
 `👤 Kullanıcı: @${cleanUsername}\n` +
 `💎 Miktar: ${withdraw.amount} ${withdraw.currency}\n` +
-`🌐 Ağ/Cüzdan: ${withdraw.network || 'BSC'} / \`${withdraw.wallet}\`\n` +
+`🌐 Ağ/Cüzdan: ${withdraw.network || 'BSC'} / <code>${withdraw.wallet}</code>\n` +
 `✅ Durum: Binance Üzerinden Gönderildi!`;
 
             const inlineKeyboard = {
@@ -305,7 +305,7 @@ app.post('/api/reward/claim', (req, res) => {
     });
 });
 
-// Binance Standartlarında Çekim Talebi API'si (Ağ ve Kur Dönüşümlü)
+// Binance Standartlarında Çekim Talebi API'si (Ağ and Kur Dönüşümlü)
 app.post('/api/withdraw', (req, res) => {
     const { telegram_id, amount, currency, network, wallet } = req.body;
     db.get("SELECT balance, username FROM users WHERE telegram_id = ?", [telegram_id], (err, user) => {
