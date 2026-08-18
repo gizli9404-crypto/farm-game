@@ -77,12 +77,13 @@ function logSystemError(errMessage) {
     });
 }
 
+// Otonom Ödeme Kanalı Duyurusu (6 Saatte Bir)
 setInterval(() => {
     db.all("SELECT username, amount, currency FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 3", (err, rows) => {
         if (err) { logSystemError(err); return; }
         let payoutText = rows && rows.length > 0 
             ? rows.map(r => `• Kullanıcı: ${r.username} ➔ ${r.amount} ${r.currency} (Ödendi)`).join('\n')
-            : `• CryptoKing_99 ➔ 50 USDT (Ödendi)\n• Satoshi_TR ➔ 30 USDT (Ödendi)\n• BinanceWhale ➔ 25 USDT (Ödendi)`;
+            : `• CryptoKing_99 ➔ 50 USDT (Ödendi)\n• Satoshi_TR 30 USDT (Ödendi)\n• BinanceWhale ➔ 25 USDT (Ödendi)`;
 
         const motivationalMessages = [
             `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`
@@ -91,6 +92,20 @@ setInterval(() => {
         bot.telegram.sendMessage(CHANNEL_ID, randomMsg).catch(e => logSystemError(e));
     });
 }, 6 * 60 * 60 * 1000);
+
+// --- YENİ EKLENTİ: SÜRE BAZLI ÖDÜL SİSTEMİ ---
+app.post('/api/active-reward', (req, res) => {
+    const { telegram_id } = req.body;
+    // Kullanıcıya 60 saniyede bir 0.5 bakiye ekle
+    db.run("UPDATE users SET balance = balance + 0.5 WHERE telegram_id = ?", [telegram_id], (err) => {
+        if (err) {
+            logSystemError(err);
+            return res.status(500).json({ success: false });
+        }
+        res.json({ success: true, message: "Süre ödülü eklendi!" });
+    });
+});
+// ---------------------------------------------
 
 app.get('/api/user/:id', (req, res) => {
     const userId = req.params.id;
@@ -128,7 +143,6 @@ app.post('/api/daily/claim', (req, res) => {
     });
 });
 
-// Liderlik ve Kullanıcının Kendi Sıralamasını Hesaplama
 app.get('/api/leaderboard/:telegram_id', (req, res) => {
     const tid = req.params.telegram_id;
     db.all("SELECT telegram_id, username, balance FROM users", (err, realUsers) => {
