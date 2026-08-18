@@ -318,6 +318,65 @@ app.post('/api/admin/withdraw/approve', (req, res) => {
     });
 });
 
+// ==========================================
+// 4. TELEGRAM BOT KOMUT DİNLEYİCİSİ (LONG POLLING)
+// ==========================================
+
+let lastUpdateId = 0;
+
+async function checkTelegramUpdates() {
+    try {
+        const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`, {
+            params: { offset: lastUpdateId, timeout: 30 }
+        });
+
+        if (response.data && response.data.ok) {
+            const updates = response.data.result;
+            for (const update of updates) {
+                lastUpdateId = update.update_id + 1;
+
+                if (update.message && update.message.text) {
+                    const chatId = update.message.chat.id;
+                    const text = update.message.text.trim();
+                    const user = update.message.from;
+                    const telegramId = String(user.id);
+                    const username = user.username || user.first_name || 'Kullanici';
+
+                    // /start komutu algılandığında
+                    if (text.startsWith('/start')) {
+                        db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegramId], (err, row) => {
+                            if (!row) {
+                                db.run(`INSERT INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, 0, 0, '')`, 
+                                    [telegramId, username], (err) => {
+                                        if (!err) addSystemLog('YENİ_KULLANICI', `Start ile katıldı: @${username} (${telegramId})`);
+                                    });
+                            }
+                        });
+
+                        // Kullanıcıya Hoş Geldin Mesajı ve Mini App Açma Butonu Gönder
+                        axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                            chat_id: chatId,
+                            text: `👋 **Merhaba ${username}, Sanal Miner Pro'ya hoş geldin!**\n\nMadencilik yapmak, şans çarkı çevirmek ve kazanç sağlamak için aşağıdaki butona tıkla:`,
+                            parse_mode: 'Markdown',
+                            reply_markup: {
+                                inline_keyboard: [
+                                    [{ text: "🚀 Madenciliği Aç (Mini App)", web_app: { url: "https://miner-production-32ee.up.railway.app" } }],
+                                    [{ text: "📢 Duyuru Kanalı", url: "https://t.me/sanal_miner_duyuru" }]
+                                ]
+                            }
+                        }).catch(e => console.error('Start mesajı gönderme hatası:', e.message));
+                    }
+                }
+            }
+        }
+    } catch (error) {
+        // Hataların sunucuyu düşürmesi engellendi
+    }
+}
+
+// Bot mesajlarını arka planda sürekli dinle
+setInterval(checkTelegramUpdates, 3000);
+
 app.listen(PORT, () => {
     console.log(`Gelişmiş Backend ${PORT} portunda başarıyla çalışıyor.`);
 });
