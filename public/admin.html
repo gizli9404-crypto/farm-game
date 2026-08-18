@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Quest - Elite Admin Control</title>
+    <title>Crypto Quest - Elite Admin Control & Logs</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -20,8 +20,8 @@
                 <i class="fa-solid fa-crown text-lg"></i>
             </div>
             <div>
-                <h1 class="font-black text-sm tracking-wider text-white">ELITE BINANCE & ADMIN CONTROL</h1>
-                <p class="text-[11px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[6px] mr-1"></i> Otomatik Kanal Senkronizasyonu Aktif</p>
+                <h1 class="font-black text-sm tracking-wider text-white">ELITE BINANCE & OTONOM KONTROL</h1>
+                <p class="text-[11px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[6px] mr-1"></i> Otonom Kanal Botu & Log Tarayıcı Aktif</p>
             </div>
         </div>
         <button onclick="loadAdminData()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-bold transition flex items-center space-x-2">
@@ -41,22 +41,22 @@
         </div>
     </div>
 
-    <!-- Duyuru ve Hata Bildirim Paneli (Otomatik Kanala ve Bot Kullanıcılarına Gider) -->
+    <!-- Duyuru / Motivasyon ve Bakım Paneli -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="glass p-6 rounded-2xl space-y-4">
-            <h2 class="font-bold text-sm text-indigo-300 flex items-center"><i class="fa-solid fa-bullhorn mr-2"></i> Motivasyon & Duyuru Gönder</h2>
-            <textarea id="broadcast-msg" rows="3" placeholder="Örn: 🚀 Yeni etkinlik başladı, kazançlar katlandı!" class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-indigo-500"></textarea>
+            <h2 class="font-bold text-sm text-indigo-300 flex items-center"><i class="fa-solid fa-bullhorn mr-2"></i> Otomatik / Manuel Motivasyon Mesajı Gönder</h2>
+            <textarea id="broadcast-msg" rows="3" placeholder="Örn: 🚀 Günün kazananları açıklandı! Reklam izleyerek sen de kazanmaya devam et..." class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-indigo-500"></textarea>
             <button onclick="sendBroadcast('duyuru')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs transition">Kanala ve Herkese Gönder</button>
         </div>
 
         <div class="glass p-6 rounded-2xl space-y-4">
             <h2 class="font-bold text-sm text-rose-400 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Sistem Hata / Bakım Bildirimi</h2>
-            <textarea id="error-msg" rows="3" placeholder="Örn: Altyapı güncellemesi nedeniyle çekimler kısa süreliğine askıya alınmıştır..." class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-rose-500"></textarea>
+            <textarea id="error-msg" rows="3" placeholder="Örn: Altyapı güncellemesi nedeniyle kısa süreli bakım var..." class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-rose-500"></textarea>
             <button onclick="sendBroadcast('hata')" class="w-full py-3 bg-rose-600 hover:bg-rose-500 font-bold rounded-xl text-xs transition">Hata/Bakım Mesajını Duyur</button>
         </div>
     </div>
 
-    <!-- Bekleyen Çekim Talepleri (Binance ile Öde ve Onayla) -->
+    <!-- Bekleyen Çekim Talepleri -->
     <div class="glass p-6 rounded-2xl space-y-4">
         <h2 class="font-bold text-sm text-amber-400 flex items-center"><i class="fa-solid fa-wallet mr-2"></i> Bekleyen Çekim Talepleri (Binance Ödemeleri)</h2>
         <div class="overflow-x-auto">
@@ -76,7 +76,17 @@
         </div>
     </div>
 
-    <!-- Kayıtlı Kullanıcılar Veritabanı -->
+    <!-- Sistem Logları ve Hata Tarayıcısı -->
+    <div class="glass p-6 rounded-2xl space-y-4">
+        <h2 class="font-bold text-sm text-cyan-400 flex items-center"><i class="fa-solid fa-terminal mr-2"></i> Canlı Sistem Logları & Hata Tarayıcısı</h2>
+        <div class="overflow-x-auto max-h-48 overflow-y-auto bg-black/50 p-4 rounded-xl border border-slate-800">
+            <div id="logs-list" class="space-y-1.5 font-mono text-[11px] text-slate-300">
+                <p class="text-slate-500">Loglar taranıyor...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Kayıtlı Kullanıcılar -->
     <div class="glass p-6 rounded-2xl space-y-4">
         <h2 class="font-bold text-sm text-slate-300 flex items-center"><i class="fa-solid fa-users mr-2"></i> Kayıtlı Kullanıcılar</h2>
         <div class="overflow-x-auto max-h-64 overflow-y-auto">
@@ -122,6 +132,16 @@
                         pendingList.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-slate-500">Bekleyen çekim talebi bulunmuyor.</td></tr>`;
                     }
 
+                    let logsList = document.getElementById('logs-list');
+                    logsList.innerHTML = "";
+                    if(data.logs && data.logs.length > 0) {
+                        data.logs.forEach(l => {
+                            logsList.innerHTML += `<div class="text-rose-400">[${l.timestamp}] ➔ ${l.message}</div>`;
+                        });
+                    } else {
+                        logsList.innerHTML = `<div class="text-emerald-400">Sistemde kayıtlı hata veya kritik log bulunmuyor. Her şey yolunda! 🟢</div>`;
+                    }
+
                     let usersList = document.getElementById('users-list');
                     usersList.innerHTML = "";
                     if(data.users) {
@@ -139,7 +159,7 @@
         }
 
         function approveWithdrawal(id) {
-            if(!confirm("Binance üzerinden ödemeyi gönderdiğinizi onaylıyor musunuz? Kanala otomatik ödeme kanıtı atılacak!")) return;
+            if(!confirm("Binance ödemesini onaylıyor musun? Kanala otomatik ödeme kanıtı gidecek!")) return;
             fetch('/api/admin/approve-withdrawal', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
@@ -163,7 +183,7 @@
                 body: JSON.stringify({ message, type })
             }).then(res => res.json()).then(data => {
                 if(data.success) {
-                    alert("Duyuru/Hata mesajı hem kullanıcılara hem kanala gönderildi!");
+                    alert("Duyuru/Motivasyon mesajı kanala ve kullanıcılara iletildi!");
                     msgInput.value = "";
                 }
             });
