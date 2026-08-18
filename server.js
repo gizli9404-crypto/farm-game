@@ -45,7 +45,7 @@ bot.launch().then(() => {
     console.error("Bot başlatılamadı:", err);
 });
 
-// --- VERİTABANI OLUŞTURMA ---
+// --- VERİTABANI OLUŞTURMA (Log tablosu eklendi) ---
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         telegram_id TEXT PRIMARY KEY,
@@ -64,7 +64,19 @@ db.serialize(() => {
         network TEXT,
         status TEXT DEFAULT 'pending'
     )`);
+
+    db.run(`CREATE TABLE IF NOT EXISTS logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        action TEXT,
+        details TEXT,
+        timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
 });
+
+// Helper Log Fonksiyonu
+function addLog(action, details) {
+    db.run(`INSERT INTO logs (action, details) VALUES (?, ?)`, [action, details]);
+}
 
 // --- MİNİ APP API ROTALARI ---
 
@@ -113,8 +125,8 @@ app.post('/api/user/update', (req, res) => {
     );
 });
 
-// --- ÇEKİM TALEBİ OLUŞTURMA ROTOSU (Frontend ile uyumlu hale getirildi) ---
-app.post('/api/withdraw/request', (req, res) => {
+// --- ÇEKİM TALEBİ OLUŞTURMA ROTOSU ---
+app.post('/api/withdraw', (req, res) => {
     const { telegram_id, username, amount, wallet, network } = req.body;
     
     if (!telegram_id || !amount || !wallet) {
@@ -136,17 +148,12 @@ app.post('/api/withdraw/request', (req, res) => {
                 [telegram_id, username || "İsimsiz", amount, wallet, network || "TON"],
                 function (insErr) {
                     if (insErr) return res.status(500).json({ success: false, error: insErr.message });
+                    addLog("Yeni Çekim Talebi", `ID: ${telegram_id} | Tutar: ${amount}`);
                     res.json({ success: true, message: "Çekim talebiniz başarıyla alındı!" });
                 }
             );
         });
     });
-});
-
-// --- AKTİVİTE LOGLAMA ROTOSU ---
-app.post('/api/user/log', (req, res) => {
-    // Frontend log gönderdiği için bu uç nokta eksikti, eklendi.
-    res.json({ success: true });
 });
 
 // --- ADMIN PANELİ API ROTALARI ---
@@ -175,13 +182,24 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
+// Logları listeleme rotası
+app.get('/api/admin/logs', (req, res) => {
+    db.all(`SELECT * FROM logs ORDER BY id DESC LIMIT 50`, (err, rows) => {
+        if (err) res.status(500).json({ success: false, error: err.message });
+        else res.json({ success: true, logs: rows || [] });
+    });
+});
+
 app.post('/api/admin/modify', (req, res) => {
     const { telegram_id, amount, type } = req.body;
     const column = type === 'tickets' ? 'tickets' : 'balance';
     
     db.run(`UPDATE users SET ${column} = ${column} + ? WHERE telegram_id = ?`, [amount, telegram_id], function(err) {
         if (err) res.status(500).json({ success: false, error: err.message });
-        else res.json({ success: true });
+        else {
+            addLog("Varlık Güncelleme", `ID: ${telegram_id} | Tür: ${type} | Miktar: ${amount}`);
+            res.json({ success: true });
+        }
     });
 });
 
@@ -199,6 +217,7 @@ app.post('/api/admin/broadcast', async (req, res) => {
                 successCount++;
             } catch (e) {}
         }
+        addLog("Duyuru Gönderildi", `Başarılı Gönderim: ${successCount} kullanıcı`);
         res.json({ success: true, sentCount: successCount });
     });
 });
@@ -207,7 +226,10 @@ app.post('/api/admin/withdraw/approve', (req, res) => {
     const { id } = req.body;
     db.run(`UPDATE withdraws SET status = 'approved' WHERE id = ?`, [id], function(err) {
         if (err) res.status(500).json({ success: false, error: err.message });
-        else res.json({ success: true });
+        else {
+            addLog("Çekim Onayı", `Çekim ID: ${id} onaylandı.`);
+            res.json({ success: true });
+        }
     });
 });
 
