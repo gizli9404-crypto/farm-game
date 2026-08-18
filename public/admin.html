@@ -344,11 +344,36 @@
             document.getElementById('broadcastMsg').value = '';
         }
 
-        function addBalance() {
-            const id = document.getElementById('targetId').value;
+        async function addBalance() {
+            const telegram_id = document.getElementById('targetId').value.trim();
             const amount = document.getElementById('targetAmount').value;
-            if(!id || !amount) return alert('Lütfen tüm alanları doldurun!');
-            alert(`Kullanıcı (${id}) için ${amount} bakiye başarıyla tanımlandı.`);
+
+            if(!telegram_id || !amount) {
+                alert('Lütfen Telegram ID ve miktar alanlarını doldurun!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/admin/add-balance', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegram_id, amount })
+                });
+
+                const result = await response.json();
+
+                if(result.success) {
+                    alert(`Başarılı! Kullanıcıya ${amount} bakiye eklendi.`);
+                    document.getElementById('targetId').value = '';
+                    document.getElementById('targetAmount').value = '';
+                    loadAllUsers();
+                } else {
+                    alert('Hata: ' + (result.error || 'Bakiye eklenemedi.'));
+                }
+            } catch(e) {
+                console.error("Bakiye yükleme hatası:", e);
+                alert('Sunucu bağlantı hatası oluştu!');
+            }
         }
 
         // Sayfa açıldığında temel verileri yükle
