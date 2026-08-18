@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Statik Dosyalar (index.html ve admin.html aynı dizinde sunulur)
+// Statik Dosyalar
 app.use(express.static(path.join(__dirname)));
 
 // SQLite Veritabanı Kurulumu
@@ -67,7 +67,6 @@ app.get('/api/user/:telegram_id', (req, res) => {
         if (row) {
             res.json(row);
         } else {
-            // Otomatik kayıt oluştur
             db.run(`INSERT OR IGNORE INTO users (telegram_id, username, balance, tickets) VALUES (?, ?, 0, 0)`, 
             [telegram_id, 'Kullanıcı_' + telegram_id.slice(-4)], function(err) {
                 res.json({ telegram_id, username: 'Kullanıcı', balance: 0.00, tickets: 0, wallet: '' });
@@ -115,7 +114,6 @@ app.post('/api/withdraw', (req, res) => {
             return res.status(400).json({ success: false, error: 'Yetersiz bakiye.' });
         }
 
-        // Bakiyeden düş ve çekim tablosuna ekle
         db.run(`UPDATE users SET balance = balance - ? WHERE telegram_id = ?`, [amount, telegram_id], (err) => {
             if (err) return res.status(500).json({ success: false, error: err.message });
 
@@ -124,7 +122,6 @@ app.post('/api/withdraw', (req, res) => {
                 function(err) {
                     if (err) return res.status(500).json({ success: false, error: err.message });
                     
-                    // Log ekle
                     db.run(`INSERT INTO logs (telegram_id, action, details, balance, timestamp) VALUES (?, ?, ?, ?, ?)`,
                         [telegram_id, 'Yeni Çekim Talebi', `ID: ${telegram_id} | Tutar: ${amount}`, user.balance - amount, new Date().toLocaleTimeString()]);
 
@@ -182,11 +179,7 @@ app.post('/api/broadcast', (req, res) => {
     db.all(`SELECT telegram_id FROM users`, [], async (err, rows) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
 
-        let sentCount = 0;
-        // Not: Gerçek Telegram Bot Token eklendiğinde axios ile bot API'sine istek atılabilir.
-        // Şimdilik sistem simülasyonu olarak başarılı döner.
-        sentCount = rows.length;
-
+        let sentCount = rows.length;
         res.json({ success: true, sent_count: sentCount });
     });
 });
