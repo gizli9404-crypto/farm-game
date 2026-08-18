@@ -27,7 +27,6 @@
             min-height: 100vh;
         }
 
-        /* Sidebar */
         .sidebar {
             width: 260px;
             background-color: var(--bg-card);
@@ -65,7 +64,6 @@
             box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
         }
 
-        /* Main Content */
         .main-container {
             flex: 1;
             padding: 40px;
@@ -84,7 +82,6 @@
         .section-view { display: none; }
         .section-view.active { display: block; }
 
-        /* Metrics Grid */
         .metrics-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -98,7 +95,6 @@
             border-radius: 14px;
             position: relative;
             overflow: hidden;
-            transition: transform 0.2s;
         }
         .metric-card h4 { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .metric-card .value { font-size: 2rem; font-weight: 700; margin-top: 10px; color: var(--text-main); }
@@ -111,7 +107,6 @@
         .metric-card.green::after { background: var(--accent-green); }
         .metric-card.gold::after { background: var(--accent-gold); }
 
-        /* Action Panels Grid */
         .action-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
@@ -139,20 +134,19 @@
         }
         input:focus, textarea:focus { border-color: var(--accent-blue); }
         button {
-            width: 100%;
-            padding: 12px;
+            padding: 10px 16px;
             border: none;
             border-radius: 8px;
             font-weight: 600;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             cursor: pointer;
             transition: opacity 0.2s;
         }
-        .btn-blue { background: var(--accent-blue); color: white; }
-        .btn-green { background: var(--accent-green); color: white; }
-        .btn-blue:hover, .btn-green:hover { opacity: 0.9; }
+        .btn-blue { background: var(--accent-blue); color: white; width: 100%; }
+        .btn-green { background: var(--accent-green); color: white; width: 100%; }
+        .btn-action { background: var(--accent-green); color: white; }
+        .btn-blue:hover, .btn-green:hover, .btn-action:hover { opacity: 0.9; }
 
-        /* Tables */
         .table-container {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
@@ -170,6 +164,7 @@
         th, td {
             padding: 14px 16px;
             border-bottom: 1px solid var(--border-color);
+            word-break: break-all;
         }
         th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
         tbody tr:hover { background-color: var(--bg-card-hover); }
@@ -215,7 +210,7 @@
             <div class="action-grid">
                 <div class="panel">
                     <h3>📢 Otonom & Motivasyon Kanal Duyurusu</h3>
-                    <textarea id="broadcastMsg" rows="3" placeholder="Kanalda yayınlanacak duyuruyu yazın (6 saatte bir otomatiktir)..."></textarea>
+                    <textarea id="broadcastMsg" rows="3" placeholder="Kanalda yayınlanacak duyuruyu yazın..."></textarea>
                     <button class="btn-blue" onclick="sendBroadcast()">Kanala Hemen Gönder</button>
                 </div>
 
@@ -263,12 +258,12 @@
                             <th>ID</th>
                             <th>Kullanıcı</th>
                             <th>Miktar</th>
-                            <th>Cüzdan</th>
+                            <th>Cüzdan / Adres</th>
                             <th>İşlem</th>
                         </tr>
                     </thead>
                     <tbody id="withdrawsTableBody">
-                        <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Bekleyen talep bulunmuyor.</td></tr>
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Bekleyen talep yükleniyor...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -305,6 +300,8 @@
 
             if(tabId === 'users') {
                 loadAllUsers();
+            } else if(tabId === 'withdraws') {
+                loadWithdraws();
             }
         }
 
@@ -337,6 +334,57 @@
             }
         }
 
+        async function loadWithdraws() {
+            try {
+                const res = await fetch('/api/admin/withdraws');
+                const list = await res.json();
+
+                document.getElementById('pendingCount').innerText = list.length;
+
+                const tbody = document.getElementById('withdrawsTableBody');
+                if(!list || list.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Bekleyen talep bulunmuyor.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = list.map(w => `
+                    <tr>
+                        <td>#${w.id}</td>
+                        <td><b>@${w.username || 'Bilinmiyor'}</b><br><small style="color:var(--text-muted);">${w.telegram_id}</small></td>
+                        <td style="color: var(--accent-gold); font-weight: bold;">${w.amount} ${w.currency}</td>
+                        <td><code>${w.wallet}</code></td>
+                        <td>
+                            <button class="btn-action" onclick="completeWithdraw(${w.id})">Ödendi İşaretle</button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch(e) {
+                console.error("Çekim talepleri yüklenirken hata:", e);
+            }
+        }
+
+        async function completeWithdraw(id) {
+            if(!confirm(` #${id} numaralı çekim talebini 'Ödendi' olarak işaretlemek istiyor musunuz?`)) return;
+
+            try {
+                const res = await fetch('/api/admin/withdraws/complete', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id })
+                });
+                const result = await res.json();
+                if(result.success) {
+                    alert('Çekim talebi başarıyla güncellendi!');
+                    loadWithdraws();
+                } else {
+                    alert('Hata: ' + (result.error || 'İşlem başarısız.'));
+                }
+            } catch(e) {
+                console.error("Çekim tamamlama hatası:", e);
+                alert('Sunucu bağlantı hatası!');
+            }
+        }
+
         function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value;
             if(!msg) return alert('Lütfen bir mesaj yazın!');
@@ -349,7 +397,7 @@
             const amount = document.getElementById('targetAmount').value;
 
             if(!telegram_id || !amount) {
-                alert('Lütfen Telegram ID ve miktar alanlarını doldurun!');
+                alert('Lütfen tüm alanları doldurun!');
                 return;
             }
 
@@ -361,7 +409,6 @@
                 });
 
                 const result = await response.json();
-
                 if(result.success) {
                     alert(`Başarılı! Kullanıcıya ${amount} bakiye eklendi.`);
                     document.getElementById('targetId').value = '';
@@ -372,12 +419,13 @@
                 }
             } catch(e) {
                 console.error("Bakiye yükleme hatası:", e);
-                alert('Sunucu bağlantı hatası oluştu!');
+                alert('Sunucu bağlantı hatası!');
             }
         }
 
         // Sayfa açıldığında temel verileri yükle
         loadAllUsers();
+        loadWithdraws();
     </script>
 </body>
 </html>
