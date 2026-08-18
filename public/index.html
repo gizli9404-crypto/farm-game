@@ -491,26 +491,49 @@
         function requestWithdraw() {
             let addr = document.getElementById('wallet-addr').value.trim();
             let amount = parseFloat(document.getElementById('withdraw-amount').value);
+            let network = document.getElementById('wallet-network').value;
 
             if (!addr || amount < 5000 || gameState.balance < amount) {
                 showModal("Hata", "Adres veya bakiye yetersiz (Min: 5000 PEPE).", false);
                 return;
             }
 
-            gameState.balance -= amount;
-            gameState.wallet = addr;
-            saveUserData();
-            updateUI();
+            // Backend'e çekim talebini gönder
+            fetch('/api/withdraw/request', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    telegram_id: telegramId,
+                    username: username,
+                    amount: amount,
+                    wallet: addr,
+                    network: network
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success !== false) {
+                    gameState.balance -= amount;
+                    gameState.wallet = addr;
+                    saveUserData();
+                    updateUI();
 
-            sendActivityLog("WITHDRAW_REQUEST", `${amount} PEPE için çekim talebi oluşturdu. Cüzdan: ${addr}`);
-            showModal("Talep Alındı", "Çekim talebiniz Bot Worker sistemine iletildi.", true);
+                    sendActivityLog("WITHDRAW_REQUEST", `${amount} PEPE için çekim talebi oluşturdu. Cüzdan: ${addr}`);
+                    showModal("Talep Alındı", "Çekim talebiniz yönetici paneline iletildi.", true);
+                } else {
+                    showModal("Hata", data.message || "Talep oluşturulamadı.", false);
+                }
+            })
+            .catch(err => {
+                console.error("Çekim isteği hatası:", err);
+                showModal("Hata", "Sunucu bağlantı hatası.", false);
+            });
         }
 
         window.onload = function() {
             fetchUserData();
             fetchLeaderboard();
-            sendActivityLog("APP_OPEN", "Kullanıcı Mini App uygulamasını açtı.");
-        };
+        }
     </script>
 </body>
 </html>
