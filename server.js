@@ -118,6 +118,18 @@ app.get('/api/payouts', (req, res) => {
     db.all("SELECT username, amount, currency, timestamp FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 5", (err, rows) => res.json(rows || []));
 });
 
+// Kullanıcının kendi çekim talebi durumlarını çekmesi için eklenen endpoint
+app.get('/api/my-withdrawals/:telegram_id', (req, res) => {
+    const tid = req.params.telegram_id;
+    db.all("SELECT amount, currency, status FROM withdrawals WHERE telegram_id = ? ORDER BY id DESC LIMIT 5", [tid], (err, rows) => {
+        if (err) {
+            logSystemError(err);
+            return res.status(500).json([]);
+        }
+        res.json(rows || []);
+    });
+});
+
 app.post('/api/reward/claim', (req, res) => {
     const { telegram_id, reward } = req.body;
     db.run("UPDATE users SET balance = balance + ? WHERE telegram_id = ?", [reward, telegram_id], (err) => {
