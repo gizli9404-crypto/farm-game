@@ -3,93 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pro Miner Dashboard</title>
+    <title>Sanal Miner Pro App</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
         body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; }
         .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-        .tab-panel { display: none; }
-        .tab-panel.active { display: block; }
-        .btn-glow { box-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
     </style>
 </head>
-<body class="p-4 max-w-lg mx-auto">
+<body class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-between">
 
     <!-- Header -->
     <div class="flex justify-between items-center mb-6">
         <div>
             <h1 class="text-xl font-bold tracking-tight">Sanal Miner <span class="text-emerald-500">Pro</span></h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest">Cüzdan ID: <span id="user-id">...</span></p>
+            <p class="text-[10px] text-slate-500 uppercase tracking-widest">ID: <span id="user-telegram-id">Yükleniyor...</span></p>
         </div>
-        <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center border border-slate-700 font-bold">EA</div>
+        <div id="user-avatar" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 font-bold">EA</div>
     </div>
 
     <!-- Bakiye Kartı -->
-    <div class="glass p-6 rounded-3xl mb-6 text-center">
+    <div class="glass p-6 rounded-3xl mb-6 text-center relative overflow-hidden">
+        <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
         <p class="text-slate-400 text-sm mb-2">Güncel Bakiye</p>
-        <h2 id="main-balance" class="text-5xl font-black text-emerald-400">0.00</h2>
-        <p class="text-slate-600 mt-2 font-bold">PEPE TOKEN</p>
+        <h2 id="main-balance" class="text-4xl font-black text-emerald-400">0.00</h2>
+        <p class="text-slate-500 mt-2 font-bold text-xs">PEPE TOKEN</p>
     </div>
 
     <!-- Sekmeler -->
     <div class="grid grid-cols-3 gap-3 mb-6">
-        <button onclick="showTab('mining')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-900">Kazım</button>
-        <button onclick="showTab('wallet')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-900">Cüzdan</button>
-        <button onclick="showTab('admin')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-900">Admin</button>
+        <button onclick="showTab('mining')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-emerald-400 nav-tab" data-target="mining">Kazım</button>
+        <button onclick="showTab('wallet')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-slate-400 nav-tab" data-target="wallet">Cüzdan</button>
+        <button onclick="showTab('friends')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-slate-400 nav-tab" data-target="friends">Davet</button>
     </div>
 
-    <!-- Paneller -->
-    <div id="mining" class="tab-panel active glass p-6 rounded-3xl">
-        <h3 class="text-lg font-bold mb-4">Aktif Kazım</h3>
-        <button onclick="mine()" class="w-full py-4 bg-emerald-500 text-black font-black rounded-2xl btn-glow">KAZIMA BAŞLA</button>
+    <!-- İçerik Alanı -->
+    <div class="flex-1">
+        <!-- Kazım Sekmesi -->
+        <div id="tab-mining" class="tab-content active glass p-6 rounded-3xl space-y-4">
+            <h3 class="text-base font-bold">Madencilik Simülasyonu</h3>
+            <p class="text-xs text-slate-400">Sunucu ile senkronize kazım sistemi aktif.</p>
+            <button onclick="triggerMining()" class="w-full py-4 bg-emerald-500 text-black font-black rounded-2xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 transition">KAZİMSAL İŞLEM</button>
+        </div>
+
+        <!-- Cüzdan Sekmesi -->
+        <div id="tab-wallet" class="tab-content glass p-6 rounded-3xl space-y-4">
+            <h3 class="text-base font-bold">Çekim Talebi</h3>
+            <input id="w-amount" type="number" class="w-full p-4 bg-black border border-slate-800 rounded-2xl text-xs outline-none focus:border-emerald-500" placeholder="Miktar (Min 5000 PEPE)">
+            <input id="w-address" type="text" class="w-full p-4 bg-black border border-slate-800 rounded-2xl text-xs outline-none focus:border-emerald-500" placeholder="Cüzdan Adresi (TON/BSC)">
+            <button onclick="requestWithdraw()" class="w-full py-4 bg-emerald-500 text-black font-bold rounded-2xl text-xs hover:bg-emerald-400 transition">ÇEKİM TALEBİ OLUŞTUR</button>
+        </div>
+
+        <!-- Davet Sekmesi -->
+        <div id="tab-friends" class="tab-content glass p-6 rounded-3xl space-y-4 text-center">
+            <h3 class="text-base font-bold">Arkadaşını Davet Et</h3>
+            <p class="text-xs text-slate-400">Özel referans bağlantın ile kullanıcı kazandır.</p>
+            <input id="ref-link" type="text" readonly class="w-full p-3 bg-black border border-slate-800 rounded-xl text-xs text-center text-slate-300" value="https://t.me/sanal_miner_test_bot?start=ref_0">
+            <button onclick="copyRef()" class="w-full py-3 bg-slate-800 font-bold rounded-xl text-xs hover:bg-slate-700 transition">Linki Kopyala</button>
+        </div>
     </div>
 
-    <div id="wallet" class="tab-panel glass p-6 rounded-3xl">
-        <h3 class="text-lg font-bold mb-4">Çekim İşlemleri</h3>
-        <input id="w-amount" type="number" class="w-full p-4 mb-3 bg-black border border-slate-700 rounded-2xl" placeholder="Miktar (Min 5000)">
-        <button onclick="withdraw()" class="w-full py-4 bg-slate-800 border border-slate-600 font-bold rounded-2xl">ÇEKİM TALEBİ</button>
-    </div>
-
-    <div id="admin" class="tab-panel glass p-6 rounded-3xl">
-        <h3 class="text-lg font-bold mb-4">Admin Panel</h3>
-        <input id="admin-val" type="number" class="w-full p-4 mb-3 bg-black border border-red-900 rounded-2xl" placeholder="Bakiye Ekle (Admin Yetkili)">
-        <button onclick="adminGrant()" class="w-full py-4 bg-red-900 text-white font-bold rounded-2xl">BAKİYE YÜKLE</button>
+    <!-- Modal -->
+    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+        <div class="glass p-6 rounded-3xl max-w-xs w-full text-center space-y-4 bg-slate-900">
+            <h3 id="modal-title" class="font-bold text-sm">Bilgi</h3>
+            <p id="modal-desc" class="text-xs text-slate-300"></p>
+            <button onclick="closeModal()" class="w-full py-3 bg-emerald-500 text-black font-bold rounded-xl text-xs">Tamam</button>
+        </div>
     </div>
 
     <script>
-        // Veri Motoru
-        let data = JSON.parse(localStorage.getItem('miner_data')) || { balance: 0.0 };
-        document.getElementById('user-id').innerText = "Engin_852";
-        document.getElementById('main-balance').innerText = data.balance.toFixed(2);
+        let tg = window.Telegram?.WebApp;
+        let telegramId = "825653935"; // Test için varsayılan ID (Gerçekte Telegram'dan alınır)
+        let username = "Jacker_lord";
 
-        function saveData() {
-            localStorage.setItem('miner_data', JSON.stringify(data));
-            document.getElementById('main-balance').innerText = data.balance.toFixed(2);
-        }
-
-        function showTab(id) {
-            document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function mine() {
-            data.balance += 10.5; // Kazım miktarı
-            saveData();
-            alert("Kazım başarılı!");
-        }
-
-        function adminGrant() {
-            let val = parseFloat(document.getElementById('admin-val').value);
-            if(!isNaN(val)) {
-                data.balance += val;
-                saveData();
-                alert("Admin tarafından bakiye eklendi: " + val);
+        if (tg) {
+            tg.expand();
+            if (tg.initDataUnsafe?.user?.id) {
+                telegramId = tg.initDataUnsafe.user.id.toString();
+                username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "User";
             }
         }
 
-        function withdraw() {
-            alert("Çekim talebi alındı, işlem sıraya eklendi.");
+        document.getElementById('user-telegram-id').innerText = telegramId;
+        document.getElementById('ref-link').value = `https://t.me/sanal_miner_test_bot?start=ref_${telegramId}`;
+
+        // Backend'den Canlı Veri Çekme (Admin panelinin değiştirdiği bakiye buraya yansır)
+        function fetchUserData() {
+            fetch(`/api/user/${telegramId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && data.balance !== undefined) {
+                        document.getElementById('main-balance').innerText = Number(data.balance).toFixed(2);
+                    }
+                })
+                .catch(err => {
+                    console.log("Sunucu bağlantı hatası, tekrar deneniyor...");
+                });
         }
+
+        function showTab(id) {
+            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active');
+            
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('text-emerald-400');
+                btn.classList.add('text-slate-400');
+                if(btn.getAttribute('data-target') === id) {
+                    btn.classList.add('text-emerald-400');
+                    btn.classList.remove('text-slate-400');
+                }
+            });
+        }
+
+        function showModal(title, desc) {
+            document.getElementById('modal-title').innerText = title;
+            document.getElementById('modal-desc').innerText = desc;
+            document.getElementById('modal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('modal').style.display = 'none';
+        }
+
+        function triggerMining() {
+            // Backend'e kazanç bildirimi gönderilebilir
+            showModal("Kazım", "Kazım verisi işleniyor...");
+            fetchUserData();
+        }
+
+        function requestWithdraw() {
+            let amount = parseFloat(document.getElementById('w-amount').value);
+            let address = document.getElementById('w-address').value;
+
+            if(!address || isNaN(amount) || amount < 5000) {
+                showModal("Hata", "Lütfen geçerli bir adres ve en az 5000 PEPE girin.");
+                return;
+            }
+
+            fetch('/api/user/withdraw', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: telegramId, amount: amount, wallet: address })
+            })
+            .then(res => res.json())
+            .then(data => {
+                showModal("Başarılı", "Çekim talebiniz sıraya alındı.");
+                fetchUserData();
+            })
+            .catch(err => {
+                showModal("Hata", "İşlem sırasında sunucu hatası oluştu.");
+            });
+        }
+
+        function copyRef() {
+            let copyText = document.getElementById("ref-link");
+            navigator.clipboard.writeText(copyText.value);
+            showModal("Başarılı", "Referans bağlantısı kopyalandı!");
+        }
+
+        // Sayfa açıldığında ve her 5 saniyede bir veritabanı ile senkronize ol (Admin panelinden atılan para anında gelsin)
+        fetchUserData();
+        setInterval(fetchUserData, 5000);
     </script>
 </body>
 </html>
