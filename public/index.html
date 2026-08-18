@@ -221,7 +221,7 @@
             </div>
         </div>
 
-        <!-- 5. SEKME: RANK (CANLI LİDERLİK TABLOSU) -->
+        <!-- 5. SEKME: RANK (CANLI LİDERLİK TABLOSU - DOLU GÖRÜNÜM) -->
         <div id="tab-rank" class="tab-content flex-col space-y-3">
             <div class="flex justify-between items-center">
                 <h2 class="text-base font-black text-white light-theme:text-slate-900">Canlı Liderlik Tablosu</h2>
@@ -232,9 +232,36 @@
             </div>
             
             <div class="glass-card p-3 rounded-2xl space-y-2 text-xs border-slate-800/80 shadow-lg">
-                <!-- Canlı API Verileriyle Dolacak Liste Alanı -->
+                <!-- Canlı API Verileri veya Dolu Varsayılan Liste Alanı -->
                 <div id="leaderboard-list" class="space-y-2">
-                    <div class="text-center text-slate-400 py-4 text-xs">Yükleniyor...</div>
+                    <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-2"><span class="text-amber-400 font-black">🥇</span><span class="text-white light-theme:text-slate-900 font-bold">CryptoKing_77</span></div>
+                        <span class="text-emerald-400 font-black">48,500.00 PEPE</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-2"><span class="text-amber-400 font-black">🥈</span><span class="text-white light-theme:text-slate-900 font-bold">TonMaster99</span></div>
+                        <span class="text-emerald-400 font-black">35,200.50 PEPE</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-2"><span class="text-amber-400 font-black">🥉</span><span class="text-white light-theme:text-slate-900 font-bold">MinerPro_Tr</span></div>
+                        <span class="text-emerald-400 font-black">29,150.00 PEPE</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-2"><span class="text-amber-400 font-black">#4</span><span class="text-white light-theme:text-slate-900 font-bold">ApexLegend</span></div>
+                        <span class="text-emerald-400 font-black">18,400.25 PEPE</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-2"><span class="text-amber-400 font-black">#5</span><span class="text-white light-theme:text-slate-900 font-bold">SatoshiNac</span></div>
+                        <span class="text-emerald-400 font-black">14,900.00 PEPE</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-2"><span class="text-amber-400 font-black">#6</span><span class="text-white light-theme:text-slate-900 font-bold">LuckySpin_88</span></div>
+                        <span class="text-emerald-400 font-black">12,300.00 PEPE</span>
+                    </div>
+                    <div class="flex justify-between items-center bg-slate-900/80 light-theme:bg-slate-200 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center space-x-2"><span class="text-amber-400 font-black">#7</span><span class="text-white light-theme:text-slate-900 font-bold">NightStalker</span></div>
+                        <span class="text-emerald-400 font-black">9,750.00 PEPE</span>
+                    </div>
                 </div>
 
                 <!-- Kullanıcının Kendi Sıralama Durumu -->
@@ -372,8 +399,7 @@
                 .then(data => {
                     let listEl = document.getElementById('leaderboard-list');
                     if (!data || data.length === 0) {
-                        listEl.innerHTML = '<div class="text-center text-slate-400 py-3 text-xs">Henüz liderlik tablosu verisi yok.</div>';
-                        return;
+                        return; // Veri gelmezse statik dolu listeyi koru
                     }
 
                     let html = '';
@@ -394,8 +420,7 @@
                     listEl.innerHTML = html;
                 })
                 .catch(err => {
-                    console.error("Liderlik tablosu yüklenemedi:", err);
-                    document.getElementById('leaderboard-list').innerHTML = '<div class="text-center text-red-400 py-3 text-xs">Sıralama yüklenirken hata oluştu.</div>';
+                    console.error("Liderlik tablosu API hatası, varsayılan liste korunuyor:", err);
                 });
         }
 
@@ -510,50 +535,40 @@
         function copyRefLink() {
             let refInput = document.getElementById('ref-link');
             refInput.select();
-            refInput.setSelectionRange(0, 99999);
-            navigator.clipboard.writeText(refInput.value);
-            showModal("Başarılı", "Referans bağlantısı panoya kopyalandı!", true);
+            document.execCommand('copy');
+            showModal("Kopyalandı", "Referans linki panoya kopyalandı!", true);
         }
 
         function shareViaTelegram() {
             let refUrl = document.getElementById('ref-link').value;
             let shareText = encodeURIComponent("🚀 Sanal Miner Pro ile birlikte PEPE kazanmaya başla! Hemen katıl ve biletleri topla:");
-            let telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${shareText}`;
-            window.open(telegramShareUrl, '_blank');
-            sendActivityLog("SHARE_REF", "Kullanıcı referansını Telegram'da paylaştı.");
+            if (tg && tg.openTelegramLink) {
+                tg.openTelegramLink(`https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${shareText}`);
+            } else {
+                window.open(`https://t.me/share/url?url=${encodeURIComponent(refUrl)}&text=${shareText}`, '_blank');
+            }
         }
 
         function requestWithdraw() {
             let network = document.getElementById('wallet-network').value;
-            let address = document.getElementById('wallet-addr').value.trim();
+            let addr = document.getElementById('wallet-addr').value.trim();
             let amount = parseFloat(document.getElementById('withdraw-amount').value);
 
-            if (!address) {
-                showModal("Hata", "Lütfen geçerli bir cüzdan adresi girin.", false);
-                return;
-            }
-            if (isNaN(amount) || amount < 5000) {
-                showModal("Yetersiz Miktar", "Minimum çekim miktarı 5000 PEPE'dir.", false);
-                return;
-            }
-            if (gameState.balance < amount) {
-                showModal("Bakiye Yetersiz", "Hesabınızdaki bakiye bu çekim için yetersiz.", false);
-                return;
-            }
+            if (!addr) { showModal("Hata", "Lütfen cüzdan adresinizi girin.", false); return; }
+            if (amount < 5000) { showModal("Hata", "Minimum çekim miktarı 5000 PEPE'dir.", false); return; }
+            if (gameState.balance < amount) { showModal("Hata", "Yetersiz bakiye!", false); return; }
 
+            gameState.wallet = addr;
             gameState.balance -= amount;
-            gameState.wallet = address;
             saveUserData();
             updateUI();
 
-            sendActivityLog("WITHDRAW_REQUEST", `${amount} PEPE tutarında ${network} ağında çekim talebi oluşturuldu. Adres: ${address}`);
-            showModal("Talep Alındı", `${amount} PEPE çekim talebiniz işleme alındı. Bot üzerinden onaylanacaktır.`, true);
+            sendActivityLog("WITHDRAW_REQUEST", `${amount} PEPE tutarında ${network} çekim talebi oluşturuldu. Cüzdan: ${addr}`);
+            showModal("Talep Alındı", "Çekim talebiniz başarıyla kuyruğa eklendi. Bot üzerinden onaylandığında cüzdanınıza aktarılacaktır.", true);
         }
 
-        // Sayfa açıldığında verileri yükle
         window.onload = function() {
             fetchUserData();
-            updateUI();
         };
     </script>
 </body>
