@@ -56,6 +56,7 @@ db.serialize(() => {
         username TEXT,
         amount REAL,
         currency TEXT,
+        network TEXT,
         wallet TEXT,
         status TEXT DEFAULT 'Bekliyor',
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -104,9 +105,9 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
-// Admin Bekleyen Çekim Taleplerini Listeleme API'si (Eklendi)
+// Admin Bekleyen Çekim Taleplerini Listeleme API'si (Ağ Bilgisi Dahil)
 app.get('/api/admin/withdraws', (req, res) => {
-    db.all("SELECT id, telegram_id, username, amount, currency, wallet, status FROM withdrawals WHERE status = 'Bekliyor' ORDER BY id DESC", (err, rows) => {
+    db.all("SELECT id, telegram_id, username, amount, currency, network, wallet, status FROM withdrawals WHERE status = 'Bekliyor' ORDER BY id DESC", (err, rows) => {
         if (err) {
             logSystemError(err);
             return res.status(500).json({ success: false, error: "Veritabanı hatası" });
@@ -115,7 +116,7 @@ app.get('/api/admin/withdraws', (req, res) => {
     });
 });
 
-// Admin Çekim Talebini Onaylama / Ödendi Yapma API'si (Eklendi)
+// Admin Çekim Talebini Onaylama API'si
 app.post('/api/admin/withdraws/complete', (req, res) => {
     const { id } = req.body;
     db.run("UPDATE withdrawals SET status = 'Ödendi' WHERE id = ?", [id], function(err) {
@@ -239,9 +240,9 @@ app.get('/api/payouts', (req, res) => {
 
 app.get('/api/my-withdrawals/:telegram_id', (req, res) => {
     const tid = req.params.telegram_id;
-    db.all("SELECT amount, currency, status FROM withdrawals WHERE telegram_id = ? ORDER BY id DESC LIMIT 5", [tid], (err, rows) => {
+    db.all("SELECT amount, currency, network, status FROM withdrawals WHERE telegram_id = ? ORDER BY id DESC LIMIT 5", [tid], (err, rows) => {
         if (err) { logSystemError(err); return res.status(500).json([]); }
-        res.json(rows || []);
+        res.json(rows || [] );
     });
 });
 
@@ -253,14 +254,15 @@ app.post('/api/reward/claim', (req, res) => {
     });
 });
 
+// Güncellenmiş Binance Tarzı Çekim Talebi API'si (Ağ Desteği ve USD Dönüşümü ile)
 app.post('/api/withdraw', (req, res) => {
-    const { telegram_id, amount, currency, wallet } = req.body;
+    const { telegram_id, amount, currency, network, wallet } = req.body;
     db.get("SELECT balance, username FROM users WHERE telegram_id = ?", [telegram_id], (err, user) => {
         if (!user || user.balance < amount) return res.status(400).json({ success: false, error: "Yetersiz bakiye!" });
 
         db.run("UPDATE users SET balance = balance - ? WHERE telegram_id = ?", [amount, telegram_id], () => {
-            db.run("INSERT INTO withdrawals (telegram_id, username, amount, currency, wallet) VALUES (?, ?, ?, ?, ?)",
-                [telegram_id, user.username, amount, currency, wallet], () => {
+            db.run("INSERT INTO withdrawals (telegram_id, username, amount, currency, network, wallet) VALUES (?, ?, ?, ?, ?, ?)",
+                [telegram_id, user.username, amount, currency, network || 'BSC (BEP20)', wallet], () => {
                 res.json({ success: true, message: "Çekim talebiniz alındı! Binance üzerinden ödülünüz gönderilecektir." });
             });
         });
