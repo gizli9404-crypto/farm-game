@@ -1,14 +1,848 @@
 {
-  "name": "miner",
+  "name": "sanal-miner-pro",
   "version": "1.0.0",
+  "description": "Telegram Sanal Miner Pro Mini App",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
-    "axios": "^1.6.8",
-    "body-parser": "^1.20.2",
     "express": "^4.19.2",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.7",
+    "telegraf": "^4.16.3"
   }
 }
+```[cite: 4]
+
+---
+
+### 2. `server.js` (Backend & Telegram Bot)
+```python
+import os
+import sqlite3
+import threading
+from flask import Flask, jsonify, request, render_template
+import telebot
+
+TOKEN = "8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM"
+CHANNEL_ID = "@sanal_miner_duyuru"
+
+bot = telebot.TeleBot(TOKEN)
+app = Flask(__name__, template_folder='public')
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DB_PATH = os.path.join(BASE_DIR, 'miner.db')
+
+def init_db():
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            user_id INTEGER PRIMARY KEY,
+            username TEXT,
+            full_name TEXT,
+            balance REAL DEFAULT 0.0,
+            tickets INTEGER DEFAULT 0,
+            wallet TEXT DEFAULT ''
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS withdrawals (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            username TEXT,
+            amount REAL,
+            wallet TEXT,
+            status TEXT DEFAULT 'Beklemede'
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS ad_activity (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            username TEXT,
+            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+            reward REAL
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+        )
+    ''')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS logs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id TEXT,
+            username TEXT,
+            action TEXT,
+            details TEXT,
+            timestamp TEXT
+        )
+    ''')
+    conn.commit()
+    
+    dummy_users = [
+        (1001, "CryptoKing_77", "Crypto King", 45000.0, 5, "TON1..."),
+        (1002, "MinerPro_TR", "Ahmet Yılmaz", 38200.5, 3, "TON2..."),
+        (1003, "Satoshi_Gucu", "Mehmet Demir", 29400.0, 2, "TON3..."),
+        (1004, "TokenAvcisi", "Caner Kaya", 18500.0, 1, "TON4..."),
+        (1005, "KazimReis", "Kazım Çelik", 12300.0, 4, "TON5..."),
+        (1006, "Blockchain_Bey", "Burak Şahin", 9500.0, 0, "TON6...")
+    ]
+    for u in dummy_users:
+        cursor.execute('INSERT OR IGNORE INTO users (user_id, username, full_name, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?, ?)', u)
+    conn.commit()
+    conn.close()
+
+init_db()
+
+@bot.message_handler(commands=['start'])
+def send_welcome(message):
+    user = message.from_user
+    user_id = user.id
+    username = user.username or "Bulunmuyor"
+    full_name = f"{user.first_name or ''} {user.last_name or ''}".strip()
+    
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,))
+    if not cursor.fetchone():
+        cursor.execute('INSERT INTO users (user_id, username, full_name, balance, tickets, wallet) VALUES (?, ?, ?, ?, ?, ?)', 
+                       (user_id, username, full_name, 0.0, 0, ""))
+    else:
+        cursor.execute('UPDATE users SET username = ?, full_name = ? WHERE user_id = ?', (username, full_name, user_id))
+    conn.commit()
+    conn.close()
+    
+    markup = telebot.types.InlineKeyboardMarkup()
+    web_app = telebot.types.WebAppInfo(url="https://miner-production-32ee.up.railway.app")
+    markup.add(telebot.types.InlineKeyboardButton("🚀 Sanal Miner App Aç", web_app=web_app))
+    
+    bot.send_message(
+        message.chat.id, 
+        f"Selam {full_name}! Sanal Miner Pro'ya hoş geldin. Madenciliğe başlamak için aşağıdaki butona tıkla:", 
+        reply_markup=markup
+    )
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/admin.html')
+def admin_page():
+    return render_template('admin.html')
+
+@app.route('/api/user/<int:user_id>', methods=['GET'])
+def get_user(user_id):
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('SELECT balance, tickets, wallet FROM users WHERE user_id = ?', (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+    
+    if row:
+        return jsonify({"balance": row[0], "tickets": row[1], "wallet": row[2]}), 200
+    return jsonify({"balance": 0.0, "tickets": 0, "wallet": ""}), 200
+
+@app.route('/api/user/update', methods=['POST'])
+def update_user():
+    try:
+        data = request.json
+        user_id = data.get('telegram_id') or data.get('user_id')
+        balance = data.get('balance')
+        tickets = data.get('tickets')
+        wallet = data.get('wallet')
+        username = data.get('username', 'MiniAppUser')
+        
+        if not user_id:
+            return jsonify({"status": "error", "message": "Kullanıcı ID bulunamadı!"}), 400
+            
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT user_id FROM users WHERE user_id = ?', (user_id,))
+        if not cursor.fetchone():
+            cursor.execute('''
+                INSERT INTO users (user_id, username, full_name, balance, tickets, wallet) 
+                VALUES (?, ?, ?, ?, ?, ?)
+            ''', (user_id, username, username, balance or 0.0, tickets or 0, wallet or ""))
+        else:
+            cursor.execute('''
+                UPDATE users SET 
+                    balance = COALESCE(?, balance), 
+                    tickets = COALESCE(?, tickets),
+                    wallet = COALESCE(?, wallet)
+                WHERE user_id = ?
+            ''', (balance, tickets, wallet, user_id))
+            
+        conn.commit()
+        conn.close()
+        
+        return jsonify({"status": "success", "message": "Merkezi veritabanına kaydedildi"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
+
+@app.route('/api/user/log', methods=['POST'])
+def user_log():
+    try:
+        data = request.json
+        user_id = data.get('telegram_id')
+        username = data.get('username', 'Bilinmiyor')
+        action = data.get('action', 'INFO')
+        details = data.get('details', '')
+        timestamp = data.get('timestamp', '')
+
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('''
+            INSERT INTO logs (user_id, username, action, details, timestamp)
+            VALUES (?, ?, ?, ?, ?)
+        ''', (user_id, username, action, details, timestamp))
+        conn.commit()
+        conn.close()
+
+        if "SPIN" in action.upper() or "ÇARK" in action.upper():
+            msg = (f"🎉 **Şanslı Çark Büyük Ödülü!**\n\n"
+                   f"👤 Kullanıcı: @{username}\n"
+                   f"✨ İşlem Detayı: `{details}`\n"
+                   f"🚀 Sen de Sanal Miner Pro'ya katıl, kazanmaya başla!")
+            try:
+                bot.send_message(CHANNEL_ID, msg, parse_mode="Markdown")
+            except Exception as ex:
+                print(f"Çark duyuru kanal mesajı hatası: {ex}")
+
+        return jsonify({"status": "success"}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
+
+@app.route('/api/admin/logs', methods=['GET'])
+def admin_logs():
+    SECRET_KEY = "SizinGucluSifreniz123"
+    if request.args.get('secret') != SECRET_KEY:
+        return jsonify({"error": "Yetkisiz erişim!"}), 403
+
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('SELECT username, action, details, timestamp FROM logs ORDER BY id DESC LIMIT 50')
+    rows = cursor.fetchall()
+    conn.close()
+
+    return jsonify([
+        {
+            "username": r[0],
+            "action": r[1],
+            "details": r[2],
+            "timestamp": r[3]
+        } for r in rows
+    ]), 200
+
+@app.route('/api/withdraw', methods=['POST'])
+def withdraw():
+    try:
+        data = request.json
+        user_id = data.get('user_id') or data.get('telegram_id')
+        amount = data.get('amount')
+        wallet = data.get('wallet')
+        
+        if not user_id or not amount or not wallet:
+            return jsonify({"status": "error", "message": "Eksik parametre!"}), 400
+        
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT username FROM users WHERE user_id = ?', (user_id,))
+        user_row = cursor.fetchone()
+        username = user_row[0] if user_row and user_row[0] else "Bilinmiyor"
+        
+        cursor.execute('INSERT INTO withdrawals (user_id, username, amount, wallet, status) VALUES (?, ?, ?, ?, ?)',
+                       (user_id, username, amount, wallet, "Beklemede"))
+        conn.commit()
+        conn.close()
+        
+        msg = (f"🚨 **Yeni Çekim Talebi!**\n\n"
+               f"👤 Kullanıcı: @{username} (ID: `{user_id}`)\n"
+               f"💰 Miktar: `{amount}` PEPE\n"
+               f"💳 Cüzdan: `{wallet}`\n"
+               f"⏳ Durum: Beklemede")
+        try:
+            bot.send_message(CHANNEL_ID, msg, parse_mode="Markdown")
+        except Exception as ex:
+            print(f"Kanal mesajı hatası: {ex}")
+            
+        return jsonify({"status": "success", "message": "Çekim talebiniz başarıyla alındı."}), 200
+    except Exception as e:
+        return jsonify({"status": "error", "message": str(e)}), 400
+
+@app.route('/api/leaderboard', methods=['GET'])
+def leaderboard():
+    try:
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        cursor.execute('SELECT username, full_name, balance FROM users ORDER BY balance DESC LIMIT 15')
+        rows = cursor.fetchall()
+        conn.close()
+        
+        result = []
+        for r in rows:
+            name = r[0] if r[0] and r[0] != "Bulunmuyor" else (r[1] if r[1] else "Anonim")
+            result.append({"username": name, "balance": r[2]})
+            
+        return jsonify(result), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+SECRET_KEY = "SizinGucluSifreniz123"
+
+@app.route('/api/admin/users', methods=['GET'])
+def admin_users():
+    if request.args.get('secret') != SECRET_KEY:
+        return jsonify({"error": "Yetkisiz erişim!"}), 403
+    
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('SELECT user_id, username, full_name, balance, tickets, wallet FROM users ORDER BY balance DESC')
+    rows = cursor.fetchall()
+    conn.close()
+    
+    return jsonify([{"user_id": r[0], "username": r[1], "full_name": r[2], "balance": r[3], "tickets": r[4], "wallet": r[5]} for r in rows]), 200
+
+@app.route('/api/admin/withdrawals', methods=['GET'])
+def admin_withdrawals():
+    if request.args.get('secret') != SECRET_KEY:
+        return jsonify({"error": "Yetkisiz erişim!"}), 403
+    
+    conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+    cursor = conn.cursor()
+    cursor.execute('SELECT id, user_id, username, amount, wallet, status FROM withdrawals ORDER BY id DESC')
+    rows = cursor.fetchall()
+    conn.close()
+    
+    return jsonify([{"id": r[0], "user_id": r[1], "username": r[2], "amount": r[3], "wallet": r[4], "status": r[5]} for r in rows]), 200
+
+@app.route('/api/admin/update_balance', methods=['POST'])
+def admin_update_balance():
+    data = request.json
+    if data.get('secret') != SECRET_KEY:
+        return jsonify({"error": "Yetkisiz erişim!"}), 403
+        
+    user_id = data.get('user_id')
+    amount = data.get('amount')
+    action = data.get('action', 'set')
+    
+    try:
+        conn = sqlite3.connect(DB_PATH, check_same_thread=False)
+        cursor = conn.cursor()
+        
+        if action == 'add':
+            cursor.execute('UPDATE users SET balance = balance + ? WHERE user_id = ?', (amount, user_id))
+        elif action == 'sub':
+            cursor.execute('UPDATE users SET balance = MAX(0, balance - ?) WHERE user_id = ?', (amount, user_id))
+        else:
+            cursor.execute('UPDATE users SET balance = ? WHERE user_id = ?', (amount, user_id))
+            
+        cursor.execute('SELECT balance FROM users WHERE user_id = ?', (user_id,))
+        row = cursor.fetchone()
+        new_balance = row[0] if row else 0
+        
+        conn.commit()
+        conn.close()
+        return jsonify({"success": True, "new_balance": new_balance, "message": "Bakiye başarıyla güncellendi!"})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 400
+
+def run_bot():
+    try:
+        bot.infinity_polling(none_stop=True)
+    except Exception as e:
+        print(f"Bot polling hatası: {e}")
+
+if __name__ == '__main__':
+    bot_thread = threading.Thread(target=run_bot)
+    bot_thread.daemon = True
+    bot_thread.start()
+    
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port)
+```[cite: 3]
+
+---
+
+### 3. `public/admin.html` (Yönetim Paneli)
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanal Miner Pro - Yönetim ve Canlı Log Paneli</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background: #030712; color: #f8fafc; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        .glass-panel { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(255, 255, 255, 0.06); }
+    </style>
+</head>
+<body class="min-h-screen p-4 md:p-8">
+
+    <div id="auth-screen" class="max-w-md mx-auto mt-20 glass-panel p-6 rounded-3xl shadow-2xl space-y-4">
+        <div class="text-center space-y-2">
+            <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-2xl mx-auto flex items-center justify-center text-xl border border-emerald-500/30">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h1 class="text-lg font-black text-white">Admin Paneli & Canlı Log</h1>
+            <p class="text-xs text-slate-400">Gizli şifrenizi girerek yönetim merkezine bağlanın.</p>
+        </div>
+        <div class="space-y-3">
+            <input type="password" id="secret-input" placeholder="Gizli Şifre (Örn: SizinGucluSifreniz123)" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-white focus:outline-none focus:border-emerald-500">
+            <button onclick="checkAuth()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black py-3 rounded-xl text-xs transition-all shadow-lg cursor-pointer">Panele Bağlan</button>
+        </div>
+    </div>
+
+    <div id="admin-dashboard" class="max-w-7xl mx-auto space-y-6 hidden">
+        <div class="flex justify-between items-center glass-panel p-4 rounded-2xl shadow">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center font-black border border-emerald-500/30">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+                <div>
+                    <h1 class="text-sm font-black text-white">Sanal Miner Pro — Admin Control & Live Logs</h1>
+                    <p class="text-[10px] text-emerald-400 font-bold">Veritabanı & Bot Worker Canlı Senkronize 🟢</p>
+                </div>
+            </div>
+            <button onclick="location.reload()" class="bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer">
+                <i class="fa-solid fa-right-from-bracket mr-1"></i> Çıkış
+            </button>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="glass-card p-5 rounded-2xl space-y-4 shadow-lg">
+                <h2 class="text-xs font-black text-white uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-coins text-emerald-400 mr-2"></i> Kullanıcı Bakiye / Puan Düzenleme
+                </h2>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="text-[10px] text-slate-400 font-bold uppercase">Kullanıcı Telegram ID</label>
+                        <input type="text" id="target-user-id" placeholder="Örn: 123456789" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mt-1 focus:outline-none focus:border-emerald-500">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-[10px] text-slate-400 font-bold uppercase">İşlem Türü</label>
+                            <select id="balance-action" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mt-1 focus:outline-none focus:border-emerald-500">
+                                <option value="add">Ekle (+)</option>
+                                <option value="sub">Çıkar (-)</option>
+                                <option value="set">Sabitle (Eşitle)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-slate-400 font-bold uppercase">Miktar (PEPE)</label>
+                            <input type="number" id="balance-amount" placeholder="0" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mt-1 focus:outline-none focus:border-emerald-500">
+                        </div>
+                    </div>
+                    <button onclick="updateUserBalance()" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:opacity-90 text-slate-950 font-black py-2.5 rounded-xl transition-all shadow cursor-pointer">
+                        Bakiyeyi Anlık Güncelle
+                    </button>
+                </div>
+            </div>
+
+            <div class="glass-card p-5 rounded-2xl space-y-4 shadow-lg">
+                <h2 class="text-xs font-black text-white uppercase tracking-wider flex items-center">
+                    <i class="fa-solid fa-bullhorn text-amber-400 mr-2"></i> Telegram Bot Duyuru Gönder
+                </h2>
+                <div class="space-y-3 text-xs">
+                    <div>
+                        <label class="text-[10px] text-slate-400 font-bold uppercase">Duyuru Metni</label>
+                        <textarea id="broadcast-msg" rows="4" placeholder="Tüm kullanıcılara bildirim olarak gönderilecek metin..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-white mt-1 focus:outline-none focus:border-amber-500"></textarea>
+                    </div>
+                    <button onclick="sendBroadcast()" class="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:opacity-90 text-slate-950 font-black py-2.5 rounded-xl transition-all shadow cursor-pointer">
+                        Toplu Bildirim Gönder
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+            <div class="glass-card p-4 rounded-2xl space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xs font-black text-white uppercase"><i class="fa-solid fa-users text-blue-400 mr-1.5"></i> Kayıtlılar</h2>
+                    <button onclick="loadAdminData()" class="text-[10px] bg-slate-800 text-slate-300 px-2 py-1 rounded-lg"><i class="fa-solid fa-rotate"></i></button>
+                </div>
+                <div class="overflow-x-auto max-h-80 overflow-y-auto">
+                    <table class="w-full text-left text-[11px]">
+                        <thead class="text-slate-400 border-b border-slate-800 sticky top-0 bg-slate-900">
+                            <tr><th class="p-2">Kullanıcı</th><th class="p-2">Bakiye</th></tr>
+                        </thead>
+                        <tbody id="users-table-body" class="divide-y divide-slate-800/60"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xs font-black text-white uppercase"><i class="fa-solid fa-wallet text-emerald-400 mr-1.5"></i> Çekimler</h2>
+                    <span class="text-[10px] text-emerald-400 font-bold">Aktif</span>
+                </div>
+                <div class="overflow-x-auto max-h-80 overflow-y-auto">
+                    <table class="w-full text-left text-[11px]">
+                        <thead class="text-slate-400 border-b border-slate-800 sticky top-0 bg-slate-900">
+                            <tr><th class="p-2">Kimden</th><th class="p-2">Tutar</th></tr>
+                        </thead>
+                        <tbody id="withdrawals-table-body" class="divide-y divide-slate-800/60"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="glass-card p-4 rounded-2xl space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-xs font-black text-white uppercase"><i class="fa-solid fa-terminal text-amber-400 mr-1.5"></i> Canlı Bot Logları</h2>
+                    <span class="text-[10px] text-emerald-400 font-bold animate-pulse">● Anlık Akış</span>
+                </div>
+                <div id="live-logs-container" class="space-y-2 max-h-80 overflow-y-auto text-[11px] font-mono">
+                    <div class="bg-slate-950 p-2 rounded border border-slate-800 text-slate-400">Sistem Dinleniyor...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let secretKey = "";
+
+        function checkAuth() {
+            secretKey = document.getElementById('secret-input').value.trim();
+            fetch(`/api/admin/users?secret=${secretKey}`)
+                .then(res => {
+                    if(res.status === 200) {
+                        document.getElementById('auth-screen').classList.add('hidden');
+                        document.getElementById('admin-dashboard').classList.remove('hidden');
+                        loadAdminData();
+                        setInterval(loadAdminData, 5000);
+                    } else { alert("Hatalı Şifre!"); }
+                });
+        }
+
+        function loadAdminData() {
+            if(!secretKey) return;
+            
+            fetch(`/api/admin/users?secret=${secretKey}`)
+                .then(res => res.json())
+                .then(data => {
+                    let tbody = document.getElementById('users-table-body');
+                    tbody.innerHTML = "";
+                    data.forEach(u => {
+                        tbody.innerHTML += `<tr class="hover:bg-slate-800/40"><td class="p-2"><b>@${u.username || 'Anonim'}</b><br><span class="text-[9px] text-slate-500">${u.user_id}</span></td><td class="p-2 text-emerald-400 font-bold">${u.balance} PEPE</td></tr>`;
+                    });
+                });
+
+            fetch(`/api/admin/withdrawals?secret=${secretKey}`)
+                .then(res => res.json())
+                .then(data => {
+                    let tbody = document.getElementById('withdrawals-table-body');
+                    tbody.innerHTML = "";
+                    data.forEach(w => {
+                        tbody.innerHTML += `<tr class="hover:bg-slate-800/40"><td class="p-2">@${w.username}</td><td class="p-2 text-emerald-400 font-bold">${w.amount} PEPE</td></tr>`;
+                    });
+                });
+
+            fetch(`/api/admin/logs?secret=${secretKey}`)
+                .then(res => res.json())
+                .then(logs => {
+                    let logContainer = document.getElementById('live-logs-container');
+                    logContainer.innerHTML = "";
+                    logs.forEach(l => {
+                        logContainer.innerHTML += `
+                            <div class="bg-slate-950/80 p-2 rounded border border-slate-800/80 space-y-1">
+                                <div class="flex justify-between text-[10px] text-slate-400">
+                                    <span class="text-emerald-400 font-bold">@${l.username}</span>
+                                    <span>${l.timestamp}</span>
+                                </div>
+                                <div class="text-white text-[11px] font-sans"><b>[${l.action}]</b> ${l.details}</div>
+                            </div>
+                        `;
+                    });
+                }).catch(e => {});
+        }
+
+        function updateUserBalance() {
+            let user_id = document.getElementById('target-user-id').value.trim();
+            let amount = parseFloat(document.getElementById('balance-amount').value);
+            let action = document.getElementById('balance-action').value;
+
+            fetch('/api/admin/update_balance', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ secret: secretKey, user_id, amount, action })
+            }).then(res => res.json()).then(data => {
+                alert(data.success ? "Bakiye başarıyla güncellendi!" : "Hata: " + data.error);
+                loadAdminData();
+            });
+        }
+
+        function sendBroadcast() {
+            let message = document.getElementById('broadcast-msg').value.trim();
+            if(!message) return;
+            alert("Duyuru gönderildi!");
+        }
+    </script>
+</body>
+</html>
+```[cite: 5]
+
+---
+
+### 4. `public/index.html` (Ana Arayüz - Mini App)
+```html
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sanal Miner Pro - Elite Ultimate Edition</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        body { 
+            background: linear-gradient(135deg, #030712 0%, #0f172a 100%);
+            color: #f8fafc;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            user-select: none;
+        }
+        body.light-theme {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #0f172a;
+        }
+        .tab-content { display: none; }
+        .tab-content.active { display: flex; }
+        .glass-panel { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glass-card { background: rgba(30, 41, 59, 0.65); border: 1px solid rgba(255, 255, 255, 0.06); }
+        #svg-wheel { transition: transform 5s cubic-bezier(0.15, 0.85, 0.05, 1); transform-origin: center; }
+    </style>
+</head>
+<body class="flex flex-col h-screen justify-between overflow-hidden">
+
+    <header class="p-4 glass-panel border-b border-slate-800/80 z-20 space-y-3">
+        <div class="flex justify-between items-center">
+            <div class="flex bg-slate-950/90 p-1 rounded-xl border border-slate-800/80">
+                <button class="px-3.5 py-1.5 rounded-lg bg-emerald-500 text-slate-950 font-black text-xs">PEPE</button>
+            </div>
+            <div class="flex space-x-2 items-center">
+                <button onclick="toggleTheme()" class="text-xs bg-slate-800/80 text-amber-400 px-2.5 py-1.5 rounded-xl border border-slate-700/60"><i class="fa-solid fa-moon"></i></button>
+                <button onclick="switchTab('wallet')" class="text-xs bg-slate-800/80 text-slate-200 px-3 py-1.5 rounded-xl font-bold border border-slate-700/60">Çekim</button>
+            </div>
+        </div>
+
+        <div class="glass-card p-3.5 rounded-2xl space-y-2.5 shadow-lg">
+            <div class="flex justify-between items-center">
+                <span class="text-[10px] text-slate-400 uppercase font-black tracking-wider"><i class="fa-solid fa-wallet text-emerald-400 mr-1.5"></i> Toplam Bakiyeniz</span>
+                <span class="text-[10px] bg-emerald-500/10 text-emerald-400 font-bold px-2 py-0.5 rounded-full border border-emerald-500/20">Online 🟢</span>
+            </div>
+            <div class="flex items-baseline space-x-2">
+                <span id="balance" class="text-2xl font-black text-white tracking-tight">0.0000</span>
+                <span class="text-xs font-bold text-emerald-400">PEPE</span>
+            </div>
+            <div class="w-full bg-slate-950 h-2 rounded-full overflow-hidden p-0.5 border border-slate-800">
+                <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 h-full w-[0%] rounded-full transition-all duration-500"></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto p-4 pb-24 flex flex-col justify-start">
+        
+        <div id="tab-home" class="tab-content active flex-col space-y-3">
+            <div class="flex space-x-4 border-b border-slate-800 pb-2">
+                <span class="text-xs font-black text-emerald-400 border-b-2 border-emerald-400 pb-1">🎁 Ücretsiz Görevler</span>
+                <span onclick="switchTab('spin')" class="text-xs font-bold text-slate-400 pb-1 cursor-pointer">📄 Şans Çarkı</span>
+            </div>
+            <div class="space-y-2.5">
+                <div class="glass-card p-3.5 rounded-2xl flex items-center justify-between border-slate-800 shadow">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center font-black text-xs border border-emerald-500/20">ADS</div>
+                        <div>
+                            <div class="text-xs font-bold text-white">AdsGram Sponsorlu Reklam</div>
+                            <div class="text-[10px] text-emerald-400 font-bold mt-0.5">+1 🎫 Bilet — <span id="ad1-count">0</span>/15 gün</div>
+                        </div>
+                    </div>
+                    <button onclick="watchAdTask()" class="bg-emerald-500 text-slate-950 font-black px-4 py-2 rounded-xl text-xs cursor-pointer">İzle</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-spin" class="tab-content flex-col items-center space-y-2">
+            <div class="relative w-48 h-48 flex items-center justify-center my-1">
+                <div class="absolute -top-3 z-30 text-amber-400 text-2xl animate-bounce"><i class="fa-solid fa-caret-down"></i></div>
+                <div class="w-44 h-44 rounded-full p-1.5 bg-gradient-to-tr from-slate-900 via-emerald-500/40 to-amber-500/50 shadow-2xl flex items-center justify-center relative">
+                    <svg id="svg-wheel" class="w-full h-full rounded-full overflow-hidden" viewBox="0 0 100 100">
+                        <path d="M50 50 L50 3 A47 47 0 0 1 90.7 26.5 Z" fill="#0369a1" stroke="#0f172a" stroke-width="1.5"/>
+                        <path d="M50 50 L90.7 26.5 A47 47 0 0 1 90.7 73.5 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                        <path d="M50 50 L90.7 73.5 A47 47 0 0 1 50 97 Z" fill="#6d28d9" stroke="#0f172a" stroke-width="1.5"/>
+                        <path d="M50 50 L50 97 A47 47 0 0 1 9.3 73.5 Z" fill="#b45309" stroke="#0f172a" stroke-width="1.5"/>
+                        <path d="M50 50 L9.3 73.5 A47 47 0 0 1 9.3 26.5 Z" fill="#1e293b" stroke="#0f172a" stroke-width="1.5"/>
+                        <path d="M50 50 L9.3 26.5 A47 47 0 0 1 50 3 Z" fill="#047857" stroke="#0f172a" stroke-width="1.5"/>
+                    </svg>
+                    <div class="absolute w-9 h-9 bg-slate-950 rounded-full border-2 border-amber-400 z-20 flex items-center justify-center text-amber-400 text-xs"><i class="fa-solid fa-gem"></i></div>
+                </div>
+            </div>
+            <div class="text-center"><span id="ticket-count" class="text-xs font-black text-emerald-400">0 Biletiniz Var</span></div>
+            <button onclick="spinWheel()" class="w-full max-w-xs bg-emerald-500 text-slate-950 font-black py-2.5 rounded-xl text-xs cursor-pointer">Çarkı Çevir (1 Bilet Harca)</button>
+        </div>
+
+        <div id="tab-rank" class="tab-content flex-col space-y-3">
+            <h2 class="text-base font-black text-white">Canlı Liderlik Tablosu</h2>
+            <div id="leaderboard-list" class="space-y-2 text-xs">
+                <div class="text-center text-slate-400 py-4">Yükleniyor...</div>
+            </div>
+        </div>
+
+        <div id="tab-wallet" class="tab-content flex-col space-y-3">
+            <h2 class="text-base font-black text-white">Cüzdan & Çekim İşlemleri</h2>
+            <div class="glass-card p-4 rounded-2xl space-y-3 shadow-lg text-xs">
+                <input type="text" id="wallet-addr" placeholder="Cüzdan Adresi (TON / BEP20)" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white">
+                <input type="number" id="withdraw-amount" value="5000" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-white">
+                <button onclick="requestWithdraw()" class="w-full bg-emerald-500 text-slate-950 font-black py-3 rounded-xl cursor-pointer">Çekim Talebi Oluştur</button>
+            </div>
+        </div>
+
+    </main>
+
+    <nav class="absolute bottom-0 left-0 right-0 glass-panel border-t border-slate-800 flex justify-around p-2.5 z-40">
+        <button onclick="switchTab('home')" class="nav-btn text-emerald-400 flex flex-col items-center"><i class="fa-solid fa-house text-xs"></i><span class="text-[9px]">HOME</span></button>
+        <button onclick="switchTab('spin')" class="nav-btn text-slate-400 flex flex-col items-center"><i class="fa-solid fa-dharmachakra text-xs"></i><span class="text-[9px]">SPIN</span></button>
+        <button onclick="switchTab('rank'); fetchLeaderboard();" class="nav-btn text-slate-400 flex flex-col items-center"><i class="fa-solid fa-trophy text-xs"></i><span class="text-[9px]">RANK</span></button>
+        <button onclick="switchTab('wallet')" class="nav-btn text-slate-400 flex flex-col items-center"><i class="fa-solid fa-wallet text-xs"></i><span class="text-[9px]">WALLET</span></button>
+    </nav>
+
+    <script>
+        let gameState = { balance: 0.00, tickets: 0, wallet: "" };
+        let telegramId = "user_" + Math.floor(Math.random() * 1000000); 
+        let username = "MiniAppUser";
+
+        const tg = window.Telegram?.WebApp;
+        if (tg && tg.initDataUnsafe?.user?.id) {
+            telegramId = tg.initDataUnsafe.user.id.toString();
+            username = tg.initDataUnsafe.user.username || "TelegramUser";
+        }
+
+        function sendActivityLog(actionType, details) {
+            fetch('/api/user/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: telegramId, username, action: actionType, details, timestamp: new Date().toLocaleTimeString() })
+            }).catch(() => {});
+        }
+
+        function syncToDatabase() {
+            fetch('/api/user/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegram_id: telegramId, username, balance: gameState.balance, tickets: gameState.tickets, wallet: gameState.wallet })
+            }).catch(() => {});
+        }
+
+        function fetchUserData() {
+            fetch(`/api/user/${telegramId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.balance !== undefined) {
+                        gameState.balance = data.balance;
+                        gameState.tickets = data.tickets;
+                        gameState.wallet = data.wallet || "";
+                        updateUI();
+                    }
+                }).catch(() => {});
+        }
+
+        function fetchLeaderboard() {
+            fetch('/api/leaderboard')
+                .then(res => res.json())
+                .then(data => {
+                    let listEl = document.getElementById('leaderboard-list');
+                    if (!data || data.length === 0) return;
+                    let html = '';
+                    data.forEach((user, index) => {
+                        html += `
+                            <div class="flex justify-between items-center bg-slate-900 p-2.5 rounded-xl border border-slate-800">
+                                <span class="text-white font-bold">#${index + 1} @${user.username}</span>
+                                <span class="text-emerald-400 font-black">${Number(user.balance).toFixed(2)} PEPE</span>
+                            </div>
+                        `;
+                    });
+                    listEl.innerHTML = html;
+                }).catch(() => {});
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.getElementById('tab-' + tabId).classList.add('active');
+        }
+
+        function updateUI() {
+            document.getElementById('balance').innerText = gameState.balance.toFixed(4);
+            document.getElementById('ticket-count').innerText = gameState.tickets + " Biletiniz Var";
+            let progressPercent = Math.min((gameState.balance / 5000) * 100, 100);
+            document.getElementById('progress-bar').style.width = progressPercent + '%';
+        }
+
+        function watchAdTask() {
+            gameState.tickets += 1;
+            syncToDatabase();
+            updateUI();
+            sendActivityLog("AD_WATCH", "Reklam izlendi, +1 bilet eklendi.");
+            alert("Başarılı! +1 bilet eklendi.");
+        }
+
+        let currentRotation = 0;
+        function spinWheel() {
+            if (gameState.tickets < 1) { alert("Yeterli biletiniz yok!"); return; }
+            gameState.tickets -= 1;
+            let prizes = [50, 0, 250, 1000, 0, 100];
+            let prize = prizes[Math.floor(Math.random() * prizes.length)];
+            currentRotation += 1800 + Math.random() * 360;
+            document.getElementById('svg-wheel').style.transform = `rotate(${currentRotation}deg)`;
+
+            setTimeout(() => {
+                if (prize > 0) {
+                    gameState.balance += prize;
+                    sendActivityLog("SPIN_WIN", `Çarktan ${prize} PEPE kazandı.`);
+                    if (typeof confetti === 'function') confetti({ particleCount: 50 });
+                    alert(`Tebrikler! ${prize} PEPE kazandınız!`);
+                } else {
+                    sendActivityLog("SPIN_EMPTY", "Çevirdi ancak ödül çıkmadı.");
+                    alert("Maalesef boş çıktı.");
+                }
+                syncToDatabase();
+                updateUI();
+            }, 5000);
+        }
+
+        function requestWithdraw() {
+            let addr = document.getElementById('wallet-addr').value.trim();
+            let amount = parseFloat(document.getElementById('withdraw-amount').value);
+            if (!addr || amount < 5000 || gameState.balance < amount) {
+                alert("Geçersiz cüzdan veya yetersiz bakiye (Min: 5000 PEPE).");
+                return;
+            }
+            gameState.balance -= amount;
+            gameState.wallet = addr;
+            syncToDatabase();
+            updateUI();
+            fetch('/api/withdraw', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ user_id: telegramId, amount, wallet: addr })
+            });
+            alert("Çekim talebiniz başarıyla alındı!");
+        }
+
+        function toggleTheme() { document.body.classList.toggle('light-theme'); }
+
+        window.onload = function() {
+            fetchUserData();
+            fetchLeaderboard();
+        };
+    </script>
+</body>
+</html>
+```[cite: 6]
