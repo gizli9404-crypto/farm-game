@@ -104,7 +104,30 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
-// Admin Manuel Bakiye Yükleme API'si (Eklendi)
+// Admin Bekleyen Çekim Taleplerini Listeleme API'si (Eklendi)
+app.get('/api/admin/withdraws', (req, res) => {
+    db.all("SELECT id, telegram_id, username, amount, currency, wallet, status FROM withdrawals WHERE status = 'Bekliyor' ORDER BY id DESC", (err, rows) => {
+        if (err) {
+            logSystemError(err);
+            return res.status(500).json({ success: false, error: "Veritabanı hatası" });
+        }
+        res.json(rows || []);
+    });
+});
+
+// Admin Çekim Talebini Onaylama / Ödendi Yapma API'si (Eklendi)
+app.post('/api/admin/withdraws/complete', (req, res) => {
+    const { id } = req.body;
+    db.run("UPDATE withdrawals SET status = 'Ödendi' WHERE id = ?", [id], function(err) {
+        if (err) {
+            logSystemError(err);
+            return res.status(500).json({ success: false, error: "Veritabanı hatası" });
+        }
+        res.json({ success: true, message: "Çekim talebi ödendi olarak güncellendi!" });
+    });
+});
+
+// Admin Manuel Bakiye Yükleme API'si
 app.post('/api/admin/add-balance', (req, res) => {
     const { telegram_id, amount } = req.body;
     const numAmount = parseFloat(amount);
