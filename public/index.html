@@ -6,6 +6,8 @@
     <title>Crypto Quest Hub - Binance Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <!-- Adsgram SDK Entegrasyonu -->
+    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body { background: #0b0e11; color: #eaecef; font-family: 'Inter', sans-serif; }
@@ -114,7 +116,7 @@
             </div>
         </div>
 
-        <!-- Binance Pro Çekim Ekranı (Ağ Seçimi ve USD Hesaplayıcı ile) -->
+        <!-- Binance Pro Çekim Ekranı -->
         <div id="tab-wallet" class="tab-content space-y-3">
             <div class="binance-card p-4 rounded-2xl space-y-3">
                 <div class="flex justify-between items-center">
@@ -122,7 +124,6 @@
                     <span class="text-[10px] bg-[#fcd535]/10 text-[#fcd535] px-2 py-0.5 rounded border border-[#fcd535]/20 font-semibold">Min: 1,000 Puan</span>
                 </div>
                 
-                <!-- Kripto Varlık Seçimi -->
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold mb-1 block">VARLIK SEÇİN</label>
                     <select id="w-currency" onchange="playSound('click'); updateNetworkOptions()" class="w-full binance-card rounded-xl p-3 text-xs outline-none text-white font-bold">
@@ -133,7 +134,6 @@
                     </select>
                 </div>
 
-                <!-- Ağ (Network) Seçimi -->
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold mb-1 block">TRANSFER AĞI (NETWORK)</label>
                     <select id="w-network" class="w-full binance-card rounded-xl p-3 text-xs outline-none text-[#fcd535] font-bold">
@@ -141,14 +141,12 @@
                     </select>
                 </div>
 
-                <!-- Puan Miktarı ve Canlı USD Değeri -->
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold mb-1 block">ÇEKİLECEK PUAN (1000 Puan = 1 USD)</label>
                     <input id="w-amount" type="number" oninput="calculateUsdValue()" placeholder="Örn: 1000" class="w-full binance-card rounded-xl p-3 text-xs outline-none focus:border-[#fcd535]">
                     <p class="text-[10px] text-emerald-400 font-semibold mt-1 text-right">Karşılığı: <span id="usd-equivalent">0.00</span> USD</p>
                 </div>
 
-                <!-- Cüzdan / UID -->
                 <div>
                     <label class="text-[10px] text-slate-400 font-bold mb-1 block">BİNANCE CÜZDAN ADRESİ VEYA UID</label>
                     <input id="w-address" type="text" placeholder="Cüzdan adresi veya Binance UID girin" class="w-full binance-card rounded-xl p-3 text-xs outline-none focus:border-[#fcd535]">
@@ -186,7 +184,10 @@
             if (tg.initDataUnsafe?.user?.id) telegramId = tg.initDataUnsafe.user.id.toString();
         }
 
-        // Web Audio API ile Ses Efektleri (Harici dosya gerektirmez)
+        // Adsgram Reklam Yöneticisi Başlatma (Block ID: 43470)
+        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "43470" }) : null;
+
+        // Web Audio API ile Ses Efektleri
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             try {
@@ -204,9 +205,9 @@
                     osc.start();
                     osc.stop(audioCtx.currentTime + 0.05);
                 } else if(type === 'success') {
-                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
-                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
-                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); // G5
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08);
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16);
                     gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
                     gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
                     osc.start();
@@ -257,7 +258,6 @@
         }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
-        // Ağ Seçeneklerini Varlığa Göre Güncelleme
         function updateNetworkOptions() {
             let currency = document.getElementById('w-currency').value;
             let netSelect = document.getElementById('w-network');
@@ -273,7 +273,6 @@
             }
         }
 
-        // Anlık Puan - USD Dönüşüm Hesaplayıcısı
         function calculateUsdValue() {
             let amount = parseFloat(document.getElementById('w-amount').value) || 0;
             let usd = amount / 1000;
@@ -332,9 +331,19 @@
             });
         }
 
+        // Gerçek Adsgram Reklam Gösterme Fonksiyonu
         function watchAd() {
-            showModal("Reklam", "Reklam yükleniyor...");
-            setTimeout(() => claimReward(10, "Reklam İzleme"), 2000);
+            if (!adController) {
+                showModal("Hata", "Reklam yöneticisi yüklenemedi.");
+                return;
+            }
+            
+            adController.show().then((result) => {
+                // Reklam başarıyla izlendiğinde ödülü backend'e bildir
+                claimReward(10, "Ödüllü Reklam");
+            }).catch((err) => {
+                showModal("Bilgi", "Reklam izlenmedi veya kapatıldı.");
+            });
         }
 
         function fetchLeaderboard() {
