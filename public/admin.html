@@ -1,74 +1,76 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Elite Admin Control</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>body { background: #050505; color: #fff; font-family: sans-serif; }</style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elite Admin Panel v2.0</title>
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --accent-color: #3b82f6;
+            --text-color: #f1f5f9;
+            --sidebar-width: 250px;
+        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); color: var(--text-color); margin: 0; display: flex; }
+        .sidebar { width: var(--sidebar-width); height: 100vh; background-color: var(--card-bg); padding: 20px; border-right: 1px solid #334155; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-bottom: 30px; }
+        .card { background: var(--card-bg); padding: 20px; border-radius: 12px; border: 1px solid #334155; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .card h3 { margin-top: 0; color: #94a3b8; font-size: 0.9rem; text-transform: uppercase; }
+        .card p { font-size: 1.8rem; font-weight: bold; margin: 10px 0 0; }
+        input, textarea, button { width: 100%; padding: 12px; margin: 8px 0; border-radius: 8px; border: 1px solid #334155; background: #0f172a; color: white; }
+        button { background: var(--accent-color); color: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        button:hover { background: #2563eb; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #334155; }
+        .status-badge { padding: 4px 8px; border-radius: 4px; font-size: 0.8rem; }
+    </style>
 </head>
-<body class="p-6">
-    <h1 class="text-2xl font-bold mb-6 text-amber-500">👑 ELITE BINANCE & OTONOM KONTROL</h1>
-    
-    <!-- İstatistikler -->
-    <div class="grid grid-cols-2 gap-4 mb-8">
-        <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">Toplam Kullanıcı: <span id="count" class="font-bold">0</span></div>
-        <div class="bg-slate-900 p-4 rounded-xl border border-slate-700">Toplam Bakiye: <span id="total" class="font-bold">0</span></div>
+<body>
+    <div class="sidebar">
+        <h2>👑 Elite Admin</h2>
+        <nav>
+            <p>Dashboard</p>
+            <p>Kullanıcılar</p>
+            <p>Çekimler</p>
+            <p style="color: var(--accent-color);">Sistem Logları</p>
+        </nav>
     </div>
-
-    <!-- İşlem Alanları -->
-    <div class="grid grid-cols-2 gap-8">
-        <div class="bg-slate-900 p-6 rounded-xl border border-slate-700">
-            <h2 class="text-sm font-bold mb-4">OTONOM DUYURU</h2>
-            <textarea id="msg" class="w-full bg-black p-3 rounded mb-2 text-xs" placeholder="Mesajınız..."></textarea>
-            <button onclick="broadcast()" class="w-full bg-blue-600 py-2 rounded font-bold text-xs">KANALA GÖNDER</button>
+    <div class="main-content">
+        <h1>Kontrol Merkezi</h1>
+        <div class="dashboard-grid">
+            <div class="card"><h3>Toplam Kullanıcı</h3><p id="totalUsers">0</p></div>
+            <div class="card"><h3>Toplam Bakiye</h3><p id="totalBalance">0</p></div>
+            <div class="card"><h3>Bekleyen Çekim</h3><p id="pendingWithdraws">0</p></div>
         </div>
-        
-        <div class="bg-slate-900 p-6 rounded-xl border border-slate-700">
-            <h2 class="text-sm font-bold mb-4">MANUEL BAKİYE EKLE</h2>
-            <input id="tid" placeholder="Telegram ID" class="w-full bg-black p-2 rounded mb-2 text-xs">
-            <input id="amt" placeholder="Miktar" class="w-full bg-black p-2 rounded mb-2 text-xs">
-            <button onclick="addBalance()" class="w-full bg-emerald-600 py-2 rounded font-bold text-xs">BAKİYE YÜKLE</button>
+
+        <div class="dashboard-grid">
+            <div class="card">
+                <h3>Otonom Duyuru</h3>
+                <textarea id="broadcastMsg" rows="3" placeholder="Duyuru metni..."></textarea>
+                <button onclick="sendBroadcast()">Kanalda Yayınla</button>
+            </div>
+            <div class="card">
+                <h3>Manuel Bakiye Yönetimi</h3>
+                <input type="text" id="targetId" placeholder="Telegram ID">
+                <input type="number" id="targetAmount" placeholder="Miktar">
+                <button onclick="addBalance()">Bakiye Ekle/Düzenle</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <h3>Sistem Logları (Son 20)</h3>
+            <table id="logsTable">
+                <thead><tr><th>Zaman</th><th>Tip</th><th>Mesaj</th></tr></thead>
+                <tbody></tbody>
+            </table>
         </div>
     </div>
-
-    <!-- Çekim Talepleri -->
-    <div class="mt-8 bg-slate-900 p-6 rounded-xl border border-slate-700">
-        <h2 class="text-sm font-bold mb-4">BEKLEYEN ÇEKİM TALEPLERİ</h2>
-        <div id="withdraw-list" class="space-y-2 text-xs"></div>
-    </div>
-
     <script>
-        async function fetchAdminData() {
-            // Kullanıcıları ve çekimleri çekip listele
-            const res = await fetch('/api/admin/users');
-            const users = await res.json();
-            document.getElementById('count').innerText = users.length;
-            document.getElementById('total').innerText = users.reduce((a, b) => a + b.balance, 0);
-        }
-
-        async function addBalance() {
-            const telegram_id = document.getElementById('tid').value;
-            const amount = document.getElementById('amt').value;
-            await fetch('/api/admin/add-balance', { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ telegram_id, amount }) 
-            });
-            alert("Bakiye eklendi!");
-            fetchAdminData();
-        }
-
-        async function broadcast() {
-            const message = document.getElementById('msg').value;
-            await fetch('/api/admin/broadcast', { 
-                method: 'POST', 
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ message }) 
-            });
-            alert("Duyuru gönderildi!");
-        }
-
-        fetchAdminData();
+        // API bağlantı kodları buraya eklenecek
+        console.log("Admin Panel Aktif");
     </script>
 </body>
 </html>
