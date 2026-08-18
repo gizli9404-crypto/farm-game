@@ -1,4 +1,184 @@
-<script>
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanal Miner Pro App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <style>
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        body.light-theme { background-color: #f1f5f9; color: #0f172a; }
+        body.light-theme .bg-slate-900 { background-color: #ffffff; color: #0f172a; }
+        body.light-theme .text-white { color: #0f172a; }
+        body.light-theme .border-slate-800 { border-color: #cbd5e1; }
+    </style>
+</head>
+<body class="bg-slate-950 text-white font-sans min-h-screen flex flex-col justify-between selection:bg-emerald-500 selection:text-black">
+
+    <!-- TOP HEADER -->
+    <header class="p-4 flex justify-between items-center border-b border-slate-800/80 bg-slate-900/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="flex items-center space-x-2">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-cyan-500 flex items-center justify-center font-black text-black shadow-lg shadow-emerald-500/20">SM</div>
+            <div>
+                <h1 class="font-extrabold text-sm tracking-wide">Sanal Miner Pro</h1>
+                <div class="flex items-center space-x-1">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span class="text-[10px] text-emerald-400 font-medium">Sistem Aktif</span>
+                </div>
+            </div>
+        </div>
+        <div class="flex items-center space-x-2">
+            <button onclick="toggleTheme(); playClickSound();" class="p-2 rounded-xl bg-slate-900 border border-slate-800 hover:border-slate-700 transition">🌓</button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <main class="flex-1 p-4 max-w-md mx-auto w-full pb-24">
+
+        <!-- TAB 1: MINING (ANASAYFA) -->
+        <div id="tab-mining" class="tab-content active space-y-4">
+            <div class="bg-gradient-to-br from-slate-900 to-slate-900/60 p-5 rounded-3xl border border-slate-800/80 shadow-xl relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-xs uppercase tracking-wider text-slate-400 font-bold">Toplam Varlık</span>
+                    <span class="text-xs bg-emerald-500/20 text-emerald-400 font-bold px-2.5 py-1 rounded-full border border-emerald-500/30">PEPE</span>
+                </div>
+                <div class="flex items-baseline space-x-2 mb-4">
+                    <span id="balance" class="text-4xl font-black tracking-tight text-emerald-400">0.0000</span>
+                    <span class="text-sm text-slate-400 font-bold">PEPE</span>
+                </div>
+                <div class="space-y-2">
+                    <div class="flex justify-between text-xs font-semibold text-slate-400">
+                        <span>Çekim Limiti</span>
+                        <span id="progress-text">0.00 / 5,000 PEPE (0.0%)</span>
+                    </div>
+                    <div class="w-full bg-slate-950 h-3 rounded-full overflow-hidden p-0.5 border border-slate-800">
+                        <div id="progress-bar" class="bg-gradient-to-r from-emerald-500 to-cyan-400 h-full rounded-full transition-all duration-500" style="width: 0%;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GÖREVLER -->
+            <div class="bg-slate-900/80 p-4 rounded-3xl border border-slate-800 space-y-3">
+                <h2 class="text-sm font-black text-slate-300">Bilet Kazan</h2>
+                <div class="flex items-center justify-between bg-slate-950/60 p-3 rounded-2xl border border-slate-800/60">
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xl">📺</span>
+                        <div>
+                            <p class="text-xs font-bold">Sponsorlu Reklam İzle</p>
+                            <p class="text-[10px] text-slate-400">Günlük Limit: <span id="ad-count">0</span>/5</p>
+                        </div>
+                    </div>
+                    <button onclick="watchAdTask('ad', 'ad-count', 5); playClickSound();" class="bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-xs px-4 py-2 rounded-xl transition shadow-lg shadow-emerald-500/20">İzle (+1)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2: WHEEL (ÇARK) -->
+        <div id="tab-wheel" class="tab-content space-y-4 text-center">
+            <div class="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 space-y-4">
+                <h2 class="text-base font-black">Şans Çarkı</h2>
+                <p id="ticket-count" class="text-xs text-emerald-400 font-bold">0 Biletiniz Var</p>
+                <div class="relative w-64 h-64 mx-auto flex items-center justify-center">
+                    <div id="svg-wheel" class="w-full h-full rounded-full border-4 border-emerald-500/50 bg-slate-950 flex items-center justify-center transition-all duration-[5000ms] shadow-2xl relative overflow-hidden">
+                        <div class="absolute inset-0 flex items-center justify-center font-black text-slate-700 text-sm">SPIN</div>
+                    </div>
+                    <div class="absolute -top-3 w-4 h-6 bg-emerald-400 clip-polygon shadow-lg z-10"></div>
+                </div>
+                <button onclick="spinWheel(); playClickSound();" class="w-full bg-gradient-to-r from-emerald-500 to-cyan-500 text-black font-black py-3 rounded-2xl shadow-lg shadow-emerald-500/20 hover:opacity-90 transition">Çarkı Çevir (1 Bilet)</button>
+            </div>
+        </div>
+
+        <!-- TAB 3: WALLET (CÜZDAN & ÇEKİM) -->
+        <div id="tab-wallet" class="tab-content space-y-4">
+            <div class="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 space-y-4">
+                <h2 class="text-base font-black">Çekim Talebi</h2>
+                <div class="space-y-3">
+                    <div>
+                        <label class="text-[11px] text-slate-400 font-bold block mb-1">Cüzdan Adresi</label>
+                        <input id="wallet-addr" type="text" placeholder="TON / PEPE cüzdan adresiniz" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:border-emerald-500 outline-none transition">
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-slate-400 font-bold block mb-1">Ağ Seçimi</label>
+                        <select id="wallet-network" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:border-emerald-500 outline-none transition">
+                            <option value="TON">TON Network</option>
+                            <option value="BSC">BSC (BEP20)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="text-[11px] text-slate-400 font-bold block mb-1">Miktar (Min: 5000 PEPE)</label>
+                        <input id="withdraw-amount" type="number" placeholder="5000" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs focus:border-emerald-500 outline-none transition">
+                    </div>
+                    <button onclick="requestWithdraw(); playClickSound();" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-black py-3 rounded-xl transition shadow-lg shadow-emerald-500/20 text-xs">Çekim Talebi Oluştur</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: RANK (LİDERLİK) -->
+        <div id="tab-rank" class="tab-content space-y-4">
+            <div class="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 space-y-4">
+                <h2 class="text-base font-black">Liderlik Tablosu</h2>
+                <div class="flex justify-between items-center bg-slate-950 p-3 rounded-2xl border border-slate-800">
+                    <span class="text-xs text-slate-400 font-bold">Sıralamanız</span>
+                    <span id="rank-balance" class="text-xs text-emerald-400 font-black">0.00 PEPE</span>
+                </div>
+                <div id="leaderboard-list" class="space-y-2"></div>
+            </div>
+        </div>
+
+        <!-- TAB 5: FRIENDS (DAVET) -->
+        <div id="tab-friends" class="tab-content space-y-4">
+            <div class="bg-slate-900/80 p-5 rounded-3xl border border-slate-800 space-y-4 text-center">
+                <h2 class="text-base font-black">Arkadaşını Davet Et</h2>
+                <p class="text-xs text-slate-400">Her davet ettiğin arkadaşın için ekstra bilet kazan!</p>
+                <div class="flex space-x-2">
+                    <input id="ref-link" type="text" readonly value="https://t.me/sanal_miner_test_bot?start=ref_123" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-slate-300 outline-none">
+                    <button onclick="copyRefLink(); playClickSound();" class="bg-slate-800 hover:bg-slate-700 font-bold px-4 rounded-xl text-xs transition">Kopyala</button>
+                </div>
+                <button onclick="shareViaTelegram(); playClickSound();" class="w-full bg-sky-500 hover:bg-sky-400 text-white font-bold py-3 rounded-xl transition text-xs">Telegram ile Paylaş</button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- MODAL POPUP -->
+    <div id="custom-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 w-full max-w-xs rounded-3xl p-5 text-center space-y-4 shadow-2xl">
+            <h3 id="modal-title" class="text-base font-black">Bilgilendirme</h3>
+            <p id="modal-desc" class="text-xs text-slate-300 leading-relaxed"></p>
+            <button onclick="closeModal(); playClickSound();" class="w-full bg-emerald-500 hover:bg-emerald-400 text-black font-black py-2.5 rounded-xl text-xs transition">Tamam</button>
+        </div>
+    </div>
+
+    <!-- BOTTOM NAVBAR -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-slate-900/90 backdrop-blur-lg border-t border-slate-800/80 p-2 flex justify-around items-center z-40 max-w-md mx-auto">
+        <button onclick="switchTab('mining'); playClickSound();" data-target="mining" class="nav-btn flex flex-col items-center space-y-1 text-emerald-400 transition">
+            <span class="text-lg">⛏️</span>
+            <span class="text-[10px] font-bold">Madenci</span>
+        </button>
+        <button onclick="switchTab('wheel'); playClickSound();" data-target="wheel" class="nav-btn flex flex-col items-center space-y-1 text-slate-400 transition">
+            <span class="text-lg">🎡</span>
+            <span class="text-[10px] font-bold">Çark</span>
+        </button>
+        <button onclick="switchTab('wallet'); playClickSound();" data-target="wallet" class="nav-btn flex flex-col items-center space-y-1 text-slate-400 transition">
+            <span class="text-lg">💰</span>
+            <span class="text-[10px] font-bold">Cüzdan</span>
+        </button>
+        <button onclick="switchTab('rank'); playClickSound();" data-target="rank" class="nav-btn flex flex-col items-center space-y-1 text-slate-400 transition">
+            <span class="text-lg">🏆</span>
+            <span class="text-[10px] font-bold">Sıralama</span>
+        </button>
+        <button onclick="switchTab('friends'); playClickSound();" data-target="friends" class="nav-btn flex flex-col items-center space-y-1 text-slate-400 transition">
+            <span class="text-lg">👥</span>
+            <span class="text-[10px] font-bold">Davet</span>
+        </button>
+    </nav>
+
+    <!-- JAVASCRIPT KODLARI -->
+    <script>
         let gameState = { balance: 0.00, tickets: 0, wallet: "" };
         let telegramId = "user_" + Math.floor(Math.random() * 1000000); 
         let username = "MiniAppUser";
@@ -11,37 +191,10 @@
                     telegramId = tg.initDataUnsafe.user.id.toString();
                     username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "TelegramUser";
                 }
-            } catch (e) {
-                console.log("Telegram WebApp API yüklenemedi, tarayıcı modunda devam ediliyor.");
-            }
-        }
-
-        function sendActivityLog(actionType, details) {
-            // Sunucu yoksa hatayı yutması için try-catch eklendi
-            try {
-                fetch('/api/user/log', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        telegram_id: telegramId, username: username, action: actionType,
-                        details: details, balance: gameState.balance, tickets: gameState.tickets, wallet: gameState.wallet
-                    })
-                }).catch(err => {});
-            } catch(e) {}
-        }
-
-        function syncToDatabase() {
-            try {
-                fetch('/api/user/update', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegram_id: telegramId, username: username, balance: gameState.balance, tickets: gameState.tickets, wallet: gameState.wallet })
-                }).catch(err => {});
-            } catch(e) {}
+            } catch (e) {}
         }
 
         function fetchUserData() {
-            // Yerel depolama (localStorage) desteği eklendi ki sunucu olmasa bile verileriniz kaybolmasın
             let savedData = localStorage.getItem('sanal_miner_' + telegramId);
             if (savedData) {
                 try {
@@ -49,35 +202,15 @@
                     gameState.balance = parsed.balance || 0;
                     gameState.tickets = parsed.tickets || 0;
                     gameState.wallet = parsed.wallet || "";
-                    updateUI();
                 } catch(e) {}
             }
-
-            fetch(`/api/user/${telegramId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.balance !== undefined) {
-                        gameState.balance = data.balance;
-                        gameState.tickets = data.tickets;
-                        gameState.wallet = data.wallet || "";
-                        updateUI();
-                    }
-                })
-                .catch(err => {
-                    console.log("Sunucu bağlantısı yok, yerel hafıza modu aktif.");
-                    updateUI();
-                });
+            updateUI();
         }
 
         function saveUserData() {
             localStorage.setItem('sanal_miner_' + telegramId, JSON.stringify(gameState));
-            syncToDatabase();
         }
 
-        let currentRotation = 0;
-        let isSpinning = false;
-        
-        // Ses bağlamı hataya sebep olmaması için tıklama anında başlatılacak şekilde ertelendi
         let audioCtx = null;
         function getAudioContext() {
             if (!audioCtx) {
@@ -101,11 +234,8 @@
                 if (type === 'click') {
                     osc.type = 'sine'; osc.frequency.setValueAtTime(400, now);
                     gain.gain.setValueAtTime(0.02, now); gain.gain.linearRampToValueAtTime(0, now + 0.05);
-                } else if (type === 'win') {
-                    osc.type = 'triangle'; osc.frequency.setValueAtTime(300, now);
-                    gain.gain.setValueAtTime(0.05, now); gain.gain.linearRampToValueAtTime(0, now + 0.4);
                 }
-                osc.start(now); osc.stop(now + 0.4);
+                osc.start(now); osc.stop(now + 0.05);
             } catch(e) {}
         }
 
@@ -143,7 +273,7 @@
             if(progText) progText.innerText = `${gameState.balance.toFixed(2)} / 5,000 PEPE (${progressPercent.toFixed(1)}%)`;
         }
 
-        function showModal(title, desc, isSuccess = true) {
+        function showModal(title, desc) {
             document.getElementById('modal-title').innerText = title;
             document.getElementById('modal-desc').innerText = desc;
             let modal = document.getElementById('custom-modal');
@@ -160,22 +290,24 @@
         function watchAdTask(taskId, counterId, maxLimit) {
             let countEl = document.getElementById(counterId);
             let currentCount = parseInt(countEl.innerText || "0");
-            if(currentCount >= maxLimit) { showModal("Limit", "Günlük sınır.", false); return; }
+            if(currentCount >= maxLimit) { showModal("Limit", "Günlük reklam izleme sınırına ulaştınız."); return; }
             
-            showModal("Reklam", "Sponsorlu reklam simülasyonu...", true);
+            showModal("Reklam", "Sponsorlu reklam yükleniyor...");
             setTimeout(() => {
                 currentCount++;
                 countEl.innerText = currentCount;
                 gameState.tickets += 1;
                 saveUserData();
                 updateUI();
-                showModal("Başarılı", "+1 bilet eklendi!", true);
+                showModal("Başarılı", "+1 bilet hesabınıza eklendi!");
             }, 1000);
         }
 
+        let currentRotation = 0;
+        let isSpinning = false;
         function spinWheel() {
             if (isSpinning) return;
-            if (gameState.tickets < 1) { showModal("Bilet Yok", "Çevirmek için bilet gerekli.", false); return; }
+            if (gameState.tickets < 1) { showModal("Bilet Yok", "Çarkı çevirmek için yeterli biletiniz yok."); return; }
 
             isSpinning = true;
             gameState.tickets -= 1;
@@ -195,9 +327,9 @@
                     saveUserData();
                     updateUI();
                     if (typeof confetti === 'function') confetti({ particleCount: 50 });
-                    showModal("Kazanıldı!", `Çarktan ${prize} PEPE kazandınız!`, true);
+                    showModal("Tebrikler!", `Çarktan ${prize} PEPE kazandınız!`);
                 } else {
-                    showModal("Boş", "Ödül çıkmadı.", false);
+                    showModal("Üzgünüm", "Bu çevirmede ödül çıkmadı, tekrar dene!");
                 }
             }, 5000);
         }
@@ -206,14 +338,14 @@
             let refLinkInput = document.getElementById("ref-link");
             if(refLinkInput) {
                 navigator.clipboard.writeText(refLinkInput.value);
-                showModal("Kopyalandı", "Davet linki panoda.", true);
+                showModal("Kopyalandı", "Davet linkiniz panoya kopyalandı.");
             }
         }
 
         function shareViaTelegram() {
             let refLinkInput = document.getElementById("ref-link");
             let url = refLinkInput ? refLinkInput.value : "";
-            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=PEPE Kazan!`, '_blank');
+            window.open(`https://t.me/share/url?url=${encodeURIComponent(url)}&text=Sanal Miner Pro ile PEPE Kazanmaya Başla!`, '_blank');
         }
 
         function requestWithdraw() {
@@ -225,8 +357,16 @@
             let amount = amountEl ? parseFloat(amountEl.value) : 0;
             let network = networkEl ? networkEl.value : "TON";
 
-            if (!addr || amount < 5000 || gameState.balance < amount) {
-                showModal("Hata", "Adres veya bakiye yetersiz (Min: 5000 PEPE).", false);
+            if (!addr) {
+                showModal("Hata", "Lütfen geçerli bir cüzdan adresi girin.");
+                return;
+            }
+            if (isNaN(amount) || amount < 5000) {
+                showModal("Hata", "Minimum çekim miktarı 5000 PEPE'dir.");
+                return;
+            }
+            if (gameState.balance < amount) {
+                showModal("Hata", "Bakiyeniz bu miktar için yetersiz.");
                 return;
             }
 
@@ -234,7 +374,7 @@
             gameState.wallet = addr;
             saveUserData();
             updateUI();
-            showModal("Başarılı", "Çekim talebiniz başarıyla oluşturuldu!", true);
+            showModal("Başarılı", `Çekim talebiniz ${network} ağı üzerinden başarıyla oluşturuldu!`);
         }
 
         function fetchLeaderboard() {
@@ -256,3 +396,5 @@
             fetchUserData();
         };
     </script>
+</body>
+</html>
