@@ -11,6 +11,7 @@ const PORT = process.env.PORT || 8080;
 // Telegram Bot ve Kanal Bilgileri
 const TELEGRAM_BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
 const ADMIN_CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru';
+const PAYMENT_PROOF_CHANNEL = process.env.PROOF_CHANNEL || '@sanal_miner_duyuru'; // Ödeme kanıtları kanalı
 
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -73,7 +74,7 @@ app.post(['/api/user/login', '/api/kullanici/giris'], (req, res) => {
     let { telegram_id, username } = req.body;
     if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
 
-    telegram_id = String(telegram_id); // ID'yi garanti string yap
+    telegram_id = String(telegram_id);
 
     db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegram_id], (err, row) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
@@ -91,7 +92,6 @@ app.post(['/api/user/login', '/api/kullanici/giris'], (req, res) => {
     });
 });
 
-// Kullanıcı Verisi Getirme (Mini App Yenileme Sorunu İçin)
 app.get('/api/user/data', (req, res) => {
     let telegram_id = req.query.telegram_id;
     if (!telegram_id) return res.status(400).json({ success: false, error: 'Telegram ID gerekli' });
@@ -107,7 +107,7 @@ app.get('/api/user/data', (req, res) => {
 });
 
 // ==========================================
-// 2. LİDERLİK TABLOSU (RANK) & OTOMATİK YARIŞ
+// 2. LİDERLİK TABLOSU (RANK)
 // ==========================================
 
 app.get('/api/rankings', (req, res) => {
@@ -116,7 +116,6 @@ app.get('/api/rankings', (req, res) => {
     db.all(`SELECT telegram_id, username, balance, tickets FROM users ORDER BY tickets DESC, balance DESC LIMIT 10`, [], (err, topUsers) => {
         if (err) return res.status(500).json({ success: false, error: err.message });
 
-        // Kullanıcının kendi sırasını bulma
         db.all(`SELECT telegram_id, tickets, balance FROM users ORDER BY tickets DESC, balance DESC`, [], (err, allUsers) => {
             if (err) return res.status(500).json({ success: false, error: err.message });
 
@@ -147,17 +146,16 @@ app.get('/api/rankings', (req, res) => {
     });
 });
 
-// Günlük Liderlik Tablosunu Telegram Kanalına Otomatik Gönderme Fonksiyonu
 async function sendDailyLeaderboardToChannel() {
     db.all(`SELECT username, tickets, balance FROM users ORDER BY tickets DESC, balance DESC LIMIT 3`, [], async (err, rows) => {
         if (err || !rows || rows.length === 0) return;
 
-        let msg = `🏆 **GÜNLÜK MADENCİLİK LİDERLİK TABLOSU** 🏆\n\nEn çok bilet ve kazanç sağlayan şanslı madencilerimiz:\n\n`;
+        let msg = `🏆 **GÜNLÜK MADENCİLİK LİDERLİK TABLOSU** 🏆\n\nEn çok bilet ve kazanç sağlayan madencilerimiz:\n\n`;
         rows.forEach((r, i) => {
             const medals = ['🥇', '🥈', '🥉'];
             msg += `${medals[i]} @${r.username || 'Madenci'} — **${r.tickets} Bilet** 🎫 (${r.balance} PEPE)\n`;
         });
-        msg += `\n🚀 Sen de yarışa katıl, ödülleri kap! Kanalda kalmaya devam edin.`;
+        msg += `\n🚀 Sen de yarışa katıl, ödülleri kap!`;
 
         try {
             await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -165,14 +163,10 @@ async function sendDailyLeaderboardToChannel() {
                 text: msg,
                 parse_mode: 'Markdown'
             });
-            addSystemLog('OTOMATİK_LİDERLİK', 'Günlük liderlik tablosu kanala başarıyla gönderildi.');
-        } catch (e) {
-            console.error('Kanal duyuru hatası:', e.message);
-        }
+            addSystemLog('OTOMATİK_LİDERLİK', 'Günlük liderlik tablosu kanala gönderildi.');
+        } catch (e) {}
     });
 }
-
-// Her 24 saatte bir otomatik kanal liderlik tablosu paylaşımı tetikleyicisi
 setInterval(sendDailyLeaderboardToChannel, 86400000);
 
 // ==========================================
@@ -190,12 +184,12 @@ app.post(['/api/withdraw', '/api/cekim'], (req, res) => {
             
             addSystemLog('ÇEKİM_TALEBİ', `@${username || telegram_id} adlı kullanıcı ${amount} PEPE çekim talebi oluşturdu.`);
 
-            const msg = `🔔 **YENİ ÇEKİM TALEBİ**\n\n👤 Kullanıcı: @${username || telegram_id} (\`${telegram_id}\`)\n💰 Miktar: \`${amount} PEPE\`\n💳 Cüzdan: \`${wallet}\`\n🌐 Ağ: \`${network || 'BEP20'}\``;
+            const msg = `🔔 **YENİ ÇEKİM TALEBİ**\n\n👤 Kullanıcı: @${username || telegram_id}\n💰 Miktar: \`${amount} PEPE\`\n💳 Cüzdan: \`${wallet}\``;
             axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 chat_id: ADMIN_CHANNEL_ID,
                 text: msg,
                 parse_mode: 'Markdown'
-            }).catch(e => console.log('Telegram bildirim hatası:', e.message));
+            }).catch(e => {});
 
             res.json({ success: true, message: 'Çekim talebi alındı.' });
         }
@@ -262,7 +256,6 @@ app.post('/api/admin/broadcast', async (req, res) => {
     });
 });
 
-// Admin Varlık (Bakiye / Bilet) Tanımlama (Anında Yansıma Garantili)
 app.post('/api/admin/modify', (req, res) => {
     let { telegram_id, amount, type } = req.body;
     if (!telegram_id || amount === undefined || !type) {
@@ -283,18 +276,19 @@ app.post('/api/admin/modify', (req, res) => {
                 
                 axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                     chat_id: telegram_id,
-                    text: `🎁 **Hesabınıza Varlık Tanımlandı!**\n\nYönetici tarafından hesabınıza **${amount} ${type === 'tickets' ? 'Bilet 🎫' : 'PEPE 🪙'}** eklendi!`,
+                    text: `🎁 **Hesabınıza Varlık Tanımlandı!**\n\nHesabınıza **${amount} ${type === 'tickets' ? 'Bilet 🎫' : 'PEPE 🪙'}** eklendi!`,
                     parse_mode: 'Markdown'
                 }).catch(() => {});
 
                 res.json({ success: true, message: 'Güncellendi' });
             });
         } else {
-            res.status(404).json({ success: false, error: 'Kullanıcı veritabanında bulunamadı.' });
+            res.status(404).json({ success: false, error: 'Kullanıcı bulunamadı.' });
         }
     });
 });
 
+// ADSGRAM UYUMLU ÖDEME KANITI (PROOF OF PAYOUT) OTOMATİK BİLDİRİMİ
 app.post('/api/admin/withdraw/approve', (req, res) => {
     const { id } = req.body;
     if (!id) return res.status(400).json({ success: false, error: 'ID gerekli' });
@@ -305,25 +299,34 @@ app.post('/api/admin/withdraw/approve', (req, res) => {
         db.run(`UPDATE withdrawals SET status = 'Onaylandı' WHERE id = ?`, [id], (err) => {
             if (err) return res.status(500).json({ success: false, error: err.message });
 
-            addSystemLog('ÇEKİM_ONAYLANDI', `@${withdraw.username} kullanıcısının ${withdraw.amount} PEPE çekim talebi onaylandı.`);
+            addSystemLog('ÇEKİM_ONAYLANDI', `@${withdraw.username} kullanıcısının ${withdraw.amount} PEPE ödemesi yapıldı.`);
 
+            // 1. Kullanıcıya özel mesaj
             axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
                 chat_id: withdraw.telegram_id,
-                text: `✅ **Çekim Talebiniz Onaylandı!**\n\n🎉 ${withdraw.amount} PEPE miktarındaki ödemeniz \`${withdraw.wallet}\` cüzdan adresinize gönderilmiştir.`,
+                text: `✅ **Çekim Talebiniz Onaylandı ve Gönderildi!**\n\n🎉 ${withdraw.amount} PEPE cüzdanınıza aktarıldı.`,
                 parse_mode: 'Markdown'
             }).catch(() => {});
 
-            res.json({ success: true, message: 'Çekim onaylandı.' });
+            // 2. AdsGram kuralı için Şeffaf Ödeme Kanıtı Kanalına Rapor Gönderme
+            const proofMsg = `💎 **ÖDEME KANITI (PAYOUT PROOF)** 💎\n\n👤 Alıcı: @${withdraw.username || 'Gizli Madenci'}\n💰 Miktar: \`${withdraw.amount} PEPE\`\n🌐 Ağ: \`${withdraw.network}\`\n💳 Cüzdan: \`${withdraw.wallet.substring(0, 6)}...${withdraw.wallet.slice(-4)}\`\nstatus: **ÖDENDİ ✅**`;
+            
+            axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                chat_id: PAYMENT_PROOF_CHANNEL,
+                text: proofMsg,
+                parse_mode: 'Markdown'
+            }).catch(() => {});
+
+            res.json({ success: true, message: 'Çekim onaylandı ve kanala ödendi kanıtı atıldı.' });
         });
     });
 });
 
 // ==========================================
-// 4. TELEGRAM BOT KOMUT DİNLEYİCİSİ (LONG POLLING)
+// 4. TELEGRAM BOT LONG POLLING
 // ==========================================
 
 let lastUpdateId = 0;
-
 async function checkTelegramUpdates() {
     try {
         const response = await axios.get(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/getUpdates`, {
@@ -331,52 +334,38 @@ async function checkTelegramUpdates() {
         });
 
         if (response.data && response.data.ok) {
-            const updates = response.data.result;
-            for (const update of updates) {
+            for (const update of response.data.result) {
                 lastUpdateId = update.update_id + 1;
-
-                if (update.message && update.message.text) {
+                if (update.message && update.message.text && update.message.text.startsWith('/start')) {
                     const chatId = update.message.chat.id;
-                    const text = update.message.text.trim();
                     const user = update.message.from;
                     const telegramId = String(user.id);
                     const username = user.username || user.first_name || 'Kullanici';
 
-                    // /start komutu algılandığında
-                    if (text.startsWith('/start')) {
-                        db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegramId], (err, row) => {
-                            if (!row) {
-                                db.run(`INSERT INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, 0, 0, '')`, 
-                                    [telegramId, username], (err) => {
-                                        if (!err) addSystemLog('YENİ_KULLANICI', `Start ile katıldı: @${username} (${telegramId})`);
-                                    });
-                            }
-                        });
+                    db.get(`SELECT * FROM users WHERE telegram_id = ?`, [telegramId], (err, row) => {
+                        if (!row) {
+                            db.run(`INSERT INTO users (telegram_id, username, balance, tickets, wallet) VALUES (?, ?, 0, 0, '')`, [telegramId, username]);
+                        }
+                    });
 
-                        // Kullanıcıya Hoş Geldin Mesajı ve Mini App Açma Butonu Gönder
-                        axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                            chat_id: chatId,
-                            text: `👋 **Merhaba ${username}, Sanal Miner Pro'ya hoş geldin!**\n\nMadencilik yapmak, şans çarkı çevirmek ve kazanç sağlamak için aşağıdaki butona tıkla:`,
-                            parse_mode: 'Markdown',
-                            reply_markup: {
-                                inline_keyboard: [
-                                    [{ text: "🚀 Madenciliği Aç (Mini App)", web_app: { url: "https://miner-production-32ee.up.railway.app" } }],
-                                    [{ text: "📢 Duyuru Kanalı", url: "https://t.me/sanal_miner_duyuru" }]
-                                ]
-                            }
-                        }).catch(e => console.error('Start mesajı gönderme hatası:', e.message));
-                    }
+                    axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                        chat_id: chatId,
+                        text: `👋 **Merhaba ${username}, Sanal Miner Pro'ya hoş geldin!**\n\nMadencilik yapmak ve ödülleri toplamak için tıkla:`,
+                        parse_mode: 'Markdown',
+                        reply_markup: {
+                            inline_keyboard: [
+                                [{ text: "🚀 Madenciliği Aç (Mini App)", web_app: { url: "https://miner-production-32ee.up.railway.app" } }],
+                                [{ text: "📢 Duyuru & Ödeme Kanıtları", url: "https://t.me/sanal_miner_duyuru" }]
+                            ]
+                        }
+                    }).catch(() => {});
                 }
             }
         }
-    } catch (error) {
-        // Hataların sunucuyu düşürmesi engellendi
-    }
+    } catch (e) {}
 }
-
-// Bot mesajlarını arka planda sürekli dinle
 setInterval(checkTelegramUpdates, 3000);
 
 app.listen(PORT, () => {
-    console.log(`Gelişmiş Backend ${PORT} portunda başarıyla çalışıyor.`);
+    console.log(`Gelişmiş Backend ${PORT} portunda çalışıyor.`);
 });
