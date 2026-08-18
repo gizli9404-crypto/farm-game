@@ -19,7 +19,7 @@ const bot = new Telegraf(BOT_TOKEN);
 
 bot.start((ctx) => {
     const telegramId = ctx.from.id.toString();
-    const username = ctx.from.username || 'Kullanici_' + telegramId.slice(-4);
+    const username = ctx.from.username || 'User_' + telegramId.slice(-4);
     const firstName = ctx.from.first_name || '';
 
     db.run(
@@ -77,7 +77,6 @@ function logSystemError(errMessage) {
     });
 }
 
-// Otomatik Kanal Motivasyon ve Ödeme Listesi Gönderici
 setInterval(() => {
     db.all("SELECT username, amount, currency FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 3", (err, rows) => {
         if (err) { logSystemError(err); return; }
@@ -86,8 +85,7 @@ setInterval(() => {
             : `• CryptoKing_99 ➔ 50 USDT (Ödendi)\n• Satoshi_TR ➔ 30 USDT (Ödendi)\n• BinanceWhale ➔ 25 USDT (Ödendi)`;
 
         const motivationalMessages = [
-            `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`,
-            `💎 HIZLI KAZANÇ ZAMANI!\n\nSon ödemeler kullanıcılarımızın cüzdanlarına ulaştı:\n${payoutText}\n\n⭐ Siz de yerinizi alın, arkadaşlarınızı davet edin ve pasif gelirinizi artırın!\n\n👉 Uygulamaya Git: ${MINI_APP_URL}`
+            `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`
         ];
         let randomMsg = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
         bot.telegram.sendMessage(CHANNEL_ID, randomMsg).catch(e => logSystemError(e));
@@ -107,7 +105,6 @@ app.get('/api/user/:id', (req, res) => {
     });
 });
 
-// Günlük Bonus Alım Endpoint'i (Ardışık Gün Mantığı)
 app.post('/api/daily/claim', (req, res) => {
     const { telegram_id } = req.body;
     const today = new Date().toISOString().slice(0, 10);
@@ -119,10 +116,8 @@ app.post('/api/daily/claim', (req, res) => {
         }
 
         let currentDay = user.streak_day || 1;
-        // Günlük ödül tablosu: 1.gün 5, 2.gün 6, 3.gün 7, 4.gün 8, 5.gün 9, 6.gün 10, 7.gün 15 puan
         const rewards = { 1: 5, 2: 6, 3: 7, 4: 8, 5: 9, 6: 10, 7: 15 };
         let earnedReward = rewards[currentDay] || 5;
-
         let nextDay = currentDay >= 7 ? 1 : currentDay + 1;
 
         db.run("UPDATE users SET balance = balance + ?, streak_day = ?, last_claim_date = ? WHERE telegram_id = ?", 
@@ -133,36 +128,42 @@ app.post('/api/daily/claim', (req, res) => {
     });
 });
 
-// Liderlik Tablosu
-app.get('/api/leaderboard', (req, res) => {
-    db.all("SELECT username, balance FROM users", (err, realUsers) => {
+// Liderlik ve Kullanıcının Kendi Sıralamasını Hesaplama
+app.get('/api/leaderboard/:telegram_id', (req, res) => {
+    const tid = req.params.telegram_id;
+    db.all("SELECT telegram_id, username, balance FROM users", (err, realUsers) => {
         let fakeUsers = [
-            { username: "CryptoKing_99", balance: 1420 },
-            { username: "Satoshi_TR", balance: 1250 },
-            { username: "BinanceWhale", balance: 980 },
-            { username: "MineMaster", balance: 850 },
-            { username: "Ali_Can_Coin", balance: 620 },
-            { username: "ZenginEsnaf", balance: 510 },
-            { username: "KriptoKurdu", balance: 430 },
-            { username: "BlockchainPro", balance: 310 },
-            { username: "MehmetDag", balance: 215 },
-            { username: "TokenAvcisi", balance: 150 }
+            { telegram_id: "f1", username: "CryptoKing_99", balance: 1420 },
+            { telegram_id: "f2", username: "Satoshi_TR", balance: 1250 },
+            { telegram_id: "f3", username: "BinanceWhale", balance: 980 },
+            { telegram_id: "f4", username: "MineMaster", balance: 850 },
+            { telegram_id: "f5", username: "Ali_Can_Coin", balance: 620 },
+            { telegram_id: "f6", username: "ZenginEsnaf", balance: 510 },
+            { telegram_id: "f7", username: "KriptoKurdu", balance: 430 },
+            { telegram_id: "f8", username: "BlockchainPro", balance: 310 },
+            { telegram_id: "f9", username: "MehmetDag", balance: 215 },
+            { telegram_id: "f10", username: "TokenAvcisi", balance: 150 }
         ];
 
         let combined = [...fakeUsers];
         if (realUsers) {
             realUsers.forEach(ru => {
-                let existingIndex = combined.findIndex(f => f.username === ru.username);
+                let existingIndex = combined.findIndex(f => f.telegram_id === ru.telegram_id);
                 if (existingIndex >= 0) {
                     combined[existingIndex].balance = ru.balance;
+                    combined[existingIndex].username = ru.username;
                 } else {
-                    combined.push({ username: ru.username, balance: ru.balance });
+                    combined.push({ telegram_id: ru.telegram_id, username: ru.username, balance: ru.balance });
                 }
             });
         }
 
         combined.sort((a, b) => b.balance - a.balance);
-        res.json(combined.slice(0, 10));
+        
+        let userRankIndex = combined.findIndex(u => u.telegram_id === tid);
+        let userRankData = userRankIndex >= 0 ? { rank: userRankIndex + 1, ...combined[userRankIndex] } : { rank: combined.length + 1, username: "Sen", balance: 0 };
+
+        res.json({ top10: combined.slice(0, 10), userRank: userRankData });
     });
 });
 
@@ -198,58 +199,6 @@ app.post('/api/withdraw', (req, res) => {
             });
         });
     });
-});
-
-app.get('/api/admin/data', (req, res) => {
-    db.get("SELECT COUNT(*) as totalUsers, SUM(balance) as totalBalance FROM users", (err, stats) => {
-        db.all("SELECT * FROM withdrawals WHERE status='Bekliyor' ORDER BY id DESC", (err2, pending) => {
-            db.all("SELECT * FROM users ORDER BY balance DESC", (err3, users) => {
-                db.all("SELECT * FROM system_logs ORDER BY id DESC LIMIT 10", (err4, logs) => {
-                    res.json({ success: true, ...stats, pending, users, logs: logs || [] });
-                });
-            });
-        });
-    });
-});
-
-app.post('/api/admin/approve-withdrawal', async (req, res) => {
-    const { id } = req.body;
-    db.get("SELECT * FROM withdrawals WHERE id = ?", [id], async (err, w) => {
-        if (!w) return res.status(404).json({ success: false, error: "Talep bulunamadı." });
-
-        db.run("UPDATE withdrawals SET status = 'Ödendi' WHERE id = ?", [id], async () => {
-            try {
-                await bot.telegram.sendMessage(CHANNEL_ID, 
-                    `🎉 Yeni Ödeme Başarıyla Yapıldı!\n\n` +
-                    `👤 Kullanıcı: ${w.username}\n` +
-                    `💎 Miktar: ${w.amount} ${w.currency}\n` +
-                    `🌐 Ağ/Cüzdan: ${w.wallet}\n` +
-                    `✅ Durum: Binance Üzerinden Gönderildi!\n\n` +
-                    `🚀 Sen de kazanmak için: @sanal_miner_test_bot`
-                );
-            } catch(e) { logSystemError(e); }
-            res.json({ success: true });
-        });
-    });
-});
-
-app.post('/api/admin/broadcast', async (req, res) => {
-    const { message, type } = req.body; 
-    let title = type === 'hata' ? "⚠️ SİSTEM HATA / BAKIM BİLDİRİMİ" : "📢 GÜNÜN KAZANÇ VE MOTİVASYON DUYURUSU";
-    try {
-        db.all("SELECT telegram_id FROM users", async (err, rows) => {
-            if(rows) {
-                for (const u of rows) {
-                    try { await bot.telegram.sendMessage(u.telegram_id, `${title}\n\n${message}`); } catch(e){}
-                }
-            }
-        });
-        await bot.telegram.sendMessage(CHANNEL_ID, `${title}\n\n${message}\n\n🚀 Katıl: @sanal_miner_test_bot`);
-        res.json({ success: true });
-    } catch(e) {
-        logSystemError(e);
-        res.status(500).json({ success: false, error: "Gönderilemedi" });
-    }
 });
 
 const PORT = process.env.PORT || 3000;
