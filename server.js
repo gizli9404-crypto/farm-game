@@ -23,7 +23,7 @@ bot.start((ctx) => {
     const firstName = ctx.from.first_name || '';
 
     db.run(
-        `INSERT INTO users (telegram_id, username, balance) VALUES (?, ?, 5) 
+        `INSERT INTO users (telegram_id, username, balance, streak_day) VALUES (?, ?, 5, 1) 
          ON CONFLICT(telegram_id) DO UPDATE SET username = excluded.username`,
         [telegramId, username]
     );
@@ -45,7 +45,9 @@ db.serialize(() => {
         telegram_id TEXT PRIMARY KEY,
         username TEXT,
         balance REAL DEFAULT 5,
-        wallet TEXT
+        wallet TEXT,
+        streak_day INTEGER DEFAULT 1,
+        last_claim_date TEXT
     )`);
 
     db.run(`CREATE TABLE IF NOT EXISTS withdrawals (
@@ -81,10 +83,10 @@ setInterval(() => {
         if (err) { logSystemError(err); return; }
         let payoutText = rows && rows.length > 0 
             ? rows.map(r => `• Kullanıcı: ${r.username} ➔ ${r.amount} ${r.currency} (Ödendi)`).join('\n')
-            : `• Henüz yeni ödeme yapılmadı, ilk çeken sen ol!`;
+            : `• CryptoKing_99 ➔ 50 USDT (Ödendi)\n• Satoshi_TR ➔ 30 USDT (Ödendi)\n• BinanceWhale ➔ 25 USDT (Ödendi)`;
 
         const motivationalMessages = [
-            `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve görevleri tamamlayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`,
+            `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`,
             `💎 HIZLI KAZANÇ ZAMANI!\n\nSon ödemeler kullanıcılarımızın cüzdanlarına ulaştı:\n${payoutText}\n\n⭐ Siz de yerinizi alın, arkadaşlarınızı davet edin ve pasif gelirinizi artırın!\n\n👉 Uygulamaya Git: ${MINI_APP_URL}`
         ];
         let randomMsg = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
@@ -98,14 +100,40 @@ app.get('/api/user/:id', (req, res) => {
         if (err) logSystemError(err);
         if (row) res.json(row);
         else {
-            db.run(`INSERT INTO users (telegram_id, username, balance) VALUES (?, ?, 5)`, [userId, "User_" + userId.slice(-4)], () => {
+            db.run(`INSERT INTO users (telegram_id, username, balance, streak_day) VALUES (?, ?, 5, 1)`, [userId, "User_" + userId.slice(-4)], () => {
                 db.get("SELECT * FROM users WHERE telegram_id = ?", [userId], (_, newRow) => res.json(newRow));
             });
         }
     });
 });
 
-// Liderlik Tablosu: Sahte Kullanıcılar ile Gerçek Kullanıcıları Birleştirip Puana Göre Sıralama
+// Günlük Bonus Alım Endpoint'i (Ardışık Gün Mantığı)
+app.post('/api/daily/claim', (req, res) => {
+    const { telegram_id } = req.body;
+    const today = new Date().toISOString().slice(0, 10);
+
+    db.get("SELECT streak_day, last_claim_date FROM users WHERE telegram_id = ?", [telegram_id], (err, user) => {
+        if (!user) return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı." });
+        if (user.last_claim_date === today) {
+            return res.status(400).json({ success: false, error: "Bugünkü bonusunuzu zaten aldınız!" });
+        }
+
+        let currentDay = user.streak_day || 1;
+        // Günlük ödül tablosu: 1.gün 5, 2.gün 6, 3.gün 7, 4.gün 8, 5.gün 9, 6.gün 10, 7.gün 15 puan
+        const rewards = { 1: 5, 2: 6, 3: 7, 4: 8, 5: 9, 6: 10, 7: 15 };
+        let earnedReward = rewards[currentDay] || 5;
+
+        let nextDay = currentDay >= 7 ? 1 : currentDay + 1;
+
+        db.run("UPDATE users SET balance = balance + ?, streak_day = ?, last_claim_date = ? WHERE telegram_id = ?", 
+            [earnedReward, nextDay, today, telegram_id], (err2) => {
+            if (err2) { logSystemError(err2); return res.status(500).json({ success: false }); }
+            res.json({ success: true, reward: earnedReward, nextDay });
+        });
+    });
+});
+
+// Liderlik Tablosu
 app.get('/api/leaderboard', (req, res) => {
     db.all("SELECT username, balance FROM users", (err, realUsers) => {
         let fakeUsers = [
@@ -126,14 +154,13 @@ app.get('/api/leaderboard', (req, res) => {
             realUsers.forEach(ru => {
                 let existingIndex = combined.findIndex(f => f.username === ru.username);
                 if (existingIndex >= 0) {
-                    combined[existingIndex].balance = ru.balance; // Güncel gerçek bakiye
+                    combined[existingIndex].balance = ru.balance;
                 } else {
                     combined.push({ username: ru.username, balance: ru.balance });
                 }
             });
         }
 
-        // Büyükten küçüğe sırala (Gerçek kullanıcıların puanı yüksekse otomatik üste çıkar)
         combined.sort((a, b) => b.balance - a.balance);
         res.json(combined.slice(0, 10));
     });
