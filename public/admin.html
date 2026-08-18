@@ -3,91 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gelişmiş Yönetim Paneli</title>
+    <title>Cyber Admin Panel v3.0</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome İkonları -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Canlı terminal akışı için özel scrollbar ve efektler */
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
+        @keyframes pulse-glow {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.4; }
+        }
+        .live-dot { animation: pulse-glow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+    </style>
 </head>
-<body class="bg-slate-900 text-slate-100 font-sans min-h-screen">
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen selection:bg-emerald-500 selection:text-white">
 
     <div class="flex h-screen overflow-hidden">
         <!-- Sidebar -->
-        <div class="w-64 bg-slate-800 border-r border-slate-700 flex flex-col justify-between hidden md:flex">
+        <div class="w-70 bg-slate-900 border-r border-slate-800 flex flex-col justify-between hidden md:flex shadow-2xl">
             <div>
-                <div class="p-6 text-xl font-bold text-emerald-400 flex items-center gap-2">
-                    <i class="fa-solid fa-shield-halved"></i> Admin Panel
+                <div class="p-6 text-xl font-black text-emerald-400 flex items-center gap-3 tracking-wider border-b border-slate-800/60">
+                    <i class="fa-solid fa-terminal text-2xl"></i> <span>CYBER ADMIN</span>
                 </div>
-                <nav class="mt-4 flex flex-col gap-1 px-4">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-lg bg-emerald-600 text-white font-medium transition">
+                <nav class="mt-6 flex flex-col gap-2 px-4">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl bg-emerald-600 text-white font-semibold transition shadow-lg shadow-emerald-900/20">
                         <i class="fa-solid fa-chart-pie w-5"></i> Kontrol Paneli
                     </button>
-                    <button onclick="switchTab('users')" id="nav-users" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-700 hover:text-white transition">
+                    <button onclick="switchTab('users')" id="nav-users" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800/80 hover:text-white transition font-medium">
                         <i class="fa-solid fa-users w-5"></i> Kullanıcılar
                     </button>
-                    <button onclick="switchTab('broadcast')" id="nav-broadcast" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-700 hover:text-white transition">
+                    <button onclick="switchTab('broadcast')" id="nav-broadcast" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800/80 hover:text-white transition font-medium">
                         <i class="fa-solid fa-bullhorn w-5"></i> Toplu Duyuru
                     </button>
-                    <button onclick="switchTab('logs')" id="nav-logs" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-lg text-slate-400 hover:bg-slate-700 hover:text-white transition">
-                        <i class="fa-solid fa-terminal w-5"></i> Canlı Sistem Logları
+                    <button onclick="switchTab('logs')" id="nav-logs" class="tab-btn flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:bg-slate-800/80 hover:text-white transition font-medium relative">
+                        <i class="fa-solid fa-wave-square w-5 text-emerald-400"></i> Canlı Sistem Logları
+                        <span class="absolute right-3 flex h-2 w-2">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                        </span>
                     </button>
                 </nav>
             </div>
-            <div class="p-4 border-t border-slate-700 text-xs text-slate-500 text-center">
-                Sistem v2.5 - Otomatik Senkronize
+            
+            <!-- Sistem Sağlık Göstergesi -->
+            <div class="p-4 m-4 bg-slate-950/60 border border-slate-800/80 rounded-xl">
+                <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+                    <span>Sistem Durumu</span>
+                    <span class="text-emerald-400 flex items-center gap-1.5"><span class="h-2 w-2 rounded-full bg-emerald-500 live-dot"></span> Aktif</span>
+                </div>
+                <div class="text-[11px] text-slate-500 font-mono">Auto-Sync: 5s interval</div>
             </div>
         </div>
 
         <!-- Main Content -->
-        <div class="flex-1 flex flex-col overflow-y-auto">
+        <div class="flex-1 flex flex-col overflow-y-auto bg-slate-950">
             <!-- Top Header -->
-            <header class="bg-slate-800 border-b border-slate-700 p-4 flex justify-between items-center shadow-md">
-                <h1 id="page-title" class="text-lg font-semibold text-slate-200">Kontrol Paneli & Finans</h1>
-                <button onclick="loadAllData()" class="bg-slate-700 hover:bg-slate-600 px-3 py-1.5 rounded-lg text-sm text-slate-300 flex items-center gap-2 transition">
-                    <i class="fa-solid fa-rotate"></i> Verileri Yenile
-                </button>
+            <header class="bg-slate-900/80 backdrop-blur-md border-b border-slate-800/80 p-4 px-6 flex justify-between items-center sticky top-0 z-20 shadow-sm">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleMobileSidebar()" class="md:hidden text-slate-400 hover:text-white"><i class="fa-solid fa-bars text-lg"></i></button>
+                    <h1 id="page-title" class="text-base font-bold text-slate-200 tracking-wide uppercase">Kontrol Paneli & Finans</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="hidden sm:inline-flex items-center gap-2 text-xs font-mono text-emerald-400 bg-emerald-950/40 border border-emerald-900/50 px-3 py-1.5 rounded-lg">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 live-dot"></span> CANLI AKIŞ AKTİF
+                    </span>
+                    <button onclick="loadAllData(); loadLogs();" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-2 transition border border-slate-700 shadow-sm">
+                        <i class="fa-solid fa-rotate"></i> Yenile
+                    </button>
+                </div>
             </header>
 
             <!-- İçerik Alanları -->
-            <main class="p-6">
+            <main class="p-6 md:p-8 max-w-7xl mx-auto w-full space-y-6">
 
                 <!-- 1. DASHBOARD TAB -->
                 <div id="tab-dashboard" class="tab-content space-y-6">
                     <!-- İstatistik Kartları -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow">
-                            <p class="text-sm text-slate-400">Toplam Kullanıcı</p>
-                            <h3 id="stat-total-users" class="text-3xl font-bold text-white mt-1">0</h3>
+                        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl relative overflow-hidden group hover:border-slate-700 transition">
+                            <div class="absolute -right-4 -bottom-4 text-slate-800/40 text-7xl group-hover:scale-110 transition"><i class="fa-solid fa-users"></i></div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Toplam Kullanıcı</p>
+                            <h3 id="stat-total-users" class="text-4xl font-black text-white mt-2 tracking-tight">0</h3>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow">
-                            <p class="text-sm text-slate-400">Sistemdeki Toplam Bakiye</p>
-                            <h3 id="stat-total-balance" class="text-3xl font-bold text-emerald-400 mt-1">0 PEPE</h3>
+                        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl relative overflow-hidden group hover:border-slate-700 transition">
+                            <div class="absolute -right-4 -bottom-4 text-emerald-950/30 text-7xl group-hover:scale-110 transition"><i class="fa-solid fa-coins"></i></div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Sistemdeki Toplam Bakiye</p>
+                            <h3 id="stat-total-balance" class="text-4xl font-black text-emerald-400 mt-2 tracking-tight">0 PEPE</h3>
                         </div>
-                        <div class="bg-slate-800 border border-slate-700 p-5 rounded-xl shadow">
-                            <p class="text-sm text-slate-400">Bekleyen Çekim Talebi</p>
-                            <h3 id="stat-pending-withdraws" class="text-3xl font-bold text-amber-400 mt-1">0</h3>
+                        <div class="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl relative overflow-hidden group hover:border-slate-700 transition">
+                            <div class="absolute -right-4 -bottom-4 text-amber-950/30 text-7xl group-hover:scale-110 transition"><i class="fa-solid fa-clock"></i></div>
+                            <p class="text-xs font-semibold uppercase tracking-wider text-slate-400">Bekleyen Çekim Talebi</p>
+                            <h3 id="stat-pending-withdraws" class="text-4xl font-black text-amber-400 mt-2 tracking-tight">0</h3>
                         </div>
                     </div>
 
                     <!-- Bekleyen Çekimler Tablosu -->
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl shadow overflow-hidden">
-                        <div class="p-4 border-b border-slate-700 font-semibold text-slate-200">
-                            <i class="fa-solid fa-clock-rotate-left mr-2 text-amber-400"></i> Bekleyen Çekim Talepleri
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden">
+                        <div class="p-5 border-b border-slate-800 font-bold text-slate-200 flex items-center justify-between">
+                            <div class="flex items-center gap-2.5">
+                                <i class="fa-solid fa-triangle-exclamation text-amber-400"></i> Bekleyen Çekim Talepleri
+                            </div>
+                            <span class="text-xs font-mono text-slate-500 bg-slate-950 px-2.5 py-1 rounded-lg border border-slate-800">Kritik Kuyruk</span>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse text-sm">
                                 <thead>
-                                    <tr class="bg-slate-900/50 text-slate-400 border-b border-slate-700">
-                                        <th class="p-3">ID</th>
-                                        <th class="p-3">Kullanıcı</th>
-                                        <th class="p-3">Miktar</th>
-                                        <th class="p-3">Cüzdan Adresi</th>
-                                        <th class="p-3">Ağ</th>
-                                        <th class="p-3 text-right">İşlem</th>
+                                    <tr class="bg-slate-950/60 text-slate-400 border-b border-slate-800 text-xs uppercase tracking-wider">
+                                        <th class="p-4">ID</th>
+                                        <th class="p-4">Kullanıcı</th>
+                                        <th class="p-4">Miktar</th>
+                                        <th class="p-4">Cüzdan Adresi</th>
+                                        <th class="p-4">Ağ</th>
+                                        <th class="p-4 text-right">İşlem</th>
                                     </tr>
                                 </thead>
-                                <tbody id="withdraws-table-body" class="divide-y divide-slate-700">
-                                    <tr><td colspan="6" class="p-4 text-center text-slate-500">Yükleniyor...</td></tr>
+                                <tbody id="withdraws-table-body" class="divide-y divide-slate-800/60">
+                                    <tr><td colspan="6" class="p-6 text-center text-slate-500 font-mono text-xs">Yükleniyor...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -96,25 +132,31 @@
 
                 <!-- 2. USERS TAB -->
                 <div id="tab-users" class="tab-content hidden space-y-6">
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl shadow overflow-hidden p-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <h2 class="font-semibold text-slate-200">Kayıtlı Kullanıcı Yönetimi</h2>
-                            <input type="text" id="user-search" placeholder="ID veya kullanıcı adı ara..." onkeyup="filterUsers()" class="bg-slate-900 border border-slate-700 rounded-lg px-3 py-1.5 text-sm text-white focus:outline-none focus:border-emerald-500">
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden p-5">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-5">
+                            <div>
+                                <h2 class="font-bold text-slate-200 text-base">Kayıtlı Kullanıcı Yönetimi</h2>
+                                <p class="text-xs text-slate-400">Tüm bot kullanıcılarının varlıklarını düzenleyin ve arayın.</p>
+                            </div>
+                            <div class="relative w-full sm:w-72">
+                                <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-xs text-slate-500"></i>
+                                <input type="text" id="user-search" placeholder="ID veya kullanıcı adı ara..." onkeyup="filterUsers()" class="w-full bg-slate-950 border border-slate-800 rounded-xl pl-10 pr-4 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 transition">
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left border-collapse text-sm">
                                 <thead>
-                                    <tr class="bg-slate-900/50 text-slate-400 border-b border-slate-700">
-                                        <th class="p-3">Telegram ID</th>
-                                        <th class="p-3">Kullanıcı Adı</th>
-                                        <th class="p-3">Bakiye</th>
-                                        <th class="p-3">Bilet</th>
-                                        <th class="p-3">Cüzdan</th>
-                                        <th class="p-3 text-right">Varlık Tanımla</th>
+                                    <tr class="bg-slate-950/60 text-slate-400 border-b border-slate-800 text-xs uppercase tracking-wider">
+                                        <th class="p-4">Telegram ID</th>
+                                        <th class="p-4">Kullanıcı Adı</th>
+                                        <th class="p-4">Bakiye</th>
+                                        <th class="p-4">Bilet</th>
+                                        <th class="p-4">Cüzdan</th>
+                                        <th class="p-4 text-right">Varlık Tanımla</th>
                                     </tr>
                                 </thead>
-                                <tbody id="users-table-body" class="divide-y divide-slate-700">
-                                    <tr><td colspan="6" class="p-4 text-center text-slate-500">Yükleniyor...</td></tr>
+                                <tbody id="users-table-body" class="divide-y divide-slate-800/60">
+                                    <tr><td colspan="6" class="p-6 text-center text-slate-500 font-mono text-xs">Yükleniyor...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -123,31 +165,50 @@
 
                 <!-- 3. BROADCAST TAB -->
                 <div id="tab-broadcast" class="tab-content hidden space-y-6">
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl shadow p-6 max-w-2xl">
-                        <h2 class="text-lg font-semibold text-slate-200 mb-2">Toplu Telegram Duyurusu</h2>
-                        <p class="text-sm text-slate-400 mb-4">Sistemde kayıtlı olan tüm kullanıcılara bota bağlı olarak anlık duyuru mesajı gönderir.</p>
-                        <textarea id="broadcast-msg" rows="5" placeholder="Duyuru metnini buraya yazın (Markdown destekler)..." class="w-full bg-slate-900 border border-slate-700 rounded-lg p-3 text-sm text-white focus:outline-none focus:border-emerald-500 mb-4"></textarea>
-                        <button onclick="sendBroadcast()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-medium px-5 py-2.5 rounded-lg transition flex items-center gap-2">
-                            <i class="fa-solid fa-paper-plane"></i> Duyuruyu Gönder
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl p-6 max-w-2xl">
+                        <div class="flex items-center gap-3 mb-2">
+                            <div class="p-2.5 bg-emerald-500/10 text-emerald-400 rounded-xl border border-emerald-500/20"><i class="fa-solid fa-bullhorn"></i></div>
+                            <h2 class="text-base font-bold text-slate-200">Toplu Telegram Duyurusu</h2>
+                        </div>
+                        <p class="text-xs text-slate-400 mb-5">Sistemde kayıtlı olan tüm aktif kullanıcılara anlık bildirim fırlatır.</p>
+                        <textarea id="broadcast-msg" rows="5" placeholder="Duyuru metnini buraya yazın (Markdown formatı desteklenir)..." class="w-full bg-slate-950 border border-slate-800 rounded-xl p-4 text-xs text-white focus:outline-none focus:border-emerald-500 mb-5 transition font-mono"></textarea>
+                        <button onclick="sendBroadcast()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs px-5 py-3 rounded-xl transition flex items-center gap-2 shadow-lg shadow-emerald-900/20">
+                            <i class="fa-solid fa-paper-plane"></i> Duyuruyu Canlıya Gönder
                         </button>
                     </div>
                 </div>
 
-                <!-- 4. LOGS TAB -->
+                <!-- 4. LOGS TAB (GELİŞTİRİLMİŞ CANLI LOGLAR) -->
                 <div id="tab-logs" class="tab-content hidden space-y-6">
-                    <div class="bg-slate-800 border border-slate-700 rounded-xl shadow overflow-hidden p-4">
-                        <h2 class="font-semibold text-slate-200 mb-4">Canlı Sistem Hareket Günlüğü (Son 50)</h2>
-                        <div class="overflow-x-auto max-h-[500px]">
-                            <table class="w-full text-left border-collapse text-sm">
+                    <div class="bg-slate-900 border border-slate-800 rounded-2xl shadow-2xl overflow-hidden p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <div>
+                                <h2 class="font-bold text-slate-200 text-base flex items-center gap-2">
+                                    <i class="fa-solid fa-terminal text-emerald-400"></i> Canlı Sistem & Hareket Günlüğü
+                                </h2>
+                                <p class="text-xs text-slate-400 mt-0.5">Sistemdeki tüm tetiklenmeler, çekim talepleri ve kullanıcı işlemleri gerçek zamanlı akmaktadır.</p>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="flex h-2.5 w-2.5 relative">
+                                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                                </span>
+                                <span class="text-xs font-mono text-slate-400">Canlı Dinleniyor</span>
+                            </div>
+                        </div>
+
+                        <!-- Terminal Tarzı Log Ekranı -->
+                        <div class="bg-slate-950 border border-slate-800 rounded-xl p-4 custom-scrollbar overflow-y-auto max-h-[550px] shadow-inner font-mono">
+                            <table class="w-full text-left border-collapse text-xs">
                                 <thead>
-                                    <tr class="bg-slate-900/50 text-slate-400 border-b border-slate-700 sticky top-0">
-                                        <th class="p-3">Zaman</th>
-                                        <th class="p-3">Aksiyon</th>
-                                        <th class="p-3">Detay</th>
+                                    <tr class="text-slate-500 border-b border-slate-900 pb-2">
+                                        <th class="pb-3 font-semibold w-40">ZAMAN</th>
+                                        <th class="pb-3 font-semibold w-48">AKSIYON</th>
+                                        <th class="pb-3 font-semibold">DETAY / PAYLOAD</th>
                                     </tr>
                                 </thead>
-                                <tbody id="logs-table-body" class="divide-y divide-slate-700 font-mono text-xs">
-                                    <tr><td colspan="3" class="p-4 text-center text-slate-500">Yükleniyor...</td></tr>
+                                <tbody id="logs-table-body" class="divide-y divide-slate-900/40">
+                                    <tr><td colspan="3" class="p-6 text-center text-slate-600">Canlı log akışı yükleniyor...</td></tr>
                                 </tbody>
                             </table>
                         </div>
@@ -165,14 +226,14 @@
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(el => {
-                el.classList.remove('bg-emerald-600', 'text-white');
-                el.classList.add('text-slate-400', 'hover:bg-slate-700', 'hover:text-white');
+                el.classList.remove('bg-emerald-600', 'text-white', 'shadow-lg', 'shadow-emerald-900/20');
+                el.classList.add('text-slate-400', 'hover:bg-slate-800/80', 'hover:text-white', 'font-medium');
             });
 
             document.getElementById('tab-' + tabId).classList.remove('hidden');
             const activeBtn = document.getElementById('nav-' + tabId);
-            activeBtn.classList.add('bg-emerald-600', 'text-white');
-            activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-700', 'hover:text-white');
+            activeBtn.classList.add('bg-emerald-600', 'text-white', 'shadow-lg', 'shadow-emerald-900/20');
+            activeBtn.classList.remove('text-slate-400', 'hover:bg-slate-800/80', 'hover:text-white', 'font-medium');
 
             if(tabId === 'users') loadUsers();
             if(tabId === 'logs') loadLogs();
@@ -189,18 +250,18 @@
 
                     let html = '';
                     if(data.withdraws.length === 0) {
-                        html = `<tr><td colspan="6" class="p-4 text-center text-slate-500">Bekleyen çekim talebi yok.</td></tr>`;
+                        html = `<tr><td colspan="6" class="p-6 text-center text-slate-500 text-xs font-mono">Bekleyen çekim talebi bulunmuyor.</td></tr>`;
                     } else {
                         data.withdraws.forEach(w => {
                             html += `
-                                <tr class="hover:bg-slate-700/30">
-                                    <td class="p-3">#${w.id}</td>
-                                    <td class="p-3 font-medium text-slate-200">@${w.username || 'Bilinmiyor'}<br><span class="text-xs text-slate-500">${w.telegram_id}</span></td>
-                                    <td class="p-3 text-emerald-400 font-bold">${w.amount} PEPE</td>
-                                    <td class="p-3 font-mono text-xs text-slate-300">${w.wallet}</td>
-                                    <td class="p-3"><span class="bg-slate-700 px-2 py-0.5 rounded text-xs">${w.network}</span></td>
-                                    <td class="p-3 text-right">
-                                        <button onclick="approveWithdraw(${w.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-1 rounded text-xs transition">Onayla</button>
+                                <tr class="hover:bg-slate-800/40 transition">
+                                    <td class="p-4 font-mono text-xs text-slate-400">#${w.id}</td>
+                                    <td class="p-4 font-medium text-slate-200">@${w.username || 'Bilinmiyor'}<br><span class="text-[11px] font-mono text-slate-500">${w.telegram_id}</span></td>
+                                    <td class="p-4 text-emerald-400 font-bold">${w.amount} PEPE</td>
+                                    <td class="p-4 font-mono text-xs text-slate-300 truncate max-w-[180px]">${w.wallet}</td>
+                                    <td class="p-4"><span class="bg-slate-800 text-slate-300 px-2.5 py-1 rounded-lg text-[11px] font-mono border border-slate-700">${w.network}</span></td>
+                                    <td class="p-4 text-right">
+                                        <button onclick="approveWithdraw(${w.id})" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3.5 py-1.5 rounded-xl text-xs font-semibold transition shadow-md shadow-emerald-900/20">Onayla</button>
                                     </td>
                                 </tr>
                             `;
@@ -225,19 +286,19 @@
         function renderUsersTable(users) {
             let html = '';
             if(users.length === 0) {
-                html = `<tr><td colspan="6" class="p-4 text-center text-slate-500">Kullanıcı bulunamadı.</td></tr>`;
+                html = `<tr><td colspan="6" class="p-6 text-center text-slate-500 text-xs font-mono">Kullanıcı bulunamadı.</td></tr>`;
             } else {
                 users.forEach(u => {
                     html += `
-                        <tr class="hover:bg-slate-700/30">
-                            <td class="p-3 font-mono text-xs">${u.telegram_id}</td>
-                            <td class="p-3 text-slate-200">@${u.username || 'Bilinmiyor'}</td>
-                            <td class="p-3 text-emerald-400 font-medium">${u.balance} PEPE</td>
-                            <td class="p-3 text-amber-400 font-medium">${u.tickets} 🎫</td>
-                            <td class="p-3 font-mono text-xs text-slate-400 truncate max-w-[150px]">${u.wallet || 'Yok'}</td>
-                            <td class="p-3 text-right space-x-1">
-                                <button onclick="modifyUser('${u.telegram_id}', 'balance')" class="bg-blue-600 hover:bg-blue-500 text-white px-2 py-1 rounded text-xs">Bakiye Ekle</button>
-                                <button onclick="modifyUser('${u.telegram_id}', 'tickets')" class="bg-purple-600 hover:bg-purple-500 text-white px-2 py-1 rounded text-xs">Bilet Ekle</button>
+                        <tr class="hover:bg-slate-800/40 transition">
+                            <td class="p-4 font-mono text-xs text-slate-400">${u.telegram_id}</td>
+                            <td class="p-4 text-slate-200 font-medium">@${u.username || 'Bilinmiyor'}</td>
+                            <td class="p-4 text-emerald-400 font-semibold">${u.balance} PEPE</td>
+                            <td class="p-4 text-amber-400 font-semibold">${u.tickets} 🎫</td>
+                            <td class="p-4 font-mono text-xs text-slate-400 truncate max-w-[150px]">${u.wallet || 'Yok'}</td>
+                            <td class="p-4 text-right space-x-1.5">
+                                <button onclick="modifyUser('${u.telegram_id}', 'balance')" class="bg-blue-600/80 hover:bg-blue-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium transition shadow">Bakiye Ekle</button>
+                                <button onclick="modifyUser('${u.telegram_id}', 'tickets')" class="bg-purple-600/80 hover:bg-purple-500 text-white px-2.5 py-1.5 rounded-lg text-xs font-medium transition shadow">Bilet Ekle</button>
                             </td>
                         </tr>
                     `;
@@ -258,15 +319,19 @@
                 const data = await res.json();
                 if(data.success) {
                     let html = '';
-                    data.logs.forEach(l => {
-                        html += `
-                            <tr class="hover:bg-slate-700/30">
-                                <td class="p-3 text-slate-500">${l.timestamp}</td>
-                                <td class="p-3 font-semibold text-amber-400">${l.action}</td>
-                                <td class="p-3 text-slate-300">${l.details}</td>
-                            </tr>
-                        `;
-                    });
+                    if(!data.logs || data.logs.length === 0) {
+                        html = `<tr><td colspan="3" class="p-6 text-center text-slate-600 font-mono">Henüz kayıtlı log bulunmuyor.</td></tr>`;
+                    } else {
+                        data.logs.forEach(l => {
+                            html += `
+                                <tr class="hover:bg-slate-900/60 transition font-mono">
+                                    <td class="py-3 px-2 text-slate-500 text-[11px]">${l.timestamp}</td>
+                                    <td class="py-3 px-2 font-bold text-amber-400 tracking-wide text-[11px]">${l.action}</td>
+                                    <td class="py-3 px-2 text-slate-300 text-[11px]">${l.details}</td>
+                                </tr>
+                            `;
+                        });
+                    }
                     document.getElementById('logs-table-body').innerHTML = html;
                 }
             } catch(e) { console.error(e); }
@@ -281,8 +346,8 @@
             });
             const data = await res.json();
             if(data.success) {
-                alert('Çekim başarıyla onaylandı.');
                 loadAllData();
+                loadLogs();
             } else {
                 alert('Hata: ' + data.error);
             }
@@ -300,8 +365,8 @@
             });
             const data = await res.json();
             if(data.success) {
-                alert('İşlem başarılı.');
                 loadUsers();
+                loadLogs();
             } else {
                 alert('Hata: ' + data.error);
             }
@@ -321,14 +386,22 @@
             if(data.success) {
                 alert(`Duyuru başarıyla ${data.sentCount} kullanıcıya iletildi.`);
                 document.getElementById('broadcast-msg').value = '';
+                loadLogs();
             } else {
                 alert('Hata: ' + data.error);
             }
         }
 
-        // Sayfa açıldığında verileri yükle
+        // İlk Çalıştırma ve Canlı Döngüler (Polling)
         loadAllData();
-        setInterval(loadAllData, 15000); // Her 15 saniyede bir verileri arka planda güncelle
+        loadLogs();
+        setInterval(loadAllData, 10000); // Her 10 saniyede bir finans/istatistikleri güncelle
+        setInterval(() => {
+            // Eğer log sekmesi aktifse arkada logları da canlı tazelet
+            if(!document.getElementById('tab-logs').classList.contains('hidden')) {
+                loadLogs();
+            }
+        }, 5000); // Her 5 saniyede bir logları akıt
     </script>
 </body>
 </html>
