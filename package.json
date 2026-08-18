@@ -1,7 +1,7 @@
 {
-  "name": "sanal-miner-pro",
-  "version": "1.0.0",
-  "description": "Telegram Miner Mini App",
+  "name": "crypto-quest-hub",
+  "version": "2.0.0",
+  "description": "AdsGram Compliant Telegram Mini App",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
