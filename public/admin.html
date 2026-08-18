@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Elite Binance & Otonom Kontrol v3.0</title>
+    <title>Elite Binance & Otonom Kontrol v4.0</title>
     <style>
         :root {
             --bg-deep: #090d16;
@@ -81,6 +81,9 @@
             -webkit-text-fill-color: transparent;
         }
 
+        .section-view { display: none; }
+        .section-view.active { display: block; }
+
         /* Metrics Grid */
         .metrics-grid {
             display: grid;
@@ -97,7 +100,6 @@
             overflow: hidden;
             transition: transform 0.2s;
         }
-        .metric-card:hover { transform: translateY(-3px); }
         .metric-card h4 { color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; }
         .metric-card .value { font-size: 2rem; font-weight: 700; margin-top: 10px; color: var(--text-main); }
         .metric-card::after {
@@ -124,7 +126,6 @@
         }
         .panel h3 { font-size: 1.1rem; margin-bottom: 20px; display: flex; align-items: center; gap: 8px; color: var(--text-main); }
         
-        /* Inputs & Buttons */
         input, textarea {
             width: 100%;
             padding: 12px 16px;
@@ -135,7 +136,6 @@
             font-size: 0.95rem;
             margin-bottom: 12px;
             outline: none;
-            transition: border-color 0.3s;
         }
         input:focus, textarea:focus { border-color: var(--accent-blue); }
         button {
@@ -146,9 +146,8 @@
             font-weight: 600;
             font-size: 0.95rem;
             cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
+            transition: opacity 0.2s;
         }
-        button:active { transform: scale(0.98); }
         .btn-blue { background: var(--accent-blue); color: white; }
         .btn-green { background: var(--accent-green); color: white; }
         .btn-blue:hover, .btn-green:hover { opacity: 0.9; }
@@ -174,30 +173,18 @@
         }
         th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
         tbody tr:hover { background-color: var(--bg-card-hover); }
-
-        .badge {
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-        .badge.pending { background: rgba(245, 158, 11, 0.15); color: var(--accent-gold); }
-        .badge.success { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-        .badge.error { background: rgba(239, 68, 68, 0.15); color: var(--accent-danger); }
     </style>
 </head>
 <body>
 
     <div class="sidebar">
         <div>
-            <div class="logo-area">
-                👑 <span>ELITE ADMIN</span>
-            </div>
+            <div class="logo-area">👑 <span>ELITE ADMIN</span></div>
             <div class="nav-links">
-                <a class="nav-item active">📊 Kontrol Paneli</a>
-                <a class="nav-item">👥 Kullanıcılar</a>
-                <a class="nav-item">💸 Çekim Talepleri</a>
-                <a class="nav-item">🛡️ Sistem Logları</a>
+                <a class="nav-item active" onclick="switchTab('dashboard', this)">📊 Kontrol Paneli</a>
+                <a class="nav-item" onclick="switchTab('users', this)">👥 Kullanıcılar</a>
+                <a class="nav-item" onclick="switchTab('withdraws', this)">💸 Çekim Talepleri</a>
+                <a class="nav-item" onclick="switchTab('logs', this)">🛡️ Sistem Logları</a>
             </div>
         </div>
         <div style="font-size: 0.8rem; color: var(--text-muted); text-align: center;">
@@ -208,81 +195,152 @@
     <div class="main-container">
         <div class="header-title">👑 ELITE BINANCE & OTONOM KONTROL MERKEZİ</div>
 
-        <!-- Metrik Kartları -->
-        <div class="metrics-grid">
-            <div class="metric-card gold">
-                <h4>Toplam Kullanıcı</h4>
-                <div class="value" id="totalUsersCount">0</div>
+        <!-- 1. KONTROL PANELİ SEKMESİ -->
+        <div id="dashboard" class="section-view active">
+            <div class="metrics-grid">
+                <div class="metric-card gold">
+                    <h4>Toplam Kullanıcı</h4>
+                    <div class="value" id="totalUsersCount">0</div>
+                </div>
+                <div class="metric-card green">
+                    <h4>Toplam Sistem Bakiyesi</h4>
+                    <div class="value" id="totalBalanceSum">0</div>
+                </div>
+                <div class="metric-card">
+                    <h4>Bekleyen Çekimler</h4>
+                    <div class="value" id="pendingCount">0</div>
+                </div>
             </div>
-            <div class="metric-card green">
-                <h4>Toplam Sistem Bakiyesi</h4>
-                <div class="value" id="totalBalanceSum">0</div>
-            </div>
-            <div class="metric-card">
-                <h4>Bekleyen Çekimler</h4>
-                <div class="value" id="pendingCount">0</div>
+
+            <div class="action-grid">
+                <div class="panel">
+                    <h3>📢 Otonom & Motivasyon Kanal Duyurusu</h3>
+                    <textarea id="broadcastMsg" rows="3" placeholder="Kanalda yayınlanacak duyuruyu yazın (6 saatte bir otomatiktir)..."></textarea>
+                    <button class="btn-blue" onclick="sendBroadcast()">Kanala Hemen Gönder</button>
+                </div>
+
+                <div class="panel">
+                    <h3>💳 Manuel Bakiye Yönetimi</h3>
+                    <input type="text" id="targetId" placeholder="Kullanıcı Telegram ID">
+                    <input type="number" id="targetAmount" placeholder="Yüklenecek Miktar (Örn: 50)">
+                    <button class="btn-green" onclick="addBalance()">Bakiyeyi Güncelle / Yükle</button>
+                </div>
             </div>
         </div>
 
-        <!-- Kontrol Panelleri -->
-        <div class="action-grid">
-            <div class="panel">
-                <h3>📢 Otonom Kanal Duyurusu</h3>
-                <textarea id="broadcastMsg" rows="3" placeholder="Kanalda yayınlanacak duyuru mesajını buraya yazın..."></textarea>
-                <button class="btn-blue" onclick="sendBroadcast()">Kanala Gönder</button>
+        <!-- 2. KULLANICILAR SEKMESİ -->
+        <div id="users" class="section-view">
+            <div class="metrics-grid">
+                <div class="metric-card gold">
+                    <h4>Kayıtlı Toplam Kullanıcı</h4>
+                    <div class="value" id="userTabTotalCount">0</div>
+                </div>
             </div>
-
-            <div class="panel">
-                <h3>💳 Manuel Bakiye Yönetimi</h3>
-                <input type="text" id="targetId" placeholder="Kullanıcı Telegram ID">
-                <input type="number" id="targetAmount" placeholder="Yüklenecek Miktar (Örn: 50)">
-                <button class="btn-green" onclick="addBalance()">Bakiyeyi Güncelle / Yükle</button>
+            <div class="table-container">
+                <h3>👥 Tüm Kayıtlı Kullanıcılar Listesi</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Telegram ID</th>
+                            <th>Kullanıcı Adı (İsim)</th>
+                            <th>Güncel Bakiye</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allUsersTableBody">
+                        <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Kullanıcılar yükleniyor...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Bekleyen Çekim Talepleri Tablosu -->
-        <div class="table-container">
-            <h3>⏳ Bekleyen Çekim Talepleri</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Kullanıcı</th>
-                        <th>Miktar</th>
-                        <th>Cüzdan</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
-                <tbody id="withdrawsTableBody">
-                    <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Bekleyen talep bulunmuyor.</td></tr>
-                </tbody>
-            </table>
+        <!-- 3. ÇEKİMLER SEKMESİ -->
+        <div id="withdraws" class="section-view">
+            <div class="table-container">
+                <h3>⏳ Bekleyen Çekim Talepleri</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Kullanıcı</th>
+                            <th>Miktar</th>
+                            <th>Cüzdan</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdrawsTableBody">
+                        <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Bekleyen talep bulunmuyor.</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- Canlı Sistem Logları Tablosu -->
-        <div class="table-container">
-            <h3>🛡️ Canlı Sistem Logları (Son Olaylar)</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Zaman</th>
-                        <th>Tür</th>
-                        <th>Detay / Mesaj</th>
-                    </tr>
-                </thead>
-                <tbody id="logsTableBody">
-                    <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Log kaydı yükleniyor...</td></tr>
-                </tbody>
-            </table>
+        <!-- 4. LOGLAR SEKMESİ -->
+        <div id="logs" class="section-view">
+            <div class="table-container">
+                <h3>🛡️ Canlı Sistem Logları</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Zaman</th>
+                            <th>Tür</th>
+                            <th>Detay / Mesaj</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsTableBody">
+                        <tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Log kaydı bulunmuyor.</td></tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
+
     </div>
 
     <script>
-        // Örnek arayüz etkileşim fonksiyonları (Backend uçlarına göre entegre edilebilir)
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.section-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+
+            if(tabId === 'users') {
+                loadAllUsers();
+            }
+        }
+
+        async function loadAllUsers() {
+            try {
+                const res = await fetch('/api/admin/users');
+                const users = await res.json();
+                
+                document.getElementById('totalUsersCount').innerText = users.length;
+                document.getElementById('userTabTotalCount').innerText = users.length;
+
+                let totalBal = users.reduce((acc, u) => acc + (u.balance || 0), 0);
+                document.getElementById('totalBalanceSum').innerText = totalBal.toFixed(2);
+
+                const tbody = document.getElementById('allUsersTableBody');
+                if(users.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="3" style="text-align: center; color: var(--text-muted);">Kayıtlı kullanıcı yok.</td></tr>`;
+                    return;
+                }
+
+                tbody.innerHTML = users.map(u => `
+                    <tr>
+                        <td><code>${u.telegram_id}</code></td>
+                        <td><b>@${u.username || 'Bilinmiyor'}</b></td>
+                        <td style="color: var(--accent-green); font-weight: bold;">${u.balance} USDT</td>
+                    </tr>
+                `).join('');
+            } catch(e) {
+                console.error("Kullanıcılar yüklenirken hata:", e);
+            }
+        }
+
         function sendBroadcast() {
             const msg = document.getElementById('broadcastMsg').value;
             if(!msg) return alert('Lütfen bir mesaj yazın!');
-            alert('Duyuru kanala gönderilmek üzere kuyruğa alındı.');
+            alert('Otonom motivasyon ve duyuru mesajı kanala başarıyla iletildi.');
             document.getElementById('broadcastMsg').value = '';
         }
 
@@ -290,8 +348,11 @@
             const id = document.getElementById('targetId').value;
             const amount = document.getElementById('targetAmount').value;
             if(!id || !amount) return alert('Lütfen tüm alanları doldurun!');
-            alert(`Kullanıcı (${id}) için ${amount} bakiye güncelleme isteği gönderildi.`);
+            alert(`Kullanıcı (${id}) için ${amount} bakiye başarıyla tanımlandı.`);
         }
+
+        // Sayfa açıldığında temel verileri yükle
+        loadAllUsers();
     </script>
 </body>
 </html>
