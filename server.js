@@ -113,7 +113,7 @@ app.post('/api/user/update', (req, res) => {
     );
 });
 
-// --- ÇEKİM TALEBİ OLUŞTURMA ROTOSU (EKLENDİ) ---
+// --- ÇEKİM TALEBİ OLUŞTURMA ROTOSU ---
 app.post('/api/withdraw', (req, res) => {
     const { telegram_id, username, amount, wallet, network } = req.body;
     
@@ -181,4 +181,34 @@ app.post('/api/admin/modify', (req, res) => {
 
 app.post('/api/admin/broadcast', async (req, res) => {
     const { message } = req.body;
-    if (!message) return
+    if (!message) return res.status(400).json({ success: false, error: "Mesaj boş olamaz" });
+
+    db.all(`SELECT telegram_id FROM users`, async (err, rows) => {
+        if (err) return res.status(500).json({ success: false, error: err.message });
+
+        let successCount = 0;
+        for (const user of rows) {
+            try {
+                await bot.telegram.sendMessage(user.telegram_id, `📢 **Sistem Duyurusu:**\n\n${message}`, { parse_mode: 'Markdown' });
+                successCount++;
+            } catch (e) {}
+        }
+        res.json({ success: true, sentCount: successCount });
+    });
+});
+
+app.post('/api/admin/withdraw/approve', (req, res) => {
+    const { id } = req.body;
+    db.run(`UPDATE withdraws SET status = 'approved' WHERE id = ?`, [id], function(err) {
+        if (err) res.status(500).json({ success: false, error: err.message });
+        else res.json({ success: true });
+    });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server ${PORT} portunda aktif.`);
+});
+
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
