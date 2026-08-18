@@ -1,7 +1,7 @@
 {
   "name": "crypto-quest-hub",
-  "version": "2.0.0",
-  "description": "AdsGram Compliant Telegram Mini App",
+  "version": "3.0.0",
+  "description": "Full Automated Telegram Mini App & Admin Center",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
