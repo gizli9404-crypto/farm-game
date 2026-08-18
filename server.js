@@ -104,6 +104,27 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
+// Admin Manuel Bakiye Yükleme API'si (Eklendi)
+app.post('/api/admin/add-balance', (req, res) => {
+    const { telegram_id, amount } = req.body;
+    const numAmount = parseFloat(amount);
+
+    if (!telegram_id || isNaN(numAmount)) {
+        return res.status(400).json({ success: false, error: "Geçersiz ID veya miktar!" });
+    }
+
+    db.run("UPDATE users SET balance = balance + ? WHERE telegram_id = ?", [numAmount, telegram_id], function(err) {
+        if (err) {
+            logSystemError(err);
+            return res.status(500).json({ success: false, error: "Veritabanı hatası" });
+        }
+        if (this.changes === 0) {
+            return res.status(404).json({ success: false, error: "Bu ID'ye sahip veritabanında kullanıcı bulunamadı!" });
+        }
+        res.json({ success: true, message: "Bakiye başarıyla eklendi!" });
+    });
+});
+
 app.post('/api/active-reward', (req, res) => {
     const { telegram_id } = req.body;
     db.run("UPDATE users SET balance = balance + 0.5 WHERE telegram_id = ?", [telegram_id], (err) => {
