@@ -3,56 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Quest Hub - Admin Center</title>
+    <title>Crypto Quest - Elite Admin Control</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #030712; color: #f8fafc; font-family: sans-serif; }
-        .glass { background: rgba(15, 23, 42, 0.9); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        body { background: #060913; color: #f1f5f9; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(13, 18, 32, 0.95); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
     </style>
 </head>
-<body class="p-6 max-w-4xl mx-auto space-y-6">
-    <header class="glass p-5 rounded-2xl flex justify-between items-center">
-        <h1 class="font-black text-base text-indigo-400"><i class="fa-solid fa-shield-halved mr-2"></i> Admin Yönetim Paneli</h1>
-        <button onclick="loadStats()" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-xs font-bold">Yenile</button>
+<body class="p-6 max-w-6xl mx-auto space-y-6">
+
+    <!-- Üst Bar -->
+    <header class="glass p-5 rounded-2xl flex justify-between items-center shadow-2xl">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold border border-amber-500/30">
+                <i class="fa-solid fa-crown text-lg"></i>
+            </div>
+            <div>
+                <h1 class="font-black text-sm tracking-wider text-white">ELITE BINANCE & ADMIN CONTROL</h1>
+                <p class="text-[11px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[6px] mr-1"></i> Otomatik Kanal Senkronizasyonu Aktif</p>
+            </div>
+        </div>
+        <button onclick="loadAdminData()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl text-xs font-bold transition flex items-center space-x-2">
+            <i class="fa-solid fa-rotate"></i> <span>Verileri Yenile</span>
+        </button>
     </header>
 
+    <!-- İstatistik Kartları -->
     <div class="grid grid-cols-2 gap-4">
         <div class="glass p-5 rounded-2xl">
-            <p class="text-xs text-slate-400">Toplam Kullanıcı</p>
+            <p class="text-xs text-slate-400 font-medium">Kayıtlı Toplam Kullanıcı</p>
             <h3 id="stat-users" class="text-3xl font-black text-indigo-400 mt-1">0</h3>
         </div>
         <div class="glass p-5 rounded-2xl">
-            <p class="text-xs text-slate-400">Toplam Dolaşımdaki QST</p>
+            <p class="text-xs text-slate-400 font-medium">Sistemdeki Toplam Bakiye</p>
             <h3 id="stat-balance" class="text-3xl font-black text-amber-400 mt-1">0</h3>
         </div>
     </div>
 
+    <!-- Duyuru ve Hata Bildirim Paneli (Otomatik Kanala ve Bot Kullanıcılarına Gider) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div class="glass p-6 rounded-2xl space-y-4">
+            <h2 class="font-bold text-sm text-indigo-300 flex items-center"><i class="fa-solid fa-bullhorn mr-2"></i> Motivasyon & Duyuru Gönder</h2>
+            <textarea id="broadcast-msg" rows="3" placeholder="Örn: 🚀 Yeni etkinlik başladı, kazançlar katlandı!" class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-indigo-500"></textarea>
+            <button onclick="sendBroadcast('duyuru')" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs transition">Kanala ve Herkese Gönder</button>
+        </div>
+
+        <div class="glass p-6 rounded-2xl space-y-4">
+            <h2 class="font-bold text-sm text-rose-400 flex items-center"><i class="fa-solid fa-triangle-exclamation mr-2"></i> Sistem Hata / Bakım Bildirimi</h2>
+            <textarea id="error-msg" rows="3" placeholder="Örn: Altyapı güncellemesi nedeniyle çekimler kısa süreliğine askıya alınmıştır..." class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-rose-500"></textarea>
+            <button onclick="sendBroadcast('hata')" class="w-full py-3 bg-rose-600 hover:bg-rose-500 font-bold rounded-xl text-xs transition">Hata/Bakım Mesajını Duyur</button>
+        </div>
+    </div>
+
+    <!-- Bekleyen Çekim Talepleri (Binance ile Öde ve Onayla) -->
     <div class="glass p-6 rounded-2xl space-y-4">
-        <h2 class="font-bold text-sm">Toplu Duyuru Gönder</h2>
-        <textarea id="broadcast-msg" rows="3" placeholder="Duyuru metni..." class="w-full bg-slate-900 border border-slate-800 rounded-xl p-3 text-xs outline-none"></textarea>
-        <button onclick="sendBroadcast()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 font-bold rounded-xl text-xs">Herkese Gönder</button>
+        <h2 class="font-bold text-sm text-amber-400 flex items-center"><i class="fa-solid fa-wallet mr-2"></i> Bekleyen Çekim Talepleri (Binance Ödemeleri)</h2>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="text-slate-400 border-b border-slate-800">
+                    <tr>
+                        <th class="pb-3">KULLANICI</th>
+                        <th class="pb-3">MİKTAR & BİRİM</th>
+                        <th class="pb-3">CÜZDAN / BİNANCE ADRESİ</th>
+                        <th class="pb-3 text-right">İŞLEM</th>
+                    </tr>
+                </thead>
+                <tbody id="pending-list" class="divide-y divide-slate-800/50">
+                    <tr><td colspan="4" class="text-center py-4 text-slate-500">Bekleyen talep yok.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Kayıtlı Kullanıcılar Veritabanı -->
+    <div class="glass p-6 rounded-2xl space-y-4">
+        <h2 class="font-bold text-sm text-slate-300 flex items-center"><i class="fa-solid fa-users mr-2"></i> Kayıtlı Kullanıcılar</h2>
+        <div class="overflow-x-auto max-h-64 overflow-y-auto">
+            <table class="w-full text-left text-xs">
+                <thead class="text-slate-400 border-b border-slate-800 sticky top-0 bg-slate-900">
+                    <tr>
+                        <th class="py-2">TELEGRAM ID</th>
+                        <th class="py-2">KULLANICI ADI</th>
+                        <th class="py-2 text-right">BAKİYE</th>
+                    </tr>
+                </thead>
+                <tbody id="users-list" class="divide-y divide-slate-800/50">
+                    <tr><td colspan="3" class="text-center py-4 text-slate-500">Yükleniyor...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
-        function loadStats() {
-            fetch('/api/admin/stats').then(res => res.json()).then(data => {
+        function loadAdminData() {
+            fetch('/api/admin/data').then(res => res.json()).then(data => {
                 if(data.success) {
                     document.getElementById('stat-users').innerText = data.totalUsers || 0;
                     document.getElementById('stat-balance').innerText = Number(data.totalBalance || 0).toLocaleString();
+
+                    let pendingList = document.getElementById('pending-list');
+                    pendingList.innerHTML = "";
+                    if(data.pending && data.pending.length > 0) {
+                        data.pending.forEach(p => {
+                            pendingList.innerHTML += `
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-3 font-bold">${p.username}</td>
+                                    <td class="py-3 text-amber-400 font-bold">${p.amount} ${p.currency}</td>
+                                    <td class="py-3 font-mono text-slate-300">${p.wallet}</td>
+                                    <td class="py-3 text-right">
+                                        <button onclick="approveWithdrawal(${p.id})" class="px-4 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs transition shadow-lg shadow-emerald-600/20">
+                                            Binance'den Ödendi ✓ Onayla
+                                        </button>
+                                    </td>
+                                </tr>`;
+                        });
+                    } else {
+                        pendingList.innerHTML = `<tr><td colspan="4" class="text-center py-4 text-slate-500">Bekleyen çekim talebi bulunmuyor.</td></tr>`;
+                    }
+
+                    let usersList = document.getElementById('users-list');
+                    usersList.innerHTML = "";
+                    if(data.users) {
+                        data.users.forEach(u => {
+                            usersList.innerHTML += `
+                                <tr class="hover:bg-white/[0.02]">
+                                    <td class="py-2.5 font-mono text-slate-400">${u.telegram_id}</td>
+                                    <td class="py-2.5 font-bold">${u.username}</td>
+                                    <td class="py-2.5 text-right text-amber-400 font-bold">${u.balance}</td>
+                                </tr>`;
+                        });
+                    }
                 }
             });
-        
-        function sendBroadcast() {
-            let message = document.getElementById('broadcast-msg').value;
-            if(!message) return;
+        }
+
+        function approveWithdrawal(id) {
+            if(!confirm("Binance üzerinden ödemeyi gönderdiğinizi onaylıyor musunuz? Kanala otomatik ödeme kanıtı atılacak!")) return;
+            fetch('/api/admin/approve-withdrawal', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id })
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    alert("Ödeme onaylandı ve kanala başarıyla duyuruldu!");
+                    loadAdminData();
+                }
+            });
+        }
+
+        function sendBroadcast(type) {
+            let msgInput = type === 'hata' ? document.getElementById('error-msg') : document.getElementById('broadcast-msg');
+            let message = msgInput.value;
+            if(!message) return alert("Lütfen bir mesaj yazın.");
+
             fetch('/api/admin/broadcast', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ message })
-            }).then(res => res.json()).then(() => alert("Duyuru gönderildi!"));
+                body: JSON.stringify({ message, type })
+            }).then(res => res.json()).then(data => {
+                if(data.success) {
+                    alert("Duyuru/Hata mesajı hem kullanıcılara hem kanala gönderildi!");
+                    msgInput.value = "";
+                }
+            });
         }
-        loadStats();
+
+        loadAdminData();
     </script>
 </body>
 </html>
