@@ -3,37 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Quest Hub</title>
+    <title>Crypto Quest Hub - Binance Pro</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #070a14; color: #fff; font-family: 'Inter', sans-serif; }
+        body { background: #0b0e11; color: #eaecef; font-family: 'Inter', sans-serif; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .glass { background: rgba(255, 255, 255, 0.04); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .binance-card { background: #181a20; border: 1px solid #2b313a; }
+        .binance-input { background: #2b313a; border: 1px solid #363c4e; color: #fff; }
+        .binance-input:focus { border-color: #fcd535; }
         @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .animate-marquee { display: inline-block; animation: marquee 20s linear infinite; }
+        .animate-marquee { display: inline-block; animation: marquee 25s linear infinite; }
     </style>
 </head>
-<body class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-between">
+<body class="p-3 max-w-md mx-auto min-h-screen flex flex-col justify-between select-none">
 
     <div>
-        <!-- Üst Bar & Dil Seçici -->
-        <div class="flex justify-between items-center mb-3">
-            <div class="flex items-center space-x-2">
-                <div class="w-9 h-9 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold border border-amber-500/30">
-                    <i class="fa-solid fa-coins"></i>
+        <!-- Binance Pro Üst Bar & Dil Seçici -->
+        <div class="flex justify-between items-center mb-3 p-2.5 rounded-2xl binance-card">
+            <div class="flex items-center space-x-2.5">
+                <div class="w-9 h-9 rounded-xl bg-[#fcd535]/10 text-[#fcd535] flex items-center justify-center font-bold border border-[#fcd535]/20">
+                    <i class="fa-solid fa-bolt"></i>
                 </div>
                 <div>
-                    <h1 class="text-sm font-black tracking-wider">CRYPTO QUEST</h1>
-                    <p class="text-[10px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[6px] mr-1"></i> Binance Active</p>
+                    <h1 class="text-xs font-black tracking-wider text-[#fcd535]">CRYPTO QUEST</h1>
+                    <p class="text-[9px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[5px] mr-1"></i> Binance Pro Connected</p>
                 </div>
             </div>
             
             <div class="flex items-center space-x-2">
                 <!-- Çoklu Dil Seçimi -->
-                <select id="lang-select" onchange="changeLanguage()" class="bg-black/50 border border-slate-700 rounded-lg px-2 py-1 text-[11px] text-amber-400 font-bold outline-none">
+                <select id="lang-select" onchange="playSound('click'); changeLanguage()" class="bg-[#2b313a] border border-[#363c4e] rounded-lg px-2 py-1 text-[11px] text-[#fcd535] font-bold outline-none">
                     <option value="tr">🇹🇷 TR</option>
                     <option value="en">🇬🇧 EN</option>
                     <option value="ar">🇸🇦 AR</option>
@@ -41,70 +43,69 @@
                     <option value="es">🇪🇸 ES</option>
                 </select>
 
-                <div class="glass px-2.5 py-1 rounded-full text-[11px] font-bold text-amber-400 border border-amber-500/20">
+                <div class="px-2.5 py-1 rounded-full text-[11px] font-bold text-[#fcd535] bg-[#fcd535]/10 border border-[#fcd535]/20">
                     <span id="header-balance">0.00</span> Puan
                 </div>
             </div>
         </div>
 
         <!-- Canlı Ödeme Bandı -->
-        <div class="glass overflow-hidden whitespace-nowrap py-1.5 px-3 rounded-lg mb-3 text-[10px] text-emerald-300 border border-emerald-500/20">
+        <div class="binance-card overflow-hidden whitespace-nowrap py-1.5 px-3 rounded-xl mb-3 text-[10px] text-emerald-400 border border-emerald-500/20">
             <div class="animate-marquee">
                 🚀 <span id="ticker-text">CryptoKing_99 ➔ 50 USDT ödeme aldı! • Satoshi_TR ➔ 30 USDT çekildi! • BinanceWhale ➔ 25 USDT cüzdana gönderildi!</span>
             </div>
         </div>
     </div>
 
-    <!-- Menü Butonları -->
-    <div class="grid grid-cols-4 gap-2 mb-4">
-        <button onclick="switchTab('quests')" class="py-2.5 rounded-xl glass text-[11px] font-bold text-indigo-400 nav-btn" data-tab="quests"><i class="fa-solid fa-calendar-check block text-sm mb-0.5"></i> <span data-i18n="menu_daily">Günlük</span></button>
-        <button onclick="switchTab('earn')" class="py-2.5 rounded-xl glass text-[11px] font-bold text-slate-400 nav-btn" data-tab="earn"><i class="fa-solid fa-play block text-sm mb-0.5"></i> <span data-i18n="menu_earn">Reklam İzle</span></button>
-        <button onclick="switchTab('leaderboard')" class="py-2.5 rounded-xl glass text-[11px] font-bold text-slate-400 nav-btn" data-tab="leaderboard"><i class="fa-solid fa-trophy block text-sm mb-0.5"></i> <span data-i18n="menu_leaderboard">Liderlik</span></button>
-        <button onclick="switchTab('wallet')" class="py-2.5 rounded-xl glass text-[11px] font-bold text-slate-400 nav-btn" data-tab="wallet"><i class="fa-solid fa-coins block text-sm mb-0.5"></i> <span data-i18n="menu_wallet">Çekim</span></button>
+    <!-- Menü Butonları (Binance Tab Bar) -->
+    <div class="grid grid-cols-4 gap-2 mb-3">
+        <button onclick="playSound('click'); switchTab('quests')" class="py-2.5 rounded-xl binance-card text-[11px] font-bold text-[#fcd535] nav-btn flex flex-col items-center justify-center" data-tab="quests"><i class="fa-solid fa-calendar-check text-sm mb-0.5"></i> <span data-i18n="menu_daily">Günlük</span></button>
+        <button onclick="playSound('click'); switchTab('earn')" class="py-2.5 rounded-xl binance-card text-[11px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="earn"><i class="fa-solid fa-play text-sm mb-0.5"></i> <span data-i18n="menu_earn">Reklam İzle</span></button>
+        <button onclick="playSound('click'); switchTab('leaderboard')" class="py-2.5 rounded-xl binance-card text-[11px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="leaderboard"><i class="fa-solid fa-trophy text-sm mb-0.5"></i> <span data-i18n="menu_leaderboard">Liderlik</span></button>
+        <button onclick="playSound('click'); switchTab('wallet')" class="py-2.5 rounded-xl binance-card text-[11px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="wallet"><i class="fa-solid fa-wallet text-sm mb-0.5"></i> <span data-i18n="menu_wallet">Çekim</span></button>
     </div>
 
-    <!-- İçerik -->
-    <div class="flex-1 space-y-4">
+    <!-- İçerik Alanı -->
+    <div class="flex-1 space-y-3">
         
         <!-- Günlük Bonus Tablosu -->
         <div id="tab-quests" class="tab-content active space-y-3">
-            <div class="glass p-4 rounded-2xl space-y-3">
+            <div class="binance-card p-4 rounded-2xl space-y-3">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider" data-i18n="daily_title">7 Günlük Seri Bonusları</h3>
-                    <span id="streak-info" class="text-[10px] bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded border border-indigo-500/30 font-semibold">Aktif Gün: 1</span>
+                    <span id="streak-info" class="text-[10px] bg-[#fcd535]/10 text-[#fcd535] px-2 py-0.5 rounded border border-[#fcd535]/20 font-semibold">Aktif Gün: 1</span>
                 </div>
                 
                 <div id="streak-grid" class="grid grid-cols-4 gap-2"></div>
 
-                <button onclick="claimDailyBonus()" id="claim-btn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-indigo-600/30" data-i18n="claim_btn">
+                <button onclick="playSound('success'); claimDailyBonus()" id="claim-btn" class="w-full py-3 bg-[#fcd535] hover:bg-[#f0c419] text-slate-950 font-black rounded-xl text-xs transition shadow-lg shadow-[#fcd535]/10" data-i18n="claim_btn">
                     Bugünkü Ödülü Topla
                 </button>
             </div>
         </div>
 
-        <!-- Reklam İzle -->
+        <!-- Reklam İzle Tablosu -->
         <div id="tab-earn" class="tab-content space-y-3">
-            <div class="glass p-5 rounded-2xl text-center space-y-3">
-                <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-lg border border-emerald-500/30">
+            <div class="binance-card p-5 rounded-2xl text-center space-y-3">
+                <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-lg border border-emerald-500/20">
                     <i class="fa-solid fa-rectangle-ad"></i>
                 </div>
-                <h3 class="text-sm font-bold" data-i18n="ad_header">Ödüllü Video Reklam</h3>
+                <h3 class="text-sm font-bold text-[#eaecef]" data-i18n="ad_header">Ödüllü Video Reklam</h3>
                 <p class="text-xs text-slate-400" data-i18n="ad_desc">Reklam izle ve anında bütçene puan ekle. (1,000 Puan = 1 USDT)</p>
-                <button onclick="watchAd()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs transition" data-i18n="watch_ad_btn">
+                <button onclick="playSound('success'); watchAd()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs transition" data-i18n="watch_ad_btn">
                     REKLAM İZLE (+10 PUAN)
                 </button>
             </div>
         </div>
 
-        <!-- Liderlik ve Kullanıcının Kendi Sıralaması -->
+        <!-- Liderlik Tablosu -->
         <div id="tab-leaderboard" class="tab-content space-y-3">
-            <div class="glass p-4 rounded-2xl space-y-3">
+            <div class="binance-card p-4 rounded-2xl space-y-3">
                 <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider" data-i18n="lb_title">En Çok Kazananlar (Top 10)</h3>
                 
-                <!-- Kullanıcının Kendi Sıralama Kartı -->
-                <div id="my-rank-card" class="glass p-3 rounded-xl border border-amber-500/40 bg-amber-500/10 flex justify-between items-center text-xs">
-                    <span class="text-amber-300 font-bold"><i class="fa-solid fa-user-shield mr-1"></i> Sizin Sıralamanız:</span>
-                    <span id="my-rank-text" class="text-amber-400 font-black">#-- (0 Puan)</span>
+                <div id="my-rank-card" class="binance-card p-3 rounded-xl border border-[#fcd535]/40 bg-[#fcd535]/5 flex justify-between items-center text-xs">
+                    <span class="text-[#fcd535] font-bold"><i class="fa-solid fa-user-shield mr-1"></i> Sizin Sıralamanız:</span>
+                    <span id="my-rank-text" class="text-white font-black">#-- (0 Puan)</span>
                 </div>
 
                 <div id="leaderboard-list" class="space-y-2 text-xs">
@@ -113,28 +114,50 @@
             </div>
         </div>
 
-        <!-- Çekim Ekranı -->
+        <!-- Binance Pro Çekim Ekranı (Ağ Seçimi ve USD Hesaplayıcı ile) -->
         <div id="tab-wallet" class="tab-content space-y-3">
-            <div class="glass p-4 rounded-2xl space-y-3">
+            <div class="binance-card p-4 rounded-2xl space-y-3">
                 <div class="flex justify-between items-center">
                     <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider" data-i18n="wallet_title">Kripto Çekim Talebi</h3>
-                    <span class="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30 font-semibold">Min: 1,000 Puan</span>
+                    <span class="text-[10px] bg-[#fcd535]/10 text-[#fcd535] px-2 py-0.5 rounded border border-[#fcd535]/20 font-semibold">Min: 1,000 Puan</span>
                 </div>
                 
-                <select id="w-currency" class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none text-white font-bold">
-                    <option value="USDT">USDT (Tether) - Binance</option>
-                    <option value="BTC">Bitcoin (BTC) - Binance</option>
-                    <option value="PEPE">PEPE Token - Binance</option>
-                    <option value="TON">TON Coin - Binance</option>
-                </select>
+                <!-- Kripto Varlık Seçimi -->
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold mb-1 block">VARLIK SEÇİN</label>
+                    <select id="w-currency" onchange="playSound('click'); updateNetworkOptions()" class="w-full binance-card rounded-xl p-3 text-xs outline-none text-white font-bold">
+                        <option value="USDT">USDT (Tether)</option>
+                        <option value="BTC">Bitcoin (BTC)</option>
+                        <option value="PEPE">PEPE Token</option>
+                        <option value="TON">TON Coin</option>
+                    </select>
+                </div>
 
-                <input id="w-amount" type="number" placeholder="Çekilecek Puan (Min: 1000)" class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-indigo-500">
-                <input id="w-address" type="text" placeholder="Binance Cüzdan Adresi veya UID" class="w-full bg-black/40 border border-slate-800 rounded-xl p-3 text-xs outline-none focus:border-indigo-500">
+                <!-- Ağ (Network) Seçimi -->
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold mb-1 block">TRANSFER AĞI (NETWORK)</label>
+                    <select id="w-network" class="w-full binance-card rounded-xl p-3 text-xs outline-none text-[#fcd535] font-bold">
+                        <option value="BSC (BEP20)">BNB Smart Chain (BEP20)</option>
+                    </select>
+                </div>
+
+                <!-- Puan Miktarı ve Canlı USD Değeri -->
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold mb-1 block">ÇEKİLECEK PUAN (1000 Puan = 1 USD)</label>
+                    <input id="w-amount" type="number" oninput="calculateUsdValue()" placeholder="Örn: 1000" class="w-full binance-card rounded-xl p-3 text-xs outline-none focus:border-[#fcd535]">
+                    <p class="text-[10px] text-emerald-400 font-semibold mt-1 text-right">Karşılığı: <span id="usd-equivalent">0.00</span> USD</p>
+                </div>
+
+                <!-- Cüzdan / UID -->
+                <div>
+                    <label class="text-[10px] text-slate-400 font-bold mb-1 block">BİNANCE CÜZDAN ADRESİ VEYA UID</label>
+                    <input id="w-address" type="text" placeholder="Cüzdan adresi veya Binance UID girin" class="w-full binance-card rounded-xl p-3 text-xs outline-none focus:border-[#fcd535]">
+                </div>
                 
-                <button onclick="requestPayout()" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition" data-i18n="withdraw_btn">Çekim Talebi Oluştur</button>
+                <button onclick="playSound('success'); requestPayout()" class="w-full py-3 bg-[#fcd535] hover:bg-[#f0c419] text-slate-950 font-bold rounded-xl text-xs transition" data-i18n="withdraw_btn">Çekim Talebi Oluştur</button>
             </div>
 
-            <div class="glass p-4 rounded-2xl space-y-2">
+            <div class="binance-card p-4 rounded-2xl space-y-2">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider" data-i18n="my_withdrawals_title">Çekim Geçmişim</h3>
                 <div id="my-withdrawals-list" class="space-y-1.5 text-[11px] text-slate-300">
                     <p class="text-slate-500 text-center">Henüz çekim talebiniz yok.</p>
@@ -144,12 +167,12 @@
 
     </div>
 
-    <!-- Modal -->
+    <!-- Modal Pencere -->
     <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="glass p-6 rounded-3xl max-w-xs w-full text-center space-y-3 bg-slate-900 border border-slate-700">
-            <h3 id="modal-title" class="font-bold text-sm">Bilgi</h3>
+        <div class="binance-card p-6 rounded-3xl max-w-xs w-full text-center space-y-3 border border-slate-700">
+            <h3 id="modal-title" class="font-bold text-sm text-[#fcd535]">Bilgi</h3>
             <p id="modal-desc" class="text-xs text-slate-300"></p>
-            <button onclick="closeModal()" class="w-full py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs">Tamam</button>
+            <button onclick="playSound('click'); closeModal()" class="w-full py-2.5 bg-[#fcd535] text-slate-950 font-bold rounded-xl text-xs">Tamam</button>
         </div>
     </div>
 
@@ -161,6 +184,35 @@
         if (tg) {
             tg.expand();
             if (tg.initDataUnsafe?.user?.id) telegramId = tg.initDataUnsafe.user.id.toString();
+        }
+
+        // Web Audio API ile Ses Efektleri (Harici dosya gerektirmez)
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                if(type === 'click') {
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.05);
+                    gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.05);
+                } else if(type === 'success') {
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                    osc.frequency.setValueAtTime(659.25, audioCtx.currentTime + 0.08); // E5
+                    osc.frequency.setValueAtTime(783.99, audioCtx.currentTime + 0.16); // G5
+                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                }
+            } catch(e) {}
         }
 
         // Çoklu Dil Sözlüğü
@@ -186,10 +238,10 @@
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
             document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-indigo-400');
+                btn.classList.remove('text-[#fcd535]');
                 btn.classList.add('text-slate-400');
                 if(btn.getAttribute('data-tab') === tabId) {
-                    btn.classList.add('text-indigo-400');
+                    btn.classList.add('text-[#fcd535]');
                     btn.classList.remove('text-slate-400');
                 }
             });
@@ -205,6 +257,29 @@
         }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
+        // Ağ Seçeneklerini Varlığa Göre Güncelleme
+        function updateNetworkOptions() {
+            let currency = document.getElementById('w-currency').value;
+            let netSelect = document.getElementById('w-network');
+            netSelect.innerHTML = "";
+            if (currency === 'USDT') {
+                netSelect.innerHTML = `<option value="BSC (BEP20)">BNB Smart Chain (BEP20)</option><option value="TRON (TRC20)">Tron (TRC20)</option><option value="ETH (ERC20)">Ethereum (ERC20)</option>`;
+            } else if (currency === 'BTC') {
+                netSelect.innerHTML = `<option value="Bitcoin">Bitcoin Network</option><option value="BSC (BEP20)">BNB Smart Chain (BEP20)</option>`;
+            } else if (currency === 'PEPE') {
+                netSelect.innerHTML = `<option value="ETH (ERC20)">Ethereum (ERC20)</option><option value="BSC (BEP20)">BNB Smart Chain (BEP20)</option>`;
+            } else if (currency === 'TON') {
+                netSelect.innerHTML = `<option value="TON">TON Network</option>`;
+            }
+        }
+
+        // Anlık Puan - USD Dönüşüm Hesaplayıcısı
+        function calculateUsdValue() {
+            let amount = parseFloat(document.getElementById('w-amount').value) || 0;
+            let usd = amount / 1000;
+            document.getElementById('usd-equivalent').innerText = usd.toFixed(2);
+        }
+
         function renderStreakTable(currentDay) {
             const rewards = [5, 6, 7, 8, 9, 10, 15];
             let grid = document.getElementById('streak-grid');
@@ -212,7 +287,7 @@
             for(let i = 1; i <= 7; i++) {
                 let isPassed = i < currentDay;
                 let isCurrent = i === currentDay;
-                let bgClass = isPassed ? "bg-emerald-500/20 border-emerald-500/40 text-emerald-300" : (isCurrent ? "bg-indigo-600/30 border-indigo-500 text-indigo-300 ring-2 ring-indigo-500/50" : "bg-black/30 border-slate-800 text-slate-500");
+                let bgClass = isPassed ? "bg-emerald-500/10 border-emerald-500/30 text-emerald-400" : (isCurrent ? "bg-[#fcd535]/15 border-[#fcd535] text-[#fcd535] ring-1 ring-[#fcd535]/50" : "bg-[#181a20] border-[#2b313a] text-slate-500");
                 grid.innerHTML += `<div class="p-2 rounded-xl border ${bgClass} text-center flex flex-col justify-center">
                     <span class="text-[9px] font-bold">GÜN ${i}</span>
                     <span class="text-xs font-black mt-0.5">+${rewards[i-1]}</span>
@@ -267,16 +342,14 @@
                 let list = document.getElementById('leaderboard-list');
                 list.innerHTML = "";
                 
-                // Top 10 Listesi
                 data.top10.forEach((u, index) => {
-                    let badgeColor = index === 0 ? "text-amber-400 font-black" : "text-slate-300 font-bold";
-                    list.innerHTML += `<div class="flex justify-between items-center p-2.5 rounded-xl bg-black/20 border border-slate-800">
+                    let badgeColor = index === 0 ? "text-[#fcd535] font-black" : "text-slate-300 font-bold";
+                    list.innerHTML += `<div class="flex justify-between items-center p-2.5 rounded-xl binance-card">
                         <span class="${badgeColor}">#${index+1} ${u.username}</span>
-                        <span class="text-amber-400 font-bold">${u.balance} Puan</span>
+                        <span class="text-[#fcd535] font-bold">${u.balance} Puan</span>
                     </div>`;
                 });
 
-                // Kullanıcının Kendi Sıralama Kartı
                 if(data.userRank) {
                     document.getElementById('my-rank-text').innerText = `#${data.userRank.rank} (${data.userRank.balance} Puan)`;
                 }
@@ -292,10 +365,10 @@
                     return;
                 }
                 data.forEach(w => {
-                    let badge = '<span class="text-amber-400 font-bold">Bekliyor ⏳</span>';
+                    let badge = '<span class="text-[#fcd535] font-bold">Bekliyor ⏳</span>';
                     if(w.status === 'Ödendi') badge = '<span class="text-emerald-400 font-bold">Onaylandı ✓</span>';
-                    list.innerHTML += `<div class="flex justify-between items-center py-1.5 border-b border-slate-800/40">
-                        <span>${w.amount} ${w.currency}</span>
+                    list.innerHTML += `<div class="flex justify-between items-center py-1.5 border-b border-[#2b313a]">
+                        <span>${w.amount} ${w.currency} (${w.network || 'BSC'})</span>
                         ${badge}
                     </div>`;
                 });
@@ -304,6 +377,7 @@
 
         function requestPayout() {
             let currency = document.getElementById('w-currency').value;
+            let network = document.getElementById('w-network').value;
             let amount = parseFloat(document.getElementById('w-amount').value);
             let address = document.getElementById('w-address').value;
             
@@ -315,7 +389,7 @@
             fetch('/api/withdraw', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ telegram_id: telegramId, amount, currency, wallet: address })
+                body: JSON.stringify({ telegram_id: telegramId, amount, currency, network, wallet: address })
             }).then(res => res.json()).then(data => {
                 showModal("Bilgi", data.message || data.error);
                 fetchUserData();
@@ -324,6 +398,7 @@
         }
 
         fetchUserData();
+        updateNetworkOptions();
     </script>
 </body>
 </html>
