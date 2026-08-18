@@ -1,7 +1,7 @@
 const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
-const { Telegraf } = require('telegraf'); // Telegram Bot Kütüphanesi
+const { Telegraf } = require('telegraf');
 
 const app = express();
 const dbPath = path.join(__dirname, 'database.db');
@@ -11,18 +11,16 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- TELEGRAM BOT AYARI ---
-// .env dosyasından veya doğrudan buraya Bot Token'ınızı yazabilirsiniz
-const BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
-const MINI_APP_URL = process.env.MINI_APP_URL || 'https://miner-production-32ee.up.railway.app'; // Mini App linkiniz
+const BOT_TOKEN = process.env.BOT_TOKEN || 'BURAYA_BOT_TOKEN_GIRIN';
+const MINI_APP_URL = process.env.MINI_APP_URL || 'https://miner-production-32ee.up.railway.app';
 
 const bot = new Telegraf(BOT_TOKEN);
 
 bot.start((ctx) => {
     const telegramId = ctx.from.id.toString();
-    const username = ctx.from.username || 'Imsiz_' + telegramId.slice(-4);
+    const username = ctx.from.username || 'İsimsiz_' + telegramId.slice(-4);
     const firstName = ctx.from.first_name || '';
 
-    // Kullanıcıyı veritabanına otomatik kaydet/güncelle
     db.run(
         `INSERT INTO users (telegram_id, username, balance, tickets) 
          VALUES (?, ?, 0, 0) 
@@ -35,20 +33,19 @@ bot.start((ctx) => {
         reply_markup: {
             inline_keyboard: [
                 [{ text: "🚀 Madenciliği Aç (Mini App)", web_app: { url: MINI_APP_URL } }],
-                [{ text: "📢 Duyuru Kanalı", url: "https://t.me/" }] // Kendi kanal linkinizi ekleyebilirsiniz
+                [{ text: "📢 Duyuru Kanalı", url: "https://t.me/" }]
             ]
         }
     });
 });
 
-// Botu başlat
 bot.launch().then(() => {
-    console.log("🤖 Telegram Bot başarıyla başlatıldı ve çalışıyor!");
+    console.log("🤖 Telegram Bot başarıyla başlatıldı!");
 }).catch(err => {
-    console.error("Bot başlatılamadı (Token'ı kontrol edin):", err);
+    console.error("Bot başlatılamadı:", err);
 });
 
-// --- VERİTABANI BAŞLATMA ---
+// --- VERİTABANI OLUŞTURMA ---
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         telegram_id TEXT PRIMARY KEY,
@@ -69,7 +66,7 @@ db.serialize(() => {
     )`);
 });
 
-// --- API ROTALARI (MİNİ APP İÇİN) ---
+// --- MİNİ APP API ROTALARI ---
 
 app.get('/api/leaderboard', (req, res) => {
     db.all("SELECT telegram_id, username, balance FROM users ORDER BY balance DESC LIMIT 10", (err, rows) => {
@@ -116,13 +113,7 @@ app.post('/api/user/update', (req, res) => {
     );
 });
 
-app.post('/api/user/log', (req, res) => {
-    const { telegram_id, username, action, details, timestamp } = req.body;
-    console.log(`[LOG] [${timestamp}] ID: ${telegram_id} (${username}) -> Aksiyon: ${action} | Detay: ${details}`);
-    res.json({ success: true });
-});
-
-// --- GELİŞMİŞ ADMIN PANELİ API ROTALARI ---
+// --- ADMIN PANELİ API ROTALARI ---
 
 app.get('/api/admin/stats', (req, res) => {
     db.get(`SELECT COUNT(*) as totalUsers, SUM(balance) as totalBalance FROM users`, (err, row) => {
@@ -148,7 +139,6 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
-// Admin panelinden bakiye/bilet ekleme veya çıkarma
 app.post('/api/admin/modify', (req, res) => {
     const { telegram_id, amount, type } = req.body;
     const column = type === 'tickets' ? 'tickets' : 'balance';
@@ -159,7 +149,6 @@ app.post('/api/admin/modify', (req, res) => {
     });
 });
 
-// Tüm kullanıcılara duyuru gönderme API'si
 app.post('/api/admin/broadcast', async (req, res) => {
     const { message } = req.body;
     if (!message) return res.status(400).json({ success: false, error: "Mesaj boş olamaz" });
@@ -172,15 +161,12 @@ app.post('/api/admin/broadcast', async (req, res) => {
             try {
                 await bot.telegram.sendMessage(user.telegram_id, `📢 **Sistem Duyurusu:**\n\n${message}`, { parse_mode: 'Markdown' });
                 successCount++;
-            } catch (e) {
-                // Engellenen veya botu durduran kullanıcılar atlanır
-            }
+            } catch (e) {}
         }
         res.json({ success: true, sentCount: successCount });
     });
 });
 
-// Çekim onaylama
 app.post('/api/admin/withdraw/approve', (req, res) => {
     const { id } = req.body;
     db.run(`UPDATE withdraws SET status = 'approved' WHERE id = ?`, [id], function(err) {
@@ -191,9 +177,8 @@ app.post('/api/admin/withdraw/approve', (req, res) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server ${PORT} portunda başarıyla çalışıyor.`);
+    console.log(`Server ${PORT} portunda aktif.`);
 });
 
-// Graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
