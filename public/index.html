@@ -63,7 +63,7 @@
                 </div>
                 
                 <div id="streak-grid" class="grid grid-cols-4 gap-2">
-                    <!-- Dinamik Gün Kutuları JavaScript ile doldurulacak -->
+                    <!-- Dinamik Gün Kutuları -->
                 </div>
 
                 <button onclick="claimDailyBonus()" id="claim-btn" class="w-full py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-indigo-600/30">
@@ -72,7 +72,7 @@
             </div>
         </div>
 
-        <!-- Reklam İzle (1000 Puan = 1 USDT Kur Uyumlu) -->
+        <!-- Reklam İzle -->
         <div id="tab-earn" class="tab-content space-y-3">
             <div class="glass p-5 rounded-2xl text-center space-y-3">
                 <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-lg border border-emerald-500/30">
@@ -86,7 +86,7 @@
             </div>
         </div>
 
-        <!-- Liderlik (Dolu Tablo) -->
+        <!-- Liderlik -->
         <div id="tab-leaderboard" class="tab-content space-y-3">
             <div class="glass p-4 rounded-2xl space-y-3">
                 <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">En Çok Kazananlar (Top 10)</h3>
@@ -96,7 +96,7 @@
             </div>
         </div>
 
-        <!-- Çekim Ekranı (Min 1000 Puan & Eşit Kur: 1000 Puan = 1 USDT) -->
+        <!-- Çekim Ekranı -->
         <div id="tab-wallet" class="tab-content space-y-3">
             <div class="glass p-4 rounded-2xl space-y-3">
                 <div class="flex justify-between items-center">
@@ -206,7 +206,7 @@
                     <span class="text-[8px] mt-0.5">${isPassed ? '✓ Alındı' : (isCurrent ? '★ Bugün' : 'Kilit')}</span>
                 </div>`;
             }
-            document.getElementById('streak-info.innerText = "Aktif Gün: " + currentDay;
+            document.getElementById('streak-info').innerText = "Aktif Gün: " + currentDay;
         }
 
         function fetchUserData() {
