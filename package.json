@@ -1,14 +1,14 @@
 {
-  "name": "sanal-miner-pro",
+  "name": "miner",
   "version": "1.0.0",
-  "description": "Telegram Miner Mini App",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "axios": "^1.6.8",
+    "body-parser": "^1.20.2",
     "express": "^4.19.2",
-    "sqlite3": "^5.1.7",
-    "telegraf": "^4.16.3"
+    "sqlite3": "^5.1.7"
   }
 }
