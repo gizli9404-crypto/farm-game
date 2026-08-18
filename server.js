@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // --- TELEGRAM BOT AYARI ---
-const BOT_TOKEN = process.env.BOT_TOKEN || 'BURAYA_BOT_TOKEN_GIRIN';
+const BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
 const MINI_APP_URL = process.env.MINI_APP_URL || 'https://miner-production-32ee.up.railway.app';
 
 const bot = new Telegraf(BOT_TOKEN);
