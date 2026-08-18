@@ -17,10 +17,13 @@ const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || '825653935';
 
 const bot = new Telegraf(BOT_TOKEN);
 
-// Telegram Kanalına Otomatik Şık Bildirim Atma Fonksiyonu
-async function sendTelegramChannelMessage(text) {
+// Telegram Kanalına Butonlu ve Şık Bildirim Atma Fonksiyonu
+async function sendTelegramChannelMessage(text, replyMarkup = null) {
     try {
-        await bot.telegram.sendMessage(CHANNEL_ID, text, { parse_mode: 'Markdown' });
+        await bot.telegram.sendMessage(CHANNEL_ID, text, { 
+            parse_mode: 'Markdown',
+            reply_markup: replyMarkup 
+        });
     } catch (error) {
         console.error("Kanal mesajı gönderim hatası:", error);
     }
@@ -87,16 +90,23 @@ function logSystemError(errMessage) {
     });
 }
 
-// Otomatik Duyuru ve Çekim Raporu (6 Saatte Bir Otonom Gönderim)
+// Otomatik Duyuru ve Çekim Raporu (6 Saatte Bir Otonom Gönderim - Butonlu)
 setInterval(() => {
     db.all("SELECT username, amount, currency FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 3", (err, rows) => {
         if (err) { logSystemError(err); return; }
         let payoutText = rows && rows.length > 0 
-            ? rows.map(r => `• Kullanıcı: @${r.username} ➔ ${r.amount} ${r.currency} (Ödendi)`).join('\n')
+            ? rows.map(r => `• Kullanıcı: @${r.username ? r.username.replace(/^@/, '') : 'Kullanıcı'} ➔ ${r.amount} ${r.currency} (Ödendi)`).join('\n')
             : `• @CryptoKing_99 ➔ 50 USDT (Ödendi)\n• @Satoshi_TR ➔ 30 USDT (Ödendi)\n• @BinanceWhale ➔ 25 USDT (Ödendi)`;
 
-        let motivationalMsg = `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`;
-        sendTelegramChannelMessage(motivationalMsg);
+        let motivationalMsg = `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!`;
+        
+        const inlineKeyboard = {
+            inline_keyboard: [
+                [{ text: "🚀 Hemen Kazanmaya Başla (Botu Aç)", url: "https://t.me/sanal_miner_test_bot" }]
+            ]
+        };
+
+        sendTelegramChannelMessage(motivationalMsg, inlineKeyboard);
     });
 }, 6 * 60 * 60 * 1000);
 
@@ -122,7 +132,7 @@ app.get('/api/admin/withdraws', (req, res) => {
     });
 });
 
-// Admin Çekim Talebini Onaylama API'si (KANALA OTOMATİK BİLDİRİM GÖNDERİR)
+// Admin Çekim Talebini Onaylama API'si (KANALA BUTONLU OTOMATİK BİLDİRİM GÖNDERİR)
 app.post('/api/admin/withdraws/complete', (req, res) => {
     const { id } = req.body;
     
@@ -138,16 +148,22 @@ app.post('/api/admin/withdraws/complete', (req, res) => {
                 return res.status(500).json({ success: false, error: "Veritabanı hatası" });
             }
 
-            // Ekran görüntüsündeki formatta Telegram kanalına gönderim tetikleniyor
+            let cleanUsername = withdraw.username ? withdraw.username.replace(/^@/, '') : 'Kullanıcı';
+
             let channelMessage = 
 `🚀 Yeni Ödeme Başarıyla Yapıldı!\n\n` +
-`👤 Kullanıcı: @${withdraw.username || 'Kullanıcı'}\n` +
+`👤 Kullanıcı: @${cleanUsername}\n` +
 `💎 Miktar: ${withdraw.amount} ${withdraw.currency}\n` +
 `🌐 Ağ/Cüzdan: ${withdraw.network || 'BSC'} / \`${withdraw.wallet}\`\n` +
-`✅ Durum: Binance Üzerinden Gönderildi!\n\n` +
-`🚀 Sen de kazanmak için: @sanal_miner_test_bot`;
+`✅ Durum: Binance Üzerinden Gönderildi!`;
 
-            sendTelegramChannelMessage(channelMessage);
+            const inlineKeyboard = {
+                inline_keyboard: [
+                    [{ text: "🚀 Sen de kazanmak için tıkla!", url: "https://t.me/sanal_miner_test_bot" }]
+                ]
+            };
+
+            sendTelegramChannelMessage(channelMessage, inlineKeyboard);
 
             res.json({ success: true, message: "Çekim talebi ödendi olarak güncellendi ve kanala duyuruldu!" });
         });
