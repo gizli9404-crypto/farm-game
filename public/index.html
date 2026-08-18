@@ -1,183 +1,61 @@
-<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sanal Miner Pro App</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
-    <style>
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        body { background: #050505; color: #fff; font-family: 'Inter', sans-serif; }
-        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
-    </style>
-</head>
-<body class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-between">
-
-    <!-- Header -->
-    <div class="flex justify-between items-center mb-6">
-        <div>
-            <h1 class="text-xl font-bold tracking-tight">Sanal Miner <span class="text-emerald-500">Pro</span></h1>
-            <p class="text-[10px] text-slate-500 uppercase tracking-widest">ID: <span id="user-telegram-id">Yükleniyor...</span></p>
-        </div>
-        <div id="user-avatar" class="w-10 h-10 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center border border-emerald-500/30 font-bold">EA</div>
-    </div>
-
-    <!-- Bakiye Kartı -->
-    <div class="glass p-6 rounded-3xl mb-6 text-center relative overflow-hidden">
-        <div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-500/10 rounded-full blur-2xl"></div>
-        <p class="text-slate-400 text-sm mb-2">Güncel Bakiye</p>
-        <h2 id="main-balance" class="text-4xl font-black text-emerald-400">0.00</h2>
-        <p class="text-slate-500 mt-2 font-bold text-xs">PEPE TOKEN</p>
-    </div>
-
-    <!-- Sekmeler -->
-    <div class="grid grid-cols-3 gap-3 mb-6">
-        <button onclick="showTab('mining')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-emerald-400 nav-tab" data-target="mining">Kazım</button>
-        <button onclick="showTab('wallet')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-slate-400 nav-tab" data-target="wallet">Cüzdan</button>
-        <button onclick="showTab('friends')" class="p-3 rounded-2xl glass text-xs font-bold transition hover:bg-emerald-500/20 text-slate-400 nav-tab" data-target="friends">Davet</button>
-    </div>
-
-    <!-- İçerik Alanı -->
-    <div class="flex-1">
-        <!-- Kazım Sekmesi -->
-        <div id="tab-mining" class="tab-content active glass p-6 rounded-3xl space-y-4">
-            <h3 class="text-base font-bold">Madencilik Simülasyonu</h3>
-            <p class="text-xs text-slate-400">Sunucu ile senkronize kazım sistemi aktif.</p>
-            <button onclick="triggerMining()" class="w-full py-4 bg-emerald-500 text-black font-black rounded-2xl shadow-lg shadow-emerald-500/20 hover:bg-emerald-400 transition">KAZİMSAL İŞLEM</button>
-        </div>
-
-        <!-- Cüzdan Sekmesi -->
-        <div id="tab-wallet" class="tab-content glass p-6 rounded-3xl space-y-4">
-            <h3 class="text-base font-bold">Çekim Talebi</h3>
-            <input id="w-amount" type="number" class="w-full p-4 bg-black border border-slate-800 rounded-2xl text-xs outline-none focus:border-emerald-500" placeholder="Miktar (Min 5000 PEPE)">
-            <input id="w-address" type="text" class="w-full p-4 bg-black border border-slate-800 rounded-2xl text-xs outline-none focus:border-emerald-500" placeholder="Cüzdan Adresi (TON/BSC)">
-            <button onclick="requestWithdraw()" class="w-full py-4 bg-emerald-500 text-black font-bold rounded-2xl text-xs hover:bg-emerald-400 transition">ÇEKİM TALEBİ OLUŞTUR</button>
-        </div>
-
-        <!-- Davet Sekmesi -->
-        <div id="tab-friends" class="tab-content glass p-6 rounded-3xl space-y-4 text-center">
-            <h3 class="text-base font-bold">Arkadaşını Davet Et</h3>
-            <p class="text-xs text-slate-400">Özel referans bağlantın ile kullanıcı kazandır.</p>
-            <input id="ref-link" type="text" readonly class="w-full p-3 bg-black border border-slate-800 rounded-xl text-xs text-center text-slate-300" value="https://t.me/sanal_miner_test_bot?start=ref_0">
-            <button onclick="copyRef()" class="w-full py-3 bg-slate-800 font-bold rounded-xl text-xs hover:bg-slate-700 transition">Linki Kopyala</button>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="glass p-6 rounded-3xl max-w-xs w-full text-center space-y-4 bg-slate-900">
-            <h3 id="modal-title" class="font-bold text-sm">Bilgi</h3>
-            <p id="modal-desc" class="text-xs text-slate-300"></p>
-            <button onclick="closeModal()" class="w-full py-3 bg-emerald-500 text-black font-bold rounded-xl text-xs">Tamam</button>
-        </div>
-    </div>
-
-    <script>
-        let tg = window.Telegram?.WebApp;
-        let telegramId = "825653935"; // Test için varsayılan ID
-        let username = "Jacker_lord";
-
-        if (tg) {
-            tg.expand();
-            if (tg.initDataUnsafe?.user?.id) {
-                telegramId = tg.initDataUnsafe.user.id.toString();
-                username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name || "User";
-            }
-        }
-
-        document.getElementById('user-telegram-id').innerText = telegramId;
-        document.getElementById('ref-link').value = `https://t.me/sanal_miner_test_bot?start=ref_${telegramId}`;
-
-        // Backend'den Canlı Veri Çekme
-        function fetchUserData() {
-            fetch(`/api/user/${telegramId}`)
-                .then(res => res.json())
-                .then(data => {
-                    if (data && data.balance !== undefined) {
-                        document.getElementById('main-balance').innerText = Number(data.balance).toFixed(2);
-                    }
-                })
-                .catch(err => {
-                    console.log("Sunucu bağlantı hatası, tekrar deneniyor...");
-                });
-        }
-
-        function showTab(id) {
-            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
-            document.getElementById('tab-' + id).classList.add('active');
-            
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                btn.classList.remove('text-emerald-400');
-                btn.classList.add('text-slate-400');
-                if(btn.getAttribute('data-target') === id) {
-                    btn.classList.add('text-emerald-400');
-                    btn.classList.remove('text-slate-400');
-                }
-            });
-        }
-
-        function showModal(title, desc) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-desc').innerText = desc;
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-
-        function triggerMining() {
-            showModal("Kazım", "Kazım verisi işleniyor...");
-            fetchUserData();
+function updateUI() {
+            let balanceNum = Number(gameState.balance);
+            document.getElementById('balance').innerText = balanceNum.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 4 });
+            document.getElementById('rank-balance').innerText = balanceNum.toLocaleString('tr-TR', { minimumFractionDigits: 2 }) + " PEPE";
+            document.getElementById('ticket-count').innerText = gameState.tickets + " Biletiniz Var";
+            let progressPercent = Math.min((balanceNum / 5000) * 100, 100);
+            document.getElementById('progress-bar').style.width = progressPercent + '%';
+            document.getElementById('progress-text').innerText = `${balanceNum.toFixed(2)} / 5,000 PEPE (${progressPercent.toFixed(1)}%)`;
         }
 
         function requestWithdraw() {
-            let amount = parseFloat(document.getElementById('w-amount').value);
-            let address = document.getElementById('w-address').value;
+            let addr = document.getElementById('wallet-addr').value.trim();
+            let amount = parseFloat(document.getElementById('withdraw-amount').value);
+            let network = document.getElementById('wallet-network').value;
 
-            if(!address || isNaN(amount) || amount < 5000) {
-                showModal("Hata", "Lütfen geçerli bir adres ve en az 5000 PEPE girin.");
+            if (!addr || isNaN(amount) || amount < 5000 || gameState.balance < amount) {
+                showModal("Hata", "Lütfen geçerli bir cüzdan adresi ve en az 5000 PEPE (yeterli bakiye) girin.", false);
                 return;
             }
 
-            // Doğru backend yolu '/api/withdraw' olarak ayarlandı
+            let btn = event.target;
+            btn.disabled = true;
+            let originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner animate-spin mr-1.5"></i> İŞLENİYOR...';
+
             fetch('/api/withdraw', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    telegram_id: telegramId, 
-                    username: username, 
-                    amount: amount, 
-                    wallet: address, 
-                    network: "TON" 
+                body: JSON.stringify({
+                    telegram_id: telegramId,
+                    username: username,
+                    amount: amount,
+                    wallet: addr,
+                    network: network
                 })
             })
             .then(res => res.json())
             .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+
                 if (data.success) {
-                    showModal("Başarılı", data.message || "Çekim talebiniz başarıyla alındı!");
-                    fetchUserData();
+                    gameState.balance -= amount;
+                    gameState.wallet = addr;
+                    updateUI();
+                    sendActivityLog("WITHDRAW_REQUEST", `${amount} PEPE çekim talebi oluşturuldu. Ağ: ${network}`);
+                    
+                    if (typeof confetti === 'function') {
+                        confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+                    }
+                    showModal("Başarılı", data.message || "Çekim talebiniz başarıyla alındı!", true);
                 } else {
-                    showModal("Hata", data.error || "İşlem başarısız oldu.");
+                    showModal("Hata", data.error || "İşlem başarısız oldu.", false);
                 }
             })
             .catch(err => {
-                showModal("Hata", "İşlem sırasında sunucu hatası oluştu.");
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+                showModal("Hata", "Sunucu bağlantı hatası oluştu.", false);
             });
         }
-
-        function copyRef() {
-            let copyText = document.getElementById("ref-link");
-            navigator.clipboard.writeText(copyText.value);
-            showModal("Başarılı", "Referans bağlantısı kopyalandı!");
-        }
-
-        // Sayfa açıldığında ve her 5 saniyede bir senkronizasyon
-        fetchUserData();
-        setInterval(fetchUserData, 5000);
-    </script>
-</body>
-</html>
