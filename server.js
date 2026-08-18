@@ -113,8 +113,8 @@ app.post('/api/user/update', (req, res) => {
     );
 });
 
-// --- ÇEKİM TALEBİ OLUŞTURMA ROTOSU ---
-app.post('/api/withdraw', (req, res) => {
+// --- ÇEKİM TALEBİ OLUŞTURMA ROTOSU (Frontend ile uyumlu hale getirildi) ---
+app.post('/api/withdraw/request', (req, res) => {
     const { telegram_id, username, amount, wallet, network } = req.body;
     
     if (!telegram_id || !amount || !wallet) {
@@ -141,6 +141,12 @@ app.post('/api/withdraw', (req, res) => {
             );
         });
     });
+});
+
+// --- AKTİVİTE LOGLAMA ROTOSU ---
+app.post('/api/user/log', (req, res) => {
+    // Frontend log gönderdiği için bu uç nokta eksikti, eklendi.
+    res.json({ success: true });
 });
 
 // --- ADMIN PANELİ API ROTALARI ---
