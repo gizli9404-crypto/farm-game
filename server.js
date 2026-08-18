@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
 const CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru'; 
 const MINI_APP_URL = process.env.MINI_APP_URL || 'https://miner-production-32ee.up.railway.app';
-const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || '825653935'; // Senin Telegram ID'n (Hatalar buraya ve kanala düşer)
+const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || '825653935';
 
 const bot = new Telegraf(BOT_TOKEN);
 
@@ -28,8 +28,7 @@ bot.start((ctx) => {
         [telegramId, username]
     );
 
-    ctx.reply(`✨ Merhaba **${firstName}**, Crypto Quest Hub'a hoş geldin!\n\nBinance cüzdanlarınla entegre kazanç sistemimizle hemen kazanmaya başla.`, {
-        parse_mode: 'Markdown',
+    ctx.reply(`✨ Merhaba ${firstName}, Crypto Quest Hub'a hoş geldin!\n\nBinance cüzdanlarınla entegre kazanç sistemimizle hemen kazanmaya başla.`, {
         reply_markup: {
             inline_keyboard: [
                 [{ text: "🚀 Uygulamayı Aç", web_app: { url: MINI_APP_URL } }],
@@ -41,7 +40,6 @@ bot.start((ctx) => {
 
 bot.launch().then(() => console.log("Bot ve Otonom Zamanlayıcılar Aktif!")).catch(err => logSystemError(err));
 
-// Veritabanı Tabloları
 db.serialize(() => {
     db.run(`CREATE TABLE IF NOT EXISTS users (
         telegram_id TEXT PRIMARY KEY,
@@ -69,44 +67,36 @@ db.serialize(() => {
     )`);
 });
 
-// Sistem Hata Yakalayıcı ve Loglayıcı Fonksiyon
 function logSystemError(errMessage) {
     const errorText = typeof errMessage === 'object' ? errMessage.message : errMessage;
     console.error("[SİSTEM HATASI]:", errorText);
     
     db.run("INSERT INTO system_logs (log_type, message) VALUES ('HATA', ?)", [errorText], () => {
-        // Admin'e ve kanala acil bildirim at
         try {
-            bot.telegram.sendMessage(ADMIN_CHAT_ID, `🚨 **KRİTİK SİSTEM HATASI YAKALANDI!**\n\n\`${errorText}\`\n\nLütfen admin panelini kontrol et!`, { parse_mode: 'Markdown' });
+            bot.telegram.sendMessage(ADMIN_CHAT_ID, `🚨 KRİTİK SİSTEM HATASI:\n\n${errorText}`);
         } catch(e) {}
     });
 }
 
-// --- OTOMATİK KANAL MOTİVASYON VE ÖDEME LİSTESİ GÖNDERİCİ (HER 6 SAATTE BİR OTOMATİK ÇALIŞIR) ---
+// Otomatik Kanal Motivasyon ve Ödeme Listesi Gönderici (Her 6 saatte bir)
 setInterval(() => {
     db.all("SELECT username, amount, currency FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 3", (err, rows) => {
-        if (err) {
-            logSystemError(err);
-            return;
-        }
+        if (err) { logSystemError(err); return; }
 
         let payoutText = rows && rows.length > 0 
-            ? rows.map(r => `👤 \`${r.username}\` ➔ **${r.amount} ${r.currency}** (Ödendi ✅)`).join('\n')
-            : `✨ Henüz yeni ödeme yapılmadı, ilk çeken sen ol!`;
+            ? rows.map(r => `• Kullanıcı: ${r.username} ➔ ${r.amount} ${r.currency} (Ödendi)`).join('\n')
+            : `• Henüz yeni ödeme yapılmadı, ilk çeken sen ol!`;
 
         const motivationalMessages = [
-            `🔥 **Günün Ödeme Listesi & Fırsat Raporu!**\n\n${payoutText}\n\n💡 _Dostlar, vakit kaybetmeyin! Reklam izleyerek ve görevleri tamamlayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!_\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`,
-            `💎 **Hızlı Kazanç Zamanı!**\n\nSon ödemeler kullanıcılarımızın cüzdanlarına ulaştı bile:\n${payoutText}\n\n⭐ _Siz de yerinizi alın, arkadaşlarınızı davet edin ve pasif gelirinizi artırın!_\n\n👉 Uygulamaya Git: ${MINI_APP_URL}`
+            `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve görevleri tamamlayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`,
+            `💎 HIZLI KAZANÇ ZAMANI!\n\nSon ödemeler kullanıcılarımızın cüzdanlarına ulaştı:\n${payoutText}\n\n⭐ Siz de yerinizi alın, arkadaşlarınızı davet edin ve pasif gelirinizi artırın!\n\n👉 Uygulamaya Git: ${MINI_APP_URL}`
         ];
 
         let randomMsg = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
-
-        // Kanala fotoğraf veya şık biçimlendirme ile otomatik gönder
-        bot.telegram.sendMessage(CHANNEL_ID, randomMsg, { parse_mode: 'Markdown' }).catch(e => logSystemError(e));
+        bot.telegram.sendMessage(CHANNEL_ID, randomMsg).catch(e => logSystemError(e));
     });
-}, 6 * 60 * 60 * 1000); // 6 saatte bir otomatik atar (İstesen süreyi değiştirebilirsin)
+}, 6 * 60 * 60 * 1000);
 
-// API Rotaları
 app.get('/api/user/:id', (req, res) => {
     const userId = req.params.id;
     db.get("SELECT * FROM users WHERE telegram_id = ?", [userId], (err, row) => {
@@ -150,7 +140,6 @@ app.post('/api/withdraw', (req, res) => {
     });
 });
 
-// --- ADMIN PANELİ VERİLERİ VE LOGLAR ---
 app.get('/api/admin/data', (req, res) => {
     db.get("SELECT COUNT(*) as totalUsers, SUM(balance) as totalBalance FROM users", (err, stats) => {
         db.all("SELECT * FROM withdrawals WHERE status='Bekliyor' ORDER BY id DESC", (err2, pending) => {
@@ -163,7 +152,7 @@ app.get('/api/admin/data', (req, res) => {
     });
 });
 
-// Çekimi Onayla ve Kanala Otomatik Kanıt At
+// Çekimi Onayla (Karakter hatası vermemesi için Markdown kaldırıldı)
 app.post('/api/admin/approve-withdrawal', async (req, res) => {
     const { id } = req.body;
     db.get("SELECT * FROM withdrawals WHERE id = ?", [id], async (err, w) => {
@@ -172,13 +161,12 @@ app.post('/api/admin/approve-withdrawal', async (req, res) => {
         db.run("UPDATE withdrawals SET status = 'Ödendi' WHERE id = ?", [id], async () => {
             try {
                 await bot.telegram.sendMessage(CHANNEL_ID, 
-                    `🎉 **Yeni Ödeme Başarıyla Yapıldı!**\n\n` +
-                    `👤 Kullanıcı: \`${w.username}\`\n` +
-                    `💎 Miktar: **${w.amount} ${w.currency}**\n` +
-                    `🌐 Ağ/Cüzدان: \`${w.wallet}\`\n` +
-                    `✅ Durum: **Binance Üzerinden Gönderildi!**\n\n` +
-                    `🚀 Sen de kazanmak için: @sanal_miner_test_bot`, 
-                    { parse_mode: 'Markdown' }
+                    `🎉 Yeni Ödeme Başarıyla Yapıldı!\n\n` +
+                    `👤 Kullanıcı: ${w.username}\n` +
+                    `💎 Miktar: ${w.amount} ${w.currency}\n` +
+                    `🌐 Ağ/Cüzdan: ${w.wallet}\n` +
+                    `✅ Durum: Binance Üzerinden Gönderildi!\n\n` +
+                    `🚀 Sen de kazanmak için: @sanal_miner_test_bot`
                 );
             } catch(e) { logSystemError(e); }
 
@@ -187,7 +175,6 @@ app.post('/api/admin/approve-withdrawal', async (req, res) => {
     });
 });
 
-// Manuel veya Otomatik Duyuru / Motivasyon Postu Atma
 app.post('/api/admin/broadcast', async (req, res) => {
     const { message, type } = req.body; 
     let title = type === 'hata' ? "⚠️ SİSTEM HATA / BAKIM BİLDİRİMİ" : "📢 GÜNÜN KAZANÇ VE MOTİVASYON DUYURUSU";
@@ -196,11 +183,11 @@ app.post('/api/admin/broadcast', async (req, res) => {
         db.all("SELECT telegram_id FROM users", async (err, rows) => {
             if(rows) {
                 for (const u of rows) {
-                    try { await bot.telegram.sendMessage(u.telegram_id, `*${title}*\n\n${message}`, { parse_mode: 'Markdown' }); } catch(e){}
+                    try { await bot.telegram.sendMessage(u.telegram_id, `${title}\n\n${message}`); } catch(e){}
                 }
             }
         });
-        await bot.telegram.sendMessage(CHANNEL_ID, `*${title}*\n\n${message}\n\n🚀 Katıl: @sanal_miner_test_bot`, { parse_mode: 'Markdown' });
+        await bot.telegram.sendMessage(CHANNEL_ID, `${title}\n\n${message}\n\n🚀 Katıl: @sanal_miner_test_bot`);
         
         res.json({ success: true });
     } catch(e) {
