@@ -77,13 +77,13 @@ function logSystemError(errMessage) {
     });
 }
 
-// Otonom Ödeme Kanalı Duyurusu (6 Saatte Bir)
+// Otomatik Duyuru ve Çekim Raporu (6 Saatte Bir Otonom Gönderim)
 setInterval(() => {
     db.all("SELECT username, amount, currency FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 3", (err, rows) => {
         if (err) { logSystemError(err); return; }
         let payoutText = rows && rows.length > 0 
             ? rows.map(r => `• Kullanıcı: ${r.username} ➔ ${r.amount} ${r.currency} (Ödendi)`).join('\n')
-            : `• CryptoKing_99 ➔ 50 USDT (Ödendi)\n• Satoshi_TR 30 USDT (Ödendi)\n• BinanceWhale ➔ 25 USDT (Ödendi)`;
+            : `• CryptoKing_99 ➔ 50 USDT (Ödendi)\n• Satoshi_TR ➔ 30 USDT (Ödendi)\n• BinanceWhale ➔ 25 USDT (Ödendi)`;
 
         const motivationalMessages = [
             `🔥 GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!\n\n🚀 Hemen Kazanmaya Başla: ${MINI_APP_URL}`
@@ -93,10 +93,19 @@ setInterval(() => {
     });
 }, 6 * 60 * 60 * 1000);
 
-// --- YENİ EKLENTİ: SÜRE BAZLI ÖDÜL SİSTEMİ ---
+// Admin Paneli İçin Kullanıcı Listesi API'si
+app.get('/api/admin/users', (req, res) => {
+    db.all("SELECT telegram_id, username, balance FROM users ORDER BY balance DESC", (err, rows) => {
+        if (err) {
+            logSystemError(err);
+            return res.status(500).json({ success: false, error: "Veritabanı hatası" });
+        }
+        res.json(rows || []);
+    });
+});
+
 app.post('/api/active-reward', (req, res) => {
     const { telegram_id } = req.body;
-    // Kullanıcıya 60 saniyede bir 0.5 bakiye ekle
     db.run("UPDATE users SET balance = balance + 0.5 WHERE telegram_id = ?", [telegram_id], (err) => {
         if (err) {
             logSystemError(err);
@@ -105,7 +114,6 @@ app.post('/api/active-reward', (req, res) => {
         res.json({ success: true, message: "Süre ödülü eklendi!" });
     });
 });
-// ---------------------------------------------
 
 app.get('/api/user/:id', (req, res) => {
     const userId = req.params.id;
