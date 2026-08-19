@@ -48,12 +48,13 @@
         </div>
     </div>
 
-    <!-- Menü Butonları -->
-    <div class="grid grid-cols-4 gap-2 mb-3">
-        <button onclick="switchTab('quests')" class="py-2.5 rounded-xl game-card text-[11px] font-bold text-blue-400 nav-btn flex flex-col items-center justify-center" data-tab="quests"><i class="fa-solid fa-calendar-check text-sm mb-0.5"></i> Günlük</button>
-        <button onclick="switchTab('earn')" class="py-2.5 rounded-xl game-card text-[11px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="earn"><i class="fa-solid fa-play text-sm mb-0.5"></i> Ödül Al</button>
-        <button onclick="switchTab('leaderboard')" class="py-2.5 rounded-xl game-card text-[11px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="leaderboard"><i class="fa-solid fa-trophy text-sm mb-0.5"></i> Skor</button>
-        <button onclick="switchTab('wallet')" class="py-2.5 rounded-xl game-card text-[11px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="wallet"><i class="fa-solid fa-store text-sm mb-0.5"></i> Mağaza</button>
+    <!-- Menü Butonları (Politika sekmesi eklendi) -->
+    <div class="grid grid-cols-5 gap-1.5 mb-3">
+        <button onclick="switchTab('quests')" class="py-2 rounded-xl game-card text-[10px] font-bold text-blue-400 nav-btn flex flex-col items-center justify-center" data-tab="quests"><i class="fa-solid fa-calendar-check text-xs mb-0.5"></i> Günlük</button>
+        <button onclick="switchTab('earn')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="earn"><i class="fa-solid fa-play text-xs mb-0.5"></i> Ödül</button>
+        <button onclick="switchTab('leaderboard')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="leaderboard"><i class="fa-solid fa-trophy text-xs mb-0.5"></i> Skor</button>
+        <button onclick="switchTab('wallet')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="wallet"><i class="fa-solid fa-store text-xs mb-0.5"></i> Mağaza</button>
+        <button onclick="switchTab('policy')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="policy"><i class="fa-solid fa-shield-halved text-xs mb-0.5"></i> Gizlilik</button>
     </div>
 
     <!-- İçerik Alanı -->
@@ -87,7 +88,7 @@
                     <i class="fa-solid fa-rectangle-ad"></i>
                 </div>
                 <h3 class="text-sm font-bold text-[#eaecef]">Ödüllü Reklam Görevi</h3>
-                <p class="text-xs text-slate-400">İsteğe bağlı tanıtım videosunu izleyerek oyun içi bütçene anında puan ekleyebilirsin.</p>
+                <p class="text-xs text-slate-400">Tanıtım videosunu izleyerek oyun içi bütçene anında puan ekleyebilirsin.</p>
                 <button onclick="watchAd()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs transition">
                     VİDEOYU İZLE (+5 PUAN)
                 </button>
@@ -119,10 +120,20 @@
                     </select>
                 </div>
                 <div>
-                    <label class="text-[10px] text-slate-400 font-bold mb-1 block">OYUNCU KULLANICI ADI / CÜZDAN</label>
-                    <input type="text" id="wallet-input" placeholder="@kullaniciadi veya ID" class="w-full game-card rounded-xl p-3 text-xs outline-none text-white font-bold border border-[#2b313a]">
+                    <label class="text-[10px] text-slate-400 font-bold mb-1 block">OYUNCU KULLANICI ADI</label>
+                    <input type="text" id="wallet-input" placeholder="@kullaniciadi" class="w-full game-card rounded-xl p-3 text-xs outline-none text-white font-bold border border-[#2b313a]">
                 </div>
                 <button onclick="requestWithdraw()" class="w-full py-3 bg-blue-500 hover:bg-blue-400 text-slate-950 font-black rounded-xl text-xs transition">Ödülü Talep Et</button>
+            </div>
+        </div>
+
+        <!-- Gizlilik Politikası ve Kullanım Koşulları (Onay İçin Hayati Önem Taşır) -->
+        <div id="tab-policy" class="tab-content space-y-3">
+            <div class="game-card p-4 rounded-2xl space-y-2 text-xs text-slate-300 leading-relaxed">
+                <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-shield-halved mr-1"></i> Gizlilik Politikası</h3>
+                <p>Pixel Craft Quest, kullanıcı gizliliğine önem verir. Bu mini uygulama üzerinden toplanan Telegram kullanıcı ID ve kullanıcı adı bilgileri yalnızca oyun içi skor tablosu, ödül dağıtımı ve bakiye işlemlerinin yürütülmesi amacıyla güvenle saklanır.</p>
+                <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider mt-3 mb-2"><i class="fa-solid fa-file-contract mr-1"></i> Kullanım Şartları</h3>
+                <p>Uygulama içerisindeki puanlar ve ödüller yalnızca eğlence amaçlıdır. Hile, bot veya manipülasyon tespit edilen hesaplar sistemden kalıcı olarak uzaklaştırılır.</p>
             </div>
         </div>
     </div>
@@ -140,16 +151,13 @@
         let tg = window.Telegram?.WebApp;
         if (tg) tg.expand();
 
-        // Telegram kullanıcı bilgisi veya test ID'si
         let telegramId = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id.toString() : "123456789";
         let username = tg?.initDataUnsafe?.user?.username || "Gamer_" + telegramId.slice(-4);
 
         let currentUserData = { balance: 0, streak_day: 1 };
 
-        // Adsgram Entegrasyonu (Block ID güncellendi: 43584)
-        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "43584" }) : null;
+        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "43545" }) : null;
 
-        // Kullanıcı Verilerini Backend'den Çek
         async function fetchUserData() {
             try {
                 let res = await fetch(`/api/user/${telegramId}`);
@@ -165,7 +173,6 @@
             }
         }
 
-        // Liderlik Tablosunu Yükle
         async function fetchLeaderboard() {
             try {
                 let res = await fetch(`/api/leaderboard/${telegramId}`);
@@ -194,7 +201,6 @@
             }
         }
 
-        // Canlı Ödül Akışını Çek (Marquee için)
         async function fetchPayouts() {
             try {
                 let res = await fetch('/api/payouts');
@@ -206,7 +212,6 @@
             } catch(e) {}
         }
 
-        // Sekme Değiştirme
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.getElementById('tab-' + tabId).classList.add('active');
@@ -228,7 +233,6 @@
         }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
-        // Günlük Bonus Talep Et
         async function claimDailyBonus() {
             try {
                 let res = await fetch('/api/daily/claim', {
@@ -248,10 +252,8 @@
             }
         }
 
-        // Adsgram Reklam İzleme
         function watchAd() {
             if (!adController) {
-                // SDK yoksa test amaçlı doğrudan ödül ver
                 claimRewardApi(5);
                 return;
             }
@@ -278,14 +280,13 @@
             } catch(e) {}
         }
 
-        // Ödül / Mağaza Talebi
         async function requestWithdraw() {
             let currency = document.getElementById('withdraw-currency').value;
             let wallet = document.getElementById('wallet-input').value;
             let amount = currency === 'VIP_PAKET' ? 50 : 100;
 
             if (!wallet) {
-                showModal("Uyarı", "Lütfen kullanıcı adınızı veya cüzdan bilgisi ekleyin.");
+                showModal("Uyarı", "Lütfen kullanıcı adınızı giriniz.");
                 return;
             }
 
@@ -307,7 +308,6 @@
             }
         }
 
-        // Başlangıç Yüklemeleri
         fetchUserData();
         fetchPayouts();
         setInterval(fetchPayouts, 30000);
