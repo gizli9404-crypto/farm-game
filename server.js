@@ -203,19 +203,6 @@ app.post('/api/admin/add-balance', (req, res) => {
     });
 });
 
-app.post('/api/active-reward', (req, res) => {
-    const { telegram_id } = req.body;
-    if (!telegram_id) return res.status(400).json({ success: false, error: "Eksik parametre" });
-
-    db.run("UPDATE users SET balance = balance + 0.5 WHERE telegram_id = ?", [telegram_id], (err) => {
-        if (err) {
-            logSystemError(err);
-            return res.status(500).json({ success: false });
-        }
-        res.json({ success: true, message: "Süre ödülü eklendi!" });
-    });
-});
-
 app.get('/api/user/:id', (req, res) => {
     const userId = req.params.id;
     if (!userId || userId === 'undefined' || userId === 'null') {
@@ -303,19 +290,7 @@ app.get('/api/leaderboard/:telegram_id', (req, res) => {
     });
 });
 
-app.get('/api/payouts', (req, res) => {
-    db.all("SELECT username, amount, currency, timestamp FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 5", (err, rows) => res.json(rows || []));
-});
-
-app.get('/api/my-withdrawals/:telegram_id', (req, res) => {
-    const tid = req.params.telegram_id;
-    db.all("SELECT amount, currency, network, status FROM withdrawals WHERE telegram_id = ? ORDER BY id DESC LIMIT 5", [tid], (err, rows) => {
-        if (err) { logSystemError(err); return res.status(500).json([]); }
-        res.json(rows || []);
-    });
-});
-
-// GÜVENLİ REKLAM ÖDÜL API'Sİ
+// GÜVENLİ REKLAM ÖDÜL API'Sİ (HilltopAds ve Adsgram için ortak koruma)
 app.post('/api/reward/claim', (req, res) => {
     const { telegram_id, reward, quest_id } = req.body;
     
