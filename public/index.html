@@ -111,7 +111,7 @@
                 </button>
             </div>
 
-            <!-- REKLAM YÖNLENDİRMELİ HIZLI GÖREVLER (Sınırlı & Kontrollü) -->
+            <!-- REKLAM YÖNLENDİRMELİ HIZLI GÖREVLER -->
             <div class="game-card p-4 rounded-2xl space-y-2.5">
                 <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-bolt mr-1"></i> Reklam İzle & Puan Kazan</h3>
                 
@@ -253,7 +253,6 @@
         let username = tg?.initDataUnsafe?.user?.username || "Gamer_" + telegramId.slice(-4);
         let currentUserData = { balance: 0, streak_day: 1 };
 
-        // HilltopAds Direct Link Adresi (Yönlendirme için doğru formatta eklendi)
         const adTargetUrl = "https://fond-appointment.com/bHXsVXsdd.GAlE0/YnW/cy/Re_mt9SuQZdUql/kaP/T/cHzMMqzLUh3qOFTscBtoNTzWMHzONLT/g/waM/Qv";
         const adController = window.Adsgram ? window.Adsgram.init({ blockId: "43615" }) : null;
 
@@ -315,18 +314,14 @@
         }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
-        // SINIRLI VE KONTROLLÜ REKLAM GÖREV SİSTEMİ
         function startAdTask(questId, rewardAmount) {
             let questEl = document.getElementById(`quest-${questId}`);
             let btn = questEl.querySelector('button');
 
-            // Eğer zaten tamamlandıysa çık
             if (btn.disabled) return;
 
-            // Kullanıcıyı reklam sayfasına yönlendir (Yeni sekmede açılır)
             window.open(adTargetUrl, '_blank');
 
-            // Butonu süre kontrol moduna al
             btn.innerText = "SÜRE BAŞLADI (5s)...";
             btn.disabled = true;
             btn.className = "px-3 py-2 bg-slate-800 text-amber-400 font-bold rounded-lg text-[10px] cursor-not-allowed";
@@ -338,7 +333,6 @@
                     btn.innerText = `LÜTFEN BEKLE (${countdown}s)...`;
                 } else {
                     clearInterval(timer);
-                    // Süre dolunca ödülü backend'e bildir ve puanı yükle
                     claimAdReward(questId, rewardAmount, btn);
                 }
             }, 1000);
