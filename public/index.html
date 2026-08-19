@@ -173,7 +173,8 @@
 
         let currentUserData = { balance: 0, streak_day: 1 };
 
-        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "43545" }) : null;
+        // Güncellenen UnitID (43615) entegre edildi
+        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "43615" }) : null;
 
         async function fetchUserData() {
             try {
