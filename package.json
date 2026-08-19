@@ -1,7 +1,7 @@
 {
-  "name": "crypto-quest-hub",
+  "name": "pixel-quest-hub",
   "version": "3.0.0",
-  "description": "Full Automated Telegram Mini App & Admin Center",
+  "description": "Interactive Telegram Mini App & Community Management Dashboard",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
