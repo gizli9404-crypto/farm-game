@@ -10,6 +10,12 @@ const db = new sqlite3.Database(dbPath);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Gelişmiş İstek Loglama (En üste alındı ki tüm gelen istekler doğru şekilde loglansın)
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    next();
+});
+
 const BOT_TOKEN = process.env.BOT_TOKEN || '8854910303:AAFre2j9IO6RKvJ8BJRoG4dZ4quD40d3LFM';
 const CHANNEL_ID = process.env.CHANNEL_ID || '@sanal_miner_duyuru'; 
 const MINI_APP_URL = process.env.MINI_APP_URL || 'https://miner-production-32ee.up.railway.app';
@@ -246,7 +252,7 @@ app.post('/api/daily/claim', (req, res) => {
     });
 });
 
-// Güncellenmiş Liderlik Tablosu API'si (Kullanıcı İlk 10'da Değilse Listeye Dahil Edilir)
+// Güncellenmiş Liderlik Tablosu API'si
 app.get('/api/leaderboard/:telegram_id', (req, res) => {
     const tid = req.params.telegram_id;
     db.all("SELECT telegram_id, username, balance FROM users", (err, realUsers) => {
@@ -310,23 +316,28 @@ app.post('/api/reward/claim', (req, res) => {
     });
 });
 
+// GÜVENLİ MAĞAZA / ÇEKİM ENDPOINTİ (Backend tarafında ürün fiyatı kontrolü eklendi)
 app.post('/api/withdraw', (req, res) => {
-    const { telegram_id, amount, currency, network, wallet } = req.body;
-    db.get("SELECT balance, username FROM users WHERE telegram_id = ?", [telegram_id], (err, user) => {
-        if (!user || user.balance < amount) return res.status(400).json({ success: false, error: "Yetersiz bakiye!" });
+    const { telegram_id, currency, network, wallet } = req.body;
+    
+    // Ürün fiyatlarını backend tarafında sabitleyelim ki dışarıdan manipüle edilemesin
+    let requiredAmount = 0;
+    if (currency === 'VIP_PAKET') requiredAmount = 50;
+    else if (currency === 'KOSTUM') requiredAmount = 100;
+    else return res.status(400).json({ success: false, error: "Geçersiz ürün seçimi!" });
 
-        db.run("UPDATE users SET balance = balance - ? WHERE telegram_id = ?", [amount, telegram_id], () => {
+    db.get("SELECT balance, username FROM users WHERE telegram_id = ?", [telegram_id], (err, user) => {
+        if (!user || user.balance < requiredAmount) {
+            return res.status(400).json({ success: false, error: "Yetersiz bakiye!" });
+        }
+
+        db.run("UPDATE users SET balance = balance - ? WHERE telegram_id = ?", [requiredAmount, telegram_id], () => {
             db.run("INSERT INTO withdrawals (telegram_id, username, amount, currency, network, wallet) VALUES (?, ?, ?, ?, ?, ?)",
-                [telegram_id, user.username, amount, currency, network || 'Global Server', wallet], () => {
+                [telegram_id, user.username, requiredAmount, currency, network || 'GameServer', wallet], () => {
                 res.json({ success: true, message: "Ödül talebiniz başarıyla alındı! Oyun hesabınıza işleniyor." });
             });
         });
     });
-});
-
-app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    next();
 });
 
 const PORT = process.env.PORT || 3000;
