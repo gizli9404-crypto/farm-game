@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel Craft Quest - Game Hub</title>
+    <!-- HilltopAds Site Doğrulama Etiketi -->
+    <meta name="24fd855d82cd43aa39ffe64c0ba3005671f27135" content="24fd855d82cd43aa39ffe64c0ba3005671f27135" />
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <!-- Adsgram SDK Entegrasyonu -->
@@ -101,15 +104,8 @@
                 </div>
                 <h3 class="text-sm font-bold text-[#eaecef]">Ödüllü Reklam Görevi</h3>
                 <p class="text-xs text-slate-400">Tanıtım videosunu izleyerek oyun içi bütçene anında puan ekleyebilirsin.</p>
-                
-                <!-- Reklam İzle Butonu -->
                 <button onclick="watchAd()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs transition">
                     VİDEOYU İZLE (+5 PUAN)
-                </button>
-
-                <!-- Reklam İzleme İsteği Gönder Butonu -->
-                <button onclick="requestAdApproval()" class="w-full py-2 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl text-[10px] transition border border-slate-600">
-                    <i class="fa-solid fa-paper-plane mr-1"></i> REKLAM İZLEME İSTEĞİ GÖNDER
                 </button>
             </div>
         </div>
@@ -288,21 +284,6 @@
             }).catch((err) => {
                 showModal("Bilgi", "Reklam yüklenemedi veya kapatıldı.");
             });
-        }
-
-        // Yeni Eklenen: Reklam İzleme İsteği Gönder Fonksiyonu
-        async function requestAdApproval() {
-            showModal("İstek Gönderildi", "Reklam izleme talebiniz alındı. Onaylandığında bildirim alacaksınız.");
-            
-            try {
-                await fetch('/api/ad/request', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegram_id: telegramId })
-                });
-            } catch(e) {
-                console.error("İstek gönderilemedi:", e);
-            }
         }
 
         async function claimRewardApi(rewardAmount) {
