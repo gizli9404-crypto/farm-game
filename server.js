@@ -10,7 +10,7 @@ const db = new sqlite3.Database(dbPath);
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Gelişmiş İstek Loglama (En üste alındı ki tüm gelen istekler doğru şekilde loglansın)
+// Gelişmiş İstek Loglama
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
@@ -104,7 +104,7 @@ function logSystemError(errMessage) {
     });
 }
 
-// Otomatik Duyuru ve Etkinlik Raporu (6 Saatte Bir - Oyun Odaklı)
+// Otomatik Duyuru ve Etkinlik Raporu (6 Saatte Bir)
 setInterval(() => {
     db.all("SELECT username, amount, currency FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 3", (err, rows) => {
         if (err) { logSystemError(err); return; }
@@ -146,7 +146,7 @@ app.get('/api/admin/withdraws', (req, res) => {
     });
 });
 
-// Admin Talebi Onaylama API'si (Oyun Mağazası Odaklı)
+// Admin Talebi Onaylama API'si
 app.post('/api/admin/withdraws/complete', (req, res) => {
     const { id } = req.body;
     
@@ -178,7 +178,6 @@ app.post('/api/admin/withdraws/complete', (req, res) => {
             };
 
             sendTelegramChannelMessage(channelMessage, inlineKeyboard);
-
             res.json({ success: true, message: "Talep başarıyla tamamlandı ve kanala duyuruldu!" });
         });
     });
@@ -252,7 +251,6 @@ app.post('/api/daily/claim', (req, res) => {
     });
 });
 
-// Güncellenmiş Liderlik Tablosu API'si
 app.get('/api/leaderboard/:telegram_id', (req, res) => {
     const tid = req.params.telegram_id;
     db.all("SELECT telegram_id, username, balance FROM users", (err, realUsers) => {
@@ -316,11 +314,9 @@ app.post('/api/reward/claim', (req, res) => {
     });
 });
 
-// GÜVENLİ MAĞAZA / ÇEKİM ENDPOINTİ (Backend tarafında ürün fiyatı kontrolü eklendi)
 app.post('/api/withdraw', (req, res) => {
     const { telegram_id, currency, network, wallet } = req.body;
     
-    // Ürün fiyatlarını backend tarafında sabitleyelim ki dışarıdan manipüle edilemesin
     let requiredAmount = 0;
     if (currency === 'VIP_PAKET') requiredAmount = 50;
     else if (currency === 'KOSTUM') requiredAmount = 100;
