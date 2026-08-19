@@ -42,7 +42,6 @@ bot.start((ctx) => {
         [telegramId, username]
     );
 
-    // Kripto/Binance yerine oyun ve puan odaklı karşılama mesajı
     ctx.reply(`✨ Merhaba ${firstName}, Pixel Craft Quest dünyasına hoş geldin!\n\nGünlük görevleri tamamlayarak, video izleyerek puanları topla ve ödül mağazasında harca!`, {
         reply_markup: {
             inline_keyboard: [
@@ -247,6 +246,7 @@ app.post('/api/daily/claim', (req, res) => {
     });
 });
 
+// Güncellenmiş Liderlik Tablosu API'si (Kullanıcı İlk 10'da Değilse Listeye Dahil Edilir)
 app.get('/api/leaderboard/:telegram_id', (req, res) => {
     const tid = req.params.telegram_id;
     db.all("SELECT telegram_id, username, balance FROM users", (err, realUsers) => {
@@ -281,7 +281,12 @@ app.get('/api/leaderboard/:telegram_id', (req, res) => {
         let userRankIndex = combined.findIndex(u => u.telegram_id === tid);
         let userRankData = userRankIndex >= 0 ? { rank: userRankIndex + 1, ...combined[userRankIndex] } : { rank: combined.length + 1, username: "Sen", balance: 0 };
 
-        res.json({ top10: combined.slice(0, 10), userRank: userRankData });
+        let displayList = combined.slice(0, 10);
+        if (userRankIndex >= 10) {
+            displayList.push(combined[userRankIndex]);
+        }
+
+        res.json({ top10: displayList, userRank: userRankData });
     });
 });
 
@@ -319,7 +324,6 @@ app.post('/api/withdraw', (req, res) => {
     });
 });
 
-// Adsgram Reklam Doğrulama ve İstek Loglama Filtresi
 app.use((req, res, next) => {
     console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
