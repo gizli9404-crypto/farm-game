@@ -34,7 +34,6 @@ bot.start((ctx) => {
     const username = ctx.from.username || 'User_' + telegramId.slice(-4);
     const firstName = ctx.from.first_name || '';
 
-    // Gelen kullanıcının gerçek chat_id'sini konsola yazdıralım ki loglardan görebilesin
     console.log(`Botu başlatan kullanıcı ID'si: ${telegramId}`);
 
     db.run(
@@ -43,11 +42,12 @@ bot.start((ctx) => {
         [telegramId, username]
     );
 
-    ctx.reply(`✨ Merhaba ${firstName}, Crypto Quest Hub'a hoş geldin!\n\nBinance cüzdanlarınla entegre kazanç sistemimizle hemen kazanmaya başla.`, {
+    // Kripto/Binance yerine oyun ve puan odaklı karşılama mesajı
+    ctx.reply(`✨ Merhaba ${firstName}, Pixel Craft Quest dünyasına hoş geldin!\n\nGünlük görevleri tamamlayarak, video izleyerek puanları topla ve ödül mağazasında harca!`, {
         reply_markup: {
             inline_keyboard: [
-                [{ text: "🚀 Uygulamayı Aç", web_app: { url: MINI_APP_URL } }],
-                [{ text: "📢 Duyuru & Ödeme Kanalı", url: "https://t.me/sanal_miner_duyuru" }]
+                [{ text: "🚀 Oyunu Başlat", web_app: { url: MINI_APP_URL } }],
+                [{ text: "📢 Duyuru & Topluluk Kanalı", url: "https://t.me/sanal_miner_duyuru" }]
             ]
         }
     });
@@ -94,24 +94,24 @@ function logSystemError(errMessage) {
                 bot.telegram.sendMessage(ADMIN_CHAT_ID, `🚨 KRİTİK SİSTEM HATASI:\n\n${errorText}`); 
             }
         } catch(e) {
-            console.error("Admin hata bildirimi gönderilemedi (Chat bulunamadı olabilir):", e.message);
+            console.error("Admin hata bildirimi gönderilemedi:", e.message);
         }
     });
 }
 
-// Otomatik Duyuru ve Çekim Raporu (6 Saatte Bir Otonom Gönderim - Butonlu)
+// Otomatik Duyuru ve Etkinlik Raporu (6 Saatte Bir - Oyun Odaklı)
 setInterval(() => {
     db.all("SELECT username, amount, currency FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 3", (err, rows) => {
         if (err) { logSystemError(err); return; }
         let payoutText = rows && rows.length > 0 
-            ? rows.map(r => `• Kullanıcı: @${r.username ? r.username.replace(/^@/, '') : 'Kullanıcı'} ➔ ${r.amount} ${r.currency} (Ödendi)`).join('\n')
-            : `• @CryptoKing_99 ➔ 50 USDT (Ödendi)\n• @Satoshi_TR ➔ 30 USDT (Ödendi)\n• @BinanceWhale ➔ 25 USDT (Ödendi)`;
+            ? rows.map(r => `• Oyuncu: @${r.username ? r.username.replace(/^@/, '') : 'Oyuncu'} ➔ ${r.amount} ${r.currency} ödülü kazandı!`).join('\n')
+            : `• @GamerPro_99 ➔ 5,000 Puan Kazandı!\n• @PixelKing ➔ VIP Kart Açtı!\n• @QuestMaster ➔ Seviye Atladı!`;
 
-        let motivationalMsg = `🔥 <b>GÜNÜN ÖDEME LİSTESİ & FIRSAT RAPORU!</b>\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Reklam izleyerek ve günlük bonusları toplayarak bakiyenizi katlayın, anında Binance cüzdanınıza çekin!`;
+        let motivationalMsg = `🔥 <b>GÜNÜN ETKİNLİK VE LİDERLİK RAPORU!</b>\n\n${payoutText}\n\n💡 Dostlar, vakit kaybetmeyin! Görevleri tamamlayarak en iyi oyuncular arasına adınızı yazdırın!`;
         
         const inlineKeyboard = {
             inline_keyboard: [
-                [{ text: "🚀 Hemen Kazanmaya Başla (Botu Aç)", url: "https://t.me/sanal_miner_test_bot" }]
+                [{ text: "🚀 Oyuna Git ve Puan Topla", url: "https://t.me/sanal_miner_test_bot" }]
             ]
         };
 
@@ -130,7 +130,7 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
-// Admin Bekleyen Çekim Taleplerini Listeleme API'si
+// Admin Bekleyen Talepleri Listeleme API'si
 app.get('/api/admin/withdraws', (req, res) => {
     db.all("SELECT id, telegram_id, username, amount, currency, network, wallet, status FROM withdrawals WHERE status = 'Bekliyor' ORDER BY id DESC", (err, rows) => {
         if (err) {
@@ -141,14 +141,14 @@ app.get('/api/admin/withdraws', (req, res) => {
     });
 });
 
-// Admin Çekim Talebini Onaylama API'si (HTML Destekli Kanal Mesajı)
+// Admin Talebi Onaylama API'si (Oyun Mağazası Odaklı)
 app.post('/api/admin/withdraws/complete', (req, res) => {
     const { id } = req.body;
     
     db.get("SELECT * FROM withdrawals WHERE id = ?", [id], (err, withdraw) => {
         if (err || !withdraw) {
-            logSystemError(err || "Çekim kaydı bulunamadı");
-            return res.status(404).json({ success: false, error: "Çekim talebi bulunamadı!" });
+            logSystemError(err || "Talep bulunamadı");
+            return res.status(404).json({ success: false, error: "Ödül talebi bulunamadı!" });
         }
 
         db.run("UPDATE withdrawals SET status = 'Ödendi' WHERE id = ?", [id], function(updateErr) {
@@ -157,24 +157,24 @@ app.post('/api/admin/withdraws/complete', (req, res) => {
                 return res.status(500).json({ success: false, error: "Veritabanı hatası" });
             }
 
-            let cleanUsername = withdraw.username ? withdraw.username.replace(/^@/, '') : 'Kullanıcı';
+            let cleanUsername = withdraw.username ? withdraw.username.replace(/^@/, '') : 'Oyuncu';
 
             let channelMessage = 
-`🚀 <b>Yeni Ödeme Başarıyla Yapıldı!</b>\n\n` +
-`👤 Kullanıcı: @${cleanUsername}\n` +
-`💎 Miktar: ${withdraw.amount} ${withdraw.currency}\n` +
-`🌐 Ağ/Cüzdan: ${withdraw.network || 'BSC'} / <code>${withdraw.wallet}</code>\n` +
-`✅ Durum: Binance Üzerinden Gönderildi!`;
+`🚀 <b>Yeni Ödül Teslim Edildi!</b>\n\n` +
+`👤 Oyuncu: @${cleanUsername}\n` +
+`💎 Ödül: ${withdraw.amount} ${withdraw.currency}\n` +
+`🌐 Sunucu: ${withdraw.network || 'Global'} / <code>${withdraw.wallet}</code>\n` +
+`✅ Durum: Oyuncu Hesabına Gönderildi!`;
 
             const inlineKeyboard = {
                 inline_keyboard: [
-                    [{ text: "🚀 Sen de kazanmak için tıkla!", url: "https://t.me/sanal_miner_test_bot" }]
+                    [{ text: "🚀 Sen de ödül kazanmak için tıkla!", url: "https://t.me/sanal_miner_test_bot" }]
                 ]
             };
 
             sendTelegramChannelMessage(channelMessage, inlineKeyboard);
 
-            res.json({ success: true, message: "Çekim talebi ödendi olarak güncellendi ve kanala duyuruldu!" });
+            res.json({ success: true, message: "Talep başarıyla tamamlandı ve kanala duyuruldu!" });
         });
     });
 });
@@ -194,9 +194,9 @@ app.post('/api/admin/add-balance', (req, res) => {
             return res.status(500).json({ success: false, error: "Veritabanı hatası" });
         }
         if (this.changes === 0) {
-            return res.status(404).json({ success: false, error: "Bu ID'ye sahip veritabanında kullanıcı bulunamadı!" });
+            return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı!" });
         }
-        res.json({ success: true, message: "Bakiye başarıyla eklendi!" });
+        res.json({ success: true, message: "Puan başarıyla eklendi!" });
     });
 });
 
@@ -251,16 +251,16 @@ app.get('/api/leaderboard/:telegram_id', (req, res) => {
     const tid = req.params.telegram_id;
     db.all("SELECT telegram_id, username, balance FROM users", (err, realUsers) => {
         let fakeUsers = [
-            { telegram_id: "f1", username: "CryptoKing_99", balance: 1420 },
-            { telegram_id: "f2", username: "Satoshi_TR", balance: 1250 },
-            { telegram_id: "f3", username: "BinanceWhale", balance: 980 },
-            { telegram_id: "f4", username: "MineMaster", balance: 850 },
-            { telegram_id: "f5", username: "Ali_Can_Coin", balance: 620 },
-            { telegram_id: "f6", username: "ZenginEsnaf", balance: 510 },
-            { telegram_id: "f7", username: "KriptoKurdu", balance: 430 },
-            { telegram_id: "f8", username: "BlockchainPro", balance: 310 },
-            { telegram_id: "f9", username: "MehmetDag", balance: 215 },
-            { telegram_id: "f10", username: "TokenAvcisi", balance: 150 }
+            { telegram_id: "f1", username: "GamerPro_99", balance: 1420 },
+            { telegram_id: "f2", username: "PixelKing", balance: 1250 },
+            { telegram_id: "f3", username: "QuestMaster", balance: 980 },
+            { telegram_id: "f4", username: "SpeedRunner", balance: 850 },
+            { telegram_id: "f5", username: "AliCraft", balance: 620 },
+            { telegram_id: "f6", username: "ProGamer", balance: 510 },
+            { telegram_id: "f7", username: "ArcadeHero", balance: 430 },
+            { telegram_id: "f8", username: "LevelUp", balance: 310 },
+            { telegram_id: "f9", username: "MehmetPlay", balance: 215 },
+            { telegram_id: "f10", username: "TokenHunter", balance: 150 }
         ];
 
         let combined = [...fakeUsers];
@@ -305,7 +305,6 @@ app.post('/api/reward/claim', (req, res) => {
     });
 });
 
-// Binance Standartlarında Çekim Talebi API'si (Ağ and Kur Dönüşümlü)
 app.post('/api/withdraw', (req, res) => {
     const { telegram_id, amount, currency, network, wallet } = req.body;
     db.get("SELECT balance, username FROM users WHERE telegram_id = ?", [telegram_id], (err, user) => {
@@ -313,8 +312,8 @@ app.post('/api/withdraw', (req, res) => {
 
         db.run("UPDATE users SET balance = balance - ? WHERE telegram_id = ?", [amount, telegram_id], () => {
             db.run("INSERT INTO withdrawals (telegram_id, username, amount, currency, network, wallet) VALUES (?, ?, ?, ?, ?, ?)",
-                [telegram_id, user.username, amount, currency, network || 'BSC (BEP20)', wallet], () => {
-                res.json({ success: true, message: "Çekim talebiniz başarıyla alındı! Binance cüzdanınıza aktarılıyor." });
+                [telegram_id, user.username, amount, currency, network || 'Global Server', wallet], () => {
+                res.json({ success: true, message: "Ödül talebiniz başarıyla alındı! Oyun hesabınıza işleniyor." });
             });
         });
     });
