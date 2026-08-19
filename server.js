@@ -23,7 +23,6 @@ const ADMIN_CHAT_ID = process.env.ADMIN_CHAT_ID || '825653935';
 
 const bot = new Telegraf(BOT_TOKEN);
 
-// Telegram Kanalına Butonlu ve Şık Bildirim Atma Fonksiyonu (HTML Modu)
 async function sendTelegramChannelMessage(text, replyMarkup = null) {
     try {
         await bot.telegram.sendMessage(CHANNEL_ID, text, { 
@@ -39,8 +38,6 @@ bot.start((ctx) => {
     const telegramId = ctx.from.id.toString();
     const username = ctx.from.username || 'User_' + telegramId.slice(-4);
     const firstName = ctx.from.first_name || '';
-
-    console.log(`Botu başlatan kullanıcı ID'si: ${telegramId}`);
 
     db.run(
         `INSERT INTO users (telegram_id, username, balance, streak_day) VALUES (?, ?, 5, 1) 
@@ -82,7 +79,6 @@ db.serialize(() => {
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
     )`);
 
-    // Reklam Görevlerinin Günlük Tekrarını Önlemek İçin Takip Tablosu
     db.run(`CREATE TABLE IF NOT EXISTS completed_quests (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         telegram_id TEXT,
@@ -113,7 +109,7 @@ function logSystemError(errMessage) {
     });
 }
 
-// Otomatik Duyuru ve Etkinlik Raporu (6 Saatte Bir)
+// Otomatik Duyuru (6 Saatte Bir)
 setInterval(() => {
     db.all("SELECT username, amount, currency FROM withdrawals WHERE status='Ödendi' ORDER BY id DESC LIMIT 3", (err, rows) => {
         if (err) { logSystemError(err); return; }
@@ -125,7 +121,7 @@ setInterval(() => {
         
         const inlineKeyboard = {
             inline_keyboard: [
-                [{ text: "🚀 Oyuna Git ve Puan Topla", url: "https://t.me/sanal_miner_test_bot" }]
+                [{ text: "🚀 Oyuna Git ve Puan Topla", url: MINI_APP_URL }]
             ]
         };
 
@@ -133,7 +129,6 @@ setInterval(() => {
     });
 }, 6 * 60 * 60 * 1000);
 
-// Admin Paneli İçin Kullanıcı Listesi API'si
 app.get('/api/admin/users', (req, res) => {
     db.all("SELECT telegram_id, username, balance FROM users ORDER BY balance DESC", (err, rows) => {
         if (err) {
@@ -144,7 +139,6 @@ app.get('/api/admin/users', (req, res) => {
     });
 });
 
-// Admin Bekleyen Talepleri Listeleme API'si
 app.get('/api/admin/withdraws', (req, res) => {
     db.all("SELECT id, telegram_id, username, amount, currency, network, wallet, status FROM withdrawals WHERE status = 'Bekliyor' ORDER BY id DESC", (err, rows) => {
         if (err) {
@@ -155,13 +149,11 @@ app.get('/api/admin/withdraws', (req, res) => {
     });
 });
 
-// Admin Talebi Onaylama API'si
 app.post('/api/admin/withdraws/complete', (req, res) => {
     const { id } = req.body;
     
     db.get("SELECT * FROM withdrawals WHERE id = ?", [id], (err, withdraw) => {
         if (err || !withdraw) {
-            logSystemError(err || "Talep bulunamadı");
             return res.status(404).json({ success: false, error: "Ödül talebi bulunamadı!" });
         }
 
@@ -172,7 +164,6 @@ app.post('/api/admin/withdraws/complete', (req, res) => {
             }
 
             let cleanUsername = withdraw.username ? withdraw.username.replace(/^@/, '') : 'Oyuncu';
-
             let channelMessage = 
 `🚀 <b>Yeni Ödül Teslim Edildi!</b>\n\n` +
 `👤 Oyuncu: @${cleanUsername}\n` +
@@ -182,17 +173,16 @@ app.post('/api/admin/withdraws/complete', (req, res) => {
 
             const inlineKeyboard = {
                 inline_keyboard: [
-                    [{ text: "🚀 Sen de ödül kazanmak için tıkla!", url: "https://t.me/sanal_miner_test_bot" }]
+                    [{ text: "🚀 Sen de ödül kazanmak için tıkla!", url: MINI_APP_URL }]
                 ]
             };
 
             sendTelegramChannelMessage(channelMessage, inlineKeyboard);
-            res.json({ success: true, message: "Talep başarıyla tamamlandı ve kanala duyuruldu!" });
+            res.json({ success: true, message: "Talep başarıyla tamamlandı!" });
         });
     });
 });
 
-// Admin Manuel Bakiye Yükleme API'si
 app.post('/api/admin/add-balance', (req, res) => {
     const { telegram_id, amount } = req.body;
     const numAmount = parseFloat(amount);
@@ -215,6 +205,8 @@ app.post('/api/admin/add-balance', (req, res) => {
 
 app.post('/api/active-reward', (req, res) => {
     const { telegram_id } = req.body;
+    if (!telegram_id) return res.status(400).json({ success: false, error: "Eksik parametre" });
+
     db.run("UPDATE users SET balance = balance + 0.5 WHERE telegram_id = ?", [telegram_id], (err) => {
         if (err) {
             logSystemError(err);
@@ -226,11 +218,17 @@ app.post('/api/active-reward', (req, res) => {
 
 app.get('/api/user/:id', (req, res) => {
     const userId = req.params.id;
+    if (!userId || userId === 'undefined' || userId === 'null') {
+        return res.status(400).json({ success: false, error: "Geçersiz kullanıcı ID" });
+    }
+
     db.get("SELECT * FROM users WHERE telegram_id = ?", [userId], (err, row) => {
         if (err) logSystemError(err);
-        if (row) res.json(row);
-        else {
-            db.run(`INSERT INTO users (telegram_id, username, balance, streak_day) VALUES (?, ?, 5, 1)`, [userId, "User_" + userId.slice(-4)], () => {
+        if (row) {
+            res.json(row);
+        } else {
+            const fallbackName = "User_" + (userId.length >= 4 ? userId.slice(-4) : userId);
+            db.run(`INSERT INTO users (telegram_id, username, balance, streak_day) VALUES (?, ?, 5, 1)`, [userId, fallbackName], () => {
                 db.get("SELECT * FROM users WHERE telegram_id = ?", [userId], (_, newRow) => res.json(newRow));
             });
         }
@@ -239,6 +237,8 @@ app.get('/api/user/:id', (req, res) => {
 
 app.post('/api/daily/claim', (req, res) => {
     const { telegram_id } = req.body;
+    if (!telegram_id) return res.status(400).json({ success: false, error: "Eksik parametre" });
+    
     const today = new Date().toISOString().slice(0, 10);
 
     db.get("SELECT streak_day, last_claim_date FROM users WHERE telegram_id = ?", [telegram_id], (err, user) => {
@@ -315,9 +315,14 @@ app.get('/api/my-withdrawals/:telegram_id', (req, res) => {
     });
 });
 
-// GÜNCELLENMİŞ REKLAM GÖREVİ ÖDÜL API'Sİ (GÜNLÜK TEKRAR KONTROLÜ İLE)
+// GÜVENLİ REKLAM ÖDÜL API'Sİ
 app.post('/api/reward/claim', (req, res) => {
     const { telegram_id, reward, quest_id } = req.body;
+    
+    if (!telegram_id) {
+        return res.status(400).json({ success: false, error: "Geçersiz işlem: telegram_id bulunamadı." });
+    }
+
     const numReward = parseFloat(reward) || 5;
     const today = new Date().toISOString().slice(0, 10);
 
@@ -354,6 +359,7 @@ app.post('/api/reward/claim', (req, res) => {
 
 app.post('/api/withdraw', (req, res) => {
     const { telegram_id, currency, network, wallet } = req.body;
+    if (!telegram_id) return res.status(400).json({ success: false, error: "Geçersiz kullanıcı" });
     
     let requiredAmount = 0;
     if (currency === 'VIP_PAKET') requiredAmount = 50;
@@ -368,7 +374,7 @@ app.post('/api/withdraw', (req, res) => {
         db.run("UPDATE users SET balance = balance - ? WHERE telegram_id = ?", [requiredAmount, telegram_id], () => {
             db.run("INSERT INTO withdrawals (telegram_id, username, amount, currency, network, wallet) VALUES (?, ?, ?, ?, ?, ?)",
                 [telegram_id, user.username, requiredAmount, currency, network || 'GameServer', wallet], () => {
-                res.json({ success: true, message: "Ödül talebiniz başarıyla alındı! Oyun hesabınıza işleniyor." });
+                res.json({ success: true, message: "Ödül talebiniz başarıyla alındı!" });
             });
         });
     });
