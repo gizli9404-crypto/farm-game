@@ -48,7 +48,7 @@ bot.start((ctx) => {
         [telegramId, username]
     );
 
-    ctx.reply(`✨ Merhaba ${firstName}, Pixel Craft Quest dünyasına hoş geldin!\n\nGünlük görevleri tamamlayarak, video izleyerek puanları topla ve ödül mağazasında harca!`, {
+    ctx.reply(`✨ Merhaba ${firstName}, Pixel Craft Quest dünyasına hoş geldin!\n\nGünlük görevleri tamamlayarak, reklamları inceleyerek puanları topla ve ödül mağazasında harca!`, {
         reply_markup: {
             inline_keyboard: [
                 [{ text: "🚀 Oyunu Başlat", web_app: { url: MINI_APP_URL } }],
@@ -80,6 +80,15 @@ db.serialize(() => {
         wallet TEXT,
         status TEXT DEFAULT 'Bekliyor',
         timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+    )`);
+
+    // Reklam Görevlerinin Günlük Tekrarını Önlemek İçin Takip Tablosu
+    db.run(`CREATE TABLE IF NOT EXISTS completed_quests (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        telegram_id TEXT,
+        quest_id TEXT,
+        completion_date TEXT,
+        UNIQUE(telegram_id, quest_id, completion_date)
     )`);
 
     db.run(`CREATE TABLE IF NOT EXISTS system_logs (
@@ -306,12 +315,44 @@ app.get('/api/my-withdrawals/:telegram_id', (req, res) => {
     });
 });
 
+// GÜNCELLENMİŞ REKLAM GÖREVİ ÖDÜL API'Sİ (GÜNLÜK TEKRAR KONTROLÜ İLE)
 app.post('/api/reward/claim', (req, res) => {
-    const { telegram_id, reward } = req.body;
-    db.run("UPDATE users SET balance = balance + ? WHERE telegram_id = ?", [reward, telegram_id], (err) => {
-        if(err) logSystemError(err);
-        res.json({ success: true });
-    });
+    const { telegram_id, reward, quest_id } = req.body;
+    const numReward = parseFloat(reward) || 5;
+    const today = new Date().toISOString().slice(0, 10);
+
+    // Eğer spesifik bir reklam görevi ID'si gönderildiyse suistimal kontrolü yap
+    if (quest_id) {
+        db.get("SELECT id FROM completed_quests WHERE telegram_id = ? AND quest_id = ? AND completion_date = ?", 
+            [telegram_id, quest_id, today], (err, row) => {
+            if (row) {
+                return res.status(400).json({ success: false, error: "Bu görevi bugün zaten tamamladınız!" });
+            }
+
+            // Görevi tamamlandı olarak kaydet ve bakiyeyi artır
+            db.run("INSERT INTO completed_quests (telegram_id, quest_id, completion_date) VALUES (?, ?, ?)", 
+                [telegram_id, quest_id, today], (insErr) => {
+                if (insErr) { logSystemError(insErr); }
+                
+                db.run("UPDATE users SET balance = balance + ? WHERE telegram_id = ?", [numReward, telegram_id], (upErr) => {
+                    if (upErr) {
+                        logSystemError(upErr);
+                        return res.status(500).json({ success: false, error: "Veritabanı hatası" });
+                    }
+                    res.json({ success: true, message: "Ödül başarıyla eklendi!" });
+                });
+            });
+        });
+    } else {
+        // Quest ID yoksa direkt bakiye ekle (Normal video izleme vb. için)
+        db.run("UPDATE users SET balance = balance + ? WHERE telegram_id = ?", [numReward, telegram_id], (err) => {
+            if (err) {
+                logSystemError(err);
+                return res.status(500).json({ success: false, error: "Veritabanı hatası" });
+            }
+            res.json({ success: true, message: "Ödül başarıyla eklendi!" });
+        });
+    }
 });
 
 app.post('/api/withdraw', (req, res) => {
