@@ -20,6 +20,18 @@
 </head>
 <body class="p-3 max-w-md mx-auto min-h-screen flex flex-col justify-between select-none">
 
+    <!-- Eğer Telegram dışından açılırsa çıkacak zorunlu Start Yönlendirme Alanı -->
+    <div id="start-overlay" class="fixed inset-0 bg-[#0b0e11] z-50 flex flex-col items-center justify-center p-6 text-center space-y-4 hidden">
+        <div class="w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-2xl border border-blue-500/25">
+            <i class="fa-solid fa-robot"></i>
+        </div>
+        <h2 class="text-base font-black text-blue-400">TELEGRAM DOĞRULAMASI</h2>
+        <p class="text-xs text-slate-400 leading-relaxed">Oyuna güvenli bir şekilde bağlanabilmek ve ödüllerini alabilmek için lütfen önce bota Start veriniz.</p>
+        <a href="https://t.me/sanal_miner_test_bot" target="_blank" class="w-full py-3.5 bg-blue-500 hover:bg-blue-400 text-slate-950 font-black rounded-xl text-xs transition block shadow-lg shadow-blue-500/20">
+            BOTA GİT VE START VER <i class="fa-solid fa-arrow-right ml-1"></i>
+        </a>
+    </div>
+
     <div>
         <!-- Üst Bar -->
         <div class="flex justify-between items-center mb-3 p-2.5 rounded-2xl game-card">
@@ -48,7 +60,7 @@
         </div>
     </div>
 
-    <!-- Menü Butonları (Politika sekmesi eklendi) -->
+    <!-- Menü Butonları -->
     <div class="grid grid-cols-5 gap-1.5 mb-3">
         <button onclick="switchTab('quests')" class="py-2 rounded-xl game-card text-[10px] font-bold text-blue-400 nav-btn flex flex-col items-center justify-center" data-tab="quests"><i class="fa-solid fa-calendar-check text-xs mb-0.5"></i> Günlük</button>
         <button onclick="switchTab('earn')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center" data-tab="earn"><i class="fa-solid fa-play text-xs mb-0.5"></i> Ödül</button>
@@ -127,7 +139,7 @@
             </div>
         </div>
 
-        <!-- Gizlilik Politikası ve Kullanım Koşulları (Onay İçin Hayati Önem Taşır) -->
+        <!-- Gizlilik Politikası ve Kullanım Koşulları -->
         <div id="tab-policy" class="tab-content space-y-3">
             <div class="game-card p-4 rounded-2xl space-y-2 text-xs text-slate-300 leading-relaxed">
                 <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-shield-halved mr-1"></i> Gizlilik Politikası</h3>
@@ -150,6 +162,11 @@
     <script>
         let tg = window.Telegram?.WebApp;
         if (tg) tg.expand();
+
+        // Telegram WebApp açık değilse veya kullanıcı bilgisi yoksa uyarı ekranını göster
+        if (!tg || !tg.initDataUnsafe?.user?.id) {
+            document.getElementById('start-overlay').classList.remove('hidden');
+        }
 
         let telegramId = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id.toString() : "123456789";
         let username = tg?.initDataUnsafe?.user?.username || "Gamer_" + telegramId.slice(-4);
