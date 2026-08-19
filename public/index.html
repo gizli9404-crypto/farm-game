@@ -6,6 +6,7 @@
     <title>Pixel Craft Quest - Game Hub</title>
     <!-- HilltopAds Site Doğrulama Etiketi -->
     <meta name="24fd855d82cd43aa39ffe64c0ba3005671f27135" content="24fd855d82cd43aa39ffe64c0ba3005671f27135" />
+    <meta name="referrer" content="no-referrer-when-downgrade">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -62,7 +63,7 @@
             </div>
         </div>
 
-        <!-- HilltopAds Reklam Banner Alanı (Onaylı Alan) -->
+        <!-- HilltopAds Reklam Banner Alanı -->
         <div class="game-card p-2 rounded-2xl mb-3 text-center flex items-center justify-center overflow-hidden border border-blue-500/20">
             <script>
             (function(tgrala){
@@ -115,7 +116,6 @@
             <div class="game-card p-4 rounded-2xl space-y-2.5">
                 <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-bolt mr-1"></i> Sponsorlu Reklam Görevleri</h3>
                 
-                <!-- Görevler -->
                 <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800" id="quest-1">
                     <div class="flex items-center space-x-2.5">
                         <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-bold border border-blue-500/20"><i class="fa-solid fa-bullhorn"></i></div>
@@ -229,7 +229,6 @@
 
         const adTargetUrl = "https://fond-appointment.com/bHXsVXsdd.GAlE0/YnW/cy/Re_mt9SuQZdUql/kaP/T/cHzMMqzLUh3qOFTscBtoNTzWMHzONLT/g/waM/Qv";
         
-        // Adsgram Doğru Blok ID Entegrasyonu (Görseldeki ID ile uyumlu)
         let adController = null;
         try {
             if (window.Adsgram) {
@@ -297,13 +296,27 @@
         }
         function closeModal() { document.getElementById('modal').style.display = 'none'; }
 
+        // Güvenli Reklam Açma Fonksiyonu (Pop-up Engelleyiciyi aşar)
+        function openAdWindow(url) {
+            try {
+                let win = window.open(url, '_blank');
+                if (!win || win.closed || typeof win.closed == 'undefined') {
+                    // Pop-up engellendiyse kullanıcıyı doğrudan yönlendir veya alternatif tetikle
+                    window.location.href = url;
+                }
+            } catch (e) {
+                window.location.href = url;
+            }
+        }
+
         function startAdTask(questId, rewardAmount) {
             let questEl = document.getElementById(`quest-${questId}`);
             let btn = questEl.querySelector('button');
 
             if (btn.disabled) return;
 
-            window.open(adTargetUrl, '_blank');
+            // Reklamı direkt tetikle
+            openAdWindow(adTargetUrl);
 
             btn.innerText = "SÜRE BAŞLADI (5s)...";
             btn.disabled = true;
@@ -363,14 +376,12 @@
             } catch(e) {}
         }
 
-        // Adsgram Video Gösterim Fonksiyonu
         function watchAdsgramVideo() {
             if (!adController) {
                 showModal("Bilgi", "Reklam yükleniyor, lütfen birazdan tekrar deneyin.");
                 return;
             }
             adController.show().then(() => {
-                // Kullanıcı reklamı sonuna kadar izledi
                 claimRewardApi(10, "adsgram_video");
             }).catch((err) => {
                 showModal("Bilgi", "Reklam izleme tamamlanamadı.");
