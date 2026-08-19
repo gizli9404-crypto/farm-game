@@ -321,7 +321,6 @@ app.post('/api/reward/claim', (req, res) => {
     const numReward = parseFloat(reward) || 5;
     const today = new Date().toISOString().slice(0, 10);
 
-    // Eğer spesifik bir reklam görevi ID'si gönderildiyse suistimal kontrolü yap
     if (quest_id) {
         db.get("SELECT id FROM completed_quests WHERE telegram_id = ? AND quest_id = ? AND completion_date = ?", 
             [telegram_id, quest_id, today], (err, row) => {
@@ -329,7 +328,6 @@ app.post('/api/reward/claim', (req, res) => {
                 return res.status(400).json({ success: false, error: "Bu görevi bugün zaten tamamladınız!" });
             }
 
-            // Görevi tamamlandı olarak kaydet ve bakiyeyi artır
             db.run("INSERT INTO completed_quests (telegram_id, quest_id, completion_date) VALUES (?, ?, ?)", 
                 [telegram_id, quest_id, today], (insErr) => {
                 if (insErr) { logSystemError(insErr); }
@@ -344,7 +342,6 @@ app.post('/api/reward/claim', (req, res) => {
             });
         });
     } else {
-        // Quest ID yoksa direkt bakiye ekle (Normal video izleme vb. için)
         db.run("UPDATE users SET balance = balance + ? WHERE telegram_id = ?", [numReward, telegram_id], (err) => {
             if (err) {
                 logSystemError(err);
