@@ -146,8 +146,8 @@
 
         let currentUserData = { balance: 0, streak_day: 1 };
 
-        // Adsgram Entegrasyonu (Block ID: 43545)
-        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "43545" }) : null;
+        // Adsgram Entegrasyonu (Block ID güncellendi: 43584)
+        const adController = window.Adsgram ? window.Adsgram.init({ blockId: "43584" }) : null;
 
         // Kullanıcı Verilerini Backend'den Çek
         async function fetchUserData() {
@@ -285,7 +285,7 @@
             let amount = currency === 'VIP_PAKET' ? 50 : 100;
 
             if (!wallet) {
-                showModal("Uyarı", "Lütfen kullanıcı adınızı veya cüzdan bilg Pey ekleyin.");
+                showModal("Uyarı", "Lütfen kullanıcı adınızı veya cüzdan bilgisi ekleyin.");
                 return;
             }
 
