@@ -62,29 +62,20 @@
             </div>
         </div>
 
-        <!-- Teşvik Edici HilltopAds Reklam Alanı -->
-        <div class="game-card p-2 rounded-2xl mb-3 text-center overflow-hidden border border-blue-500/30 shadow-lg shadow-blue-500/5">
-            <div class="flex items-center justify-between px-2 pb-1.5 text-[9px] text-amber-400 font-bold border-b border-slate-800 mb-1.5">
-                <span><i class="fa-solid fa-bolt mr-1"></i> SPONSORLU İÇERİK</span>
-                <span class="text-blue-400 animate-pulse">Tıkla & Destek Ol 👆</span>
-            </div>
-            <div class="flex items-center justify-center py-1">
-                <script>
-                (function(tgrala){
-                var d = document,
-                    s = d.createElement('script'),
-                    l = d.scripts[d.scripts.length - 1];
-                s.settings = tgrala || {};
-                s.src = "\/\/fond-appointment.com\/bHXsVXsdd.GAlE0\/YnW\/cy\/Re_mt9SuQZdUql\/kaP\/T\/cHzMMqzLUh3qOFTscBtoNTzWMHzONLT\/g\/waM\/Qv";
-                s.async = true;
-                s.referrerPolicy = 'no-referrer-when-downgrade';
-                l.parentNode.insertBefore(s, l);
-                })({})
-                </script>
-            </div>
-            <div class="mt-1 pt-1.5 border-t border-slate-800 text-[9px] text-slate-300 font-semibold bg-blue-500/5 py-1 rounded-lg">
-                🚀 Yukarıdaki reklama tıklayarak oyunun geliştirilmesine ücretsiz katkı sağlayabilirsin!
-            </div>
+        <!-- HilltopAds Reklam Alanı -->
+        <div class="game-card p-2 rounded-2xl mb-3 text-center flex items-center justify-center overflow-hidden border border-blue-500/20">
+            <script>
+            (function(tgrala){
+            var d = document,
+                s = d.createElement('script'),
+                l = d.scripts[d.scripts.length - 1];
+            s.settings = tgrala || {};
+            s.src = "\/\/fond-appointment.com\/bHXsVXsdd.GAlE0\/YnW\/cy\/Re_mt9SuQZdUql\/kaP\/T\/cHzMMqzLUh3qOFTscBtoNTzWMHzONLT\/g\/waM\/Qv";
+            s.async = true;
+            s.referrerPolicy = 'no-referrer-when-downgrade';
+            l.parentNode.insertBefore(s, l);
+            })({})
+            </script>
         </div>
     </div>
 
@@ -118,6 +109,71 @@
                 <button onclick="claimDailyBonus()" class="w-full py-3 bg-blue-500 hover:bg-blue-400 text-slate-950 font-black rounded-xl text-xs transition shadow-lg shadow-blue-500/10">
                     Bugünkü Ödülü Topla
                 </button>
+            </div>
+
+            <!-- ANA EKRAN HIZLI TIKLA KAZAN GÖREVLERİ (5-6 Adet) -->
+            <div class="game-card p-4 rounded-2xl space-y-2.5">
+                <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-bolt mr-1"></i> Hızlı Tıkla Kazan Görevleri</h3>
+                
+                <!-- Görev 1 -->
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-bold border border-blue-500/20"><i class="fa-solid fa-bullhorn"></i></div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-200">Duyuru Kanalını Ziyaret Et</p>
+                            <p class="text-[9px] text-slate-400">Tıkla ve anında ödülünü kap</p>
+                        </div>
+                    </div>
+                    <button onclick="instantClickReward(this, 5)" class="px-3 py-2 bg-blue-500 hover:bg-blue-400 text-slate-950 font-black rounded-lg text-[10px] transition shadow">KAZAN (+5 P)</button>
+                </div>
+
+                <!-- Görev 2 -->
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20"><i class="fa-solid fa-users"></i></div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-200">Topluluk Sohbetine Katıl</p>
+                            <p class="text-[9px] text-slate-400">Gruba göz at, puanı al</p>
+                        </div>
+                    </div>
+                    <button onclick="instantClickReward(this, 5)" class="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-lg text-[10px] transition shadow">KAZAN (+5 P)</button>
+                </div>
+
+                <!-- Görev 3 -->
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-xs font-bold border border-purple-500/20"><i class="fa-solid fa-star"></i></div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-200">Uygulamayı Favorilere Ekle</p>
+                            <p class="text-[9px] text-slate-400">Hızlı erişim bonusu</p>
+                        </div>
+                    </div>
+                    <button onclick="instantClickReward(this, 5)" class="px-3 py-2 bg-purple-500 hover:bg-purple-400 text-slate-950 font-black rounded-lg text-[10px] transition shadow">KAZAN (+5 P)</button>
+                </div>
+
+                <!-- Görev 4 -->
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center text-xs font-bold border border-amber-500/20"><i class="fa-solid fa-share-nodes"></i></div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-200">Arkadaşına Tavsiye Et</p>
+                            <p class="text-[9px] text-slate-400">Paylaşım kontrol ödülü</p>
+                        </div>
+                    </div>
+                    <button onclick="instantClickReward(this, 5)" class="px-3 py-2 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black rounded-lg text-[10px] transition shadow">KAZAN (+5 P)</button>
+                </div>
+
+                <!-- Görev 5 -->
+                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800">
+                    <div class="flex items-center space-x-2.5">
+                        <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center text-xs font-bold border border-rose-500/20"><i class="fa-solid fa-shield-cat"></i></div>
+                        <div>
+                            <p class="text-xs font-bold text-slate-200">Günlük Kontrol Noktası</p>
+                            <p class="text-[9px] text-slate-400">Ekstra etkinlik tıklaması</p>
+                        </div>
+                    </div>
+                    <button onclick="instantClickReward(this, 5)" class="px-3 py-2 bg-rose-500 hover:bg-rose-400 text-slate-950 font-black rounded-lg text-[10px] transition shadow">KAZAN (+5 P)</button>
+                </div>
             </div>
         </div>
 
@@ -294,6 +350,29 @@
                 }
             } catch(e) {
                 showModal("Hata", "Bağlantı hatası oluştu.");
+            }
+        }
+
+        // Hızlı Tıkla Kazan Fonksiyonu
+        async function instantClickReward(btnElement, rewardAmount) {
+            try {
+                let res = await fetch('/api/reward/claim', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegram_id: telegramId, reward: rewardAmount })
+                });
+                let data = await res.json();
+                if (data.success) {
+                    showModal("Tebrikler!", `Görev tamamlandı: +${rewardAmount} Puan hesabınıza eklendi!`);
+                    btnElement.innerText = "TAMAMLANDI";
+                    btnElement.disabled = true;
+                    btnElement.className = "px-3 py-2 bg-slate-800 text-slate-500 font-bold rounded-lg text-[10px] cursor-not-allowed";
+                    fetchUserData();
+                } else {
+                    showModal("Bilgi", data.error || "Bu görevi zaten tamamladınız.");
+                }
+            } catch(e) {
+                showModal("Hata", "Sunucu bağlantı hatası oluştu.");
             }
         }
 
