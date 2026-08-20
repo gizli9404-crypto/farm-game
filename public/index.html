@@ -3,74 +3,77 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiny Farm Adventure - Ultimate</title>
+    <title>Tiny Farm Adventure - Island Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.js"></script>
     <style>
         :root {
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #ffffff;
-            --accent: #2e7d32;
-        }
-        body.day {
-            --bg-color: #f4f9f4;
-            --card-bg: #ffffff;
-            --text-color: #1b5e20;
-            --accent: #4caf50;
+            --bg-color: #0d1b2a;
+            --card-bg: #1b263b;
+            --text-color: #e0e1dd;
+            --accent: #40916c;
         }
         body {
             background-color: var(--bg-color);
             color: var(--text-color);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
-            padding: 10px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: background 0.3s;
         }
         .container {
             width: 100%;
             max-width: 420px;
             background: var(--card-bg);
-            padding: 15px;
-            border-radius: 14px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            padding: 12px;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
             position: relative;
         }
-        /* Şık Oyun İçi Bildiri (Toast) */
         #toast {
             position: absolute;
-            top: -45px;
+            top: -40px;
             left: 50%;
             transform: translateX(-50%);
-            background: #2e7d32;
+            background: #2d6a4f;
             color: white;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
-            font-size: 12px;
+            font-size: 11px;
             font-weight: bold;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             display: none;
             z-index: 100;
             white-space: nowrap;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.3);
         }
         .header {
             display: flex;
             justify-content: space-between;
-            background: rgba(0,0,0,0.1);
-            padding: 10px;
-            border-radius: 8px;
+            background: rgba(0,0,0,0.2);
+            padding: 8px 12px;
+            border-radius: 10px;
             font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 12px;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        .character-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #27465e;
+            padding: 6px 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 12px;
         }
         .tabs {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 15px;
-            background: rgba(0,0,0,0.15);
-            padding: 4px;
+            margin-bottom: 12px;
+            background: rgba(0,0,0,0.2);
+            padding: 3px;
             border-radius: 8px;
         }
         .tab-btn {
@@ -78,7 +81,7 @@
             background: none;
             border: none;
             color: var(--text-color);
-            padding: 8px;
+            padding: 7px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 6px;
@@ -91,37 +94,32 @@
         .section { display: none; }
         .section.active { display: block; }
         
-        /* Gelişmiş Tarla Izgarası */
         .farm-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-bottom: 15px;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .plot {
-            background: #3e2723;
-            border: 3px solid #5d4037;
+            background: #2c1d0c;
+            border: 3px solid #5c4033;
             border-radius: 12px;
             padding: 10px;
             text-align: center;
-            min-height: 100px;
+            min-height: 95px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            position: relative;
-            overflow: hidden;
-            box-shadow: inset 0 4px 6px rgba(0,0,0,0.4);
+            box-shadow: inset 0 3px 5px rgba(0,0,0,0.6);
         }
-        .plot.empty { background: #4e342e; border-color: #6d4c41; }
-        .plot.growing { background: #2e3b2e; border-color: #388e3c; }
-        .plot.ready { background: #1b5e20; border-color: #66bb6a; animation: pulse 1.5s infinite; }
+        .plot.growing { background: #1b3022; border-color: #2d6a4f; }
+        .plot.ready { background: #2d6a4f; border-color: #52b788; animation: bounce 1s infinite alternate; }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+        @keyframes bounce {
+            from { transform: translateY(0); }
+            to { transform: translateY(-3px); }
         }
 
         button {
@@ -131,116 +129,124 @@
             padding: 8px;
             width: 100%;
             border-radius: 6px;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: bold;
             cursor: pointer;
-            margin-top: 5px;
+            margin-top: 4px;
         }
-        button:disabled { background-color: #555; cursor: not-allowed; }
         
-        .market-item, .rank-item {
+        .market-item, .island-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(0,0,0,0.1);
-            padding: 10px 12px;
+            background: rgba(0,0,0,0.2);
+            padding: 8px 10px;
             border-radius: 8px;
-            margin-bottom: 8px;
-            font-size: 12px;
+            margin-bottom: 6px;
+            font-size: 11px;
         }
         .footer {
-            font-size: 10px;
-            color: #777;
+            font-size: 9px;
+            color: #8d99ae;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 8px;
         }
     </style>
 </head>
-<body class="day">
+<body>
 
     <div class="container">
-        <!-- Şık Üst Bildiri -->
-        <div id="toast">Bildiri mesajı burada görünür</div>
+        <div id="toast">Bildiri</div>
 
-        <!-- Üst Bilgi Paneli -->
+        <!-- Üst Bilgi -->
         <div class="header">
-            <div>🪙 <span id="gold">350</span></div>
+            <div>🪙 <span id="gold">400</span> Altın</div>
             <div>🎒 Depo: <span id="inventory-count">0</span></div>
-            <div>🧪 Gübre: <span id="fertilizer-count">1</span></div>
-            <div>⭐ Lv.<span id="level">1</span></div>
+            <div>⭐ <span id="level">Seviye 1</span></div>
+        </div>
+
+        <!-- Seçili Karakter Paneli -->
+        <div class="character-bar">
+            <div>Aktif Çiftçi: <b id="char-name">👩‍🌾 Elif (Kız)</b></div>
+            <button onclick="toggleCharacter()" style="width: auto; padding: 3px 8px; font-size: 10px; background: #e07a5f;">Karakter Değiş</button>
         </div>
 
         <!-- Sekmeler -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('farm', this)">🌾 Tarlalar</button>
+            <button class="tab-btn active" onclick="switchTab('farm', this)">🏝️ Ada Tarlası</button>
             <button class="tab-btn" onclick="switchTab('market', this)">🛒 Market</button>
-            <button class="tab-btn" onclick="switchTab('rank', this)">🏆 Sıralama</button>
-            <button class="tab-btn" onclick="switchTab('settings', this)">⚙️ Ayarlar</button>
+            <button class="tab-btn" onclick="switchTab('islands', this)">🗺️ Adalar</button>
+            <button class="tab-btn" onclick="switchTab('boost', this)">⚡ Reklam & Güç</button>
         </div>
 
         <!-- 1. TARLA SEKMESİ -->
         <div id="farm-section" class="section active">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                <span style="font-size: 12px; font-weight: bold;">Aktif Tohum: <span id="selected-seed-name">🥕 Havuç</span></span>
-                <button onclick="useFertilizer()" style="width: auto; padding: 4px 8px; font-size: 11px; background: #d81b60;">🧪 Hızlı Gübre</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <span style="font-size: 11px;">Seçili Tohum: <b id="selected-seed-name">🍍 Ananas</b></span>
+                <span style="font-size: 10px; color: #52b788;" id="boost-status">Hız: Normal (1x)</span>
             </div>
             <div class="farm-grid" id="farmGrid"></div>
         </div>
 
         <!-- 2. MARKET SEKMESİ -->
         <div id="market-section" class="section">
-            <h3 style="font-size: 13px; margin-top:0;">Tohum & Gübre Satın Al</h3>
+            <h3 style="font-size: 12px; margin-top:0;">Tohum Pazarı</h3>
             <div class="market-item">
-                <span>🥕 Havuç (Süre: 6s, Kazanç: 30)</span>
-                <button onclick="selectSeed('Carrot', '🥕 Havuç', 10, 30, 6)" style="width:auto; padding:5px 10px;">Seç</button>
+                <span>🍍 Ananas (Süre: 5s, Kazanım: 35)</span>
+                <button onclick="selectSeed('Pineapple', '🍍 Ananas', 15, 35, 5)" style="width:auto; padding:4px 8px;">Seç</button>
             </div>
             <div class="market-item">
-                <span>🍅 Domates (Süre: 12s, Kazanç: 75)</span>
-                <button onclick="selectSeed('Tomato', '🍅 Domates', 45, 75, 12)" style="width:auto; padding:5px 10px;">Seç</button>
+                <span>🍉 Karpuz (Süre: 10s, Kazanım: 80)</span>
+                <button onclick="selectSeed('Watermelon', '🍉 Karpuz', 50, 80, 10)" style="width:auto; padding:4px 8px;">Seç</button>
             </div>
             <div class="market-item">
-                <span>🍓 Çilek (Süre: 25s, Kazanç: 170)</span>
-                <button onclick="selectSeed('Strawberry', '🍓 Çilek', 100, 170, 25)" style="width:auto; padding:5px 10px;">Seç</button>
+                <span>🥥 Özel Hindistan Cevizi (Süre: 20s, Kazanım: 180)</span>
+                <button onclick="selectSeed('Coconut', '🥥 Hindistan Cevizi', 120, 180, 20)" style="width:auto; padding:4px 8px;">Seç</button>
             </div>
-            <div class="market-item">
-                <span>🧪 Hızlı Gübre (Süreyi Yarıya İndirir)</span>
-                <button onclick="buyFertilizer()" style="width:auto; padding:5px 10px; background:#d81b60;">30 Altın</button>
-            </div>
-            <button onclick="sellHarvest()" style="background: #e65100; margin-top: 10px;">💰 Tüm Hasadı Altına Çevir</button>
+            <button onclick="sellHarvest()" style="background: #e76f51; margin-top: 8px;">💰 Tüm Depoyu Altına Çevir</button>
         </div>
 
-        <!-- 3. SIRALAMA SEKMESİ -->
-        <div id="rank-section" class="section">
-            <h3 style="font-size: 13px; margin-top:0;">En İyi Çiftçiler</h3>
-            <div class="rank-item"><span>1. 🥇 AgroKing</span> <span>16,400 Altın</span></div>
-            <div class="rank-item"><span>2. 🥈 FarmMaster</span> <span>10,200 Altın</span></div>
-            <div class="rank-item"><span>3. 🥉 GreenThumb</span> <span>7,150 Altın</span></div>
-            <div class="rank-item" style="border: 1px solid var(--accent);"><span>4. 🧑‍🌾 Sen (Siz)</span> <span id="rank-my-gold">350 Altın</span></div>
-        </div>
-
-        <!-- 4. AYARLAR SEKMESİ -->
-        <div id="settings-section" class="section">
-            <h3 style="font-size: 13px; margin-top:0;">Ayarlar & Bilgiler</h3>
-            <div class="market-item">
-                <span>Tema Değiştir (Gece/Gündüz)</span>
-                <button onclick="toggleTheme()" style="width:auto; padding:5px 10px;">Değiştir</button>
+        <!-- 3. ADALAR SEKMESİ -->
+        <div id="islands-section" class="section">
+            <h3 style="font-size: 12px; margin-top:0;">Keşfedilebilir Bölgeler</h3>
+            <div class="island-item">
+                <span>🏝️ Sahil Koyu (Aktif Ada)</span>
+                <span style="color: #52b788; font-weight:bold;">Açık</span>
             </div>
-            <div class="market-item">
-                <span>Telegram Bot Bildirimleri</span>
-                <button onclick="showToast('Bot bildirimleri aktif edildi! 🔔')" style="width:auto; padding:5px 10px;">Aktif Et</button>
+            <div class="island-item">
+                <span>🌴 Palmiye Ormanı (4 Tarla Kapasitesi)</span>
+                <button onclick="unlockIsland(200)" style="width:auto; padding:4px 8px;">200 Altın</button>
+            </div>
+            <div class="island-item">
+                <span>🌋 Volkanik Çiftlik (2x Değerli Ürünler)</span>
+                <button onclick="unlockIsland(500)" style="width:auto; padding:4px 8px; background: #e76f51;">500 Altın</button>
             </div>
         </div>
 
-        <div class="footer">Tiny Farm Adventure v4.0 - Enhanced Edition</div>
+        <!-- 4. REKLAM & GÜÇLENDİRME SEKMESİ -->
+        <div id="boost-section" class="section">
+            <h3 style="font-size: 12px; margin-top:0;">Reklam İzle & Ödül Kazan</h3>
+            <div class="market-item">
+                <span>⚡ 30 Saniye Boyunca 2x Hızlandırıcı</span>
+                <button onclick="watchAdForBoost()" style="width:auto; padding:5px 10px; background: #e9c46a; color:#000;">Reklam İzle</button>
+            </div>
+            <div class="market-item">
+                <span>🎁 Ücretsiz Anında 50 Altın Kazan</span>
+                <button onclick="watchAdForGold()" style="width:auto; padding:5px 10px; background: #e9c46a; color:#000;">Ödül Al</button>
+            </div>
+        </div>
+
+        <div class="footer">Tiny Farm Adventure v5.0 - Island Life</div>
     </div>
 
     <script>
-        let gold = 350;
+        let gold = 400;
         let inventory = 0;
-        let fertilizer = 1;
         let level = 1;
-        
-        let currentSeed = { id: 'Carrot', name: '🥕 Havuç', cost: 10, reward: 30, time: 6 };
+        let speedMultiplier = 1;
+        let isFemaleChar = true;
+
+        let currentSeed = { id: 'Pineapple', name: '🍍 Ananas', cost: 15, reward: 35, time: 5 };
 
         let plots = [
             { id: 0, status: 'empty', crop: null, timeLeft: 0, timerObj: null },
@@ -249,19 +255,26 @@
             { id: 3, status: 'locked', crop: null, timeLeft: 0, timerObj: null }
         ];
 
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.innerText = message;
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2500);
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "40974" }) : null;
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2200);
+        }
+
+        function toggleCharacter() {
+            isFemaleChar = !isFemaleChar;
+            const nameEl = document.getElementById('char-name');
+            nameEl.innerText = isFemaleChar ? "👩‍🌾 Elif (Kız)" : "👨‍🌾 Ali (Erkek)";
+            showToast("Karakter değiştirildi!");
         }
 
         function updateUI() {
             document.getElementById('gold').innerText = gold;
             document.getElementById('inventory-count').innerText = inventory;
-            document.getElementById('fertilizer-count').innerText = fertilizer;
-            document.getElementById('level').innerText = level;
-            document.getElementById('rank-my-gold').innerText = gold + " Altın";
+            document.getElementById('level').innerText = "Seviye " + level;
             document.getElementById('selected-seed-name').innerText = currentSeed.name;
             renderPlots();
         }
@@ -272,40 +285,39 @@
             plots.forEach((plot, index) => {
                 let div = document.createElement('div');
                 div.className = 'plot';
+                let charEmoji = isFemaleChar ? "👩‍🌾" : "👨‍🌾";
                 
                 if (plot.status === 'locked') {
-                    div.className += ' empty';
-                    div.innerHTML = `🔒 Kilitli Arsa<br><button onclick="unlockPlot(${index})" style="padding:4px; font-size:10px; margin-top:5px;">60 Altın</button>`;
+                    div.innerHTML = `🔒 Kilitli<br><button onclick="unlockPlot(${index})" style="font-size:9px; padding:3px;">100 Altın</button>`;
                 } else if (plot.status === 'empty') {
-                    div.className += ' empty';
-                    div.innerHTML = `🟫 Boş Toprak<br><span style="font-size:10px; color:#d7ccc8;">Ekmek için tıkla 🌱</span>`;
+                    div.innerHTML = `🟫 Boş Toprak<br><span style="font-size:9px; color:#a3b18a;">${charEmoji} Ekmek için tıkla</span>`;
                     div.onclick = () => plantCrop(index);
                 } else if (plot.status === 'growing') {
                     div.className += ' growing';
-                    div.innerHTML = `🌿 ${plot.crop.name}<br><b style="font-size:14px; color:#81c784;">${plot.timeLeft}s</b>`;
+                    div.innerHTML = `${charEmoji} Ekiliyor...<br><b style="font-size:13px; color:#52b788;">${plot.timeLeft}s</b>`;
                 } else if (plot.status === 'ready') {
                     div.className += ' ready';
-                    div.innerHTML = `✨ HAZIR! ✨<br><button onclick="harvestPlot(${index})" style="padding:5px; font-size:11px; background:#2e7d32; margin-top:5px;">Hasat Et 🧺</button>`;
+                    div.innerHTML = `✨ HAZIR! ✨<br><button onclick="harvestPlot(${index})" style="font-size:10px; padding:4px; background:#40916c;">${charEmoji} Hasat Et</button>`;
                 }
                 grid.appendChild(div);
             });
         }
 
         function unlockPlot(index) {
-            if (gold >= 60) {
-                gold -= 60;
+            if (gold >= 100) {
+                gold -= 100;
                 plots[index].status = 'empty';
                 level++;
-                showToast("Yeni tarla açıldı! 🎉");
+                showToast("Yeni ada tarlası açıldı! 🌴");
                 updateUI();
             } else {
-                showToast("Yeterli altın yok! (60 altın gerekli)");
+                showToast("Yeterli altın yok! (100 altın gerekli)");
             }
         }
 
         function selectSeed(id, name, cost, reward, time) {
             currentSeed = { id, name, cost, reward, time };
-            showToast(name + " tohumu seçildi!");
+            showToast(name + " seçildi!");
             switchTab('farm', document.querySelectorAll('.tab-btn')[0]);
             updateUI();
         }
@@ -317,10 +329,12 @@
             }
             gold -= currentSeed.cost;
             plots[index].status = 'growing';
-            plots[index].timeLeft = currentSeed.time;
+            let actualTime = Math.ceil(currentSeed.time / speedMultiplier);
+            plots[index].timeLeft = actualTime;
             plots[index].crop = currentSeed;
 
-            showToast(`${currentSeed.name} tarlaya ekildi! 🌿`);
+            let charName = isFemaleChar ? "Elif" : "Ali";
+            showToast(`${charName} tarlaya gidip ${currentSeed.name} ekti! 🌱`);
             updateUI();
 
             plots[index].timerObj = setInterval(() => {
@@ -328,7 +342,7 @@
                 if (plots[index].timeLeft <= 0) {
                     clearInterval(plots[index].timerObj);
                     plots[index].status = 'ready';
-                    showToast("Bir ürün hasada hazır! ✨");
+                    showToast("Ürünler büyüdü, hasat edilebilir! ✨");
                 }
                 renderPlots();
             }, 1000);
@@ -336,37 +350,57 @@
 
         function harvestPlot(index) {
             inventory += plots[index].crop.reward;
-            showToast(`+${plots[index].crop.reward} ürün depoya eklendi! 🧺`);
+            let charName = isFemaleChar ? "Elif" : "Ali";
+            showToast(`${charName} hasadı topladı! (+${plots[index].crop.reward} Depo) 🧺`);
             plots[index].status = 'empty';
             plots[index].crop = null;
             updateUI();
         }
 
-        function buyFertilizer() {
-            if (gold >= 30) {
-                gold -= 30;
-                fertilizer++;
-                showToast("Hızlı gübre satın alındı! 🧪");
+        function unlockIsland(cost) {
+            if (gold >= cost) {
+                gold -= cost;
+                level++;
+                showToast("Yeni bölge başarıyla açıldı! 🗺️");
                 updateUI();
             } else {
-                showToast("Gübre için yeterli altın yok!");
+                showToast("Bu adayı açmak için altının yetersiz!");
             }
         }
 
-        function useFertilizer() {
-            if (fertilizer <= 0) {
-                showToast("Hiç gübren yok! Marketten alabilirsin.");
-                return;
+        function watchAdForBoost() {
+            if (AdController) {
+                AdController.show().then(() => {
+                    activateBoost();
+                }).catch(() => { showToast("Reklam yüklenemedi."); });
+            } else {
+                activateBoost(); // Test ortamı için
             }
-            let activeGrowing = plots.find(p => p.status === 'growing');
-            if (!activeGrowing) {
-                showToast("Büyüyen bir tarla yok!");
-                return;
+        }
+
+        function activateBoost() {
+            speedMultiplier = 2;
+            document.getElementById('boost-status').innerText = "Hız: 2x Aktif ⚡";
+            showToast("⚡ 2x Hızlandırıcı aktifleşti!");
+            setTimeout(() => {
+                speedMultiplier = 1;
+                document.getElementById('boost-status').innerText = "Hız: Normal (1x)";
+                showToast("Hızlandırma süresi bitti.");
+            }, 30000);
+        }
+
+        function watchAdForGold() {
+            if (AdController) {
+                AdController.show().then(() => {
+                    gold += 50;
+                    showToast("Reklam ödülü: +50 Altın eklendi! 🪙");
+                    updateUI();
+                }).catch(() => { showToast("Reklam yüklenemedi."); });
+            } else {
+                gold += 50;
+                showToast("Test Modu: +50 Altın eklendi! 🪙");
+                updateUI();
             }
-            fertilizer--;
-            activeGrowing.timeLeft = Math.max(1, Math.floor(activeGrowing.timeLeft / 2));
-            showToast("Gübre kullanıldı! Süre yarıya düştü ⚡");
-            updateUI();
         }
 
         function sellHarvest() {
@@ -385,12 +419,6 @@
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabName + '-section').classList.add('active');
             btn.classList.add('active');
-        }
-
-        function toggleTheme() {
-            document.body.classList.toggle('day');
-            document.body.classList.toggle('night');
-            showToast("Tema değiştirildi 🌓");
         }
 
         updateUI();
