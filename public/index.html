@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stellar Farm - NextGen Farming</title>
+    <title>Stellar Farm - Land Expansion Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://sad.adsgram.ai/js/sad.js"></script>
     <style>
@@ -29,7 +29,7 @@
         }
         .app-wrapper {
             width: 100%;
-            max-width: 400px;
+            max-width: 410px;
             display: flex;
             flex-direction: column;
             gap: 12px;
@@ -106,60 +106,48 @@
             cursor: pointer;
         }
 
-        /* 3D Görünümlü Grid Tarlalar */
+        /* Dinamik Blok Grid Yapısı (2x2, 3x3 vb.) */
         .plots-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
+            gap: 10px;
+            transition: all 0.3s ease;
         }
+        .plots-grid.expanded-3x3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
         .plot-card {
             background: #1a233d;
             border: 2px solid #2a375e;
-            border-radius: 16px;
-            padding: 14px;
-            min-height: 120px;
+            border-radius: 14px;
+            padding: 10px;
+            min-height: 110px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s ease;
             position: relative;
             overflow: hidden;
         }
-        .plot-card:hover {
-            border-color: var(--accent-green);
-        }
         .plot-card.ready {
             border-color: var(--accent-green);
-            background: linear-gradient(135deg, rgba(34,197,94,0.1), #1a233d);
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.2);
-            animation: pulseGlow 1.5s infinite alternate;
-        }
-        @keyframes pulseGlow {
-            from { box-shadow: 0 0 5px rgba(34, 197, 94, 0.2); }
-            to { box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); }
+            background: linear-gradient(135deg, rgba(34,197,94,0.12), #1a233d);
+            box-shadow: 0 0 12px rgba(34, 197, 94, 0.3);
         }
 
-        .plot-icon {
-            font-size: 32px;
-            margin-bottom: 4px;
-        }
-        .plot-text {
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--text-muted);
-        }
+        .plot-icon { font-size: 26px; margin-bottom: 2px; }
+        .plot-text { font-size: 10px; font-weight: 700; color: var(--text-muted); }
 
-        /* Şık İlerleme Çubuğu */
         .growth-bar-bg {
             width: 100%;
-            height: 6px;
+            height: 5px;
             background: rgba(0,0,0,0.3);
             border-radius: 3px;
             overflow: hidden;
-            margin-top: 8px;
+            margin-top: 6px;
         }
         .growth-bar-fill {
             height: 100%;
@@ -168,29 +156,34 @@
             transition: width 0.1s linear;
         }
 
-        /* Butonlar */
         .btn-action {
             background: linear-gradient(135deg, #22c55e, #16a34a);
             color: #000;
             border: none;
-            padding: 8px 14px;
-            border-radius: 10px;
+            padding: 6px 10px;
+            border-radius: 8px;
             font-weight: 800;
-            font-size: 11px;
+            font-size: 10px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
-            transition: transform 0.1s;
+            box-shadow: 0 3px 10px rgba(34, 197, 94, 0.3);
         }
-        .btn-action:active { transform: scale(0.96); }
-
         .btn-gold {
             background: linear-gradient(135deg, #fbbf24, #d97706);
             color: #000;
-            box-shadow: 0 4px 12px rgba(251, 191, 36, 0.3);
         }
 
-        /* Alt Sekmeler / Mağaza ve Reklam */
+        /* Arazi Blok Genişletme Paneli */
+        .expansion-panel {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px dashed var(--border);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
         .bottom-panel {
             background: var(--card-bg);
             border: 1px solid var(--border);
@@ -209,11 +202,7 @@
             padding: 10px 12px;
             border-radius: 12px;
         }
-        .footer-credit {
-            font-size: 10px;
-            color: var(--text-muted);
-            text-align: center;
-        }
+        .footer-credit { font-size: 10px; color: var(--text-muted); text-align: center; }
     </style>
 </head>
 <body>
@@ -221,32 +210,43 @@
     <div class="app-wrapper">
         <div id="notification-toast">Bildiri</div>
 
-        <!-- Üst Bilgi Göstergesi -->
+        <!-- Üst Dashboard -->
         <div class="dashboard">
             <div class="stat-box">
                 <span>Cüzdan</span>
-                <div class="stat-val gold" id="gold-val">750 🪙</div>
+                <div class="stat-val gold" id="gold-val">800 🪙</div>
             </div>
             <div class="stat-box">
                 <span>Ambar Depo</span>
-                <div class="stat-val" id="inv-val">0 / 20</div>
+                <div class="stat-val" id="inv-val">0 / 30</div>
             </div>
             <div class="stat-box">
-                <span>Çiftlik Seviyesi</span>
-                <div class="stat-val" id="lvl-val">LVL 1 ⭐</div>
+                <span>Açık Parsel</span>
+                <div class="stat-val" id="parsel-val">4 / 9</div>
             </div>
         </div>
 
         <!-- Ana Tarla Yönetim Paneli -->
         <div class="farm-container">
             <div class="farm-header">
-                <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">🌾 Ana Tarım Arazisi</span>
+                <span style="font-size: 12px; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">🌾 Çiftlik Arazi Bloğu</span>
                 <div class="seed-selector" onclick="cycleSeed()">Tohum: <span id="current-seed-name">Buğday</span></div>
             </div>
+
+            <!-- Parsel Grid Alanı -->
             <div class="plots-grid" id="plots-grid"></div>
+
+            <!-- Arazi Satın Al / Blok Genişletme Bölümü -->
+            <div class="expansion-panel" id="expansion-box">
+                <div>
+                    <div style="font-weight: 700; font-size: 11px;" id="expand-title">Yeni Blok Parsel Satın Al</div>
+                    <div style="font-size: 10px; color: var(--text-muted);" id="expand-desc">Tarlayı büyütmek için yeni arsa aç</div>
+                </div>
+                <button class="btn-action btn-gold" style="width: auto; padding: 7px 14px;" onclick="expandLandBlock()">Arsa Al (<span id="expand-cost">350</span> 🪙)</button>
+            </div>
         </div>
 
-        <!-- Bonus & Reklam Kazanç Paneli -->
+        <!-- Bonus & Reklam Paneli -->
         <div class="bottom-panel">
             <span style="font-size: 11px; font-weight: 800; text-transform: uppercase; color: var(--text-muted);">📺 Sponsorlu Yatırımlar</span>
             <div class="panel-row">
@@ -258,29 +258,32 @@
             </div>
         </div>
 
-        <div class="footer-credit">Stellar Farm Engine v4.2 - Immersive Edition</div>
+        <div class="footer-credit">Stellar Farm Engine v5.0 - Expansion Edition</div>
     </div>
 
     <script>
-        let gold = 750;
+        let gold = 800;
         let inventory = 0;
-        let maxInventory = 20;
-        let level = 1;
+        let maxInventory = 30;
 
-        // Tohum türleri
         let seeds = [
-            { name: 'Buğday', cost: 10, reward: 25, time: 4, icon: '🌾' },
-            { name: 'Mısır', cost: 25, reward: 60, time: 7, icon: '🌽' },
-            { name: 'Çilek', cost: 50, reward: 130, time: 10, icon: '🍓' }
+            { name: 'Buğday', cost: 10, reward: 25, time: 3, icon: '🌾' },
+            { name: 'Mısır', cost: 25, reward: 65, time: 5, icon: '🌽' },
+            { name: 'Çilek', cost: 50, reward: 140, time: 8, icon: '🍓' }
         ];
         let currentSeedIdx = 0;
 
-        // 4 Başlangıç Tarlası
+        // Toplam 9 parsellik arsa haritası (Başlangıçta 4 tanesi açık)
         let plots = [
-            { id: 0, status: 'empty', progress: 0, seed: null, timer: null },
-            { id: 1, status: 'empty', progress: 0, seed: null, timer: null },
-            { id: 2, status: 'locked', progress: 0, seed: null, timer: null },
-            { id: 3, status: 'locked', progress: 0, seed: null, timer: null }
+            { id: 0, unlocked: true, status: 'empty', progress: 0, seed: null, timer: null },
+            { id: 1, unlocked: true, status: 'empty', progress: 0, seed: null, timer: null },
+            { id: 2, unlocked: true, status: 'empty', progress: 0, seed: null, timer: null },
+            { id: 3, unlocked: true, status: 'empty', progress: 0, seed: null, timer: null },
+            { id: 4, unlocked: false, status: 'locked', progress: 0, seed: null, timer: null },
+            { id: 5, unlocked: false, status: 'locked', progress: 0, seed: null, timer: null },
+            { id: 6, unlocked: false, status: 'locked', progress: 0, seed: null, timer: null },
+            { id: 7, unlocked: false, status: 'locked', progress: 0, seed: null, timer: null },
+            { id: 8, unlocked: false, status: 'locked', progress: 0, seed: null, timer: null }
         ];
 
         const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "40974" }) : null;
@@ -295,8 +298,27 @@
         function updateUI() {
             document.getElementById('gold-val').innerText = gold + " 🪙";
             document.getElementById('inv-val').innerText = inventory + " / " + maxInventory;
-            document.getElementById('lvl-val').innerText = "LVL " + level + " ⭐";
+            
+            let unlockedCount = plots.filter(p => p.unlocked).length;
+            document.getElementById('parsel-val').innerText = unlockedCount + " / 9";
             document.getElementById('current-seed-name').innerText = seeds[currentSeedIdx].name;
+
+            // Eğer 4'ten fazla parsel açıldıysa gridi 3x3 formata genişlet
+            const gridEl = document.getElementById('plots-grid');
+            if (unlockedCount > 4) {
+                gridEl.classList.add('expanded-3x3');
+            } else {
+                gridEl.classList.remove('expanded-3x3');
+            }
+
+            // Sonraki arsa açma maliyeti
+            if (unlockedCount >= 9) {
+                document.getElementById('expansion-box').style.display = 'none';
+            } else {
+                let cost = unlockedCount * 350;
+                document.getElementById('expand-cost').innerText = cost;
+            }
+
             renderPlots();
         }
 
@@ -309,49 +331,60 @@
         function renderPlots() {
             const grid = document.getElementById('plots-grid');
             grid.innerHTML = '';
+            
             plots.forEach((p, idx) => {
+                // Sadece kilidi açılmış veya açılacak sıradaki parselleri göster
+                if (!p.unlocked && idx > 0 && !plots[idx-1].unlocked) return; // Sıralı açılım için kontrol
+
                 let card = document.createElement('div');
                 card.className = 'plot-card';
 
-                if (p.status === 'locked') {
+                if (!p.unlocked) {
                     card.innerHTML = `
                         <div class="plot-icon">🔒</div>
-                        <div class="plot-text">Kilitli Toprak</div>
-                        <button class="btn-action btn-gold" style="margin-top:6px; font-size:10px; padding:5px;" onclick="unlockPlot(${idx})">200 🪙 Aç</button>
+                        <div class="plot-text">Arsa Kapalı</div>
+                        <div style="font-size:9px; color:var(--accent-gold); margin-top:2px;">Blok #${idx+1}</div>
                     `;
                 } else if (p.status === 'empty') {
                     let s = seeds[currentSeedIdx];
                     card.innerHTML = `
                         <div class="plot-icon">🟫</div>
                         <div class="plot-text">Boş Toprak</div>
-                        <button class="btn-action" style="margin-top:6px; font-size:10px; padding:5px;" onclick="plantPlot(${idx})">Ekir (-${s.cost}🪙)</button>
+                        <button class="btn-action" style="margin-top:4px; padding:4px;" onclick="plantPlot(${idx})">Ekir (-${s.cost}🪙)</button>
                     `;
                 } else if (p.status === 'growing') {
                     card.innerHTML = `
                         <div class="plot-icon">🌱</div>
-                        <div class="plot-text" style="color:var(--accent-gold)">Büyüyor...</div>
+                        <div class="plot-text" style="color:var(--accent-gold)">Büyüyor</div>
                         <div class="growth-bar-bg"><div class="growth-bar-fill" style="width: ${p.progress}%"></div></div>
                     `;
                 } else if (p.status === 'ready') {
                     card.className += ' ready';
                     card.innerHTML = `
                         <div class="plot-icon">${p.seed.icon}</div>
-                        <div class="plot-text" style="color:var(--accent-green)">HASADA HAZIR!</div>
-                        <button class="btn-action" style="margin-top:6px; font-size:10px; padding:5px;" onclick="harvestPlot(${idx})">Hasat Et (+${p.seed.reward}🪙)</button>
+                        <div class="plot-text" style="color:var(--accent-green)">HAZIR!</div>
+                        <button class="btn-action" style="margin-top:4px; padding:4px;" onclick="harvestPlot(${idx})">Topla (+${p.seed.reward}🪙)</button>
                     `;
                 }
                 grid.appendChild(card);
             });
         }
 
-        function unlockPlot(idx) {
-            if (gold >= 200) {
-                gold -= 200;
-                plots[idx].status = 'empty';
-                showToast("Harika! Yeni arazi ekime hazır. 🌿");
-                updateUI();
+        function expandLandBlock() {
+            let unlockedCount = plots.filter(p => p.unlocked).length;
+            let cost = unlockedCount * 350;
+
+            if (gold >= cost) {
+                gold -= cost;
+                let nextPlot = plots.find(p => !p.unlocked);
+                if (nextPlot) {
+                    nextPlot.unlocked = true;
+                    nextPlot.status = 'empty';
+                    showToast("Tebrikler! Yeni arsa bloğu satın alındı ve tarlaya eklendi! 🚜");
+                    updateUI();
+                }
             } else {
-                showToast("Yeterli altının yok! (200 🪙)");
+                showToast(`Yeterli altının yok! (${cost} 🪙 gerekli)`);
             }
         }
 
@@ -367,7 +400,7 @@
             plots[idx].progress = 0;
             updateUI();
 
-            let speedStep = 100 / (s.time * 10); // saniyede 10 adım
+            let speedStep = 100 / (s.time * 10);
             plots[idx].timer = setInterval(() => {
                 plots[idx].progress += speedStep;
                 if (plots[idx].progress >= 100) {
@@ -383,7 +416,6 @@
             let s = plots[idx].seed;
             gold += s.reward;
             inventory = Math.min(maxInventory, inventory + 1);
-            level++;
             showToast(`+${s.reward} Altın kazandın! 🎉`);
             plots[idx].status = 'empty';
             plots[idx].seed = null;
