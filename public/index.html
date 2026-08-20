@@ -3,431 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pixel Craft Quest - Game Hub</title>
-    <!-- HilltopAds Site Doğrulama Etiketi -->
-    <meta name="24fd855d82cd43aa39ffe64c0ba3005671f27135" content="24fd855d82cd43aa39ffe64c0ba3005671f27135" />
+    <title>Tiny Farm Adventure</title>
     <meta name="referrer" content="no-referrer-when-downgrade">
     
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Adsgram SDK Entegrasyonu -->
+    <!-- Adsgram SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #0b0e11; color: #eaecef; font-family: 'Inter', sans-serif; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .game-card { background: #181a20; border: 1px solid #2b313a; }
-        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
-        .animate-marquee { display: inline-block; animation: marquee 25s linear infinite; }
+        body { background: #121814; color: #e2e8f0; font-family: 'Inter', sans-serif; }
+        .farm-card { background: #1a2620; border: 1px solid #2d4a38; }
     </style>
 </head>
-<body class="p-3 max-w-md mx-auto min-h-screen flex flex-col justify-between select-none">
+<body class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-between">
 
-    <!-- Telegram Dışı Giriş Kontrolü -->
-    <div id="start-overlay" class="fixed inset-0 bg-[#0b0e11] z-50 flex flex-col items-center justify-center p-6 text-center space-y-4 hidden">
-        <div class="w-16 h-16 rounded-2xl bg-blue-500/10 text-blue-400 flex items-center justify-center text-2xl border border-blue-500/25">
-            <i class="fa-solid fa-robot"></i>
+    <!-- ÜST BİLGİ (Skor / Altın) -->
+    <header class="flex justify-between items-center farm-card p-4 rounded-2xl shadow-lg">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center text-lg">
+                <i class="fa-solid fa-wheat-awn"></i>
+            </div>
+            <div>
+                <h1 class="text-xs text-slate-400 font-medium">Çiftlik Altını</h1>
+                <span id="gold-count" class="text-lg font-black text-amber-400">250</span>
+            </div>
         </div>
-        <h2 class="text-base font-black text-blue-400">TELEGRAM DOĞRULAMASI</h2>
-        <p class="text-xs text-slate-400 leading-relaxed">Oyuna güvenli bir şekilde bağlanabilmek ve ödüllerini alabilmek için lütfen önce bota Start veriniz.</p>
-        <a href="https://t.me/sanal_miner_test_bot" target="_blank" class="w-full py-3.5 bg-blue-500 hover:bg-blue-400 text-slate-950 font-black rounded-xl text-xs transition block shadow-lg shadow-blue-500/20">
-            BOTA GİT VE START VER <i class="fa-solid fa-arrow-right ml-1"></i>
-        </a>
-    </div>
+        <div class="bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-emerald-500/20">
+            Seviye 1 Çiftçi
+        </div>
+    </header>
 
-    <div>
-        <!-- Üst Bar -->
-        <div class="flex justify-between items-center mb-3 p-2.5 rounded-2xl game-card shadow-lg">
-            <div class="flex items-center space-x-2.5">
-                <div class="w-9 h-9 rounded-xl bg-blue-500/10 text-blue-400 flex items-center justify-center font-bold border border-blue-500/25">
-                    <i class="fa-solid fa-gamepad"></i>
+    <!-- ANA OYUN ALANI (Çiftlik) -->
+    <main class="my-auto space-y-4 text-center">
+        <div class="farm-card p-6 rounded-3xl border-2 border-emerald-500/20 shadow-xl space-y-4">
+            <div class="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-3xl flex items-center justify-center mx-auto text-3xl shadow-inner">
+                <i class="fa-solid fa-carrot animate-bounce"></i>
+            </div>
+            <div>
+                <h2 class="text-base font-bold text-white">Bahçe Tarlası</h2>
+                <p class="text-xs text-slate-400 mt-1">Havuçların büyüdü! Toplayarak altın kazanabilirsin.</p>
+            </div>
+            <button onclick="harvestCrop()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-hand-holding-seedling"></i>
+                <span>MAHSULÜ TOPLA (+25 ALTIN)</span>
+            </button>
+        </div>
+
+        <!-- REKLAM İLE ALTIN KAZANMA BÖLÜMÜ -->
+        <div class="farm-card p-5 rounded-2xl text-center space-y-3">
+            <div class="flex items-center space-x-3 text-left">
+                <div class="w-10 h-10 bg-sky-500/10 text-sky-400 rounded-xl flex items-center justify-center flex-shrink-0 text-base">
+                    <i class="fa-solid fa-gift"></i>
                 </div>
                 <div>
-                    <h1 class="text-xs font-black tracking-wider text-blue-400">PIXEL QUEST</h1>
-                    <p id="user-tag" class="text-[9px] text-emerald-400 font-semibold"><i class="fa-solid fa-circle text-[5px] mr-1"></i> Bağlanıyor...</p>
+                    <h3 class="text-xs font-bold text-white">Ödüllü Sulama / Gübre</h3>
+                    <p class="text-[11px] text-slate-400">Kısa bir reklam izleyerek anında 100 altın kazan!</p>
                 </div>
             </div>
             
-            <div class="flex items-center space-x-2">
-                <div class="px-3 py-1.5 rounded-full text-xs font-bold text-blue-400 bg-blue-500/10 border border-blue-500/20">
-                    <span id="header-balance">0.00</span> Puan
-                </div>
-            </div>
+            <button id="ads-btn" onclick="initAdsgram()" class="w-full py-3.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-sky-600/20 flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-play"></i>
+                <span id="btn-text">REKLAM İZLE (+100 ALTIN)</span>
+            </button>
         </div>
+    </main>
 
-        <!-- Canlı Duyuru Bandı -->
-        <div class="game-card overflow-hidden whitespace-nowrap py-1.5 px-3 rounded-xl mb-3 text-[10px] text-blue-300 border border-blue-500/20">
-            <div id="marquee-container" class="animate-marquee">
-                <span>🔥 Reklamları izle, günlük bonusları topla ve ödülleri kap! • Liderlik tablosunda zirveye oyna! 🚀</span>
-            </div>
-        </div>
-
-        <!-- HilltopAds Reklam Banner Alanı -->
-        <div class="game-card p-2 rounded-2xl mb-3 text-center flex items-center justify-center overflow-hidden border border-blue-500/20">
-            <script>
-            (function(tgrala){
-            var d = document,
-                s = d.createElement('script'),
-                l = d.scripts[d.scripts.length - 1];
-            s.settings = tgrala || {};
-            s.src = "//fond-appointment.com/bHXsVXsdd.GAlE0/YnW/cy/Re_mt9SuQZdUql/kaP/T/cHzMMqzLUh3qOFTscBtoNTzWMHzONLT/g/waM/Qv";
-            s.async = true;
-            s.referrerPolicy = 'no-referrer-when-downgrade';
-            l.parentNode.insertBefore(s, l);
-            })({})
-            </script>
-        </div>
-    </div>
-
-    <!-- Menü Butonları -->
-    <div class="grid grid-cols-5 gap-1.5 mb-3">
-        <button onclick="switchTab('quests')" class="py-2 rounded-xl game-card text-[10px] font-bold text-blue-400 nav-btn flex flex-col items-center justify-center transition" data-tab="quests"><i class="fa-solid fa-calendar-check text-xs mb-0.5"></i> Günlük</button>
-        <button onclick="switchTab('earn')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center transition" data-tab="earn"><i class="fa-solid fa-play text-xs mb-0.5"></i> Ödül</button>
-        <button onclick="switchTab('leaderboard')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center transition" data-tab="leaderboard"><i class="fa-solid fa-trophy text-xs mb-0.5"></i> Skor</button>
-        <button onclick="switchTab('wallet')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center transition" data-tab="wallet"><i class="fa-solid fa-store text-xs mb-0.5"></i> Mağaza</button>
-        <button onclick="switchTab('policy')" class="py-2 rounded-xl game-card text-[10px] font-bold text-slate-400 nav-btn flex flex-col items-center justify-center transition" data-tab="policy"><i class="fa-solid fa-shield-halved text-xs mb-0.5"></i> Gizlilik</button>
-    </div>
-
-    <!-- İçerik Alanı -->
-    <div class="flex-1 space-y-3">
-        
-        <!-- Günlük Bonus & Reklam Görevleri Sekmesi -->
-        <div id="tab-quests" class="tab-content active space-y-3">
-            <div class="game-card p-4 rounded-2xl space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">7 Günlük Giriş Bonusu</h3>
-                    <span id="streak-info" class="text-[10px] bg-blue-500/10 text-blue-400 px-2 py-0.5 rounded border border-blue-500/20 font-semibold">Gün: 1</span>
-                </div>
-                
-                <div id="streak-grid" class="grid grid-cols-4 gap-2">
-                    <div class="p-2 rounded-xl border bg-blue-500/15 border-blue-500 text-blue-400 text-center flex flex-col justify-center"><span class="text-[9px] font-bold">GÜN 1-2</span><span class="text-xs font-black mt-0.5">+5-6 P</span></div>
-                    <div class="p-2 rounded-xl border bg-[#181a20] border-[#2b313a] text-slate-500 text-center flex flex-col justify-center"><span class="text-[9px] font-bold">GÜN 3-4</span><span class="text-xs font-black mt-0.5">+7-8 P</span></div>
-                    <div class="p-2 rounded-xl border bg-[#181a20] border-[#2b313a] text-slate-500 text-center flex flex-col justify-center"><span class="text-[9px] font-bold">GÜN 5-6</span><span class="text-xs font-black mt-0.5">+9-10 P</span></div>
-                    <div class="p-2 rounded-xl border bg-[#181a20] border-[#2b313a] text-slate-500 text-center flex flex-col justify-center"><span class="text-[9px] font-bold">GÜN 7</span><span class="text-xs font-black mt-0.5">+15 P</span></div>
-                </div>
-
-                <button onclick="claimDailyBonus()" class="w-full py-3 bg-blue-500 hover:bg-blue-400 text-slate-950 font-black rounded-xl text-xs transition shadow-lg shadow-blue-500/10">
-                    Bugünkü Ödülü Topla
-                </button>
-            </div>
-
-            <!-- REKLAM YÖNLENDİRMELİ HIZLI GÖREVLER -->
-            <div class="game-card p-4 rounded-2xl space-y-2.5">
-                <h3 class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-bolt mr-1"></i> Sponsorlu Reklam Görevleri</h3>
-                
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800" id="quest-1">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center text-xs font-bold border border-blue-500/20"><i class="fa-solid fa-bullhorn"></i></div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-200">Sponsor Ziyaret 1</p>
-                            <p class="text-[9px] text-slate-400">Tıkla, 5 sn incele, puanı al</p>
-                        </div>
-                    </div>
-                    <button onclick="startAdTask(1, 5)" class="px-3 py-2 bg-blue-500 hover:bg-blue-400 text-slate-950 font-black rounded-lg text-[10px] transition shadow">GİT & KAZAN (+5 P)</button>
-                </div>
-
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800" id="quest-2">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xs font-bold border border-emerald-500/20"><i class="fa-solid fa-users"></i></div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-200">Sponsor Ziyaret 2</p>
-                            <p class="text-[9px] text-slate-400">Partner sayfaya göz at</p>
-                        </div>
-                    </div>
-                    <button onclick="startAdTask(2, 5)" class="px-3 py-2 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-lg text-[10px] transition shadow">GİT & KAZAN (+5 P)</button>
-                </div>
-
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-[#121418] border border-slate-800" id="quest-3">
-                    <div class="flex items-center space-x-2.5">
-                        <div class="w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center text-xs font-bold border border-purple-500/20"><i class="fa-solid fa-star"></i></div>
-                        <div>
-                            <p class="text-xs font-bold text-slate-200">Sponsor Ziyaret 3</p>
-                            <p class="text-[9px] text-slate-400">Ağ içi yönlendirme bonusu</p>
-                        </div>
-                    </div>
-                    <button onclick="startAdTask(3, 5)" class="px-3 py-2 bg-purple-500 hover:bg-purple-400 text-slate-950 font-black rounded-lg text-[10px] transition shadow">GİT & KAZAN (+5 P)</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Adsgram Video İzle Sekmesi -->
-        <div id="tab-earn" class="tab-content space-y-3">
-            <div class="game-card p-5 rounded-2xl text-center space-y-3">
-                <div class="w-12 h-12 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto text-lg border border-emerald-500/20">
-                    <i class="fa-solid fa-rectangle-ad"></i>
-                </div>
-                <h3 class="text-sm font-bold text-[#eaecef]">Adsgram Ödüllü Video</h3>
-                <p class="text-xs text-slate-400">Video reklamını izleyerek anında yüksek puanlar kazanabilirsin.</p>
-                <button onclick="watchAdsgramVideo()" class="w-full py-3.5 bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black rounded-xl text-xs transition shadow-lg shadow-emerald-500/20">
-                    VİDEOYU İZLE (+10 PUAN)
-                </button>
-            </div>
-        </div>
-
-        <!-- Liderlik Tablosu -->
-        <div id="tab-leaderboard" class="tab-content space-y-3">
-            <div class="game-card p-4 rounded-2xl space-y-3">
-                <div class="flex justify-between items-center">
-                    <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Zirvedeki Oyuncular</h3>
-                    <span id="user-rank-badge" class="text-[10px] text-blue-400 bg-blue-500/10 px-2 py-0.5 rounded border border-blue-500/20 font-bold">Sıralamanız: -</span>
-                </div>
-                <div id="leaderboard-list" class="space-y-2 text-xs">
-                    <p class="text-center text-slate-500 py-4">Yükleniyor...</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Mağaza -->
-        <div id="tab-wallet" class="tab-content space-y-3">
-            <div class="game-card p-4 rounded-2xl space-y-3">
-                <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">Ödül Mağazası</h3>
-                <div>
-                    <label class="text-[10px] text-slate-400 font-bold mb-1 block">ÖDÜL / PAKET SEÇ</label>
-                    <select id="withdraw-currency" class="w-full game-card rounded-xl p-3 text-xs outline-none text-white font-bold border border-[#2b313a]">
-                        <option value="VIP_PAKET">Özel VIP Oyun Paketi (50 Puan)</option>
-                        <option value="KOSTUM">Efsanevi Karakter Kostümü (100 Puan)</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="text-[10px] text-slate-400 font-bold mb-1 block">TELEGRAM KULLANICI ADI</label>
-                    <input type="text" id="wallet-input" placeholder="@kullaniciadi" class="w-full game-card rounded-xl p-3 text-xs outline-none text-white font-bold border border-[#2b313a]">
-                </div>
-                <button onclick="requestWithdraw()" class="w-full py-3 bg-blue-500 hover:bg-blue-400 text-slate-950 font-black rounded-xl text-xs transition">Ödülü Talep Et</button>
-            </div>
-        </div>
-
-        <!-- Gizlilik Politikası -->
-        <div id="tab-policy" class="tab-content space-y-3">
-            <div class="game-card p-4 rounded-2xl space-y-2 text-xs text-slate-300 leading-relaxed">
-                <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider mb-2"><i class="fa-solid fa-shield-halved mr-1"></i> Gizlilik Politikası</h3>
-                <p>Pixel Craft Quest, kullanıcı verilerini gizlilik esaslarına uygun olarak sadece oyun içi skor ve bakiye senkronizasyonu için işler.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal -->
-    <div id="modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
-        <div class="game-card p-6 rounded-3xl max-w-xs w-full text-center space-y-3 border border-slate-700">
-            <h3 id="modal-title" class="font-bold text-sm text-blue-400">Bilgi</h3>
-            <p id="modal-desc" class="text-xs text-slate-300"></p>
-            <button onclick="closeModal()" class="w-full py-2.5 bg-blue-500 text-slate-950 font-bold rounded-xl text-xs">Tamam</button>
-        </div>
-    </div>
+    <!-- ALT BİLGİ / TELİF -->
+    <footer class="text-center text-[10px] text-slate-500 py-2">
+        Tiny Farm Adventure v1.0 - Eğlence Amaçlı Simülasyon
+    </footer>
 
     <script>
-        let tg = window.Telegram?.WebApp;
-        if (tg) tg.expand();
+        let currentGold = 250;
 
-        if (!tg || !tg.initDataUnsafe?.user?.id) {
-            document.getElementById('start-overlay').classList.remove('hidden');
-        }
-
-        let telegramId = tg?.initDataUnsafe?.user?.id ? tg.initDataUnsafe.user.id.toString() : "123456789";
-        let username = tg?.initDataUnsafe?.user?.username || "Gamer_" + telegramId.slice(-4);
-        let currentUserData = { balance: 0, streak_day: 1 };
-
-        const adTargetUrl = "https://fond-appointment.com/bHXsVXsdd.GAlE0/YnW/cy/Re_mt9SuQZdUql/kaP/T/cHzMMqzLUh3qOFTscBtoNTzWMHzONLT/g/waM/Qv";
-        
-        let adController = null;
-        try {
-            if (window.Adsgram) {
-                adController = window.Adsgram.init({ blockId: "40974" });
-            }
-        } catch (e) {
-            console.error("Adsgram başlatılamadı:", e);
-        }
-
-        async function fetchUserData() {
-            try {
-                let res = await fetch(`/api/user/${telegramId}`);
-                let data = await res.json();
-                if (data) {
-                    currentUserData = data;
-                    document.getElementById('header-balance').innerText = parseFloat(data.balance).toFixed(2);
-                    document.getElementById('user-tag').innerHTML = `<i class="fa-solid fa-circle text-[5px] mr-1 text-emerald-400"></i> @${data.username || username}`;
-                    document.getElementById('streak-info').innerText = `Gün: ${data.streak_day || 1}`;
-                }
-            } catch (e) {}
-        }
-
-        async function fetchLeaderboard() {
-            try {
-                let res = await fetch(`/api/leaderboard/${telegramId}`);
-                let data = await res.json();
-                let listEl = document.getElementById('leaderboard-list');
-                listEl.innerHTML = "";
-                if (data.top10) {
-                    data.top10.forEach((user, index) => {
-                        let isMe = user.telegram_id === telegramId;
-                        let item = document.createElement('div');
-                        item.className = `flex justify-between items-center p-2.5 rounded-xl game-card ${isMe ? 'border-blue-500/50 bg-blue-500/10' : ''}`;
-                        item.innerHTML = `
-                            <span class="${index === 0 ? 'text-amber-400' : index === 1 ? 'text-slate-300' : 'text-slate-400'} font-black">#${index + 1} @${user.username || 'Oyuncu'}</span>
-                            <span class="text-blue-400 font-bold">${user.balance} Puan</span>
-                        `;
-                        listEl.appendChild(item);
-                    });
-                }
-                if (data.userRank) {
-                    document.getElementById('user-rank-badge').innerText = `Sıralamanız: #${data.userRank.rank}`;
-                }
-            } catch (e) {}
-        }
-
-        function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            document.querySelectorAll('.nav-btn').forEach(btn => {
-                btn.classList.remove('text-blue-400');
-                btn.classList.add('text-slate-400');
-                if(btn.getAttribute('data-tab') === tabId) {
-                    btn.classList.add('text-blue-400');
-                    btn.classList.remove('text-slate-400');
-                }
-            });
-            if(tabId === 'leaderboard') fetchLeaderboard();
-        }
-
-        function showModal(title, desc) {
-            document.getElementById('modal-title').innerText = title;
-            document.getElementById('modal-desc').innerText = desc;
-            document.getElementById('modal').style.display = 'flex';
-        }
-        function closeModal() { document.getElementById('modal').style.display = 'none'; }
-
-        // Güvenli Reklam Açma Fonksiyonu (Pop-up Engelleyiciyi aşar)
-        function openAdWindow(url) {
-            try {
-                let win = window.open(url, '_blank');
-                if (!win || win.closed || typeof win.closed == 'undefined') {
-                    // Pop-up engellendiyse kullanıcıyı doğrudan yönlendir veya alternatif tetikle
-                    window.location.href = url;
-                }
-            } catch (e) {
-                window.location.href = url;
+        function harvestCrop() {
+            currentGold += 25;
+            document.getElementById('gold-count').innerText = currentGold;
+            
+            // Telegram haptic feedback (varsa titreşim efekti)
+            if (window.Telegram?.WebApp?.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
             }
         }
 
-        function startAdTask(questId, rewardAmount) {
-            let questEl = document.getElementById(`quest-${questId}`);
-            let btn = questEl.querySelector('button');
+        // Adsgram Entegrasyonu (Buraya onay aldıktan sonra gerçek Block ID gelecek)
+        // Test aşamasında sistemin çalışıp çalışmadığını görmek için test ID kullanılabilir
+        const AdController = window.Adsgram?.init({ blockId: "40974" });
 
-            if (btn.disabled) return;
+        async function initAdsgram() {
+            const btn = document.getElementById('ads-btn');
+            const btnText = document.getElementById('btn-text');
 
-            // Reklamı direkt tetikle
-            openAdWindow(adTargetUrl);
-
-            btn.innerText = "SÜRE BAŞLADI (5s)...";
-            btn.disabled = true;
-            btn.className = "px-3 py-2 bg-slate-800 text-amber-400 font-bold rounded-lg text-[10px] cursor-not-allowed";
-
-            let countdown = 5;
-            let timer = setInterval(() => {
-                countdown--;
-                if (countdown > 0) {
-                    btn.innerText = `LÜTFEN BEKLE (${countdown}s)...`;
-                } else {
-                    clearInterval(timer);
-                    claimAdReward(questId, rewardAmount, btn);
-                }
-            }, 1000);
-        }
-
-        async function claimAdReward(questId, rewardAmount, btnElement) {
-            try {
-                let res = await fetch('/api/reward/claim', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegram_id: telegramId, reward: rewardAmount, quest_id: `ad_quest_${questId}` })
-                });
-                let data = await res.json();
-                if (data.success) {
-                    showModal("Tebrikler!", `Görev tamamlandı: +${rewardAmount} Puan eklendi!`);
-                    btnElement.innerText = "TAMAMLANDI";
-                    btnElement.className = "px-3 py-2 bg-slate-800 text-slate-500 font-bold rounded-lg text-[10px] cursor-not-allowed";
-                    fetchUserData();
-                } else {
-                    showModal("Bilgi", data.error || "Bu görevi bugün zaten tamamladınız!");
-                    btnElement.innerText = "TAMAMLANDI";
-                }
-            } catch(e) {
-                showModal("Hata", "Sunucu bağlantı hatası oluştu.");
-                btnElement.disabled = false;
-                btnElement.innerText = "TEKRAR DENE";
-                btnElement.className = "px-3 py-2 bg-blue-500 text-slate-950 font-black rounded-lg text-[10px]";
-            }
-        }
-
-        async function claimDailyBonus() {
-            try {
-                let res = await fetch('/api/daily/claim', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegram_id: telegramId })
-                });
-                let data = await res.json();
-                if (data.success) {
-                    showModal("Tebrikler!", `Günlük bonus alındı: +${data.reward} Puan!`);
-                    fetchUserData();
-                } else {
-                    showModal("Bilgi", data.error || "Bugünkü bonusu zaten aldınız!");
-                }
-            } catch(e) {}
-        }
-
-        function watchAdsgramVideo() {
-            if (!adController) {
-                showModal("Bilgi", "Reklam yükleniyor, lütfen birazdan tekrar deneyin.");
+            if (!AdController) {
+                alert("Reklam yüklenemiyor.");
                 return;
             }
-            adController.show().then(() => {
-                claimRewardApi(10, "adsgram_video");
-            }).catch((err) => {
-                showModal("Bilgi", "Reklam izleme tamamlanamadı.");
-            });
-        }
 
-        async function claimRewardApi(rewardAmount, questId = null) {
-            try {
-                let res = await fetch('/api/reward/claim', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegram_id: telegramId, reward: rewardAmount, quest_id: questId })
+            btn.disabled = true;
+            btnText.innerText = "YÜKLENİYOR...";
+
+            AdController.show()
+                .then((result) => {
+                    if (result.done) {
+                        currentGold += 100;
+                        document.getElementById('gold-count').innerText = currentGold;
+                        alert("Tebrikler! Gübre desteği alındı ve +100 altın eklendi.");
+                    }
+                })
+                .catch((err) => {
+                    console.error("Reklam hatası:", err);
+                    alert("Reklam gösterilemedi veya yarıda kesildi.");
+                })
+                .finally(() => {
+                    btn.disabled = false;
+                    btnText.innerHTML = '<i class="fa-solid fa-play"></i> <span id="btn-text">REKLAM İZLE (+100 ALTIN)</span>';
                 });
-                let data = await res.json();
-                if (data.success) {
-                    showModal("Tebrikler!", `Video ödülü eklendi: +${rewardAmount} Puan!`);
-                    fetchUserData();
-                } else {
-                    showModal("Bilgi", data.error || "Ödül alınamadı.");
-                }
-            } catch(e) {}
         }
-
-        async function requestWithdraw() {
-            let currency = document.getElementById('withdraw-currency').value;
-            let wallet = document.getElementById('wallet-input').value;
-            let amount = currency === 'VIP_PAKET' ? 50 : 100;
-            if (!wallet) { showModal("Uyarı", "Lütfen Telegram kullanıcı adınızı giriniz."); return; }
-
-            try {
-                let res = await fetch('/api/withdraw', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegram_id: telegramId, amount, currency, network: 'GameServer', wallet })
-                });
-                let data = await res.json();
-                if (data.success) {
-                    showModal("Başarılı", data.message);
-                    fetchUserData();
-                } else {
-                    showModal("Hata", data.error || "İşlem başarısız.");
-                }
-            } catch(e) {}
-        }
-
-        fetchUserData();
     </script>
 </body>
 </html>
