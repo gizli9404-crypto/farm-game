@@ -4,122 +4,184 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tiny Farm Adventure</title>
-    <meta name="referrer" content="no-referrer-when-downgrade">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <!-- Adsgram SDK -->
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://sad.adsgram.ai/js/sad.js"></script>
     <style>
-        body { background: #121814; color: #e2e8f0; font-family: 'Inter', sans-serif; }
-        .farm-card { background: #1a2620; border: 1px solid #2d4a38; }
+        body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            background: #1e1e1e;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            background: #2c2c2c;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        .card {
+            background: #252525;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: center;
+            border: 1px solid #333;
+        }
+        button {
+            background-color: #2e7d32;
+            color: white;
+            border: none;
+            padding: 12px;
+            width: 100%;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover { background-color: #388e3c; }
+        button.ads { background-color: #0288d1; }
+        button.ads:hover { background-color: #039be5; }
+        button:disabled { background-color: #555; cursor: not-allowed; }
+        .footer {
+            font-size: 11px;
+            color: #888;
+            text-align: center;
+            margin-top: 15px;
+        }
     </style>
 </head>
-<body class="p-4 max-w-md mx-auto min-h-screen flex flex-col justify-between">
+<body>
 
-    <!-- ÜST BİLGİ (Skor / Altın) -->
-    <header class="flex justify-between items-center farm-card p-4 rounded-2xl shadow-lg">
-        <div class="flex items-center space-x-3">
-            <div class="w-10 h-10 bg-amber-500/20 text-amber-400 rounded-xl flex items-center justify-center text-lg">
-                <i class="fa-solid fa-wheat-awn"></i>
-            </div>
-            <div>
-                <h1 class="text-xs text-slate-400 font-medium">Çiftlik Altını</h1>
-                <span id="gold-count" class="text-lg font-black text-amber-400">250</span>
-            </div>
-        </div>
-        <div class="bg-emerald-500/10 text-emerald-400 px-3 py-1.5 rounded-xl text-xs font-bold border border-emerald-500/20">
-            Seviye 1 Çiftçi
-        </div>
-    </header>
-
-    <!-- ANA OYUN ALANI (Çiftlik) -->
-    <main class="my-auto space-y-4 text-center">
-        <div class="farm-card p-6 rounded-3xl border-2 border-emerald-500/20 shadow-xl space-y-4">
-            <div class="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-3xl flex items-center justify-center mx-auto text-3xl shadow-inner">
-                <i class="fa-solid fa-carrot animate-bounce"></i>
-            </div>
-            <div>
-                <h2 class="text-base font-bold text-white">Bahçe Tarlası</h2>
-                <p class="text-xs text-slate-400 mt-1">Havuçların büyüdü! Toplayarak altın kazanabilirsin.</p>
-            </div>
-            <button onclick="harvestCrop()" class="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-emerald-600/20 flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-hand-holding-seedling"></i>
-                <span>MAHSULÜ TOPLA (+25 ALTIN)</span>
-            </button>
+    <div class="container">
+        <div class="stats">
+            <div>🪙 Altın: <span id="gold">575</span></div>
+            <div>🌾 Seviye: <span id="level">1</span> Çiftçi</div>
         </div>
 
-        <!-- REKLAM İLE ALTIN KAZANMA BÖLÜMÜ -->
-        <div class="farm-card p-5 rounded-2xl text-center space-y-3">
-            <div class="flex items-center space-x-3 text-left">
-                <div class="w-10 h-10 bg-sky-500/10 text-sky-400 rounded-xl flex items-center justify-center flex-shrink-0 text-base">
-                    <i class="fa-solid fa-gift"></i>
-                </div>
-                <div>
-                    <h3 class="text-xs font-bold text-white">Ödüllü Sulama / Gübre</h3>
-                    <p class="text-[11px] text-slate-400">Kısa bir reklam izleyerek anında 100 altın kazan!</p>
-                </div>
-            </div>
-            
-            <button id="ads-btn" onclick="initAdsgram()" class="w-full py-3.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-xl text-xs transition shadow-lg shadow-sky-600/20 flex items-center justify-center space-x-2">
-                <i class="fa-solid fa-play"></i>
-                <span id="btn-text">REKLAM İZLE (+100 ALTIN)</span>
-            </button>
+        <!-- Tarla Bölümü -->
+        <div class="card">
+            <h3 id="crop-title">🥕 Havuç Tarlası</h3>
+            <p id="crop-desc">Havucun büyüdü! Toplayarak altın kazanabilirsin.</p>
+            <p id="timer" style="color: #ff5252; font-weight: bold; display:none;"></p>
+            <button id="harvest-btn" onclick="harvestCrop()">MAHSULÜ TOPLA (+25 Altın)</button>
         </div>
-    </main>
 
-    <!-- ALT BİLGİ / TELİF -->
-    <footer class="text-center text-[10px] text-slate-500 py-2">
-        Tiny Farm Adventure v1.0 - Eğlence Amaçlı Simülasyon
-    </footer>
+        <!-- Market Bölümü -->
+        <div class="card">
+            <h3>🛒 Çiftlik Market</h3>
+            <p style="font-size: 13px; color: #aaa;">Yeni mahsullerin kilidini aç!</p>
+            <button onclick="buyCrop('Tomato', 200, '🍅 Domates', 50)">🍅 Domates Tarlası Al (200 Altın)</button>
+            <button onclick="buyCrop('Strawberry', 500, '🍓 Çilek', 120)" style="background-color: #c2185b;">🍓 Çilek Tarlası Al (500 Altın)</button>
+        </div>
+
+        <!-- Ödüllü Reklam -->
+        <div class="card">
+            <h3>🎁 Ödüllü Görev</h3>
+            <p style="font-size: 13px; color: #aaa;">Kısa bir reklam izleyerek anında altın kazan!</p>
+            <button class="ads" onclick="watchAd()">▶ ️REKLAM İZLE (+100 ALTIN)</button>
+        </div>
+
+        <div class="footer">Tiny Farm Adventure v2.0 - Tam Sürüm</div>
+    </div>
 
     <script>
-        let currentGold = 250;
+        let gold = 575;
+        let level = 1;
+        let currentCropReward = 25;
+        let unlockedCrops = ['Carrot'];
+        let activeCropName = '🥕 Havuç Tarlası';
 
-        function harvestCrop() {
-            currentGold += 25;
-            document.getElementById('gold-count').innerText = currentGold;
-            
-            // Telegram haptic feedback (varsa titreşim efekti)
-            if (window.Telegram?.WebApp?.HapticFeedback) {
-                window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-            }
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "40974" }) : null;
+
+        function updateUI() {
+            document.getElementById('gold').innerText = gold;
+            document.getElementById('level').innerText = level;
+            document.getElementById('crop-title').innerText = activeCropName;
+            document.getElementById('harvest-btn').innerText = `MAHSULÜ TOPLA (+${currentCropReward} Altın)`;
         }
 
-        // Adsgram Entegrasyonu (Buraya onay aldıktan sonra gerçek Block ID gelecek)
-        // Test aşamasında sistemin çalışıp çalışmadığını görmek için test ID kullanılabilir
-        const AdController = window.Adsgram?.init({ blockId: "40974" });
+        function harvestCrop() {
+            gold += currentCropReward;
+            updateUI();
+            
+            const btn = document.getElementById('harvest-btn');
+            btn.disabled = true;
+            btn.innerText = "Büyüyor...";
+            
+            let timeLeft = 5; // 5 saniye büyüme süresi
+            const timerEl = document.getElementById('timer');
+            timerEl.style.display = 'block';
+            timerEl.innerText = `Hasat için bekleniyor: ${timeLeft}s`;
 
-        async function initAdsgram() {
-            const btn = document.getElementById('ads-btn');
-            const btnText = document.getElementById('btn-text');
+            let interval = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = `Hasat için bekleniyor: ${timeLeft}s`;
+                if (timeLeft <= 0) {
+                    clearInterval(interval);
+                    timerEl.style.display = 'none';
+                    btn.disabled = false;
+                    updateUI();
+                }
+            }, 1000);
+        }
 
-            if (!AdController) {
-                alert("Reklam yüklenemiyor.");
+        function buyCrop(type, cost, name, reward) {
+            if (unlockedCrops.includes(type)) {
+                activeCropName = name;
+                currentCropReward = reward;
+                alert(name + " tarlasına geçiş yapıldı!");
+                updateUI();
                 return;
             }
 
-            btn.disabled = true;
-            btnText.innerText = "YÜKLENİYOR...";
-
-            AdController.show()
-                .then((result) => {
-                    if (result.done) {
-                        currentGold += 100;
-                        document.getElementById('gold-count').innerText = currentGold;
-                        alert("Tebrikler! Gübre desteği alındı ve +100 altın eklendi.");
-                    }
-                })
-                .catch((err) => {
-                    console.error("Reklam hatası:", err);
-                    alert("Reklam gösterilemedi veya yarıda kesildi.");
-                })
-                .finally(() => {
-                    btn.disabled = false;
-                    btnText.innerHTML = '<i class="fa-solid fa-play"></i> <span id="btn-text">REKLAM İZLE (+100 ALTIN)</span>';
-                });
+            if (gold >= cost) {
+                gold -= cost;
+                level++;
+                unlockedCrops.push(type);
+                activeCropName = name;
+                currentCropReward = reward;
+                alert("Tebrikler! " + name + " tarlasını açtın!");
+                updateUI();
+            } else {
+                alert("Yeterli altın yok!");
+            }
         }
+
+        function watchAd() {
+            if (AdController) {
+                AdController.show().then((result) => {
+                    gold += 100;
+                    updateUI();
+                    alert("Tebrikler! 100 altın kazandın!");
+                }).catch((result) => {
+                    alert("Reklam izlenemedi.");
+                });
+            } else {
+                // Test ortamı için doğrudan ödül
+                gold += 100;
+                updateUI();
+                alert("Test Modu: 100 altın eklendi!");
+            }
+        }
+
+        updateUI();
     </script>
 </body>
 </html>
