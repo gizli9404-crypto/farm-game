@@ -3,358 +3,672 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stellar Farm - Studio Edition</title>
+    <title>Stellar Farm: Ultimate Enterprise Edition</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.js"></script>
     <style>
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; }
-        body, html { width: 100%; height: 100%; background: #0b0f19; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #fff; }
-        
-        #game-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            max-width: 480px;
-            margin: 0 auto;
-            background: linear-gradient(180deg, #1a233a 0%, #0f172a 100%);
+        :root {
+            --bg-deep: #050b14;
+            --surface: #0f172a;
+            --surface-glass: rgba(15, 23, 42, 0.85);
+            --border: rgba(255, 255, 255, 0.1);
+            --accent-green: #10b981;
+            --accent-gold: #f59e0b;
+            --accent-blue: #38bdf8;
+            --accent-purple: #a78bfa;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+        }
+
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            height: 100vh;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             overflow: hidden;
         }
 
-        /* Üst HUD Alanı (Stüdyo Kalitesi) */
+        #game-viewport {
+            width: 100%;
+            max-width: 440px;
+            height: 100%;
+            max-height: 900px;
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
+
+        /* Yüzen Toast Bildirimleri */
+        #toast {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            color: #000;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Açılış & Onboarding Ekranı (Splash & Dialog) */
+        .modal-screen {
+            position: absolute;
+            inset: 0;
+            background: rgba(5, 11, 20, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 900;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 24px;
+            text-align: center;
+            transition: opacity 0.4s ease;
+        }
+        .modal-screen.hidden { opacity: 0; pointer-events: none; }
+        
+        .avatar-box {
+            font-size: 64px;
+            background: rgba(255,255,255,0.05);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            width: 100px; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 16px;
+            box-shadow: 0 0 30px rgba(16,185,129,0.3);
+        }
+
+        /* Üst HUD Paneli */
         .hud-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
-            background: rgba(15, 23, 42, 0.85);
+            background: var(--surface-glass);
             backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
+            border-bottom: 1px solid var(--border);
             z-index: 10;
         }
-
-        .hud-group {
+        .hud-stat {
             display: flex;
             align-items: center;
-            gap: 8px;
-            background: rgba(0, 0, 0, 0.3);
-            padding: 6px 12px;
-            border-radius: 20px;
-            border: 1px solid rgba(255,255,255,0.05);
+            gap: 6px;
+            background: rgba(0,0,0,0.4);
+            padding: 5px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            font-size: 12px;
+            font-weight: 800;
         }
+        .hud-stat.gold { color: var(--accent-gold); }
 
-        .hud-icon { font-size: 16px; }
-        .hud-text { font-size: 13px; font-weight: 800; color: #fbbf24; letter-spacing: 0.5px; }
-
-        /* Canvas Oyun Alanı */
-        #canvas-wrapper {
+        /* Sekme İçerik Alanı */
+        .content-area {
             flex-grow: 1;
-            position: relative;
+            overflow-y: auto;
+            padding: 16px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            gap: 16px;
+            position: relative;
+        }
+        .tab-pane { display: none; flex-direction: column; gap: 14px; }
+        .tab-pane.active { display: flex; }
+
+        /* Panel ve Kart Tasarımları */
+        .panel {
+            background: var(--surface-glass);
+            backdrop-filter: blur(12px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .panel-title {
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
+            display: flex;
+            justify-content: space-between;
             align-items: center;
         }
 
-        canvas {
-            display: block;
-            touch-action: none;
-        }
-
-        /* Alt Kontrol Paneli / Dock */
-        .action-dock {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
+        /* Parsel / Tarla Grid */
+        .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .plot-card {
+            background: linear-gradient(145deg, #162032, #0d1322);
+            border: 2px solid #23324d;
+            border-radius: 16px;
             padding: 12px;
-            background: rgba(15, 23, 42, 0.9);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(255,255,255,0.08);
-            z-index: 10;
-        }
-
-        .dock-btn {
-            background: linear-gradient(135deg, #1e293b, #0f172a);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 14px;
-            padding: 10px 4px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            color: #94a3b8;
-            font-size: 10px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
+            text-align: center;
+            gap: 6px;
+            position: relative;
+            min-height: 130px;
+            justify-content: space-between;
         }
-
-        .dock-btn.active {
-            border-color: #10b981;
-            color: #fff;
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), #0f172a);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        .plot-card.ready {
+            border-color: var(--accent-green);
+            background: linear-gradient(145deg, rgba(16,185,129,0.15), #0d1322);
+            box-shadow: 0 0 15px rgba(16,185,129,0.3);
         }
+        .progress-track { width: 100%; height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-green); width: 0%; transition: width 0.1s linear; }
 
-        .dock-icon { font-size: 18px; }
-
-        /* Yüzen Bildirimler */
-        #float-msg {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-10px);
-            background: rgba(16, 185, 129, 0.9);
+        /* Butonlar */
+        .btn {
+            background: linear-gradient(135deg, var(--accent-green), #059669);
             color: #000;
-            padding: 6px 16px;
-            border-radius: 20px;
-            font-size: 12px;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 10px;
             font-weight: 800;
-            opacity: 0;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            z-index: 100;
-            box-shadow: 0 4px 15px rgba(16,185,129,0.4);
+            font-size: 10px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            transition: transform 0.1s;
         }
-        #float-msg.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
+        .btn:active { transform: scale(0.95); }
+        .btn.gold { background: linear-gradient(135deg, var(--accent-gold), #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+        .btn.blue { background: linear-gradient(135deg, var(--accent-blue), #0284c7); color: #fff; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
+        .btn.purple { background: linear-gradient(135deg, var(--accent-purple), #7c3aed); color: #fff; box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3); }
+
+        /* Hayvan ve Üretim Satırları */
+        .facility-row {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
         }
+
+        /* Alt Navigasyon Dock */
+        .nav-dock {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            background: var(--surface-glass);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border);
+            padding: 6px;
+            z-index: 10;
+        }
+        .nav-item {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            font-size: 9px;
+            font-weight: 700;
+            padding: 6px 0;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: 0.2s;
+        }
+        .nav-item.active {
+            color: #fff;
+            background: rgba(16, 185, 129, 0.2);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .nav-icon { font-size: 16px; }
     </style>
 </head>
 <body>
 
-<div id="game-container">
-    <div id="float-msg">+100 Altın Kazandın!</div>
+    <div id="game-viewport">
+        <div id="toast">Bildirim mesajı</div>
 
-    <!-- Üst HUD -->
-    <div class="hud-header">
-        <div class="hud-group">
-            <span class="hud-icon">🪙</span>
-            <span class="hud-text" id="val-gold">1,500</span>
+        <!-- 1. ONBOARDING / GİRİŞ REHBERİ EKRANI -->
+        <div id="screen-onboard" class="modal-screen">
+            <div class="avatar-box">👨‍🌾</div>
+            <h2 style="font-size: 20px; margin-bottom: 8px; color: var(--accent-gold);">Çiftliğe Hoş Geldin!</h2>
+            <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5; margin-bottom: 24px;">
+                Selam ortak! Ben çiftlik danışmanı Ali. Bu devasa tesiste tarlaları yönetecek, inek ve tavuklardan elde ettiğin sütleri peynire dönüştürecek ve zengin bir çiftlik imparatorluğu kuracaksın. Hazırsan başlayalım!
+            </p>
+            <button class="btn gold" style="padding: 12px; font-size: 12px;" onclick="closeOnboard()">Çiftliği Yönetmeye Başla 🚜</button>
         </div>
-        <div class="hud-group">
-            <span class="hud-icon">⭐</span>
-            <span class="hud-text" id="val-exp" style="color:#a78bfa;">LVL 3</span>
+
+        <!-- ÜST HUD -->
+        <div class="hud-header">
+            <div class="hud-stat gold"><span style="font-size:14px;">🪙</span> <span id="ui-gold">1,250</span></div>
+            <div class="hud-stat" style="color:var(--accent-blue);"><span style="font-size:14px;">📦</span> <span id="ui-inv">2/25</span></div>
+            <div class="hud-stat" style="color:var(--accent-purple);"><span style="font-size:14px;">⭐</span> <span id="ui-lvl">LVL 2</span></div>
         </div>
-        <div class="hud-group">
-            <span class="hud-icon">📦</span>
-            <span class="hud-text" id="val-inv" style="color:#38bdf8;">0/15</span>
+
+        <!-- İÇERİK SEKMELERİ -->
+        <div class="content-area">
+
+            <!-- 🌾 ÇİFTLİK SEKMESİ -->
+            <div id="pane-farm" class="tab-pane active">
+                <div class="panel">
+                    <div class="panel-title">
+                        <span>Aktif Tarla Parselleri</span>
+                        <select id="seed-select" style="background:#1e293b; color:#fff; border:1px solid var(--border); padding:4px 8px; border-radius:8px; font-size:10px; font-weight:700;">
+                            <option value="0">🌾 Buğday (10🪙)</option>
+                            <option value="1">🌽 Mısır (25🪙)</option>
+                            <option value="2">🍓 Çilek (50🪙)</option>
+                        </select>
+                    </div>
+                    <div class="grid-2" id="plots-container"></div>
+                </div>
+
+                <!-- Hızlı İşlemler: Gübre & Sulama -->
+                <div class="panel">
+                    <div class="panel-title">Tarım Destek Kimyasalları</div>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn blue" onclick="applyWatering()">💧 Hızlı Sulama (20🪙)</button>
+                        <button class="btn purple" onclick="applyFertilizer()">🧪 Süper Gübre (40🪙)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🐄 HAYVANCILIK & FABRİKA SEKMESİ -->
+            <div id="pane-animals" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Ahır & Kümes Yönetimi</div>
+                    
+                    <div class="facility-row">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">🐄 Süt İneği</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Üretim: Taze Süt 🥛</div>
+                        </div>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectAnimal('cow')">Sağ (Al)</button>
+                    </div>
+
+                    <div class="facility-row">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">🐔 Gezen Tavuk</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Üretim: Organik Yumurta 🥚</div>
+                        </div>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectAnimal('chicken')">Topla</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-title">İşleme Tesisi (Mandıra)</div>
+                    <div class="facility-row">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">🧀 Peynir Üretim Kazanı</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">1 Süt 🥛 -> Kaliteli Peynir 🧀</div>
+                        </div>
+                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processCheese()">İşle</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🛒 PAZAR & GELİR DETAYLARI SEKMESİ -->
+            <div id="pane-market" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Ambar Ürünlerini Nakite Çevir</div>
+                    <div class="facility-row">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;" id="market-stock-text">Depodaki Ürünler (0 Adet)</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Tüm mahsulleri ve süt ürünlerini sat</div>
+                        </div>
+                        <button class="btn gold" style="width: auto; padding: 6px 14px;" onclick="sellAllInventory()">Hepsini Sat 💰</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-title">Genişletme & Bölge Lisansları</div>
+                    <div class="facility-row">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">🚜 Yeni Arsa Bloğu Satın Al</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Toplam parsel sayısını artırır</div>
+                        </div>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="buyNewBlock()">600 🪙</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 🗺️ BÖLGE TEMALAR SEKMESİ -->
+            <div id="pane-world" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Çiftlik Atmosferi & Tema Seçimi</div>
+                    <div style="display: flex; flex-direction: column; gap: 8px;">
+                        <button class="btn" onclick="setTheme('summer', 'Yaz Vadisi ☀️')">☀️ Yaz Vadisi (Varsayılan)</button>
+                        <button class="btn blue" onclick="setTheme('winter', 'Kuzey Karlı Çiftlik ❄️')">❄️ Kuzey Karlı Çiftlik</button>
+                        <button class="btn gold" onclick="setTheme('tropical', 'Tropikal Ada Çiftliği 🌴')">🌴 Tropikal Ada Çiftliği</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ⚙️ AYARLAR VE REKLAM SEKMESİ -->
+            <div id="pane-settings" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Sponsorlu Ödüllü Medya</div>
+                    <div class="facility-row">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">Adsgram Ödüllü Kredi</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Reklam izle, anında +250 Altın kazan</div>
+                        </div>
+                        <button class="btn gold" style="width: auto; padding: 6px 14px;" onclick="watchAd()">İzle</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-title">Oyun Tercihleri</div>
+                    <div class="facility-row">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">Ses Efektleri (SFX)</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Sentetik tıklama ve hasat sesleri</div>
+                        </div>
+                        <button class="btn blue" style="width: auto; padding: 6px 12px;" onclick="toggleAudio()" id="sfx-btn">Açık 🔊</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ALT DOCK NAVİGASYON -->
+        <div class="nav-dock">
+            <button class="nav-item active" onclick="switchTab('farm', this)"><span class="nav-icon">🌾</span><span>Tarla</span></button>
+            <button class="nav-item" onclick="switchTab('animals', this)"><span class="nav-icon">🐄</span><span>Ahır</span></button>
+            <button class="nav-item" onclick="switchTab('market', this)"><span class="nav-icon">🛒</span><span>Pazar</span></button>
+            <button class="nav-item" onclick="switchTab('world', this)"><span class="nav-icon">🗺️</span><span>Temalar</span></button>
+            <button class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayarlar</span></button>
         </div>
     </div>
 
-    <!-- Canvas Grafik Ekranı -->
-    <div id="canvas-wrapper">
-        <canvas id="gameCanvas"></canvas>
-    </div>
+    <script>
+        // Ses Efekti Motoru (Web Audio API - Harici dosya gerektirmez)
+        let audioEnabled = true;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSound(type) {
+            if (!audioEnabled) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
 
-    <!-- Alt Stüdyo Dock Menüsü -->
-    <div class="action-dock">
-        <button class="dock-btn active" onclick="setTool('plant', this)">
-            <span class="dock-icon">🌱</span>
-            <span>Tohum</span>
-        </button>
-        <button class="dock-btn" onclick="setTool('water', this)">
-            <span class="dock-icon">💧</span>
-            <span>Sulama</span>
-        </button>
-        <button class="dock-btn" onclick="setTool('harvest', this)">
-            <span class="dock-icon">✂️</span>
-            <span>Hasat</span>
-        </button>
-        <button class="dock-btn" onclick="openShop()">
-            <span class="dock-icon">🏗️</span>
-            <span>Mağaza</span>
-        </button>
-    </div>
-</div>
-
-<script>
-    const canvas = document.getElementById('gameCanvas');
-    const ctx = canvas.getContext('2d');
-
-    // Oyun Durumu
-    let gold = 1500;
-    let inventory = 0;
-    let maxInventory = 15;
-    let activeTool = 'plant'; // 'plant', 'water', 'harvest'
-
-    // Ekran Boyutlandırma (Mobil Uyumlu)
-    function resize() {
-        const wrapper = document.getElementById('canvas-wrapper');
-        canvas.width = wrapper.clientWidth;
-        canvas.height = wrapper.clientHeight;
-    }
-    window.addEventListener('resize', resize);
-    resize();
-
-    // Çiftlik Parselleri (Grid Sistemi)
-    let plots = [];
-    const rows = 3;
-    const cols = 3;
-    
-    function initPlots() {
-        plots = [];
-        let plotW = 90;
-        let plotH = 70;
-        let startX = (canvas.width - (cols * (plotW + 12))) / 2 + plotW / 2;
-        let startY = (canvas.height - (rows * (plotH + 16))) / 2 + plotH / 2;
-
-        let id = 0;
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                plots.push({
-                    id: id++,
-                    x: startX + c * (plotW + 12),
-                    y: startY + r * (plotH + 16),
-                    w: plotW,
-                    h: plotH,
-                    state: 0, // 0: Boş, 1: Ekildi/Büyüyor, 2: Hazır
-                    progress: 0,
-                    timer: null
-                });
+            if (type === 'plant') {
+                osc.frequency.setValueAtTime(300, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+            } else if (type === 'harvest') {
+                osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.15);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.15);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+            } else if (type === 'coin') {
+                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
             }
         }
-    }
-    initPlots();
 
-    // Toast Mesaj Sistemi
-    function showMsg(text) {
-        const m = document.getElementById('float-msg');
-        m.innerText = text;
-        m.classList.add('show');
-        setTimeout(() => m.classList.remove('show'), 2000);
-    }
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            document.getElementById('sfx-btn').innerText = audioEnabled ? "Açık 🔊" : "Kapalı 🔇";
+            showToast(audioEnabled ? "Ses efektleri açıldı" : "Ses efektleri kapatıldı");
+        }
 
-    // HUD Güncelleme
-    function updateHUD() {
-        document.getElementById('val-gold').innerText = gold.toLocaleString();
-        document.getElementById('val-inv').innerText = `${inventory}/${maxInventory}`;
-    }
+        // Oyun State Verileri
+        let gold = 1250;
+        let inventory = { wheat: 1, corn: 1, milk: 0, egg: 0, cheese: 0 };
+        let maxInventory = 25;
+        let activePlotsCount = 4; // Başlangıç 4 parsel (Genişletmeyle artar)
 
-    // Araç Değiştirme
-    function setTool(tool, btn) {
-        activeTool = tool;
-        document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
-        if(btn) btn.classList.add('active');
-    }
+        const seedsData = [
+            { name: 'Buğday', cost: 10, reward: 26, time: 3, icon: '🌾', key: 'wheat' },
+            { name: 'Mısır', cost: 25, reward: 70, time: 5, icon: '🌽', key: 'corn' },
+            { name: 'Çilek', cost: 50, reward: 150, time: 8, icon: '🍓', key: 'strawberry' }
+        ];
 
-    function openShop() {
-        showMsg("Mağaza ve Genişletme yakında açılıyor!");
-    }
+        let plots = Array.from({ length: 8 }, (_, i) => ({
+            id: i,
+            status: 'empty', // 'empty', 'growing', 'ready'
+            progress: 0,
+            seedObj: null,
+            timer: null
+        }));
 
-    // Dokunma / Tıklama Etkileşimi
-    canvas.addEventListener('pointerdown', (e) => {
-        const rect = canvas.getBoundingClientRect();
-        const touchX = e.clientX - rect.left;
-        const touchY = e.clientY - rect.top;
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "40974" }) : null;
 
-        plots.forEach(p => {
-            // İzometrik / Dikdörtgen tıklama kontrolü
-            if (touchX >= p.x - p.w/2 && touchX <= p.x + p.w/2 &&
-                touchY >= p.y - p.h/2 && touchY <= p.y + p.h/2) {
-                
-                handlePlotClick(p);
-            }
-        });
-    });
+        function showToast(text) {
+            const t = document.getElementById('toast');
+            t.innerText = text;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2200);
+        }
 
-    function handlePlotClick(p) {
-        if (activeTool === 'plant' && p.state === 0) {
-            if (gold < 50) { showMsg("Yeterli altın yok! (50 🪙)"); return; }
-            gold -= 50;
-            p.state = 1;
-            p.progress = 0;
-            updateHUD();
-            showMsg("Tohum ekildi! 🌱");
+        function closeOnboard() {
+            document.getElementById('screen-onboard').classList.add('hidden');
+            playSound('coin');
+            showToast("Çiftlik yönetimi aktif! İyi eğlenceler 🚜");
+        }
 
-            // Büyüme Simülasyonu
-            let interval = setInterval(() => {
-                p.progress += 2;
-                if (p.progress >= 100) {
-                    p.progress = 100;
-                    p.state = 2; // Hazır
-                    clearInterval(interval);
+        function updateUI() {
+            document.getElementById('ui-gold').innerText = gold.toLocaleString();
+            let totalItems = Object.values(inventory).reduce((a, b) => a + b, 0);
+            document.getElementById('ui-inv').innerText = `${totalItems}/${maxInventory}`;
+            document.getElementById('market-stock-text').innerText = `Depodaki Toplam Ürün (${totalItems} Adet)`;
+            renderPlots();
+        }
+
+        function renderPlots() {
+            const container = document.getElementById('plots-container');
+            container.innerHTML = '';
+            
+            for (let i = 0; i < activePlotsCount; i++) {
+                let p = plots[i];
+                let card = document.createElement('div');
+                card.className = 'plot-card';
+
+                if (p.status === 'empty') {
+                    card.innerHTML = `
+                        <div style="font-size:24px;">🟫</div>
+                        <div style="font-size:9px; color:var(--text-muted);">Parsel #${i+1}</div>
+                        <button class="btn" onclick="plantSeed(${i})">Ekir</button>
+                    `;
+                } else if (p.status === 'growing') {
+                    card.innerHTML = `
+                        <div style="font-size:24px;">🌱</div>
+                        <div style="font-size:9px; color:var(--accent-gold);">Büyüyor...</div>
+                        <div class="progress-track"><div class="progress-fill" style="width: ${p.progress}%"></div></div>
+                    `;
+                } else if (p.status === 'ready') {
+                    card.className += ' ready';
+                    card.innerHTML = `
+                        <div style="font-size:24px;">${p.seedObj.icon}</div>
+                        <div style="font-size:9px; color:var(--accent-green); font-weight:800;">HAZIR!</div>
+                        <button class="btn" onclick="harvestPlot(${i})">Topla</button>
+                    `;
                 }
-            }, 100);
+                container.appendChild(card);
+            }
+        }
 
-        } else if (activeTool === 'harvest' && p.state === 2) {
-            if (inventory >= maxInventory) {
-                showMsg("Ambar dolu! 📦");
+        function plantSeed(idx) {
+            let seedIdx = document.getElementById('seed-select').value;
+            let s = seedsData[seedIdx];
+
+            if (gold < s.cost) {
+                showToast("Yeterli altının yok!");
                 return;
             }
-            gold += 140;
-            inventory++;
-            p.state = 0;
-            p.progress = 0;
-            updateHUD();
-            showMsg("+140 Altın Kazandın! 🪙");
-        } else {
-            showMsg("Bu işlem için uygun aşamada değil!");
+
+            gold -= s.cost;
+            plots[idx].status = 'growing';
+            plots[idx].seedObj = s;
+            plots[idx].progress = 0;
+            playSound('plant');
+            updateUI();
+
+            let step = 100 / (s.time * 10);
+            plots[idx].timer = setInterval(() => {
+                plots[idx].progress += step;
+                if (plots[idx].progress >= 100) {
+                    plots[idx].progress = 100;
+                    plots[idx].status = 'ready';
+                    clearInterval(plots[idx].timer);
+                }
+                renderPlots();
+            }, 100);
         }
-    }
 
-    // Oyun Döngüsü (Game Loop - 60 FPS Canvas Render)
-    function gameLoop() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        function harvestPlot(idx) {
+            let totalItems = Object.values(inventory).reduce((a, b) => a + b, 0);
+            if (totalItems >= maxInventory) {
+                showToast("Ambar depon tamamen dolu! Önce pazar alanında satış yap.");
+                return;
+            }
 
-        // Çiftlik Zemin Çizimi
-        plots.forEach(p => {
-            ctx.save();
-            ctx.translate(p.x, p.y);
+            let s = plots[idx].seedObj;
+            if (s.key === 'wheat') inventory.wheat++;
+            else if (s.key === 'corn') inventory.corn++;
+            else inventory.wheat++;
 
-            // Toprak Parçası (İzometrik Gölgeli Tasarım)
-            ctx.beginPath();
-            ctx.roundRect(-p.w/2, -p.h/2, p.w, p.h, 12);
-            
-            if (p.state === 0) {
-                ctx.fillStyle = '#1e293b';
-                ctx.strokeStyle = '#334155';
-            } else if (p.state === 1) {
-                ctx.fillStyle = '#172554';
-                ctx.strokeStyle = '#1d4ed8';
+            playSound('harvest');
+            showToast(`+1 ${s.name} ambara eklendi! 📦`);
+            plots[idx].status = 'empty';
+            plots[idx].seedObj = null;
+            updateUI();
+        }
+
+        function applyWatering() {
+            if (gold < 20) { showToast("Yeterli altın yok! (20 🪙)"); return; }
+            gold -= 20;
+            plots.forEach(p => {
+                if (p.status === 'growing') p.progress = Math.min(100, p.progress + 35);
+            });
+            playSound('coin');
+            showToast("Tüm aktif tarlar sulandı, büyüme hızlandı! 💧");
+            updateUI();
+        }
+
+        function applyFertilizer() {
+            if (gold < 40) { showToast("Yeterli altın yok! (40 🪙)"); return; }
+            gold -= 40;
+            plots.forEach(p => {
+                if (p.status === 'growing') p.progress = 100; p.status = 'ready';
+            });
+            playSound('coin');
+            showToast("Gübre uygulandı, tüm ürünler hasada hazır! 🧪");
+            updateUI();
+        }
+
+        function collectAnimal(type) {
+            let totalItems = Object.values(inventory).reduce((a, b) => a + b, 0);
+            if (totalItems >= maxInventory) { showToast("Ambar dolu!"); return; }
+
+            if (type === 'cow') {
+                inventory.milk++;
+                showToast("İneksel sağıldı: +1 Taze Süt 🥛");
             } else {
-                ctx.fillStyle = '#064e3b';
-                ctx.strokeStyle = '#10b981';
-                ctx.shadowColor = '#10b981';
-                ctx.shadowBlur = 15;
+                inventory.egg++;
+                showToast("Kümes toplandı: +1 Organik Yumurta 🥚");
             }
-            
-            ctx.fill();
-            ctx.lineWidth = 2;
-            ctx.stroke();
+            playSound('harvest');
+            updateUI();
+        }
 
-            // İçerik İkonu ve Animasyon
-            ctx.shadowBlur = 0;
-            ctx.font = '24px sans-serif';
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-
-            if (p.state === 0) {
-                ctx.fillText('🟫', 0, -4);
-                ctx.fillStyle = '#64748b';
-                ctx.font = '9px sans-serif';
-                ctx.fillText('Boş Toprak', 0, 20);
-            } else if (p.state === 1) {
-                ctx.fillText('🌱', 0, -8);
-                // Mini Büyüme Barı
-                ctx.fillStyle = '#334155';
-                ctx.fillRect(-30, 16, 60, 6);
-                ctx.fillStyle = '#3b82f6';
-                ctx.fillRect(-30, 16, 60 * (p.progress / 100), 6);
-            } else if (p.state === 2) {
-                ctx.fillText('🌾', 0, -4);
-                ctx.fillStyle = '#34d399';
-                ctx.font = 'bold 9px sans-serif';
-                ctx.fillText('HASADA HAZIR!', 0, 22);
+        function processCheese() {
+            if (inventory.milk < 1) {
+                showToast("İşlemek için en az 1 Sütün olmalı! 🥛");
+                return;
             }
+            inventory.milk--;
+            inventory.cheese++;
+            playSound('coin');
+            showToast("Mandırada peynir üretildi: +1 Kaliteli Peynir 🧀");
+            updateUI();
+        }
 
-            ctx.restore();
-        });
+        function sellAllInventory() {
+            let totalCount = Object.values(inventory).reduce((a, b) => a + b, 0);
+            if (totalCount === 0) { showToast("Ambarınızda satılacak ürün yok!"); return; }
 
-        requestAnimationFrame(gameLoop);
-    }
+            let income = (inventory.wheat * 28) + (inventory.corn * 75) + (inventory.milk * 50) + (inventory.egg * 35) + (inventory.cheese * 130);
+            gold += income;
+            inventory = { wheat: 0, corn: 0, milk: 0, egg: 0, cheese: 0 };
+            playSound('coin');
+            showToast(`Tüm ürünler satıldı: +${income} 🪙 kazandın! 💰`);
+            updateUI();
+        }
 
-    updateHUD();
-    gameLoop();
-</script>
+        function buyNewBlock() {
+            if (gold < 600) { showToast("Yeterli altının yok! (600 🪙)"); return; }
+            if (activePlotsCount >= 8) { showToast("Maksimum parsel sınırına ulaşıldı!"); return; }
+            gold -= 600;
+            activePlotsCount += 2;
+            playSound('coin');
+            showToast("Yeni arsa bloğu açıldı! 🚜");
+            updateUI();
+        }
+
+        function setTheme(theme, name) {
+            const vp = document.getElementById('game-viewport');
+            if (theme === 'winter') {
+                vp.style.background = 'linear-gradient(180deg, #334155 0%, #0f172a 100%)';
+            } else if (theme === 'tropical') {
+                vp.style.background = 'linear-gradient(180deg, #0e7490 0%, #050b14 100%)';
+            } else {
+                vp.style.background = 'linear-gradient(180deg, #1e293b 0%, #0f172a 100%)';
+            }
+            showToast(`Tema değiştirildi: ${name}`);
+        }
+
+        function watchAd() {
+            if (AdController) {
+                AdController.show().then(() => {
+                    gold += 250;
+                    playSound('coin');
+                    showToast("Sponsor Ödülü Yüklendi: +250 🪙");
+                    updateUI();
+                }).catch(() => { showToast("Reklam yüklenemedi."); });
+            } else {
+                gold += 250;
+                playSound('coin');
+                showToast("Test Modu: +250 Altın eklendi! 🪙");
+                updateUI();
+            }
+        }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById('pane-' + name).classList.add('active');
+            btn.classList.add('active');
+        }
+
+        updateUI();
+    </script>
 </body>
 </html>
