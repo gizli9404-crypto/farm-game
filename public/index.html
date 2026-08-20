@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Farm Empire - Tap & Idle Tycoon</title>
+    <title>GreenValley Farm Tycoon</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://sad.adsgram.ai/js/sad.js"></script>
     <style>
         :root {
             --bg: #0f172a;
             --card: #1e293b;
-            --accent: #10b981;
-            --accent-hover: #059669;
+            --accent: #22c55e;
+            --accent-hover: #16a34a;
             --text: #f8fafc;
             --text-secondary: #94a3b8;
         }
@@ -19,7 +20,7 @@
             color: var(--text);
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             margin: 0;
-            padding: 12px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -30,104 +31,68 @@
             max-width: 400px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-        }
-        /* Üst Bilgi Kartı */
-        .stats-card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 16px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .gold-display {
-            font-size: 32px;
-            font-weight: 800;
-            color: #fbbf24;
-            margin: 4px 0;
-        }
-        .profit-display {
-            font-size: 13px;
-            color: var(--text-secondary);
-        }
-        /* Ana Tıklama Alanı */
-        .clicker-section {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 20px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-            border: 1px solid rgba(255,255,255,0.05);
-        }
-        .farm-btn-container {
+            gap: 10px;
             position: relative;
-            width: 140px;
-            height: 140px;
-            margin: 0 auto;
-            cursor: pointer;
-            user-select: none;
         }
-        .farm-circle {
-            width: 140px;
-            height: 140px;
-            background: linear-gradient(135deg, #059669, #10b981);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 64px;
-            box-shadow: 0 0 30px rgba(16, 185, 129, 0.4);
-            transition: transform 0.1s ease;
-        }
-        .farm-circle:active {
-            transform: scale(0.92);
-        }
-        /* Uçan Altın Efekti */
-        .floating-text {
+        #toast {
             position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #22c55e;
+            color: #000;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            display: none;
+            z-index: 1000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            white-space: nowrap;
+        }
+        .header-stats {
+            background: var(--card);
+            border-radius: 14px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             font-weight: bold;
-            color: #fbbf24;
-            font-size: 20px;
-            animation: floatUp 0.8s ease-out forwards;
-            pointer-events: none;
+            font-size: 13px;
         }
-        @keyframes floatUp {
-            0% { transform: translateY(0) scale(1); opacity: 1; }
-            100% { transform: translateY(-60px) scale(1.2); opacity: 0; }
-        }
-        /* Sekmeler */
         .tabs {
             display: flex;
             background: var(--card);
             padding: 4px;
             border-radius: 12px;
             gap: 4px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
         .tab-btn {
             flex: 1;
             background: none;
             border: none;
             color: var(--text-secondary);
-            padding: 10px;
+            padding: 8px;
             font-weight: 600;
-            font-size: 12px;
+            font-size: 11px;
             cursor: pointer;
             border-radius: 8px;
             transition: all 0.2s;
         }
         .tab-btn.active {
             background: var(--accent);
-            color: white;
+            color: #000;
         }
-        /* İçerik Panelleri */
         .panel {
             display: none;
             background: var(--card);
-            border-radius: 16px;
-            padding: 14px;
-            min-height: 220px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border-radius: 14px;
+            padding: 12px;
+            min-height: 240px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             border: 1px solid rgba(255,255,255,0.05);
         }
         .panel.active {
@@ -135,238 +100,314 @@
             flex-direction: column;
             gap: 8px;
         }
-        .shop-item {
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+        .card-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 80px;
+            font-size: 12px;
+        }
+        .card-box.ready {
+            border-color: var(--accent);
+            background: rgba(34, 197, 94, 0.08);
+        }
+        button.action-btn {
+            background: var(--accent);
+            color: #000;
+            border: none;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 5px;
+            width: 100%;
+        }
+        button.action-btn:active { transform: scale(0.97); }
+        
+        .list-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             background: rgba(255,255,255,0.03);
-            padding: 10px 12px;
+            padding: 10px;
             border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.04);
-        }
-        .shop-info h4 {
-            margin: 0;
-            font-size: 13px;
-        }
-        .shop-info p {
-            margin: 2px 0 0 0;
+            border: 1px solid rgba(255,255,255,0.05);
             font-size: 11px;
+        }
+        .footer {
+            font-size: 10px;
             color: var(--text-secondary);
-        }
-        button.buy-btn {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 11px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
-        button.buy-btn:hover {
-            background: var(--accent-hover);
-        }
-        button.buy-btn:disabled {
-            background: #334155;
-            color: #64748b;
-            cursor: not-allowed;
+            text-align: center;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <!-- Üst Bilgi Alanı -->
-        <div class="stats-card">
-            <div style="font-size: 11px; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">Toplam Servet</div>
-            <div class="gold-display" id="goldDisplay">🪙 0</div>
-            <div class="profit-display">⚡ Saatlik Pasif Gelir: +<span id="profitDisplay">0</span> /saat</div>
-        </div>
+        <div id="toast">Bildiri</div>
 
-        <!-- Tıklama / Kazanç Alanı -->
-        <div class="clicker-section">
-            <div class="farm-btn-container" id="clickArea" onclick="handleTap(event)">
-                <div class="farm-circle">🌾</div>
-            </div>
-            <div style="margin-top: 10px; font-size: 12px; color: var(--text-secondary);">Hasat etmek için tıkla!</div>
+        <!-- Üst İstatistikler -->
+        <div class="header-stats">
+            <div>🪙 <span id="gold">300</span> Altın</div>
+            <div>📦 Depo: <span id="inventoryCount">0</span>/20</div>
+            <div>⭐ Lv.<span id="level">1</span></div>
         </div>
 
         <!-- Sekme Butonları -->
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('upgrades', this)">🚀 Geli̇ştirmeler</button>
-            <button class="tab-btn" onclick="switchTab('business', this)">🏭 Fabrikalar</button>
-            <button class="tab-btn" onclick="switchTab('quests', this)">🎯 Görevler</button>
+            <button class="tab-btn active" onclick="switchTab('farm', this)">🌾 Tarım</button>
+            <button class="tab-btn" onclick="switchTab('animals', this)">🐄 Hayvancılık</button>
+            <button class="tab-btn" onclick="switchTab('orders', this)">📋 Siparişler</button>
+            <button class="tab-btn" onclick="switchTab('ads', this)">📺 Ödüllü Reklam</button>
         </div>
 
-        <!-- 1. Geliştirmeler Paneli -->
-        <div id="upgrades-panel" class="panel active">
-            <div class="shop-item">
-                <div class="shop-info">
-                    <h4>Elmas Çapa ⛏️</h4>
-                    <p>Tıklama başına +1 Altın</p>
-                </div>
-                <button class="buy-btn" id="up1Btn" onclick="buyUpgrade(1)">50 🪙</button>
+        <!-- 1. TARIM PANELİ -->
+        <div id="farm-panel" class="panel active">
+            <div style="font-size: 11px; color: var(--text-secondary); display:flex; justify-content:space-between; align-items:center;">
+                <span>Aktif Tohum: <b id="seedName" style="color:var(--text)">Buğday (5s)</b></span>
+                <button onclick="selectSeed('Buğday', 10, 5)" style="width:auto; padding:3px 8px; font-size:10px;" class="action-btn">Buğday Seç</button>
             </div>
-            <div class="shop-item">
-                <div class="shop-info">
-                    <h4>Otomatik Sulama 💧</h4>
-                    <p>Tıklama başına +5 Altın</p>
-                </div>
-                <button class="buy-btn" id="up2Btn" onclick="buyUpgrade(2)">300 🪙</button>
-            </div>
+            <div class="grid-2" id="farmGrid"></div>
         </div>
 
-        <!-- 2. Fabrikalar / Pasif Gelir Paneli -->
-        <div id="business-panel" class="panel">
-            <div class="shop-item">
-                <div class="shop-info">
-                    <h4>Küçük Sera 🏡</h4>
-                    <p>+10 Altın / saat</p>
-                </div>
-                <button class="buy-btn" id="b1Btn" onclick="buyBusiness(1)">100 🪙</button>
+        <!-- 2. HAYVANCILIK PANELİ -->
+        <div id="animals-panel" class="panel">
+            <div style="font-size: 11px; color: var(--text-secondary);">Ahır ve Kümes Üretimi</div>
+            <div class="grid-2" id="animalGrid"></div>
+        </div>
+
+        <!-- 3. SİPARİŞLER PANELİ -->
+        <div id="orders-panel" class="panel">
+            <div style="font-size: 11px; color: var(--text-secondary); font-weight: bold;">Şehir Pazarı Siparişleri</div>
+            <div id="ordersList"></div>
+        </div>
+
+        <!-- 4. REKLAM PANELİ (Adsgram Entegrasyonu) -->
+        <div id="ads-panel" class="panel">
+            <div style="font-size: 12px; font-weight: bold; margin-bottom: 4px;">Reklam İzle, Anında Ödül Kazan!</div>
+            <div class="list-item">
+                <span>📺 Reklam İzle (+150 Altın)</span>
+                <button class="action-btn" style="width: auto; padding: 6px 12px;" onclick="watchRewardAd()">İzle & Kazan</button>
             </div>
-            <div class="shop-item">
-                <div class="shop-info">
-                    <h4>Süt İnekleri 🐄</h4>
-                    <p>+60 Altın / saat</p>
-                </div>
-                <button class="buy-btn" id="b2Btn" onclick="buyBusiness(2)">500 🪙</button>
-            </div>
-            <div class="shop-item">
-                <div class="shop-info">
-                    <h4>Dev Traktör 🚜</h4>
-                    <p>+300 Altın / saat</p>
-                </div>
-                <button class="buy-btn" id="b3Btn" onclick="buyBusiness(3)">2500 🪙</button>
+            <div class="list-item">
+                <span>⚡ 2x Hızlandırıcı (30 Saniye)</span>
+                <button class="action-btn" style="width: auto; padding: 6px 12px;" onclick="watchSpeedAd()">Aktif Et</button>
             </div>
         </div>
 
-        <!-- 3. Görevler Paneli -->
-        <div id="quests-panel" class="panel">
-            <div class="shop-item">
-                <div class="shop-info">
-                    <h4>İlk Hasat 🌿</h4>
-                    <p>10 kez tarlaya dokun</p>
-                </div>
-                <button class="buy-btn" onclick="claimQuest(1)" id="q1Btn">Ödül Al (50 🪙)</button>
-            </div>
-        </div>
+        <div class="footer">GreenValley Pro v2.5 - Compliant System</div>
     </div>
 
     <script>
-        let gold = 100;
-        let tapPower = 1;
-        let passiveIncome = 0;
-        let totalTaps = 0;
+        let gold = 300;
+        let inventoryCount = 0;
+        let level = 1;
+        let activeSeed = { name: 'Buğday', cost: 10, time: 5, reward: 25 };
 
-        // Yükseltme Maliyetleri ve Seviyeleri
-        let upgrades = {
-            1: { cost: 50, powerAdd: 1, level: 0 },
-            2: { cost: 300, powerAdd: 5, level: 0 }
-        };
+        let plots = [
+            { id: 0, status: 'empty', timeLeft: 0, timer: null },
+            { id: 1, status: 'empty', timeLeft: 0, timer: null },
+            { id: 2, status: 'locked', timeLeft: 0, timer: null },
+            { id: 3, status: 'locked', timeLeft: 0, timer: null }
+        ];
 
-        // Fabrikalar
-        let businesses = {
-            1: { cost: 100, incomeAdd: 10, count: 0 },
-            2: { cost: 500, incomeAdd: 60, count: 0 },
-            3: { cost: 2500, incomeAdd: 300, count: 0 }
-        };
+        let animals = [
+            { id: 0, name: 'İnek 🐄', product: 'Süt', status: 'ready', time: 10, timeLeft: 0, timer: null },
+            { id: 1, name: 'Tavuk 🐔', product: 'Yumurta', status: 'ready', time: 6, timeLeft: 0, timer: null }
+        ];
 
-        let questCompleted = false;
+        let orders = [
+            { id: 1, req: '2x Buğday', reward: 70, count: 2, item: 'Buğday' }
+        ];
 
-        function updateUI() {
-            document.getElementById('goldDisplay').innerText = "🪙 " + Math.floor(gold);
-            document.getElementById('profitDisplay').innerText = passiveIncome;
+        let storage = { Buğday: 0, Süt: 0, Yumurta: 0 };
 
-            // Buton durumları
-            document.getElementById('up1Btn').innerText = upgrades[1].cost + " 🪙";
-            document.getElementById('up1Btn').disabled = gold < upgrades[1].cost;
+        // Adsgram entegrasyonu (Blok ID: 40974)
+        const AdController = window.Adsgram ? window.Adsgram.init({ blockId: "40974" }) : null;
 
-            document.getElementById('up2Btn').innerText = upgrades[2].cost + " 🪙";
-            document.getElementById('up2Btn').disabled = gold < upgrades[2].cost;
-
-            document.getElementById('b1Btn').innerText = businesses[1].cost + " 🪙 (" + businesses[1].count + ")";
-            document.getElementById('b1Btn').disabled = gold < businesses[1].cost;
-
-            document.getElementById('b2Btn').innerText = businesses[2].cost + " 🪙 (" + businesses[2].count + ")";
-            document.getElementById('b2Btn').disabled = gold < businesses[2].cost;
-
-            document.getElementById('b3Btn').innerText = businesses[3].cost + " 🪙 (" + businesses[3].count + ")";
-            document.getElementById('b3Btn').disabled = gold < businesses[3].cost;
+        function showToast(msg) {
+            let t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 2200);
         }
 
-        // Tıklama Olayı & Efekt
-        function handleTap(e) {
-            gold += tapPower;
-            totalTaps++;
+        function updateUI() {
+            document.getElementById('gold').innerText = gold;
+            document.getElementById('inventoryCount').innerText = inventoryCount;
+            document.getElementById('level').innerText = level;
+            renderFarm();
+            renderAnimals();
+            renderOrders();
+        }
 
-            // Uçan yazı efekti
-            const clickArea = document.getElementById('clickArea');
-            const rect = clickArea.getBoundingClientRect();
-            let x = e.clientX - rect.left;
-            let y = e.clientY - rect.top;
+        function renderFarm() {
+            let grid = document.getElementById('farmGrid');
+            grid.innerHTML = '';
+            plots.forEach((p, idx) => {
+                let div = document.createElement('div');
+                div.className = 'card-box';
+                if (p.status === 'locked') {
+                    div.innerHTML = `🔒 Kilitli<br><button class="action-btn" onclick="unlockPlot(${idx})">100 🪙 Aç</button>`;
+                } else if (p.status === 'empty') {
+                    div.innerHTML = `🟫 Boş Toprak<br><button class="action-btn" onclick="plantPlot(${idx})">Ekir (-${activeSeed.cost})</button>`;
+                } else if (p.status === 'growing') {
+                    div.innerHTML = `🌱 Büyüyor...<br><b style="color:#22c55e">${p.timeLeft}s</b>`;
+                } else if (p.status === 'ready') {
+                    div.className += ' ready';
+                    div.innerHTML = `✨ HAZIR!<br><button class="action-btn" onclick="harvestPlot(${idx})">Hasat Et</button>`;
+                }
+                grid.appendChild(div);
+            });
+        }
 
-            let el = document.createElement('div');
-            el.className = 'floating-text';
-            el.innerText = "+" + tapPower;
-            el.style.left = x + 'px';
-            el.style.top = y + 'px';
-            clickArea.appendChild(el);
+        function unlockPlot(idx) {
+            if (gold >= 100) {
+                gold -= 100;
+                plots[idx].status = 'empty';
+                showToast("Yeni tarla açıldı!");
+                updateUI();
+            } else {
+                showToast("Altının yetersiz!");
+            }
+        }
 
-            setTimeout(() => el.remove(), 800);
+        function plantPlot(idx) {
+            if (gold < activeSeed.cost) {
+                showToast("Tohum için altının yok!");
+                return;
+            }
+            gold -= activeSeed.cost;
+            plots[idx].status = 'growing';
+            plots[idx].timeLeft = activeSeed.time;
+            updateUI();
+
+            plots[idx].timer = setInterval(() => {
+                plots[idx].timeLeft--;
+                if (plots[idx].timeLeft <= 0) {
+                    clearInterval(plots[idx].timer);
+                    plots[idx].status = 'ready';
+                }
+                renderFarm();
+            }, 1000);
+        }
+
+        function harvestPlot(idx) {
+            if (inventoryCount >= 20) {
+                showToast("Depo dolu! Siparişleri tamamla.");
+                return;
+            }
+            storage.Buğday++;
+            inventoryCount++;
+            plots[idx].status = 'empty';
+            showToast("+1 Buğday depoya eklendi!");
             updateUI();
         }
 
-        function buyUpgrade(id) {
-            let up = upgrades[id];
-            if (gold >= up.cost) {
-                gold -= up.cost;
-                tapPower += up.powerAdd;
-                up.cost = Math.floor(up.cost * 1.6);
-                up.level++;
-                updateUI();
-            }
+        function renderAnimals() {
+            let grid = document.getElementById('animalGrid');
+            grid.innerHTML = '';
+            animals.forEach((a, idx) => {
+                let div = document.createElement('div');
+                div.className = 'card-box';
+                if (a.status === 'ready') {
+                    div.className += ' ready';
+                    div.innerHTML = `${a.name}<br><button class="action-btn" onclick="collectAnimal(${idx})">Topla (${a.product})</button>`;
+                } else {
+                    div.innerHTML = `${a.name}<br><b style="color:#22c55e">${a.timeLeft}s bekliyor</b>`;
+                }
+                grid.appendChild(div);
+            });
         }
 
-        function buyBusiness(id) {
-            let b = businesses[id];
-            if (gold >= b.cost) {
-                gold -= b.cost;
-                passiveIncome += b.incomeAdd;
-                b.count++;
-                b.cost = Math.floor(b.cost * 1.5);
-                updateUI();
+        function collectAnimal(idx) {
+            if (inventoryCount >= 20) {
+                showToast("Depo dolu!");
+                return;
             }
+            let prod = animals[idx].product;
+            storage[prod]++;
+            inventoryCount++;
+            showToast(`+1 ${prod} toplandı!`);
+
+            animals[idx].status = 'cooldown';
+            animals[idx].timeLeft = animals[idx].time;
+            animals[idx].timer = setInterval(() => {
+                animals[idx].timeLeft--;
+                if (animals[idx].timeLeft <= 0) {
+                    clearInterval(animals[idx].timer);
+                    animals[idx].status = 'ready';
+                }
+                renderAnimals();
+            }, 1000);
+            updateUI();
         }
 
-        function claimQuest(id) {
-            if (!questCompleted && totalTaps >= 10) {
-                questCompleted = true;
-                gold += 50;
-                let btn = document.getElementById('q1Btn');
-                btn.innerText = "Tamamlandı ✅";
-                btn.disabled = true;
+        function renderOrders() {
+            let list = document.getElementById('ordersList');
+            list.innerHTML = '';
+            orders.forEach((o, idx) => {
+                let div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `<span><b>Sipariş:</b> ${o.req}</span><button class="action-btn" style="width:auto; padding:4px 8px;" onclick="completeOrder(${idx})">Teslim Et (${o.reward} 🪙)</button>`;
+                list.appendChild(div);
+            });
+        }
+
+        function completeOrder(idx) {
+            let o = orders[idx];
+            if (storage[o.item] >= o.count) {
+                storage[o.item] -= o.count;
+                inventoryCount -= o.count;
+                gold += o.reward;
+                level++;
+                showToast("Sipariş teslim edildi, ödül alındı! 🎉");
+                // Yeni sipariş üret
+                orders[idx] = { id: Date.now(), req: '2x Buğday', reward: 80, count: 2, item: 'Buğday' };
                 updateUI();
             } else {
-                alert("Yeterli tıklama yapmadın! (10 tıklama gerekiyor)");
+                showToast("Deponda yeterli ürün yok!");
             }
         }
 
-        function switchTab(tabName, btn) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabName + '-panel').classList.add('active');
-            btn.classList.add('active');
-        }
-
-        // Pasif Gelir Döngüsü (Her saniye hesaba yatar)
-        setInterval(() => {
-            if (passiveIncome > 0) {
-                gold += passiveIncome / 3600;
+        function watchRewardAd() {
+            if (AdController) {
+                AdController.show().then(() => {
+                    gold += 150;
+                    showToast("Reklam ödülü eklendi: +150 Altın! 🪙");
+                    updateUI();
+                }).catch(() => { showToast("Reklam gösterilemedi."); });
+            } else {
+                // Test ortamı için simülasyon
+                gold += 150;
+                showToast("Test Modu: +150 Altın eklendi! 🪙");
                 updateUI();
             }
-        }, 1000);
+        }
+
+        function watchSpeedAd() {
+            showToast("Hızlandırma aktif! (Test Modu)");
+        }
+
+        function switchTab(name, btn) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(name + '-panel').classList.add('active');
+            btn.classList.add('active');
+        }
 
         updateUI();
     </script>
