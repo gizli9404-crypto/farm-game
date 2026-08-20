@@ -7,52 +7,53 @@ const PORT = process.env.PORT || 8080;
 
 // Bot Token'ını buraya yaz veya Railway Environment Variables kısmına ekle
 const BOT_TOKEN = process.env.BOT_TOKEN || '8970909833:AAGyAASBhKLaGvC0KQQdQMHosVmv6_cs6A';
-const CHANNEL_ID = process.env.CHANNEL_ID || '@tiny_farm_adventure_channel'; // Kanal kullanıcı adın
+const CHANNEL_ID = process.env.CHANNEL_ID || '@tiny_farm_adventure_channel';
 
 const bot = new Telegraf(BOT_TOKEN);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Telegram Bot Komutları
+// Telegram Bot Komutları (Artık eksiksiz yanıt veriyor)
 bot.start((ctx) => {
-    ctx.reply("🌾 Tiny Farm Adventure'a hoş geldin! Aşağıdaki butona tıklayarak çiftliğini yönetmeye başlayabilirsin.", {
+    const userName = ctx.from.first_name || 'Çiftçi';
+    ctx.reply(`🌾 Merhaba ${userName}! Tiny Farm Adventure dünyasına hoş geldin.\n\nAşağıdaki butona tıklayarak hemen tarlanı ekmeye ve altın kazanmaya başla!`, {
         reply_markup: {
             inline_keyboard: [
-                [{ text: "🎮 Oyunu Aç & Oyna", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }],
+                [{ text: "🌱 Çiftliğe Git & Oyna", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }],
                 [{ text: "📢 Duyuru Kanalı", url: "https://t.me/tin_farm_adventure" }, { text: "💬 Sohbet Grubu", url: "https://t.me/tiny_farm_sohbet" }]
             ]
         }
     });
 });
 
-bot.help((ctx) => {
-    ctx.reply("Komutlar:\n/start - Oyunu başlatır\n/market - Market bilgilerini gösterir");
+bot.command('market', (ctx) => {
+    ctx.reply("🛒 Çiftlik marketinde en taze tohumlar ve gübreler seni bekliyor! Oyunu açarak markete göz atabilirsin.");
 });
 
 // Botu başlat
 bot.launch().then(() => {
-    console.log("Telegram botu başarıyla başlatıldı ve dinlemede!");
+    console.log("Telegram botu başarıyla başlatıldı ve komutları dinliyor!");
 }).catch(err => {
     console.error("Bot başlatılırken hata oluştu:", err);
 });
 
-// Otomatik Duyuru Sistemi (Her 2 saatte bir kanala/gruba otomatik mesaj atar)
+// Otomatik Kanal/Grup Duyuru Sistemi (Her 1 saatte bir)
 setInterval(async () => {
     try {
-        await bot.telegram.sendMessage(CHANNEL_ID, "🌾 **Çiftlik Durumu Güncellendi!**\nTarlalarınızı kontrol etmeyi ve hasat yapmayı unutmayın! Yeni tohumlar markette sizi bekliyor. 🚀", {
+        await bot.telegram.sendMessage(CHANNEL_ID, "📢 **Çiftlik Bülteni:** \nTarlalarındaki ürünler seni bekliyor! Gübrelerini kullan, hasat yap ve sıralamada zirveye yerleş! 🚀", {
             parse_mode: 'Markdown',
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: "🌱 Çiftliğe Git", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }]
+                    [{ text: "🌾 Oyuna Dön", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }]
                 ]
             }
         });
         console.log("Otomatik duyuru kanala gönderildi.");
     } catch (e) {
-        console.log("Duyuru gönderilemedi (Kanal ID veya yetki kontrol edilmeli):", e.message);
+        console.log("Duyuru gönderilemedi:", e.message);
     }
-}, 2 * 60 * 60 * 1000); // 2 saatte bir
+}, 60 * 60 * 1000);
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
@@ -62,6 +63,5 @@ app.listen(PORT, () => {
     console.log(`Sunucu ${PORT} portunda çalışıyor.`);
 });
 
-// Graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'));
 process.once('SIGTERM', () => bot.stop('SIGTERM'));
