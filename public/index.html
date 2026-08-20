@@ -3,96 +3,358 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Elite Farm Pro</title>
+    <title>Stellar Farm - Studio Edition</title>
     <style>
-        :root {
-            --primary: #59d64f;
-            --dark: #0f172a;
-            --panel: #1e293b;
-            --glass: rgba(255, 255, 255, 0.05);
-            --gold: #fbbf24;
-        }
-        body, html { margin: 0; padding: 0; background: var(--dark); font-family: 'Segoe UI', sans-serif; color: white; overflow: hidden; height: 100%; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; }
+        body, html { width: 100%; height: 100%; background: #0b0f19; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #fff; }
         
-        /* Modern Oyun Sahnesi */
-        #game-stage {
-            display: flex; flex-direction: column; height: 100%;
-            background: radial-gradient(circle at 50% 100%, #1e3a8a, #0f172a);
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+            background: linear-gradient(180deg, #1a233a 0%, #0f172a 100%);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Üst HUD - Büyük Şirket Stili */
-        .hud { 
-            display: flex; justify-content: space-around; padding: 20px; 
-            background: rgba(0,0,0,0.3); backdrop-filter: blur(10px);
-            border-bottom: 2px solid rgba(255,255,255,0.1);
+        /* Üst HUD Alanı (Stüdyo Kalitesi) */
+        .hud-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            z-index: 10;
         }
-        .stat-card { text-align: center; }
-        .stat-num { font-size: 1.4rem; font-weight: 800; color: var(--gold); }
 
-        /* Tarla Grid - Premium */
-        .farm-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px;
-            flex-grow: 1; align-content: start;
+        .hud-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 0, 0, 0.3);
+            padding: 6px 12px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-        .slot {
-            height: 140px; background: rgba(0,0,0,0.4); border-radius: 20px;
-            border: 3px solid rgba(255,255,255,0.05);
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            transition: 0.3s; position: relative; overflow: hidden;
-        }
-        .slot:hover { border-color: var(--primary); }
-        .progress-bar { width: 80%; height: 8px; background: #334155; border-radius: 4px; margin-top: 10px; }
-        .progress { height: 100%; background: var(--primary); width: 0%; border-radius: 4px; }
 
-        /* Alt Navigasyon */
-        .nav-bar {
-            display: flex; justify-content: space-between; padding: 20px;
-            background: #0f172a; border-top: 2px solid #334155;
+        .hud-icon { font-size: 16px; }
+        .hud-text { font-size: 13px; font-weight: 800; color: #fbbf24; letter-spacing: 0.5px; }
+
+        /* Canvas Oyun Alanı */
+        #canvas-wrapper {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
-        .nav-item { width: 60px; height: 60px; border-radius: 50%; background: #334155; display: flex; align-items: center; justify-content: center; font-size: 24px; }
+
+        canvas {
+            display: block;
+            touch-action: none;
+        }
+
+        /* Alt Kontrol Paneli / Dock */
+        .action-dock {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            padding: 12px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(12px);
+            border-top: 1px solid rgba(255,255,255,0.08);
+            z-index: 10;
+        }
+
+        .dock-btn {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 14px;
+            padding: 10px 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            color: #94a3b8;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .dock-btn.active {
+            border-color: #10b981;
+            color: #fff;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), #0f172a);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        }
+
+        .dock-icon { font-size: 18px; }
+
+        /* Yüzen Bildirimler */
+        #float-msg {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-10px);
+            background: rgba(16, 185, 129, 0.9);
+            color: #000;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+            z-index: 100;
+            box-shadow: 0 4px 15px rgba(16,185,129,0.4);
+        }
+        #float-msg.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
 
-<div id="game-stage">
-    <div class="hud">
-        <div class="stat-card"><div>ALTIN</div><div class="stat-num" id="gold">1,250</div></div>
-        <div class="stat-card"><div>LEVEL</div><div class="stat-num">12</div></div>
+<div id="game-container">
+    <div id="float-msg">+100 Altın Kazandın!</div>
+
+    <!-- Üst HUD -->
+    <div class="hud-header">
+        <div class="hud-group">
+            <span class="hud-icon">🪙</span>
+            <span class="hud-text" id="val-gold">1,500</span>
+        </div>
+        <div class="hud-group">
+            <span class="hud-icon">⭐</span>
+            <span class="hud-text" id="val-exp" style="color:#a78bfa;">LVL 3</span>
+        </div>
+        <div class="hud-group">
+            <span class="hud-icon">📦</span>
+            <span class="hud-text" id="val-inv" style="color:#38bdf8;">0/15</span>
+        </div>
     </div>
 
-    <div class="farm-grid">
-        <!-- Slotlar (Buraya daha fazla eklenebilir) -->
-        <div class="slot" onclick="grow(this)">
-            <div style="font-size: 40px;">🌾</div>
-            <div class="progress-bar"><div class="progress"></div></div>
-        </div>
-        <div class="slot" onclick="grow(this)">
-            <div style="font-size: 40px;">🌽</div>
-            <div class="progress-bar"><div class="progress"></div></div>
-        </div>
+    <!-- Canvas Grafik Ekranı -->
+    <div id="canvas-wrapper">
+        <canvas id="gameCanvas"></canvas>
     </div>
 
-    <div class="nav-bar">
-        <div class="nav-item">🛒</div>
-        <div class="nav-item">🚜</div>
-        <div class="nav-item">⭐</div>
+    <!-- Alt Stüdyo Dock Menüsü -->
+    <div class="action-dock">
+        <button class="dock-btn active" onclick="setTool('plant', this)">
+            <span class="dock-icon">🌱</span>
+            <span>Tohum</span>
+        </button>
+        <button class="dock-btn" onclick="setTool('water', this)">
+            <span class="dock-icon">💧</span>
+            <span>Sulama</span>
+        </button>
+        <button class="dock-btn" onclick="setTool('harvest', this)">
+            <span class="dock-icon">✂️</span>
+            <span>Hasat</span>
+        </button>
+        <button class="dock-btn" onclick="openShop()">
+            <span class="dock-icon">🏗️</span>
+            <span>Mağaza</span>
+        </button>
     </div>
 </div>
 
 <script>
-    function grow(el) {
-        let bar = el.querySelector('.progress');
-        let width = 0;
-        let interval = setInterval(() => {
-            if (width >= 100) {
-                clearInterval(interval);
-                alert("Hasat zamanı!");
-            } else {
-                width++;
-                bar.style.width = width + '%';
-            }
-        }, 50);
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // Oyun Durumu
+    let gold = 1500;
+    let inventory = 0;
+    let maxInventory = 15;
+    let activeTool = 'plant'; // 'plant', 'water', 'harvest'
+
+    // Ekran Boyutlandırma (Mobil Uyumlu)
+    function resize() {
+        const wrapper = document.getElementById('canvas-wrapper');
+        canvas.width = wrapper.clientWidth;
+        canvas.height = wrapper.clientHeight;
     }
+    window.addEventListener('resize', resize);
+    resize();
+
+    // Çiftlik Parselleri (Grid Sistemi)
+    let plots = [];
+    const rows = 3;
+    const cols = 3;
+    
+    function initPlots() {
+        plots = [];
+        let plotW = 90;
+        let plotH = 70;
+        let startX = (canvas.width - (cols * (plotW + 12))) / 2 + plotW / 2;
+        let startY = (canvas.height - (rows * (plotH + 16))) / 2 + plotH / 2;
+
+        let id = 0;
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                plots.push({
+                    id: id++,
+                    x: startX + c * (plotW + 12),
+                    y: startY + r * (plotH + 16),
+                    w: plotW,
+                    h: plotH,
+                    state: 0, // 0: Boş, 1: Ekildi/Büyüyor, 2: Hazır
+                    progress: 0,
+                    timer: null
+                });
+            }
+        }
+    }
+    initPlots();
+
+    // Toast Mesaj Sistemi
+    function showMsg(text) {
+        const m = document.getElementById('float-msg');
+        m.innerText = text;
+        m.classList.add('show');
+        setTimeout(() => m.classList.remove('show'), 2000);
+    }
+
+    // HUD Güncelleme
+    function updateHUD() {
+        document.getElementById('val-gold').innerText = gold.toLocaleString();
+        document.getElementById('val-inv').innerText = `${inventory}/${maxInventory}`;
+    }
+
+    // Araç Değiştirme
+    function setTool(tool, btn) {
+        activeTool = tool;
+        document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+    }
+
+    function openShop() {
+        showMsg("Mağaza ve Genişletme yakında açılıyor!");
+    }
+
+    // Dokunma / Tıklama Etkileşimi
+    canvas.addEventListener('pointerdown', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const touchX = e.clientX - rect.left;
+        const touchY = e.clientY - rect.top;
+
+        plots.forEach(p => {
+            // İzometrik / Dikdörtgen tıklama kontrolü
+            if (touchX >= p.x - p.w/2 && touchX <= p.x + p.w/2 &&
+                touchY >= p.y - p.h/2 && touchY <= p.y + p.h/2) {
+                
+                handlePlotClick(p);
+            }
+        });
+    });
+
+    function handlePlotClick(p) {
+        if (activeTool === 'plant' && p.state === 0) {
+            if (gold < 50) { showMsg("Yeterli altın yok! (50 🪙)"); return; }
+            gold -= 50;
+            p.state = 1;
+            p.progress = 0;
+            updateHUD();
+            showMsg("Tohum ekildi! 🌱");
+
+            // Büyüme Simülasyonu
+            let interval = setInterval(() => {
+                p.progress += 2;
+                if (p.progress >= 100) {
+                    p.progress = 100;
+                    p.state = 2; // Hazır
+                    clearInterval(interval);
+                }
+            }, 100);
+
+        } else if (activeTool === 'harvest' && p.state === 2) {
+            if (inventory >= maxInventory) {
+                showMsg("Ambar dolu! 📦");
+                return;
+            }
+            gold += 140;
+            inventory++;
+            p.state = 0;
+            p.progress = 0;
+            updateHUD();
+            showMsg("+140 Altın Kazandın! 🪙");
+        } else {
+            showMsg("Bu işlem için uygun aşamada değil!");
+        }
+    }
+
+    // Oyun Döngüsü (Game Loop - 60 FPS Canvas Render)
+    function gameLoop() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        // Çiftlik Zemin Çizimi
+        plots.forEach(p => {
+            ctx.save();
+            ctx.translate(p.x, p.y);
+
+            // Toprak Parçası (İzometrik Gölgeli Tasarım)
+            ctx.beginPath();
+            ctx.roundRect(-p.w/2, -p.h/2, p.w, p.h, 12);
+            
+            if (p.state === 0) {
+                ctx.fillStyle = '#1e293b';
+                ctx.strokeStyle = '#334155';
+            } else if (p.state === 1) {
+                ctx.fillStyle = '#172554';
+                ctx.strokeStyle = '#1d4ed8';
+            } else {
+                ctx.fillStyle = '#064e3b';
+                ctx.strokeStyle = '#10b981';
+                ctx.shadowColor = '#10b981';
+                ctx.shadowBlur = 15;
+            }
+            
+            ctx.fill();
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // İçerik İkonu ve Animasyon
+            ctx.shadowBlur = 0;
+            ctx.font = '24px sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+
+            if (p.state === 0) {
+                ctx.fillText('🟫', 0, -4);
+                ctx.fillStyle = '#64748b';
+                ctx.font = '9px sans-serif';
+                ctx.fillText('Boş Toprak', 0, 20);
+            } else if (p.state === 1) {
+                ctx.fillText('🌱', 0, -8);
+                // Mini Büyüme Barı
+                ctx.fillStyle = '#334155';
+                ctx.fillRect(-30, 16, 60, 6);
+                ctx.fillStyle = '#3b82f6';
+                ctx.fillRect(-30, 16, 60 * (p.progress / 100), 6);
+            } else if (p.state === 2) {
+                ctx.fillText('🌾', 0, -4);
+                ctx.fillStyle = '#34d399';
+                ctx.font = 'bold 9px sans-serif';
+                ctx.fillText('HASADA HAZIR!', 0, 22);
+            }
+
+            ctx.restore();
+        });
+
+        requestAnimationFrame(gameLoop);
+    }
+
+    updateHUD();
+    gameLoop();
 </script>
 </body>
 </html>
