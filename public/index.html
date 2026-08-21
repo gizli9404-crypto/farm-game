@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CYBER_AGRO // Next-Gen Farm Experience</title>
+    <title>AGRO-MATRIX: ULTRA FARM SIMULATOR</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&display=swap');
 
         :root {
-            --bg-base: #030805;
-            --panel-bg: rgba(6, 20, 11, 0.82);
-            --border-glow: rgba(16, 185, 129, 0.35);
-            --neon-emerald: #10b981;
-            --neon-gold: #f59e0b;
-            --neon-cyan: #06b6d4;
-            --neon-purple: #8b5cf6;
-            --text-light: #f8fafc;
-            --text-dim: #64748b;
+            --bg-base: #010804;
+            --panel-bg: rgba(4, 20, 11, 0.92);
+            --border-glow: rgba(16, 185, 129, 0.4);
+            --emerald: #10b981;
+            --gold: #f59e0b;
+            --cyan: #06b6d4;
+            --purple: #8b5cf6;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
         }
 
         * {
@@ -25,13 +25,13 @@
             -webkit-user-select: none;
             margin: 0;
             padding: 0;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-family: 'Outfit', sans-serif;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            background: #010402;
-            color: var(--text-light);
+            background: #000;
+            color: var(--text-main);
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -39,82 +39,67 @@
             overflow: hidden;
         }
 
-        #app-frame {
+        #game-wrapper {
             width: 100%;
             max-width: 430px;
             height: 100%;
             max-height: 900px;
-            background: radial-gradient(circle at 50% -20%, #0c3b1e 0%, #020d06 50%, #010402 100%);
+            background: radial-gradient(circle at 50% 0%, #064e2b 0%, #021a0d 60%, #010804 100%);
             display: flex;
             flex-direction: column;
             position: relative;
-            box-shadow: 0 0 100px rgba(16, 185, 129, 0.25);
-            border: 1px solid var(--border-glow);
+            box-shadow: 0 0 60px rgba(16, 185, 129, 0.35);
+            border: 2px solid var(--border-glow);
             overflow: hidden;
         }
 
-        /* EKRAN SARSINTISI */
-        @keyframes customShake {
-            0% { transform: translate(0, 0); }
+        @keyframes screenShake {
+            0% { transform: translate(0,0); }
             20% { transform: translate(-3px, 3px); }
             40% { transform: translate(3px, -3px); }
-            60% { transform: translate(-1.5px, -1.5px); }
-            80% { transform: translate(1.5px, 1.5px); }
-            100% { transform: translate(0, 0); }
+            60% { transform: translate(-2px, 1px); }
+            80% { transform: translate(1px, -2px); }
+            100% { transform: translate(0,0); }
         }
-        .shake-active { animation: customShake 0.25s ease-in-out; }
+        .shake-anim { animation: screenShake 0.25s ease-in-out; }
 
-        /* ÜST HUD ÇUBUĞU */
-        .top-hud {
+        /* ÜST KONSOL */
+        .hud-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 14px 18px;
-            background: rgba(2, 12, 6, 0.95);
-            backdrop-filter: blur(25px);
+            background: rgba(2, 15, 8, 0.95);
+            backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--border-glow);
             z-index: 50;
         }
 
-        .farmer-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .avatar-frame {
-            width: 44px;
-            height: 44px;
+        .profile-area { display: flex; align-items: center; gap: 12px; }
+        .avatar-emblem {
+            width: 42px; height: 42px;
             background: linear-gradient(135deg, #059669, #34d399);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
             font-size: 22px;
-            box-shadow: 0 0 25px rgba(16, 185, 129, 0.5);
-            border: 1px solid rgba(255,255,255,0.4);
-            position: relative;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.5);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .profile-text h1 { font-size: 13px; font-weight: 900; color: #fff; }
+        .profile-text span { font-size: 10px; color: var(--emerald); font-weight: 800; text-transform: uppercase; }
+
+        .coin-box {
+            background: rgba(4, 25, 13, 0.95);
+            border: 1px solid rgba(245, 158, 11, 0.6);
+            padding: 8px 14px;
+            border-radius: 12px;
+            font-size: 13px; font-weight: 900; color: var(--gold);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.8), 0 0 15px rgba(245, 158, 11, 0.2);
+            display: flex; align-items: center; gap: 6px;
         }
 
-        .farmer-info h2 { font-size: 13px; font-weight: 900; color: #fff; }
-        .farmer-info span { font-size: 10px; color: var(--neon-emerald); font-weight: 800; text-transform: uppercase; }
-
-        .coin-pill {
-            background: rgba(8, 25, 15, 0.95);
-            border: 1px solid rgba(245, 158, 11, 0.5);
-            padding: 7px 14px;
-            border-radius: 14px;
-            font-size: 13px;
-            font-weight: 900;
-            color: var(--neon-gold);
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.8), 0 0 20px rgba(245, 158, 11, 0.2);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* İÇERİK GÖRÜNÜM ALANI */
-        .content-viewport {
+        /* İÇERİK PORTU */
+        .viewport-container {
             flex-grow: 1;
             overflow-y: auto;
             padding: 16px;
@@ -122,395 +107,354 @@
             flex-direction: column;
             gap: 16px;
         }
+        .viewport-container::-webkit-scrollbar { width: 3px; }
+        .viewport-container::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.4); border-radius: 4px; }
 
-        .content-viewport::-webkit-scrollbar { width: 3px; }
-        .content-viewport::-webkit-scrollbar-thumb { background: rgba(52, 211, 153, 0.4); border-radius: 4px; }
+        .tab-section { display: none; flex-direction: column; gap: 14px; animation: fadeInTab 0.2s ease-out; }
+        .tab-section.active { display: flex; }
 
-        .game-segment { display: none; flex-direction: column; gap: 14px; animation: segmentFade 0.2s ease-out; }
-        .game-segment.active { display: flex; }
-
-        @keyframes segmentFade {
-            from { opacity: 0; transform: scale(0.98); }
-            to { opacity: 1; transform: scale(1); }
+        @keyframes fadeInTab {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* CAM PANELLER */
-        .glass-card {
+        .glass-panel {
             background: var(--panel-bg);
-            backdrop-filter: blur(30px);
+            backdrop-filter: blur(25px);
             border: 1px solid var(--border-glow);
-            border-radius: 22px;
+            border-radius: 20px;
             padding: 16px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.8);
+            display: flex; flex-direction: column; gap: 12px;
             position: relative;
         }
 
-        .card-title {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 11px;
-            font-weight: 800;
-            color: var(--text-dim);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        .panel-title {
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 11px; font-weight: 800; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 1px;
         }
+        .panel-title span:last-child { color: var(--emerald); }
 
-        .card-title span:last-child { color: var(--neon-emerald); }
-
-        /* KARAKTER & PET BÖLÜMÜ */
-        .companion-box {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12), rgba(6, 78, 59, 0.35));
-            border: 1px solid rgba(52, 211, 153, 0.35);
-            border-radius: 18px;
+        /* BİLGİLENDİRME KARTI */
+        .info-card {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15), rgba(2, 30, 16, 0.5));
+            border: 1px solid rgba(52, 211, 153, 0.3);
+            border-radius: 16px;
             padding: 14px;
-            display: flex;
-            align-items: center;
-            gap: 14px;
+            display: flex; align-items: center; gap: 14px;
         }
-
-        .avatar-3d {
-            font-size: 38px;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.8));
-            animation: floatAvatar 3s ease-in-out infinite alternate;
-        }
-
-        @keyframes floatAvatar {
-            0% { transform: translateY(0) rotate(0deg); }
-            100% { transform: translateY(-5px) rotate(2deg); }
-        }
-
-        .companion-info h3 { font-size: 13px; font-weight: 900; color: var(--neon-emerald); margin-bottom: 2px; }
-        .companion-info p { font-size: 11px; color: #cbd5e1; font-weight: 600; line-height: 1.35; }
+        .info-icon { font-size: 34px; }
+        .info-desc h3 { font-size: 13px; font-weight: 900; color: var(--emerald); margin-bottom: 2px; }
+        .info-desc p { font-size: 11px; color: #cbd5e1; font-weight: 600; line-height: 1.35; }
 
         /* GRID YAPILARI */
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .grid-cols-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .grid-cols-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
-        /* İZOMETRİK TARLA HÜCRELERİ (GÖZ ALICI TASARIM) */
-        .plot-tile {
-            background: linear-gradient(145deg, #072414, #020a05);
-            border: 2px solid #103c22;
-            border-radius: 18px;
-            padding: 14px 8px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            min-height: 125px;
+        /* TARLA HÜCRESİ */
+        .field-plot {
+            background: linear-gradient(145deg, #052413, #010d07);
+            border: 2px solid #0b3820;
+            border-radius: 16px;
+            padding: 12px 8px;
+            display: flex; flex-direction: column; align-items: center; justify-content: space-between;
+            min-height: 130px;
             cursor: pointer;
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
+            position: relative; overflow: hidden;
         }
+        .field-plot:hover { border-color: var(--emerald); transform: translateY(-3px); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3); }
+        .field-plot:active { transform: scale(0.95); }
 
-        .plot-tile:hover {
-            border-color: var(--neon-emerald);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.3);
-        }
+        .plot-icon { font-size: 34px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.8)); transition: transform 0.2s; }
+        .field-plot:hover .plot-icon { transform: scale(1.1); }
+        .plot-label { font-size: 10px; font-weight: 800; color: #e2e8f0; text-align: center; }
 
-        .plot-tile:active { transform: scale(0.95); }
-
-        .plot-icon { font-size: 36px; filter: drop-shadow(0 4px 10px rgba(0,0,0,0.9)); }
-        .plot-label { font-size: 11px; font-weight: 800; color: #e2e8f0; text-align: center; }
-
-        .progress-container {
-            width: 100%;
-            height: 6px;
+        .progress-shell {
+            width: 100%; height: 5px;
             background: rgba(0,0,0,0.8);
-            border-radius: 4px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 4px; overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
         }
-
-        .progress-fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #059669, var(--neon-emerald));
+        .progress-bar {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, #059669, var(--emerald));
             transition: width 0.3s linear;
         }
 
-        /* PREMIUM BUTONLAR */
-        .btn-modern {
+        /* BUTONLAR */
+        .btn-core {
             background: linear-gradient(135deg, #059669, #047857);
-            color: white;
-            border: none;
-            padding: 12px 14px;
-            border-radius: 14px;
-            font-weight: 800;
-            font-size: 11px;
-            cursor: pointer;
-            transition: all 0.2s;
+            color: #fff; border: none;
+            padding: 12px 14px; border-radius: 14px;
+            font-weight: 800; font-size: 11px;
+            cursor: pointer; transition: all 0.2s;
             box-shadow: 0 6px 20px rgba(5, 150, 105, 0.4);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            width: 100%;
-            border: 1px solid rgba(255,255,255,0.2);
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+            width: 100%; border: 1px solid rgba(255,255,255,0.2);
         }
+        .btn-core:hover { opacity: 0.95; transform: translateY(-1px); }
+        .btn-core:active { transform: scale(0.96); }
+        .btn-core.gold { background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4); }
+        .btn-core.cyan { background: linear-gradient(135deg, #0891b2, #0e7490); box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4); }
+        .btn-core.purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
 
-        .btn-modern:hover { opacity: 0.95; transform: translateY(-1px); }
-        .btn-modern:active { transform: scale(0.96); }
-        .btn-modern.gold { background: linear-gradient(135deg, #d97706, #b45309); box-shadow: 0 6px 20px rgba(217, 119, 6, 0.4); }
-        .btn-modern.cyan { background: linear-gradient(135deg, #0891b2, #0e7490); box-shadow: 0 6px 20px rgba(8, 145, 178, 0.4); }
-        .btn-modern.purple { background: linear-gradient(135deg, #7c3aed, #6d28d9); box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4); }
-
-        /* PAZAR / BORSA SATIRLARI */
         .market-row {
-            background: rgba(4, 16, 9, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 14px;
-            padding: 10px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-size: 12px;
-            font-weight: 700;
+            background: rgba(3, 18, 10, 0.9);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 14px; padding: 10px 14px;
+            display: flex; justify-content: space-between; align-items: center;
+            font-size: 12px; font-weight: 700;
         }
+        .market-row span strong { color: var(--gold); }
 
-        .market-row span strong { color: var(--neon-gold); }
-
-        /* ALT DOCK NAVİGASYON */
+        /* ALT DOCK ÇUBUĞU */
         .dock-nav {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            background: rgba(2, 12, 6, 0.98);
+            display: grid; grid-template-columns: repeat(3, 1fr);
+            background: rgba(2, 15, 8, 0.98);
             backdrop-filter: blur(25px);
             border-top: 1px solid var(--border-glow);
-            padding: 8px 10px;
-            z-index: 50;
+            padding: 8px 10px; z-index: 50;
         }
-
-        .dock-tab {
-            background: transparent;
-            border: none;
-            color: var(--text-dim);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 3px;
-            font-size: 10px;
-            font-weight: 800;
-            padding: 6px 0;
-            cursor: pointer;
-            border-radius: 14px;
-            transition: all 0.2s;
+        .dock-btn {
+            background: transparent; border: none;
+            color: var(--text-muted);
+            display: flex; flex-direction: column; align-items: center; gap: 3px;
+            font-size: 10px; font-weight: 800; padding: 6px 0;
+            cursor: pointer; border-radius: 14px; transition: all 0.2s;
         }
-
-        .dock-tab .tab-icon { font-size: 18px; transition: transform 0.2s; }
-        .dock-tab:hover { color: var(--text-light); }
-        .dock-tab.active {
-            color: var(--neon-emerald);
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.35);
+        .dock-btn .dock-icon { font-size: 18px; transition: transform 0.2s; }
+        .dock-btn:hover { color: var(--text-main); }
+        .dock-btn.active {
+            color: var(--emerald);
+            background: rgba(16, 185, 129, 0.15);
+            border: 1px solid rgba(16, 185, 129, 0.4);
         }
-        .dock-tab.active .tab-icon { transform: scale(1.2); }
+        .dock-btn.active .dock-icon { transform: scale(1.15); }
 
-        /* UÇAN KAZANÇ / BİLDİRİM TOAST */
+        /* BİLDİRİM & PARTİKÜLLER */
         #game-toast {
-            position: absolute;
-            top: 75px;
-            left: 50%;
+            position: absolute; top: 75px; left: 50%;
             transform: translateX(-50%) translateY(-30px);
-            background: rgba(4, 28, 14, 0.95);
-            border: 1px solid var(--neon-emerald);
-            color: var(--neon-emerald);
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-size: 11px;
-            font-weight: 800;
+            background: rgba(2, 28, 14, 0.95);
+            border: 1px solid var(--emerald); color: var(--emerald);
+            padding: 8px 18px; border-radius: 30px;
+            font-size: 11px; font-weight: 800;
             box-shadow: 0 10px 30px rgba(0,0,0,0.9), 0 0 20px rgba(16, 185, 129, 0.3);
-            opacity: 0;
-            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-            z-index: 100;
-            pointer-events: none;
-            white-space: nowrap;
+            opacity: 0; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            z-index: 100; pointer-events: none; white-space: nowrap;
         }
         #game-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        .floating-text {
-            position: absolute;
-            font-size: 15px;
-            font-weight: 900;
-            color: var(--neon-gold);
-            text-shadow: 0 0 10px rgba(245, 158, 11, 0.8);
-            pointer-events: none;
-            animation: floatUpAnim 0.8s ease-out forwards;
-            z-index: 99;
+        .particle-text {
+            position: absolute; font-size: 15px; font-weight: 900;
+            color: var(--gold); text-shadow: 0 0 10px rgba(245, 158, 11, 0.9);
+            pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 99;
         }
-
-        @keyframes floatUpAnim {
+        @keyframes floatUp {
             0% { transform: translateY(0) scale(0.8); opacity: 1; }
-            100% { transform: translateY(-60px) scale(1.3); opacity: 0; }
+            100% { transform: translateY(-65px) scale(1.3); opacity: 0; }
         }
     </style>
 </head>
 <body>
 
-    <div id="app-frame">
-        <div id="game-toast">Sistem Senkronize Edildi ✨</div>
+    <div id="game-wrapper">
+        <div id="game-toast">Sistem Hazır ✨</div>
 
-        <!-- ÜST HUD KONSOLU -->
-        <header class="top-hud">
-            <div class="farmer-profile">
-                <div class="avatar-frame">🧑‍🌾</div>
-                <div class="farmer-info">
-                    <h2>Apex Çiftliği</h2>
-                    <span>Seviye 1 Master</span>
+        <!-- ÜST KONSOL -->
+        <header class="hud-header">
+            <div class="profile-area">
+                <div class="avatar-emblem">🌾</div>
+                <div class="profile-text">
+                    <h1>Apex Agro</h1>
+                    <span>Master Çiftçi</span>
                 </div>
             </div>
-            <div class="coin-pill">
-                🪙 <span id="txt-gold">3500</span> ₺
+            <div class="coin-box">
+                🪙 <span id="txt-gold">5000</span> ₺
             </div>
         </header>
 
         <!-- ORTA İÇERİK PORTU -->
-        <div class="content-viewport">
+        <div class="viewport-container">
 
-            <!-- SEGMENT 1: BIO-DOME (TARLA VE ASİSTAN) -->
-            <section id="pane-farm" class="game-segment active">
-                <div class="companion-box">
-                    <div class="avatar-3d">🤖</div>
-                    <div class="companion-info">
-                        <h3>Sistem Asistanı</h3>
-                        <p>Parsellere dokunarak mahsul ek ve olgunlaşınca hasat et. Kazancını katla!</p>
+            <!-- SEKME 1: TARLA (BIO-DOME) -->
+            <section id="pane-farm" class="tab-section active">
+                <div class="info-card">
+                    <div class="info-icon">🧑‍🌾</div>
+                    <div class="info-desc">
+                        <h3>Tarla Döngüsü</h3>
+                        <p>1. Çapa At 🟫 ➔ 2. Tohum Serp 🌱 ➔ 3. Can Suyu Ver 💧 ➔ 4. Hasat Et 🌾!</p>
                     </div>
                 </div>
 
-                <div class="glass-card">
-                    <div class="card-title">
-                        <span>Nano-Tarım Parselleri</span>
-                        <span>6 Parsel Aktif</span>
+                <div class="glass-panel">
+                    <div class="panel-title">
+                        <span>Aktif Tarım Parselleri</span>
+                        <span>6 Bölme</span>
                     </div>
-                    <div class="grid-3" id="plot-grid"></div>
+                    <div class="grid-cols-3" id="plots-box"></div>
                 </div>
 
-                <div class="glass-card">
-                    <div class="card-title">
-                        <span>Kuantum Tohum Seçimi</span>
-                        <span id="txt-seed-name">Buğday (Aktif)</span>
+                <div class="glass-panel">
+                    <div class="panel-title">
+                        <span>Tohum Envanteri</span>
+                        <span id="txt-selected-seed">Buğday (Aktif)</span>
                     </div>
-                    <div class="grid-2">
-                        <button class="btn-modern" onclick="selectSeed('wheat', 30, 'Buğday')">🌾 Buğday (30₺)</button>
-                        <button class="btn-modern cyan" onclick="selectSeed('strawberry', 90, 'Çilek')">🍓 Çilek (90₺)</button>
+                    <div class="grid-cols-2">
+                        <button class="btn-core" onclick="selectSeed('wheat', 40, 'Buğday')">🌾 Buğday (40₺)</button>
+                        <button class="btn-core cyan" onclick="selectSeed('corn', 90, 'Mısır')">🌽 Mısır (90₺)</button>
                     </div>
                 </div>
             </section>
 
-            <!-- SEGMENT 2: GEN-LAB (AHIR & CANLILAR) -->
-            <section id="pane-animals" class="game-segment">
-                <div class="glass-card">
-                    <div class="card-title">
+            <!-- SEKME 2: AHIR (RANCH) -->
+            <section id="pane-ranch" class="tab-section">
+                <div class="glass-panel">
+                    <div class="panel-title">
                         <span>Biyoteknolojik Ahır</span>
-                        <span>Aktif Üniteler</span>
+                        <span>Tesisler</span>
                     </div>
-                    <div class="grid-2" id="animal-grid"></div>
+                    <div class="grid-cols-2" id="ranch-box"></div>
                 </div>
 
-                <div class="glass-card">
-                    <div class="card-title">
-                        <span>Canlı Tedarik Borsası</span>
-                        <span>Tesis Genişlet</span>
+                <div class="glass-panel">
+                    <div class="panel-title">
+                        <span>Canlı Yatırımları</span>
+                        <span>Kurulum</span>
                     </div>
-                    <div class="grid-2">
-                        <button class="btn-modern" onclick="buyAnimal('chicken', 350)">🐔 Tavuk Ünitesi (350₺)</button>
-                        <button class="btn-modern cyan" onclick="buyAnimal('cow', 1000)">🐄 İnek Ünitesi (1000₺)</button>
+                    <div class="grid-cols-2">
+                        <button class="btn-core" onclick="buyRanchUnit('chicken', 400)">🐔 Tavuk Ünitesi (400₺)</button>
+                        <button class="btn-core cyan" onclick="buyRanchUnit('cow', 1100)">🐄 İnek Ünitesi (1100₺)</button>
                     </div>
                 </div>
             </section>
 
-            <!-- SEGMENT 3: FABRİKA & BORSA -->
-            <section id="pane-factory" class="game-segment">
-                <div class="glass-card">
-                    <div class="card-title">
-                        <span>Sentez Fabrikası</span>
-                        <span>İşleme Reaktörü</span>
+            <!-- SEKME 3: ENDÜSTRİ & BORSA -->
+            <section id="pane-market" class="tab-section">
+                <div class="glass-panel">
+                    <div class="panel-title">
+                        <span>Gıda Sentez Reaktörü</span>
+                        <span>Üretim</span>
                     </div>
-                    <div style="font-size: 11px; color: var(--text-dim); line-height: 1.4;">
-                        5x Buğday dönüştürerek 1x Saf Un elde et.
+                    <div style="font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+                        5x Buğday dönüştürerek yüksek değerli 1x Saf Un elde et.
                     </div>
-                    <button class="btn-modern gold" onclick="craftItem('flour', 'wheat', 5, 1)">Un Üret (5x Buğday ➡️ 1x Un)</button>
+                    <button class="btn-core gold" onclick="craftFlour()">Un Sentezle (5x Buğday ➡️ 1x Un)</button>
                 </div>
 
-                <div class="glass-card">
-                    <div class="card-title">
-                        <span>Soğuk Depo & Anlık Borsa</span>
-                        <span>Likidite Paneli</span>
+                <div class="glass-panel">
+                    <div class="panel-title">
+                        <span>Soğuk Hava Deposu & Borsa</span>
+                        <span>Likidite</span>
                     </div>
                     <div class="market-row">
                         <span>🌾 Buğday: <strong id="inv-wheat">0</strong></span>
-                        <button class="btn-modern" style="width: auto; padding: 5px 12px;" onclick="sellGoods('wheat', 45)">Sat (45₺)</button>
+                        <button class="btn-core" style="width:auto; padding:5px 12px;" onclick="sellItem('wheat', 65)">Sat (65₺)</button>
                     </div>
                     <div class="market-row">
-                        <span>🍓 Çilek: <strong id="inv-strawberry">0</strong></span>
-                        <button class="btn-modern cyan" style="width: auto; padding: 5px 12px;" onclick="sellGoods('strawberry', 130)">Sat (130₺)</button>
+                        <span>🌽 Mısır: <strong id="inv-corn">0</strong></span>
+                        <button class="btn-core cyan" style="width:auto; padding:5px 12px;" onclick="sellItem('corn', 140)">Sat (140₺)</button>
                     </div>
                     <div class="market-row">
                         <span>🥚 Yumurta: <strong id="inv-egg">0</strong></span>
-                        <button class="btn-modern gold" style="width: auto; padding: 5px 12px;" onclick="sellGoods('egg', 95)">Sat (95₺)</button>
+                        <button class="btn-core gold" style="width:auto; padding:5px 12px;" onclick="sellItem('egg', 100)">Sat (100₺)</button>
                     </div>
                     <div class="market-row">
                         <span>🥛 Süt: <strong id="inv-milk">0</strong></span>
-                        <button class="btn-modern gold" style="width: auto; padding: 5px 12px;" onclick="sellGoods('milk', 210)">Sat (210₺)</button>
+                        <button class="btn-core gold" style="width:auto; padding:5px 12px;" onclick="sellItem('milk', 230)">Sat (230₺)</button>
                     </div>
                     <div class="market-row">
-                        <span>🥡 Un: <strong id="inv-flour">0</strong></span>
-                        <button class="btn-modern purple" style="width: auto; padding: 5px 12px;" onclick="sellGoods('flour', 350)">Sat (350₺)</button>
+                        <span>🥡 Saf Un: <strong id="inv-flour">0</strong></span>
+                        <button class="btn-core purple" style="width:auto; padding:5px 12px;" onclick="sellItem('flour', 380)">Sat (380₺)</button>
                     </div>
                 </div>
             </section>
 
         </div>
 
-        <!-- ALT DOCK NAVİGASYON ÇUBUĞU -->
+        <!-- ALT DOCK NAVİGASYON -->
         <nav class="dock-nav">
-            <button class="dock-tab active" onclick="switchSegment('farm', this)"><span class="tab-icon">🌿</span><span>Bio-Dome</span></button>
-            <button class="dock-tab" onclick="switchSegment('animals', this)"><span class="tab-icon">🧬</span><span>Gen-Lab</span></button>
-            <button class="dock-tab" onclick="switchSegment('factory', this)"><span class="tab-icon">⚙️</span><span>Endüstri</span></button>
+            <button class="dock-btn active" onclick="switchTab('farm', this)"><span class="dock-icon">🌿</span><span>Tarla</span></button>
+            <button class="dock-btn" onclick="switchTab('ranch', this)"><span class="dock-icon">🧬</span><span>Ahır</span></button>
+            <button class="dock-btn" onclick="switchTab('market', this)"><span class="dock-icon">🏭</span><span>Borsa</span></button>
         </nav>
     </div>
 
     <script>
+        // WEB AUDIO API SES MOTORU
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSfx(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            let now = audioCtx.currentTime;
+
+            if (type === 'tap') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(450, now);
+                osc.frequency.exponentialRampToValueAtTime(700, now + 0.06);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.06);
+                osc.start(now); osc.stop(now + 0.06);
+            } else if (type === 'success') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.08);
+                osc.frequency.setValueAtTime(783.99, now + 0.16);
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                osc.start(now); osc.stop(now + 0.25);
+            } else if (type === 'error') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(140, now);
+                osc.frequency.setValueAtTime(90, now + 0.1);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now); osc.stop(now + 0.15);
+            }
+        }
+
         let game = {
-            gold: 3500,
+            gold: 5000,
             activeSeed: 'wheat',
-            seedCost: 30,
+            seedCost: 40,
             seedName: 'Buğday',
-            inventory: { wheat: 0, strawberry: 0, egg: 0, milk: 0, flour: 0 },
+            inventory: { wheat: 0, corn: 0, egg: 0, milk: 0, flour: 0 },
+            // Parsel durumları: 'empty', 'plowed', 'seeded', 'watered', 'ready'
             plots: Array.from({ length: 6 }, () => ({ state: 'empty', crop: null, progress: 0, max: 4 })),
-            animals: [
-                { type: 'chicken', name: 'Tavuk Ünitesi', status: 'ready', progress: 0, max: 5 },
-                { type: 'cow', name: 'İnek Ünitesi', status: 'ready', progress: 0, max: 8 },
+            ranchUnits: [
+                { type: 'chicken', name: 'Tavuk Kümesi', status: 'ready', progress: 0, max: 5 },
+                { type: 'cow', name: 'İnek Ahırı', status: 'ready', progress: 0, max: 8 },
                 { type: 'empty', name: 'Boş Yuva', status: 'locked', progress: 0, max: 0 },
                 { type: 'empty', name: 'Boş Yuva', status: 'locked', progress: 0, max: 0 }
             ]
         };
 
-        function triggerShake() {
-            let frame = document.getElementById('app-frame');
-            frame.classList.add('shake-active');
-            setTimeout(() => frame.classList.remove('shake-active'), 250);
+        function triggerShakeAnim() {
+            let wrap = document.getElementById('game-wrapper');
+            wrap.classList.add('shake-anim');
+            setTimeout(() => wrap.classList.remove('shake-anim'), 250);
         }
 
-        function showToast(msg) {
+        function showToastMsg(msg) {
             let t = document.getElementById('game-toast');
             t.innerText = msg;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
-        function spawnFloatingText(e, text) {
+        function spawnParticle(e, text) {
             let rect = e.currentTarget.getBoundingClientRect();
             let x = e.clientX - rect.left;
             let y = e.clientY - rect.top;
 
             let el = document.createElement('div');
-            el.className = 'floating-text';
+            el.className = 'particle-text';
             el.innerText = text;
             el.style.left = `${x}px`;
             el.style.top = `${y}px`;
@@ -519,205 +463,229 @@
         }
 
         function selectSeed(type, cost, name) {
+            playSfx('tap');
             game.activeSeed = type;
             game.seedCost = cost;
             game.seedName = name;
-            document.getElementById('txt-seed-name').innerText = `${name} (Aktif)`;
-            showToast(`${name} tohumu sisteme yüklendi.`);
+            document.getElementById('txt-selected-seed').innerText = `${name} (Aktif)`;
+            showToastMsg(`${name} tohumu seçildi.`);
         }
 
         function renderPlots() {
-            let grid = document.getElementById('plot-grid');
-            grid.innerHTML = '';
+            let box = document.getElementById('plots-box');
+            box.innerHTML = '';
             game.plots.forEach((p, idx) => {
                 let cell = document.createElement('div');
-                cell.className = 'plot-tile';
+                cell.className = 'field-plot';
                 let icon = '🟫', label = 'Boş Toprak', pct = 0;
 
-                if (p.state === 'growing') {
-                    icon = p.crop === 'wheat' ? '🌱' : '🌿';
+                if (p.state === 'plowed') {
+                    icon = '⛏️'; label = 'Çapalandı (Tohum)';
+                } else if (p.state === 'seeded') {
+                    icon = '🌱'; label = 'Ekim (Su Ver)';
+                } else if (p.state === 'watered') {
+                    icon = '💧';
                     pct = Math.floor((p.progress / p.max) * 100);
-                    label = `%${pct} Gelişiyor`;
+                    label = `%${pct} Büyüyor`;
                 } else if (p.state === 'ready') {
-                    icon = p.crop === 'wheat' ? '🌾' : '🍓';
-                    label = 'Hasat Hazır!';
+                    icon = p.crop === 'wheat' ? '🌾' : '🌽';
+                    label = 'Hasat Hazır! 🌟';
                 }
 
                 cell.innerHTML = `
                     <div class="plot-icon">${icon}</div>
                     <div class="plot-label">${label}</div>
-                    <div class="progress-container"><div class="progress-fill" style="width: ${pct}%"></div></div>
+                    <div class="progress-shell"><div class="progress-bar" style="width: ${pct}%"></div></div>
                 `;
-                cell.onclick = (e) => handlePlotClick(idx, e);
-                grid.appendChild(cell);
+                cell.onclick = (e) => handlePlotInteraction(idx, e);
+                box.appendChild(cell);
             });
         }
 
-        function handlePlotClick(idx, e) {
+        function handlePlotInteraction(idx, e) {
             let p = game.plots[idx];
             if (p.state === 'empty') {
                 if (game.gold < game.seedCost) {
-                    showToast('Yetersiz bakiye!');
+                    playSfx('error');
+                    showToastMsg('Yetersiz bakiye!');
                     return;
                 }
                 game.gold -= game.seedCost;
-                p.state = 'growing';
+                playSfx('tap');
+                p.state = 'plowed';
+                showToastMsg('Toprak çapalandı!');
+            } else if (p.state === 'plowed') {
+                playSfx('tap');
+                p.state = 'seeded';
                 p.crop = game.activeSeed;
+                showToastMsg(`${game.seedName} tohumu serpildi!`);
+            } else if (p.state === 'seeded') {
+                playSfx('tap');
+                p.state = 'watered';
                 p.progress = 0;
                 p.max = p.crop === 'wheat' ? 4 : 7;
-                showToast(`${game.seedName} ekildi.`);
+                showToastMsg('Can suyu verildi, büyüyor...');
             } else if (p.state === 'ready') {
+                playSfx('success');
                 game.inventory[p.crop]++;
-                triggerShake();
-                spawnFloatingText(e, `+1 ${p.crop === 'wheat' ? 'Buğday' : 'Çilek'}`);
-                showToast(`Hasat Toplandı!`);
+                triggerShakeAnim();
+                spawnParticle(e, `+1 ${p.crop === 'wheat' ? 'Buğday' : 'Mısır'}`);
+                showToastMsg('Mahsul toplandı!');
                 p.state = 'empty';
                 p.crop = null;
                 p.progress = 0;
             }
-            syncUI();
+            syncUIs();
         }
 
-        function renderAnimals() {
-            let box = document.getElementById('animal-grid');
+        function renderRanch() {
+            let box = document.getElementById('ranch-box');
             box.innerHTML = '';
-            game.animals.forEach((a, idx) => {
+            game.ranchUnits.forEach((u, idx) => {
                 let cell = document.createElement('div');
-                cell.className = 'glass-card';
+                cell.className = 'glass-panel';
                 let icon = '🏗️', label = 'Boş Yuva', pct = 0;
 
-                if (a.type === 'chicken') {
+                if (u.type === 'chicken') {
                     icon = '🐔';
-                    pct = Math.floor((a.progress / a.max) * 100);
-                    label = a.status === 'ready' ? 'Yumurta Hazır! (Tıkla)' : `%${pct} Bekliyor`;
-                } else if (a.type === 'cow') {
+                    pct = Math.floor((u.progress / u.max) * 100);
+                    label = u.status === 'ready' ? 'Yumurta Hazır! 🥚' : `%${pct} Üretiyor`;
+                } else if (u.type === 'cow') {
                     icon = '🐄';
-                    pct = Math.floor((a.progress / a.max) * 100);
-                    label = a.status === 'ready' ? 'Süt Hazır! (Tıkla)' : `%${pct} Bekliyor`;
+                    pct = Math.floor((u.progress / u.max) * 100);
+                    label = u.status === 'ready' ? 'Süt Hazır! 🥛' : `%${pct} Üretiyor`;
                 }
 
                 cell.innerHTML = `
                     <div style="display:flex; align-items:center; gap:10px;">
                         <span style="font-size:30px;">${icon}</span>
                         <div>
-                            <div style="font-weight:800; font-size:12px; color:#fff;">${a.name}</div>
-                            <div style="font-size:11px; color:var(--neon-emerald); font-weight:700;">${label}</div>
+                            <div style="font-weight:900; font-size:12px; color:#fff;">${u.name}</div>
+                            <div style="font-size:10px; color:var(--emerald); font-weight:800;">${label}</div>
                         </div>
                     </div>
-                    <div class="progress-container"><div class="progress-fill" style="width: ${pct}%"></div></div>
+                    <div class="progress-shell"><div class="progress-bar" style="width: ${pct}%"></div></div>
                 `;
-                cell.onclick = (e) => handleAnimalClick(idx, e);
+                cell.onclick = (e) => handleRanchInteraction(idx, e);
                 box.appendChild(cell);
             });
         }
 
-        function handleAnimalClick(idx, e) {
-            let a = game.animals[idx];
-            if (a.status === 'ready') {
-                if (a.type === 'chicken') {
+        function handleRanchInteraction(idx, e) {
+            let u = game.ranchUnits[idx];
+            if (u.status === 'ready') {
+                playSfx('success');
+                if (u.type === 'chicken') {
                     game.inventory.egg++;
-                    spawnFloatingText(e, '+1 🥚');
-                    showToast('1x Yumurta toplandı!');
-                } else if (a.type === 'cow') {
+                    spawnParticle(e, '+1 🥚');
+                    showToastMsg('Yumurta toplandı!');
+                } else if (u.type === 'cow') {
                     game.inventory.milk++;
-                    spawnFloatingText(e, '+1 🥛');
-                    showToast('1x Süt sağıldı!');
+                    spawnParticle(e, '+1 🥛');
+                    showToastMsg('Süt sağıldı!');
                 }
-                triggerShake();
-                a.status = 'growing';
-                a.progress = 0;
-                syncUI();
+                triggerShakeAnim();
+                u.status = 'growing';
+                u.progress = 0;
+                syncUIs();
             }
         }
 
-        function buyAnimal(type, cost) {
+        function buyRanchUnit(type, cost) {
             if (game.gold < cost) {
-                showToast('Yetersiz sermaye!');
+                playSfx('error');
+                showToastMsg('Yetersiz sermaye!');
                 return;
             }
-            let emptyIdx = game.animals.findIndex(a => a.type === 'empty');
+            let emptyIdx = game.ranchUnits.findIndex(u => u.type === 'empty');
             if (emptyIdx === -1) {
-                showToast('Tüm genetik yuvalar dolu!');
+                playSfx('error');
+                showToastMsg('Tüm yuvalar dolu!');
                 return;
             }
+            playSfx('success');
             game.gold -= cost;
-            game.animals[emptyIdx] = {
+            game.ranchUnits[emptyIdx] = {
                 type: type,
-                name: type === 'chicken' ? 'Tavuk Ünitesi' : 'İnek Ünitesi',
+                name: type === 'chicken' ? 'Tavuk Kümesi' : 'İnek Ahırı',
                 status: 'growing',
                 progress: 0,
                 max: type === 'chicken' ? 5 : 8
             };
-            showToast('Yeni genetik ünite kuruldu!');
-            renderAnimals();
-            syncUI();
+            showToastMsg('Yeni tesis kuruldu!');
+            renderRanch();
+            syncUIs();
         }
 
-        function sellGoods(item, price) {
+        function sellItem(item, price) {
             let qty = game.inventory[item];
             if (qty <= 0) {
-                showToast('Depoda bu ürün yok!');
+                playSfx('error');
+                showToastMsg('Depoda bu üründen yok!');
                 return;
             }
+            playSfx('success');
             let rev = qty * price;
             game.gold += rev;
             game.inventory[item] = 0;
-            triggerShake();
-            showToast(`+${rev} 🪙 ciro kasaya aktarıldı!`);
-            syncUI();
+            triggerShakeAnim();
+            showToastMsg(`+${rev} 🪙 kasaya aktarıldı!`);
+            syncUIs();
         }
 
-        function craftItem(targetItem, sourceItem, reqQty, outQty) {
-            if (game.inventory[sourceItem] < reqQty) {
-                showToast('Yetersiz hammadde!');
+        function craftFlour() {
+            if (game.inventory.wheat < 5) {
+                playSfx('error');
+                showToastMsg('En az 5x Buğday gerekli!');
                 return;
             }
-            game.inventory[sourceItem] -= reqQty;
-            game.inventory[targetItem] += outQty;
-            showToast('Fabrikada un sentezlendi! ⚙️');
-            syncUI();
+            playSfx('success');
+            game.inventory.wheat -= 5;
+            game.inventory.flour++;
+            showToastMsg('1x Saf Un sentezlendi! 🥡');
+            syncUIs();
         }
 
-        // ZAMANLAYICI DÖNGÜSÜ
+        // 1 SANİYELİK OYUN DÖNGÜSÜ
         setInterval(() => {
             game.plots.forEach(p => {
-                if (p.state === 'growing') {
+                if (p.state === 'watered') {
                     p.progress++;
                     if (p.progress >= p.max) p.state = 'ready';
                 }
             });
 
-            game.animals.forEach(a => {
-                if (a.status === 'growing') {
-                    a.progress++;
-                    if (a.progress >= a.max) a.status = 'ready';
+            game.ranchUnits.forEach(u => {
+                if (u.status === 'growing') {
+                    u.progress++;
+                    if (u.progress >= u.max) u.status = 'ready';
                 }
             });
 
             renderPlots();
-            renderAnimals();
-            syncUI();
+            renderRanch();
         }, 1000);
 
-        function syncUI() {
+        function syncUIs() {
             document.getElementById('txt-gold').innerText = game.gold;
             document.getElementById('inv-wheat').innerText = game.inventory.wheat;
-            document.getElementById('inv-strawberry').innerText = game.inventory.strawberry;
+            document.getElementById('inv-corn').innerText = game.inventory.corn;
             document.getElementById('inv-egg').innerText = game.inventory.egg;
             document.getElementById('inv-milk').innerText = game.inventory.milk;
             document.getElementById('inv-flour').innerText = game.inventory.flour;
         }
 
-        function switchSegment(id, btn) {
-            document.querySelectorAll('.game-segment').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.dock-tab').forEach(b => b.classList.remove('active'));
+        function switchTab(id, btn) {
+            playSfx('tap');
+            document.querySelectorAll('.tab-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
             document.getElementById('pane-' + id).classList.add('active');
             btn.classList.add('active');
         }
 
         renderPlots();
-        renderAnimals();
-        syncUI();
+        renderRanch();
+        syncUIs();
     </script>
 </body>
 </html>
