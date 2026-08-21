@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stellar Farm: Studio Masterpiece</title>
+    <title>Stellar Farm: Executive Edition</title>
     <style>
         :root {
-            --bg-deep: #060913;
+            --bg-deep: #040814;
             --surface: #0f172a;
-            --surface-glass: rgba(15, 23, 42, 0.88);
+            --surface-glass: rgba(15, 23, 42, 0.9);
             --border: rgba(255, 255, 255, 0.08);
             --accent-green: #10b981;
             --accent-gold: #f59e0b;
@@ -18,7 +18,7 @@
             --text-muted: #94a3b8;
         }
 
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
 
         body {
             background-color: var(--bg-deep);
@@ -35,18 +35,34 @@
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: linear-gradient(180deg, #162035 0%, #0a0f1d 100%);
+            background: linear-gradient(180deg, #131c31 0%, #070b16 100%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.9);
+            box-shadow: 0 0 50px rgba(0,0,0,0.9);
+        }
+
+        /* Uçan Değer Efekti (Floating Text) */
+        .float-text {
+            position: absolute;
+            font-size: 14px;
+            font-weight: 900;
+            color: var(--accent-gold);
+            pointer-events: none;
+            animation: floatUp 0.8s ease-out forwards;
+            z-index: 500;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.8);
+        }
+        @keyframes floatUp {
+            0% { transform: translateY(0) scale(0.8); opacity: 1; }
+            100% { transform: translateY(-40px) scale(1.2); opacity: 0; }
         }
 
         /* Toast Bildirim */
         #toast {
             position: absolute;
-            top: 75px;
+            top: 85px;
             left: 50%;
             transform: translateX(-50%) translateY(-20px);
             background: linear-gradient(135deg, var(--accent-green), #059669);
@@ -64,19 +80,18 @@
         }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Yönlendirme Balonu / Görev Rehberi (Quest Banner) */
-        .quest-banner {
-            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15), rgba(15, 23, 42, 0.9));
-            border-bottom: 1px solid rgba(245, 158, 11, 0.3);
-            padding: 8px 16px;
+        /* Karakter Diyalog ve Görev Paneli */
+        .character-guide {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.1), rgba(15, 23, 42, 0.95));
+            border-bottom: 1px solid rgba(56, 189, 248, 0.25);
+            padding: 8px 14px;
             display: flex;
             align-items: center;
             gap: 10px;
-            font-size: 11px;
-            font-weight: 700;
-            color: var(--accent-gold);
             z-index: 20;
         }
+        .guide-avatar { font-size: 24px; background: rgba(0,0,0,0.4); padding: 4px; border-radius: 50%; border: 1px solid var(--border); }
+        .guide-text { font-size: 10px; font-weight: 700; color: #bae6fd; line-height: 1.3; }
 
         /* Üst HUD */
         .hud-header {
@@ -114,7 +129,7 @@
         .tab-pane { display: none; flex-direction: column; gap: 12px; }
         .tab-pane.active { display: flex; }
 
-        /* Panel Kartları */
+        /* Paneller */
         .panel {
             background: var(--surface-glass);
             backdrop-filter: blur(12px);
@@ -136,10 +151,10 @@
             align-items: center;
         }
 
-        /* Gelişmiş Tarla Parsel Grid (Ekim Animasyonlu) */
+        /* Tarla Grid */
         .plots-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
         .plot-box {
-            background: linear-gradient(145deg, #131b2e, #0a0f1d);
+            background: linear-gradient(145deg, #101827, #070b14);
             border: 2px solid #1e293b;
             border-radius: 16px;
             padding: 12px;
@@ -152,26 +167,12 @@
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            transition: all 0.2s;
         }
         .plot-box.ready {
             border-color: var(--accent-green);
-            background: linear-gradient(145deg, rgba(16, 185, 129, 0.15), #0a0f1d);
-            box-shadow: 0 0 20px rgba(16, 185, 129, 0.25);
-            animation: pulseReady 1.5s infinite alternate;
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.15), #070b14);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
         }
-        @keyframes pulseReady {
-            from { box-shadow: 0 0 10px rgba(16, 185, 129, 0.2); }
-            to { box-shadow: 0 0 22px rgba(16, 185, 129, 0.5); }
-        }
-
-        /* Ekim Efekti / Parçacık Animasyonu */
-        @keyframes plantBounce {
-            0% { transform: scale(0.3) translateY(10px); opacity: 0; }
-            60% { transform: scale(1.15) translateY(-5px); opacity: 1; }
-            100% { transform: scale(1) translateY(0); opacity: 1; }
-        }
-        .plant-anim { animation: plantBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
 
         .progress-track { width: 100%; height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
         .progress-fill { height: 100%; background: var(--accent-green); width: 0%; transition: width 0.1s linear; }
@@ -211,7 +212,7 @@
         /* Alt Dock Navigasyon */
         .nav-dock {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             background: var(--surface-glass);
             backdrop-filter: blur(15px);
             border-top: 1px solid var(--border);
@@ -243,19 +244,20 @@
 </head>
 <body>
 
-    <div id="game-viewport">
+    <div id="game-viewport" onclick="createFloatText(event)">
         <div id="toast">Bildirim mesajı</div>
 
-        <!-- Üst Yönlendirme ve Görev Banner -->
-        <div class="quest-banner">
-            <span>🎯 Görev:</span> <span id="quest-text">Buğday ekin ve hasat edin!</span>
+        <!-- Karakter Rehber Paneli -->
+        <div class="character-guide">
+            <div class="guide-avatar">👨‍🌾</div>
+            <div class="guide-text" id="guide-msg">"Çiftlik müdürü Ali göreve hazır! Tohumları ekin, mahsulleri fabrikada işleyin."</div>
         </div>
 
         <!-- Üst HUD -->
         <div class="hud-header">
-            <div class="hud-stat gold"><span>🪙</span> <span id="ui-gold">350</span></div>
-            <div class="hud-stat" style="color:var(--accent-blue);"><span>📦</span> <span id="ui-inv">0/20</span></div>
-            <div class="hud-stat" style="color:var(--accent-purple);"><span>⭐</span> <span id="ui-xp">0 XP (LVL 1)</span></div>
+            <div class="hud-stat gold"><span>🪙</span> <span id="ui-gold">400</span></div>
+            <div class="hud-stat" style="color:var(--accent-blue);"><span>📦</span> <span id="ui-inv">0/25</span></div>
+            <div class="hud-stat" style="color:var(--accent-purple);"><span>⭐</span> <span id="ui-xp">0/100 XP (Lvl 1)</span></div>
         </div>
 
         <!-- Ana Sekmeler -->
@@ -275,83 +277,101 @@
                     <div class="plots-grid" id="plots-container"></div>
                 </div>
 
-                <!-- Destek Paneli -->
                 <div class="panel">
-                    <div class="panel-title">Çiftlik Güçlendiricileri (Oyun Parasıyla)</div>
+                    <div class="panel-title">Tarım Destekleri (Oyun Parası)</div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn blue" onclick="applyWatering()">💧 Hızlı Sulama (25🪙)</button>
-                        <button class="btn purple" onclick="applyFertilizer()">🧪 Süper Gübre (50🪙)</button>
+                        <button class="btn blue" onclick="applyWatering()">💧 Hızlı Sulama (20🪙)</button>
+                        <button class="btn purple" onclick="applyFertilizer()">🧪 Süper Gübre (45🪙)</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. HAYVANCILIK & MANDIRA SEKMESİ -->
+            <!-- 2. HAYVANCILIK & FABRİKA SEKMESİ -->
             <div id="pane-animals" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Ahır ve Kümes Tesisleri</div>
-                    
+                    <div class="panel-title">Ahır ve Kümes</div>
                     <div class="row-item">
                         <div>
                             <div style="font-weight: 800; font-size: 11px;">🐄 Süt İneği</div>
                             <div style="font-size: 9px; color: var(--text-muted);">Üretim: Taze Süt 🥛</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectAnimal('cow')">Sağ (Al)</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectItem('milk')">Sağ</button>
                     </div>
-
                     <div class="row-item">
                         <div>
                             <div style="font-weight: 800; font-size: 11px;">🐔 Gezen Tavuk</div>
                             <div style="font-size: 9px; color: var(--text-muted);">Üretim: Yumurta 🥚</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectAnimal('chicken')">Topla</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectItem('egg')">Topla</button>
                     </div>
                 </div>
 
                 <div class="panel">
-                    <div class="panel-title">İşleme Fabrikası (Mandıra)</div>
+                    <div class="panel-title">İşleme Fabrikaları (Mandıra & Fırın)</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🧀 Peynir Üretim Kazanı</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">1 Süt 🥛 -> Kaliteli Peynir 🧀</div>
+                            <div style="font-weight: 800; font-size: 11px;">🧀 Peynir Yapımı</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">1 Süt -> 1 Peynir</div>
                         </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processCheese()">Dönüştür</button>
+                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processItem('cheese')">Dönüştür</button>
+                    </div>
+                    <div class="row-item">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">🍞 Un ve Ekmek Fırını</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">1 Buğday -> 1 Ekmek</div>
+                        </div>
+                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processItem('bread')">Pişir</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. PAZAR VE ARSA GENİŞLETME SEKMESİ -->
+            <!-- 3. PAZAR VE ARSA GENİŞLETME -->
             <div id="pane-market" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Ürün Pazarı ve Satış</div>
+                    <div class="panel-title">Pazar ve Satış Terminali</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;" id="market-stock-text">Depodaki Ürünler (0)</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Tüm mahsulleri altına dönüştür</div>
+                            <div style="font-weight: 800; font-size: 11px;" id="market-text">Depodaki Ürünler (0)</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Tüm mahsulleri ve eşyaları altına çevir</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 14px;" onclick="sellAllInventory()">Hepsini Sat 💰</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 14px;" onclick="sellAll()">Hepsini Sat 💰</button>
                     </div>
                 </div>
 
                 <div class="panel">
-                    <div class="panel-title">Bölge ve Arsa Genişletme</div>
+                    <div class="panel-title">Arsa ve Toprak Lisansı</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🚜 Yeni Parsel Kilidi Aç</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Toplam parsel sayısını artırır</div>
+                            <div style="font-weight: 800; font-size: 11px;">🚜 Yeni Parsel Aç</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Çiftlik kapasitesini büyütür</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="unlockNewPlot()" id="unlock-btn">400 🪙</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="unlockPlot()">500 🪙</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. AYARLAR SEKMESİ -->
+            <!-- 4. GÖREVLER VE BAŞARIMLAR -->
+            <div id="pane-quests" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Günlük Çiftlik Görevleri</div>
+                    <div class="row-item">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">🎯 5 Hasat Topla</div>
+                            <div style="font-size: 9px; color: var(--text-muted);" id="q1-status">İlerleme: 0/5</div>
+                        </div>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="claimQuest(1)" id="q1-btn">Ödül Al</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. AYARLAR -->
             <div id="pane-settings" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Oyun Seçenekleri</div>
+                    <div class="panel-title">Oyun Kontrolleri</div>
                     <div class="row-item">
                         <div>
                             <div style="font-weight: 800; font-size: 11px;">Ses Efektleri (SFX)</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Aksiyon sesleri ve bildirimler</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Sentetik oyun sesleri</div>
                         </div>
                         <button class="btn blue" style="width: auto; padding: 6px 12px;" onclick="toggleAudio()" id="sfx-btn">Açık 🔊</button>
                     </div>
@@ -365,12 +385,12 @@
             <button class="nav-item active" onclick="switchTab('farm', this)"><span class="nav-icon">🌾</span><span>Tarla</span></button>
             <button class="nav-item" onclick="switchTab('animals', this)"><span class="nav-icon">🐄</span><span>Ahır</span></button>
             <button class="nav-item" onclick="switchTab('market', this)"><span class="nav-icon">🛒</span><span>Pazar</span></button>
-            <button class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayarlar</span></button>
+            <button class="nav-item" onclick="switchTab('quests', this)"><span class="nav-icon">🎯</span><span>Görev</span></button>
+            <button class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayar</span></button>
         </div>
     </div>
 
     <script>
-        // Web Audio API Ses Motoru
         let audioEnabled = true;
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
@@ -381,22 +401,15 @@
             let gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
             if (type === 'plant') {
-                osc.frequency.setValueAtTime(350, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.12);
+                osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.1);
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.12);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.12);
-            } else if (type === 'harvest') {
-                osc.frequency.setValueAtTime(550, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.15);
-                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.15);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.15);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.1);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.1);
             } else if (type === 'coin') {
                 osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(1300, audioCtx.currentTime + 0.1);
+                osc.frequency.setValueAtTime(1400, audioCtx.currentTime + 0.1);
                 gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
                 gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
                 osc.start(); osc.stop(audioCtx.currentTime + 0.2);
@@ -409,107 +422,75 @@
             showToast(audioEnabled ? "Sesler açıldı" : "Sesler kapatıldı");
         }
 
-        // Oyun State
-        let gold = 350;
+        function createFloatText(e) {
+            // Sadece tıklanan buton veya parsel dışı alanlar hariç tutulabilir ama genel dokunma efekti hoş durur
+        }
+
+        // Oyun Verileri
+        let gold = 400;
         let xp = 0;
         let level = 1;
-        let inventory = { wheat: 0, corn: 0, strawberry: 0, milk: 0, egg: 0, cheese: 0 };
-        let maxInventory = 20;
-        let activePlotsCount = 4; // Başlangıç 4 parsel (Max 8)
+        let inventory = { wheat: 0, corn: 0, strawberry: 0, milk: 0, egg: 0, cheese: 0, bread: 0 };
+        let maxInv = 25;
+        let activePlots = 4;
+        let harvestCount = 0;
 
-        const seedsData = [
-            { name: 'Buğday', cost: 10, reward: 28, xp: 15, time: 3, icon: '🌾', key: 'wheat' },
-            { name: 'Mısır', cost: 30, reward: 80, xp: 35, time: 5, icon: '🌽', key: 'corn' },
-            { name: 'Çilek', cost: 70, reward: 180, xp: 70, time: 8, icon: '🍓', key: 'strawberry' }
+        const seeds = [
+            { name: 'Buğday', cost: 10, reward: 30, xp: 15, time: 3, icon: '🌾', key: 'wheat' },
+            { name: 'Mısır', cost: 30, reward: 90, xp: 40, time: 5, icon: '🌽', key: 'corn' },
+            { name: 'Çilek', cost: 70, reward: 200, xp: 85, time: 8, icon: '🍓', key: 'strawberry' }
         ];
 
-        let plots = Array.from({ length: 8 }, (_, i) => ({
-            id: i,
-            status: 'empty', // 'empty', 'growing', 'ready'
-            progress: 0,
-            seedObj: null,
-            timer: null
-        }));
+        let plots = Array.from({ length: 8 }, (_, i) => ({ status: 'empty', progress: 0, seed: null, timer: null }));
 
         function showToast(text) {
             const t = document.getElementById('toast');
             t.innerText = text;
             t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2200);
+            setTimeout(() => t.classList.remove('show'), 2000);
         }
 
         function updateUI() {
             document.getElementById('ui-gold').innerText = gold;
-            let totalItems = Object.values(inventory).reduce((a, b) => a + b, 0);
-            document.getElementById('ui-inv').innerText = `${totalItems}/${maxInventory}`;
-            document.getElementById('ui-xp').innerText = `${xp} XP (LVL ${level})`;
-            document.getElementById('market-stock-text').innerText = `Depodaki Toplam Ürün (${totalItems})`;
+            let total = Object.values(inventory).reduce((a, b) => a + b, 0);
+            document.getElementById('ui-inv').innerText = `${total}/${maxInv}`;
+            document.getElementById('ui-xp').innerText = `${xp}/${level * 100} XP (Lvl ${level})`;
+            document.getElementById('market-text').innerText = `Depodaki Ürünler (${total})`;
+            document.getElementById('q1-status').innerText = `İlerleme: ${harvestCount}/5`;
             renderPlots();
-            checkQuests();
-        }
-
-        function checkQuests() {
-            let totalItems = Object.values(inventory).reduce((a, b) => a + b, 0);
-            let q = document.getElementById('quest-text');
-            if (totalItems === 0) {
-                q.innerText = "Tarlaya buğday ekin ve büyüyünce toplayın!";
-            } else {
-                q.innerText = "Ürünleri pazarda satarak altın kazanın ve yeni parsel açın!";
-            }
         }
 
         function renderPlots() {
-            const container = document.getElementById('plots-container');
-            container.innerHTML = '';
-
+            const c = document.getElementById('plots-container');
+            c.innerHTML = '';
             for (let i = 0; i < 8; i++) {
                 let p = plots[i];
-                let card = document.createElement('div');
-                card.className = 'plot-box';
+                let box = document.createElement('div');
+                box.className = 'plot-box';
 
-                if (i >= activePlotsCount) {
-                    card.style.opacity = '0.4';
-                    card.innerHTML = `
-                        <div style="font-size:24px;">🔒</div>
-                        <div style="font-size:9px; color:var(--text-muted);">Kilitli Parsel</div>
-                        <button class="btn locked">Kilitli</button>
-                    `;
+                if (i >= activePlots) {
+                    box.style.opacity = '0.4';
+                    box.innerHTML = `<div style="font-size:24px;">🔒</div><div style="font-size:9px; color:var(--text-muted);">Kilitli Parsel</div><button class="btn locked">Kilitli</button>`;
                 } else if (p.status === 'empty') {
-                    card.innerHTML = `
-                        <div style="font-size:26px;">🟫</div>
-                        <div style="font-size:9px; color:var(--text-muted);">Boş Toprak #${i+1}</div>
-                        <button class="btn plant-anim" onclick="plantSeed(${i})">Ekir</button>
-                    `;
+                    box.innerHTML = `<div style="font-size:26px;">🟫</div><div style="font-size:9px; color:var(--text-muted);">Boş Toprak</div><button class="btn" onclick="plant(${i})">Ekir</button>`;
                 } else if (p.status === 'growing') {
-                    card.innerHTML = `
-                        <div style="font-size:26px;" class="plant-anim">🌱</div>
-                        <div style="font-size:9px; color:var(--accent-gold);">Büyüyor...</div>
-                        <div class="progress-track"><div class="progress-fill" style="width: ${p.progress}%"></div></div>
-                    `;
+                    box.innerHTML = `<div style="font-size:26px;">🌱</div><div style="font-size:9px; color:var(--accent-gold);">Büyüyor...</div><div class="progress-track"><div class="progress-fill" style="width:${p.progress}%"></div></div>`;
                 } else if (p.status === 'ready') {
-                    card.className += ' ready';
-                    card.innerHTML = `
-                        <div style="font-size:28px;" class="plant-anim">${p.seedObj.icon}</div>
-                        <div style="font-size:9px; color:var(--accent-green); font-weight:800;">HASADA HAZIR!</div>
-                        <button class="btn" onclick="harvestPlot(${i})">Topla (+${p.seedObj.reward}🪙)</button>
-                    `;
+                    box.className += ' ready';
+                    box.innerHTML = `<div style="font-size:28px;">${p.seed.icon}</div><div style="font-size:9px; color:var(--accent-green); font-weight:800;">HAZIR!</div><button class="btn" onclick="harvest(${i})">Topla</button>`;
                 }
-                container.appendChild(card);
+                c.appendChild(box);
             }
         }
 
-        function plantSeed(idx) {
-            let seedIdx = document.getElementById('seed-select').value;
-            let s = seedsData[seedIdx];
-
-            if (gold < s.cost) {
-                showToast("Yeterli altının yok!");
-                return;
-            }
+        function plant(idx) {
+            let sIdx = document.getElementById('seed-select').value;
+            let s = seeds[sIdx];
+            if (gold < s.cost) { showToast("Yeterli altının yok!"); return; }
 
             gold -= s.cost;
             plots[idx].status = 'growing';
-            plots[idx].seedObj = s;
+            plots[idx].seed = s;
             plots[idx].progress = 0;
             playSound('plant');
             updateUI();
@@ -527,85 +508,98 @@
             }, 100);
         }
 
-        function harvestPlot(idx) {
-            let totalItems = Object.values(inventory).reduce((a, b) => a + b, 0);
-            if (totalItems >= maxInventory) {
-                showToast("Ambar dolu! Önce pazarda satış yap.");
-                return;
-            }
+        function harvest(idx) {
+            let total = Object.values(inventory).reduce((a, b) => a + b, 0);
+            if (total >= maxInv) { showToast("Ambar tamamen dolu!"); return; }
 
-            let s = plots[idx].seedObj;
+            let s = plots[idx].seed;
             inventory[s.key]++;
             xp += s.xp;
-            if (xp >= level * 100) {
-                level++;
-                showToast(`🎉 Level Atladın! Yeni Seviye: ${level}`);
-            }
+            harvestCount++;
+            if (xp >= level * 100) { level++; showToast(`🎉 Seviye Atladın: ${level}!`); }
 
-            playSound('harvest');
-            showToast(`+1 ${s.name} toplandı, +${s.xp} XP! 🌾`);
+            playSound('coin');
+            showToast(`+1 ${s.name} toplandı!`);
             plots[idx].status = 'empty';
-            plots[idx].seedObj = null;
+            plots[idx].seed = null;
             updateUI();
         }
 
         function applyWatering() {
-            if (gold < 25) { showToast("Yeterli altın yok! (25 🪙)"); return; }
-            gold -= 25;
+            if (gold < 20) { showToast("Yeterli altın yok!"); return; }
+            gold -= 20;
             plots.forEach(p => { if (p.status === 'growing') p.progress = Math.min(100, p.progress + 40); });
             playSound('coin');
-            showToast("Tüm tarlalar sulandı, büyüme hızlandı! 💧");
+            showToast("Hızlı sulama uygulandı! 💧");
             updateUI();
         }
 
         function applyFertilizer() {
-            if (gold < 50) { showToast("Yeterli altın yok! (50 🪙)"); return; }
-            gold -= 50;
+            if (gold < 45) { showToast("Yeterli altın yok!"); return; }
+            gold -= 45;
             plots.forEach(p => { if (p.status === 'growing') { p.progress = 100; p.status = 'ready'; } });
             playSound('coin');
-            showToast("Süper gübre uygulandı, tüm ürünler hazır! 🧪");
+            showToast("Gübre uygulandı, hepsi hazır! 🧪");
             updateUI();
         }
 
-        function collectAnimal(type) {
-            let totalItems = Object.values(inventory).reduce((a, b) => a + b, 0);
-            if (totalItems >= maxInventory) { showToast("Ambar dolu!"); return; }
-
-            if (type === 'cow') { inventory.milk++; showToast("İnek sağıldı: +1 Süt 🥛"); }
-            else { inventory.egg++; showToast("Kümes toplandı: +1 Yumurta 🥚"); }
-            playSound('harvest');
-            updateUI();
-        }
-
-        function processCheese() {
-            if (inventory.milk < 1) { showToast("Yeterli sütün yok! (1 🥛 gerekli)"); return; }
-            inventory.milk--;
-            inventory.cheese++;
+        function collectItem(type) {
+            let total = Object.values(inventory).reduce((a, b) => a + b, 0);
+            if (total >= maxInv) { showToast("Ambar dolu!"); return; }
+            inventory[type]++;
             playSound('coin');
-            showToast("Mandırada peynir üretildi: +1 Peynir 🧀");
+            showToast(type === 'milk' ? "İnek sağıldı: +1 Süt 🥛" : "Yumurta toplandı: +1 🥚");
             updateUI();
         }
 
-        function sellAllInventory() {
-            let totalCount = Object.values(inventory).reduce((a, b) => a + b, 0);
-            if (totalCount === 0) { showToast("Satılacak ürün yok!"); return; }
+        function processItem(type) {
+            if (type === 'cheese') {
+                if (inventory.milk < 1) { showToast("Yeterli sütün yok! (1 🥛 gerekli)"); return; }
+                inventory.milk--;
+                inventory.cheese++;
+                showToast("Mandırada peynir üretildi! 🧀");
+            } else if (type === 'bread') {
+                if (inventory.wheat < 1) { showToast("Yeterli buğdayın yok! (1 🌾 gerekli)"); return; }
+                inventory.wheat--;
+                inventory.bread++;
+                showToast("Fırında ekmek pişirildi! 🍞");
+            }
+            playSound('coin');
+            updateUI();
+        }
 
-            let income = (inventory.wheat * 28) + (inventory.corn * 80) + (inventory.strawberry * 180) + (inventory.milk * 60) + (inventory.egg * 40) + (inventory.cheese * 140);
+        function sellAll() {
+            let total = Object.values(inventory).reduce((a, b) => a + b, 0);
+            if (total === 0) { showToast("Satılacak ürün yok!"); return; }
+
+            let income = (inventory.wheat * 30) + (inventory.corn * 90) + (inventory.strawberry * 200) + (inventory.milk * 60) + (inventory.egg * 40) + (inventory.cheese * 150) + (inventory.bread * 120);
             gold += income;
-            inventory = { wheat: 0, corn: 0, strawberry: 0, milk: 0, egg: 0, cheese: 0 };
+            inventory = { wheat: 0, corn: 0, strawberry: 0, milk: 0, egg: 0, cheese: 0, bread: 0 };
             playSound('coin');
-            showToast(`Ürünler satıldı: +${income} 🪙 kazandın! 💰`);
+            showToast(`Pazarda satış yapıldı: +${income} 🪙 kazandın!`);
             updateUI();
         }
 
-        function unlockNewPlot() {
-            if (activePlotsCount >= 8) { showToast("Maksimum parsele ulaşıldı!"); return; }
-            if (gold < 400) { showToast("Yeterli altın yok! (400 🪙 gerekli)"); return; }
-            gold -= 400;
-            activePlotsCount++;
+        function unlockPlot() {
+            if (activePlots >= 8) { showToast("Maksimum parsele ulaşıldı!"); return; }
+            if (gold < 500) { showToast("Yeterli altın yok! (500 🪙 gerekli)"); return; }
+            gold -= 500;
+            activePlots++;
             playSound('coin');
-            showToast("Yeni parsel kilidi açıldı! 🚜");
+            showToast("Yeni arsa kilidi açıldı! 🚜");
             updateUI();
+        }
+
+        function claimQuest(id) {
+            if (harvestCount >= 5) {
+                gold += 150;
+                harvestCount = 0;
+                playSound('coin');
+                showToast("Görev ödülü alındı: +150 🪙!");
+                updateUI();
+            } else {
+                showToast("Görev henüz tamamlanmadı!");
+            }
         }
 
         function switchTab(name, btn) {
