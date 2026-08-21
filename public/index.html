@@ -2,251 +2,78 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>CyberMining Protocol - TMA</title>
-    <!-- AdsGram Resmi SDK -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GLADIATOR PROTOCOL</title>
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
-        :root {
-            --bg: #09090e;
-            --surface: #12121c;
-            --surface-hover: #1a1a29;
-            --primary: #00ffcc;
-            --accent: #7b2cbf;
-            --text: #ffffff;
-            --text-secondary: #8c8cbe;
-            --border: #232336;
-            --success: #00f593;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
-
-        .container {
-            width: 100%; max-width: 400px; height: 100%; max-height: 810px;
-            background: linear-gradient(180deg, #10101a 0%, #09090e 100%);
-            border: 1px solid var(--border); border-radius: 24px;
-            display: flex; flex-direction: column; justify-content: space-between;
-            padding: 16px; box-shadow: 0 24px 48px rgba(0,0,0,0.8);
-            position: relative; overflow: hidden;
-        }
-
-        /* ÜST KİMLİK & BİLANÇO */
-        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; }
-        .user-info { display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 38px; height: 38px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: #000; }
-        .username { font-size: 13px; font-weight: 700; }
-        .tier { font-size: 9px; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        .balance-box { text-align: right; }
-        .balance-amount { font-size: 16px; font-weight: 900; color: var(--success); display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
-        .balance-title { font-size: 8px; color: var(--text-secondary); text-transform: uppercase; }
-
-        /* SAYFA GÖRÜNÜMLERİ */
-        .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
-        .view.active { display: flex; }
-
-        /* ANA TAP ALANI (MADENCİLİK) */
-        .tap-card {
-            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
-            padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            flex-grow: 1; position: relative; box-shadow: inset 0 0 20px rgba(0,255,204,0.03);
-        }
-        .coin-btn {
-            width: 140px; height: 140px; border-radius: 50%;
-            background: radial-gradient(circle at 30% 30%, #1f1f33, #09090e);
-            border: 3px solid var(--primary); box-shadow: 0 0 30px rgba(0,255,204,0.2), inset 0 0 15px rgba(0,255,204,0.1);
-            display: flex; align-items: center; justify-content: center; font-size: 50px; cursor: pointer;
-            transition: transform 0.05s ease; position: relative; margin: 20px 0;
-        }
-        .coin-btn:active { transform: scale(0.92); box-shadow: 0 0 15px rgba(0,255,204,0.4); }
-
-        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
-        .stat-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: left; }
-        .stat-title { font-size: 9px; color: var(--text-secondary); }
-        .stat-value { font-size: 12px; font-weight: 800; color: var(--primary); margin-top: 2px; }
-
-        /* LİSTE & GÖREV KARTLARI */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
-        .card-title { font-size: 11px; font-weight: 800; color: var(--text); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px; }
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=Inter:wght@400;900&display=swap');
         
-        .list-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
-        .list-info div:first-child { font-size: 11px; font-weight: 700; }
-        .list-info div:last-child { font-size: 9px; color: var(--text-secondary); margin-top: 2px; }
+        body { background: #0f0f12; color: #fff; font-family: 'Inter', sans-serif; margin: 0; overflow: hidden; }
+        .arena { width: 100vw; height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 20px; background: linear-gradient(135deg, #1a1a20, #000); }
 
-        /* BUTONLAR */
-        .btn { background: var(--primary); color: #000; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 800; font-size: 10px; cursor: pointer; text-transform: uppercase; transition: 0.1s; }
-        .btn:active { transform: scale(0.95); }
-        .btn-ad { background: linear-gradient(135deg, #ff007a, #7b2cbf); color: #fff; width: 100%; padding: 12px; font-size: 11px; border-radius: 12px; margin-top: 8px; box-shadow: 0 4px 15px rgba(255,0,122,0.3); }
+        .gladiator-card { 
+            width: 100%; max-width: 350px; background: #18181c; border: 2px solid #ff3e3e; 
+            border-radius: 20px; padding: 20px; text-align: center; box-shadow: 0 0 30px rgba(255, 62, 62, 0.2);
+        }
+        
+        .name-tag { font-family: 'Anton', sans-serif; font-size: 32px; letter-spacing: 2px; color: #ff3e3e; text-transform: uppercase; }
+        .stats { display: flex; justify-content: space-around; margin: 20px 0; color: #bbb; font-weight: 900; }
+        
+        .battle-btn { 
+            width: 100%; padding: 15px; border: none; border-radius: 10px; background: #ff3e3e; 
+            color: #fff; font-weight: 900; font-size: 18px; cursor: pointer; text-transform: uppercase;
+        }
 
-        /* ALT NAVİGASYON (DOCK) */
-        .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: space-around; padding: 6px; }
-        .dock-item { background: transparent; border: none; color: var(--text-secondary); border-radius: 12px; padding: 8px 12px; text-align: center; font-size: 8px; font-weight: 700; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: 0.2s; }
-        .dock-item span:first-child { font-size: 16px; }
-        .dock-item.active { background: var(--bg); color: var(--primary); border: 1px solid var(--border); }
+        .ad-booster { 
+            width: 100%; margin-top: 20px; background: #2a2a32; border-radius: 15px; 
+            padding: 15px; display: flex; justify-content: space-between; align-items: center;
+        }
 
-        /* TIKLAMA EFEKTİ */
-        .floating-num { position: absolute; font-size: 14px; font-weight: 900; color: var(--success); pointer-events: none; animation: floatUp 0.6s ease-out forwards; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
+        .leaderboard-mini { 
+            width: 100%; max-width: 350px; background: rgba(0,0,0,0.3); border-radius: 15px; 
+            padding: 10px; font-size: 12px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- ÜST BİLGİ PANELİ -->
-        <div class="header">
-            <div class="user-info">
-                <div class="avatar">CR</div>
-                <div>
-                    <div class="username">CyberMiner</div>
-                    <div class="tier">VIP Level 1</div>
-                </div>
-            </div>
-            <div class="balance-box">
-                <div class="balance-title">Toplam Varlık</div>
-                <div class="balance-amount">🪙 <span id="balanceText">2,450</span></div>
-            </div>
+<div class="arena">
+    <div class="gladiator-card">
+        <div class="name-tag">BLOOD KNIGHT</div>
+        <div class="stats">
+            <div>ATK: 450</div>
+            <div>HP: 1200</div>
         </div>
+        <button class="battle-btn" onclick="battle()">ARENA'YA GİR</button>
 
-        <!-- SEKME 1: TAP & MADENCİLİK MERKEZİ -->
-        <div class="view active" data-view="tap">
-            <div class="tap-card" id="tapCard">
-                <div style="font-size: 10px; color: var(--text-secondary); font-weight: 700; letter-spacing: 1px;">NODE HASH RATE: AKTİF</div>
-                <div class="coin-btn" onclick="coinTikla(event)">⚡</div>
-                <div style="font-size: 11px; font-weight: 800; color: var(--primary);">Kazanmak İçin Dokun</div>
-
-                <div class="stats-grid" style="margin-top: 14px;">
-                    <div class="stat-item">
-                        <div class="stat-title">Tık Başı Kazanç</div>
-                        <div class="stat-value">+1 Coin</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-title">Pasif / Saat</div>
-                        <div class="stat-value">+250 Coin</div>
-                    </div>
-                </div>
+        <div class="ad-booster">
+            <div>
+                <div style="font-size: 12px; color: #ff3e3e; font-weight: 900;">EPIC BOOSTER</div>
+                <div style="font-size: 10px;">+200% Hasar (Reklam ile)</div>
             </div>
-
-            <!-- AdsGram Kurallarına Tam Uyumlu İsteğe Bağlı Ödüllü Reklam -->
-            <div class="card" style="padding: 12px;">
-                <div class="card-title"><span>📺 ADSGRAM BONUS NODE</span><span style="color:var(--success);">İsteğe Bağlı</span></div>
-                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">Zorunlu değildir. İsteğe bağlı reklam izleyerek anında +250 coin bonus al.</div>
-                <button class="btn btn-ad" onclick="reklamGoster()">ÖDÜLLÜ REKLAMI İZLE (+250)</button>
-            </div>
-        </div>
-
-        <!-- SEKME 2: KÜRESEL LİDERLİK (AdsGram Kural 8 Karşılığı) -->
-        <div class="view" data-view="liderlik">
-            <div class="card" style="flex-grow: 1;">
-                <div class="card-title">🏆 KÜRESEL MADENCİ SIRALAMASI</div>
-                <div class="list-item">
-                    <div class="list-info"><div>1. 👑 Satoshi_Node</div><div>Seviye 45 • 1.2M Coin</div></div>
-                    <span style="color: var(--primary); font-weight: 800; font-size: 11px;">#1</span>
-                </div>
-                <div class="list-item">
-                    <div class="list-info"><div>2. 🥈 NeonHacker</div><div>Seviye 42 • 980K Coin</div></div>
-                    <span style="color: var(--text-secondary); font-weight: 800; font-size: 11px;">#2</span>
-                </div>
-                <div class="list-item">
-                    <div class="list-info"><div>3. 🥉 ByteRunner</div><div>Seviye 39 • 750K Coin</div></div>
-                    <span style="color: var(--text-secondary); font-weight: 800; font-size: 11px;">#3</span>
-                </div>
-                <div class="list-item" style="border-color: var(--primary); background: rgba(0,255,204,0.04);">
-                    <div class="list-info"><div>4. ⚡ CyberMiner (Sen)</div><div>Seviye 1 • <span id="siralamaCoin">2,450</span> Coin</div></div>
-                    <span style="color: var(--success); font-weight: 800; font-size: 11px;">#4</span>
-                </div>
-            </div>
-            <button class="btn" style="width: 100%; padding: 12px;" onclick="sekmeDegis('tap')">← MADENCİLİĞE DÖN</button>
-        </div>
-
-        <!-- SEKME 3: YÜKSELTMELER (UPGRADES) -->
-        <div class="view" data-view="yukselt">
-            <div class="card">
-                <div class="card-title">⚙️ DONANIM YÜKSELTMELERİ</div>
-                <div class="list-item">
-                    <div class="list-info"><div>ASIC Rig (Tık Başı +2)</div><div>Maliyet: 1,000 Coin</div></div>
-                    <button class="btn" onclick="itemAl(1000)">Yükselt</button>
-                </div>
-                <div class="list-item">
-                    <div class="list-info"><div>Quantum Server (Pasif +500)</div><div>Maliyet: 5,000 Coin</div></div>
-                    <button class="btn" onclick="itemAl(5000)">Yükselt</button>
-                </div>
-            </div>
-            <button class="btn" style="width: 100%; padding: 12px;" onclick="sekmeDegis('tap')">← MADENCİLİĞE DÖN</button>
-        </div>
-
-        <!-- ALT MENÜ DOCK -->
-        <div class="dock">
-            <button class="dock-item active" onclick="sekmeDegis('tap')"><span>⚡</span><span>Madene</span></button>
-            <button class="dock-item" onclick="sekmeDegis('liderlik')"><span>🏆</span><span>Sıralama</span></button>
-            <button class="dock-item" onclick="sekmeDegis('yukselt')"><span>⚙️</span><span>Donanım</span></button>
+            <button onclick="reklamGoster()" style="background: #333; border: none; padding: 8px; border-radius: 5px; color: #fff; font-weight: 900;">İZLE</button>
         </div>
     </div>
 
-    <script>
-        let bakiye = 2450;
-        let tikGucu = 1;
+    <div class="leaderboard-mini">
+        <div style="text-align: center; color: #ff3e3e; font-weight: 900; margin-bottom: 10px;">ARENA LİDERLİĞİ</div>
+        <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #333; padding: 5px;"><span>1. Zeus</span> <span>9999 Puan</span></div>
+        <div style="display: flex; justify-content: space-between; padding: 5px;"><span>2. Ares</span> <span>8750 Puan</span></div>
+    </div>
+</div>
 
-        function sekmeDegis(viewName) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+<script>
+    function battle() { alert("Arena aranıyor..."); }
 
-            document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+    function reklamGoster() {
+        if (typeof window.Adsgram !== 'undefined') {
+            window.Adsgram.init({ blockId: "int-your-block-id-here" }).show()
+            .then(() => alert("Saldırı gücü ikiye katlandı!"))
+            .catch(() => alert("Reklam kapatıldı."));
+        } else {
+            alert("Test Modu: Güç 2x Oldu!");
         }
-
-        function guncelleUI() {
-            document.getElementById("balanceText").innerText = bakiye.toLocaleString();
-            document.getElementById("siralamaCoin").innerText = bakiye.toLocaleString() + " Coin";
-        }
-
-        function coinTikla(event) {
-            bakiye += tikGucu;
-            guncelleUI();
-
-            // Uçan artı animasyonu
-            const card = document.getElementById("tapCard");
-            const rect = card.getBoundingClientRect();
-            const x = event.clientX - rect.left;
-            const y = event.clientY - rect.top;
-
-            const num = document.createElement("div");
-            num.className = "floating-num";
-            num.innerText = "+" + tikGucu;
-            num.style.left = x + "px";
-            num.style.top = y + "px";
-            card.appendChild(num);
-
-            setTimeout(() => num.remove(), 600);
-        }
-
-        // AdsGram Resmi Entegrasyon Kodu
-        function reklamGoster() {
-            if (typeof window.Adsgram !== 'undefined') {
-                window.Adsgram.init({ blockId: "int-your-block-id-here" }).show().then((result) => {
-                    bakiye += 250;
-                    guncelleUI();
-                    alert("Tebrikler! Reklam başarıyla izlendi: +250 Coin eklendi.");
-                }).catch((result) => {
-                    alert("Reklam tamamlanamadı veya kapatıldı.");
-                });
-            } else {
-                // Test Simülasyonu
-                bakiye += 250;
-                guncelleUI();
-                alert("AdsGram SDK simüle edildi: +250 Coin hesabınıza eklendi!");
-            }
-        }
-
-        function itemAl(maliyet) {
-            if (bakiye >= maliyet) {
-                bakiye -= maliyet;
-                tikGucu += 1;
-                guncelleUI();
-                alert("Donanım başarıyla yükseltildi!");
-            } else {
-                alert("Yeterli coin yok! Reklam izleyerek veya tıklayarak coin kazanabilirsin.");
-            }
-        }
-    </script>
+    }
+</script>
 </body>
 </html>
