@@ -3,44 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Farmington World - AAA Simulation Edition</title>
+    <title>Farmington Empire - Ultimate AAA Edition</title>
     <style>
         :root { 
-            --bg-base: #120a05; 
-            --panel-bg: #221208; 
-            --primary: #40916c; 
+            --bg-base: #0f0704; 
+            --panel-bg: #1c0f08; 
+            --primary: #2d6a4f; 
             --accent: #ffb703; 
-            --danger: #d90429; 
-            --success: #2b9348; 
-            --border: #582f0e;
+            --danger: #ae2012; 
+            --success: #38b000; 
+            --border: #432818;
             --text-main: #f8f9fa;
-            --text-dim: #adb5bd;
+            --text-dim: #ced4da;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-base); color: var(--text-main); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         
         .app-container { 
             width: 100%; max-width: 420px; height: 100%; max-height: 860px; 
-            background: linear-gradient(180deg, #1b4332 0%, #081c15 40%, #120a05 100%); 
-            border: 4px solid #b08968; border-radius: 28px; 
+            background: linear-gradient(180deg, #1b4332 0%, #0d1b1e 40%, #0f0704 100%); 
+            border: 4px solid #bc6c25; border-radius: 28px; 
             display: flex; flex-direction: column; justify-content: space-between; 
-            padding: 10px; box-shadow: 0 30px 60px rgba(0,0,0,0.95); 
+            padding: 10px; box-shadow: 0 35px 70px rgba(0,0,0,0.98); 
             position: relative; overflow: hidden; 
         }
 
-        /* ÜST HUD (AAA OYUN STİLİ) */
+        /* ÜST HUD (GİZLENDİ / PROFESYONEL HALE GETİRİLDİ) */
         .hud { 
-            background: rgba(34, 18, 8, 0.95); backdrop-filter: blur(12px); 
+            background: rgba(28, 15, 8, 0.95); backdrop-filter: blur(14px); 
             border: 2px solid #dda15e; border-radius: 16px; padding: 6px 10px; 
             display: flex; justify-content: space-between; align-items: center; z-index: 5; 
         }
         .profile { display: flex; align-items: center; gap: 8px; }
-        .avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #e07a5f, #d62828); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
+        .avatar { width: 36px; height: 36px; background: linear-gradient(135deg, #e07a5f, #9b2226); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; border: 2px solid #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.6); }
         .username { font-size: 11px; font-weight: 900; color: #fff; letter-spacing: 0.5px; }
         .lvl { font-size: 8px; color: var(--accent); font-weight: 800; }
         
         .wallet { display: flex; gap: 4px; align-items: center; }
-        .res-box { background: #120a05; padding: 4px 8px; border-radius: 8px; border: 1px solid #dda15e; font-size: 9px; font-weight: 900; display: flex; align-items: center; gap: 3px; color: var(--accent); }
+        .res-box { background: #0f0704; padding: 4px 8px; border-radius: 8px; border: 1px solid #dda15e; font-size: 9px; font-weight: 900; display: flex; align-items: center; gap: 3px; color: var(--accent); }
         .ton-btn { background: linear-gradient(135deg, #0077b6, #00b4d8); color: white; border: none; padding: 5px 8px; border-radius: 8px; font-size: 8px; font-weight: 900; cursor: pointer; }
 
         /* SAYFA YÖNETİMİ */
@@ -48,85 +48,85 @@
         .page-content.active { display: flex; }
 
         /* KART SİSTEMLERİ */
-        .section-card { background: var(--panel-bg); border: 2px solid #dda15e; border-radius: 16px; padding: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.5); }
-        .section-title { font-size: 10px; font-weight: 900; color: var(--accent); margin-bottom: 6px; border-bottom: 2px solid #582f0e; padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; background: rgba(18, 10, 5, 0.8); padding: 8px 10px; border-radius: 10px; margin-bottom: 5px; font-size: 9px; border: 1px solid #582f0e; font-weight: 800; }
+        .section-card { background: var(--panel-bg); border: 2px solid #dda15e; border-radius: 16px; padding: 10px; box-shadow: 0 8px 16px rgba(0,0,0,0.6); }
+        .section-title { font-size: 10px; font-weight: 900; color: var(--accent); margin-bottom: 6px; border-bottom: 2px solid #432818; padding-bottom: 4px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; background: rgba(15, 7, 4, 0.85); padding: 8px 10px; border-radius: 10px; margin-bottom: 5px; font-size: 9px; border: 1px solid #432818; font-weight: 800; }
         
         /* BUTONLAR */
         .btn { background: var(--success); color: #fff; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-weight: 900; font-size: 8px; transition: 0.2s; text-transform: uppercase; box-shadow: 0 4px 0 rgba(0,0,0,0.4); }
         .btn:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.4); }
-        .btn.buy { background: #00b4d8; color: #120a05; }
+        .btn.buy { background: #00b4d8; color: #0f0704; }
         .btn.gem { background: #7209b7; color: #fff; }
-        .btn.ad { background: linear-gradient(135deg, #f77f00, #d62828); color: #fff; box-shadow: 0 4px 10px rgba(214, 40, 40, 0.6); }
+        .btn.ad { background: linear-gradient(135deg, #f77f00, #ae2012); color: #fff; box-shadow: 0 4px 10px rgba(174, 32, 18, 0.6); }
 
-        /* TARLA ALANI */
-        .farm-field-box { background: radial-gradient(circle, #2d6a4f 0%, #081c15 100%); border: 3px solid #52b788; border-radius: 18px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; box-shadow: inset 0 0 25px rgba(0,0,0,0.7); }
+        /* TARLA GRID */
+        .farm-field-box { background: radial-gradient(circle, #2d6a4f 0%, #081c15 100%); border: 3px solid #52b788; border-radius: 18px; padding: 10px; display: flex; flex-direction: column; justify-content: space-between; flex-grow: 1; box-shadow: inset 0 0 25px rgba(0,0,0,0.8); }
         .plots { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
         .plot { background: rgba(96, 68, 53, 0.85); border: 2px solid #dda15e; border-radius: 12px; padding: 6px; text-align: center; cursor: pointer; font-size: 9px; min-height: 85px; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: 0.2s; position: relative; font-weight: 900; color: #fff; box-shadow: 0 4px 8px rgba(0,0,0,0.5); }
         .plot.ready { border-color: #52b788; background: rgba(40, 116, 75, 0.95); box-shadow: 0 0 15px #52b788; }
 
-        /* 🐄 CANLI HAREKET EDEN HAYVAN MERASI (SİMÜLASYON) */
-        .animal-sandbox { background: radial-gradient(circle, #432818 0%, #1a0f08 100%); border: 3px solid #dda15e; border-radius: 16px; padding: 10px; min-height: 130px; position: relative; overflow: hidden; display: flex; align-items: flex-end; justify-content: space-around; }
-        .walking-critter { font-size: 30px; animation: animalMove 3s infinite alternate ease-in-out; filter: drop-shadow(0 6px 8px rgba(0,0,0,0.9)); cursor: pointer; transition: transform 0.2s; }
-        .walking-critter:hover { transform: scale(1.25); }
+        /* 🐄 CANLI HAREKET EDEN HAYVAN MERASI (DETAYLI ANİMASYON) */
+        .animal-sandbox { background: radial-gradient(circle, #432818 0%, #1a0f08 100%); border: 3px solid #dda15e; border-radius: 16px; padding: 10px; min-height: 140px; position: relative; overflow: hidden; display: flex; align-items: flex-end; justify-content: space-around; }
+        .walking-critter { font-size: 32px; animation: animalMove 3s infinite alternate ease-in-out; filter: drop-shadow(0 8px 10px rgba(0,0,0,0.95)); cursor: pointer; transition: transform 0.2s; }
+        .walking-critter:hover { transform: scale(1.3); }
         @keyframes animalMove {
-            0% { transform: translateX(-5px) translateY(0) rotate(-4deg); }
-            100% { transform: translateX(5px) translateY(-8px) rotate(4deg); }
+            0% { transform: translateX(-8px) translateY(0) rotate(-5deg); }
+            100% { transform: translateX(8px) translateY(-10px) rotate(5deg); }
         }
 
-        /* GİZLİ ÇEKMECE MENÜ (DRAWER) */
-        .drawer-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(6px); z-index: 50; display: none; }
+        /* GİZLİ ÇEKMECE MENÜ (DİĞER 45+ SEÇENEK BURADA) */
+        .drawer-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 50; display: none; }
         .drawer-overlay.active { display: block; }
-        .drawer { position: absolute; bottom: 75px; left: 10px; right: 10px; background: var(--panel-bg); border: 3px solid var(--accent); border-radius: 20px; padding: 14px; display: none; flex-direction: column; gap: 6px; z-index: 100; box-shadow: 0 -25px 50px rgba(0,0,0,0.95); max-height: 420px; overflow-y: auto; }
+        .drawer { position: absolute; bottom: 75px; left: 10px; right: 10px; background: var(--panel-bg); border: 3px solid var(--accent); border-radius: 20px; padding: 14px; display: none; flex-direction: column; gap: 6px; z-index: 100; box-shadow: 0 -30px 60px rgba(0,0,0,0.99); max-height: 420px; overflow-y: auto; }
         .drawer.active { display: flex; }
-        .drawer-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 900; color: var(--accent); border-bottom: 2px solid #582f0e; padding-bottom: 8px; }
+        .drawer-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 900; color: var(--accent); border-bottom: 2px solid #432818; padding-bottom: 8px; }
         .close-drawer { background: var(--danger); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; font-weight: 900; cursor: pointer; }
-        .drawer-item { display: flex; justify-content: space-between; align-items: center; background: #120a05; padding: 10px; border-radius: 10px; border: 1px solid #582f0e; cursor: pointer; font-size: 9px; font-weight: 900; }
+        .drawer-item { display: flex; justify-content: space-between; align-items: center; background: #0f0704; padding: 10px; border-radius: 10px; border: 1px solid #432818; cursor: pointer; font-size: 9px; font-weight: 900; }
 
-        /* ALT 4+1 DOCK (SEÇENEKLER) */
-        .dock { background: rgba(34, 18, 8, 0.98); backdrop-filter: blur(14px); border: 2px solid #dda15e; border-radius: 18px; display: flex; justify-content: space-around; padding: 6px; z-index: 5; }
-        .dock-item { background: #120a05; border: 1px solid #582f0e; color: var(--text-dim); border-radius: 12px; padding: 6px 4px; text-align: center; font-size: 8px; font-weight: 900; cursor: pointer; flex: 1; margin: 0 2px; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: 0.2s; }
+        /* ALT 4 ANA DOCK SEÇENEĞİ + 1 GİZLİ MENÜ BUTONU */
+        .dock { background: rgba(28, 15, 8, 0.99); backdrop-filter: blur(16px); border: 2px solid #dda15e; border-radius: 18px; display: flex; justify-content: space-around; padding: 6px; z-index: 5; }
+        .dock-item { background: #0f0704; border: 1px solid #432818; color: var(--text-dim); border-radius: 12px; padding: 6px 4px; text-align: center; font-size: 8px; font-weight: 900; cursor: pointer; flex: 1; margin: 0 2px; display: flex; flex-direction: column; align-items: center; gap: 2px; transition: 0.2s; }
         .dock-item span:first-child { font-size: 15px; }
-        .dock-item.active { background: #dda15e; color: #120a05; border-color: #fff; box-shadow: 0 0 14px rgba(255,183,3,0.6); }
+        .dock-item.active { background: #dda15e; color: #0f0704; border-color: #fff; box-shadow: 0 0 15px rgba(255,183,3,0.7); }
 
-        .bar-container { background: #120a05; border-radius: 4px; height: 6px; width: 100%; overflow: hidden; margin: 3px 0; border: 1px solid #582f0e; }
-        .bar-fill { background: var(--success); height: 100%; width: 75%; }
+        .bar-container { background: #0f0704; border-radius: 4px; height: 6px; width: 100%; overflow: hidden; margin: 3px 0; border: 1px solid #432818; }
+        .bar-fill { background: var(--success); height: 100%; width: 80%; }
     </style>
 </head>
 <body>
 
     <div class="app-container">
-        <!-- ÜST HUD -->
+        <!-- ÜST HUD (PROFESYONEL KULLANICI ARAYÜZÜ) -->
         <div class="hud">
             <div class="profile">
-                <div class="avatar">🚜</div>
+                <div class="avatar">👑</div>
                 <div>
-                    <div class="username">FARMINGTON_PRO</div>
-                    <div class="lvl">Seviye 15 • Grand Tycoon</div>
+                    <div class="username">FARMINGTON_ELITE</div>
+                    <div class="lvl">Seviye 20 • Agro Tycoon</div>
                 </div>
             </div>
             <div class="wallet">
-                <div class="res-box">🪙 <span id="altin">4,200</span></div>
-                <div class="res-box">💎 <span id="elmas">60</span></div>
+                <div class="res-box">🪙 <span id="altin">5,000</span></div>
+                <div class="res-box">💎 <span id="elmas">75</span></div>
                 <button class="ton-btn" onclick="tonBaglan()">Web3</button>
             </div>
         </div>
 
-        <!-- 1. SAYFA: TARLA -->
+        <!-- 1. SAYFA: TARLA (FARM) -->
         <div class="page-content active" id-page="tarla">
             <div class="farm-field-box">
                 <div style="font-size: 9px; font-weight: 900; color: var(--accent); display:flex; justify-content:space-between;">
-                    <span>🌾 ENDÜSTRİYEL TARLA YÖNETİMİ</span>
+                    <span>🌾 ENDÜSTRİYEL TARIMSAL ARAZİ</span>
                     <span>Zorluk: AAA Hardcore ⚙️</span>
                 </div>
                 <div class="plots" id="parselAlani"></div>
                 
-                <!-- ADSGRAM REKLAM BÖLÜMÜ -->
-                <div class="section-card" style="background: rgba(18,10,5,0.85); padding: 8px; margin-top: 4px;">
+                <!-- ADSGRAM ÖDÜLLÜ REKLAM BÖLÜMÜ -->
+                <div class="section-card" style="background: rgba(15,7,4,0.9); padding: 8px; margin-top: 4px;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <div style="font-size: 9px; font-weight: 900; color: var(--accent);">📺 AdsGram Ödüllü Video</div>
-                            <div style="font-size: 8px; color: var(--text-dim);">Reklam İzle: +30 Elmas & +2000 Altın Kazan!</div>
+                            <div style="font-size: 8px; color: var(--text-dim);">Reklam İzle: +40 Elmas & +2500 Altın Kazan!</div>
                         </div>
                         <button class="btn ad" onclick="reklamIzleOdulAl()">VİDEO İZLE</button>
                     </div>
@@ -134,56 +134,56 @@
             </div>
         </div>
 
-        <!-- 2. SAYFA: PAZAR -->
+        <!-- 2. SAYFA: PAZAR (MARKET & BORSASI) -->
         <div class="page-content" id-page="market">
             <div class="section-card">
                 <div class="section-title"><span>📦 MAHSUL BORSASI & DEPO</span><span style="color:var(--success);">Canlı Fiyatlar 📈</span></div>
                 <div class="item-row">
-                    <span>🌽 Buğday Stoğu: <span id="depoBugday">10</span> Adet</span>
-                    <button class="btn buy" onclick="mahsulSat('Bugday', 150)">Tümünü Sat</button>
+                    <span>🌽 Buğday Stoğu: <span id="depoBugday">12</span> Adet</span>
+                    <button class="btn buy" onclick="mahsulSat('Bugday', 180)">Tümünü Sat</button>
                 </div>
                 <div class="item-row">
-                    <span>🍅 Domates Stoğu: <span id="depoDomates">5</span> Adet</span>
-                    <button class="btn buy" onclick="mahsulSat('Domates', 250)">Tümünü Sat</button>
+                    <span>🍅 Domates Stoğu: <span id="depoDomates">6</span> Adet</span>
+                    <button class="btn buy" onclick="mahsulSat('Domates', 300)">Tümünü Sat</button>
                 </div>
             </div>
             <div class="section-card">
-                <div class="section-title"><span>🛒 TOHUM MAĞAZASI</span></div>
+                <div class="section-title"><span>🛒 TOHUM & GİRDİ MAĞAZASI</span></div>
                 <div class="item-row">
-                    <span>🌾 Premium Buğday Tohumu (Maliyet: 50 🪙)</span>
-                    <button class="btn buy" onclick="tohumAl(50)">Satın Al</button>
+                    <span>🌾 Premium Buğday Tohumu (Maliyet: 60 🪙)</span>
+                    <button class="btn buy" onclick="tohumAl(60)">Satın Al</button>
                 </div>
             </div>
         </div>
 
-        <!-- 3. SAYFA: HAYVAN ÇİFTLİĞİ (CANLI HAYVANLAR VE AHIRLAR) -->
+        <!-- 3. SAYFA: HAYVAN ÇİFTLİĞİ (AYRI BÖLMELER, CANLI GEZEN HAYVANLAR) -->
         <div class="page-content" id-page="ahirdurumu">
-            <!-- Canlı Dolaşan Hayvanlar Sandbox Alanı -->
+            <!-- Canlı Dolaşan Hayvanlar Merası -->
             <div class="section-card" style="padding: 6px;">
-                <div class="section-title" style="margin-bottom: 4px;"><span>🏡 CANLI HAYVAN MERASI</span><span style="color:var(--accent);">Aktif Hayvan Sürüsü</span></div>
+                <div class="section-title" style="margin-bottom: 4px;"><span>🏡 CANLI HAYVAN MERASI</span><span style="color:var(--accent);">Aktif Sürü Simülasyonu</span></div>
                 <div class="animal-sandbox">
-                    <div class="walking-critter" title="Süt İneği" onclick="hayvanUrunTopla('inek', 350)">🐄</div>
-                    <div class="walking-critter" title="Tavuk" onclick="hayvanUrunTopla('tavuk', 150)" style="animation-delay: 0.3s;">🐔</div>
-                    <div class="walking-critter" title="Domuz" onclick="hayvanUrunTopla('domuz', 250)" style="animation-delay: 0.6s;">🐖</div>
-                    <div class="walking-critter" title="At" onclick="hayvanUrunTopla('at', 500)" style="animation-delay: 0.9s;">🐎</div>
-                    <div style="position: absolute; bottom: 2px; right: 4px; font-size: 7px; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.6); padding: 2px 4px; border-radius: 4px;">Simülasyon Aktif</div>
+                    <div class="walking-critter" title="Süt İneği" onclick="hayvanUrunTopla('inek', 400)">🐄</div>
+                    <div class="walking-critter" title="Tavuk" onclick="hayvanUrunTopla('tavuk', 200)" style="animation-delay: 0.3s;">🐔</div>
+                    <div class="walking-critter" title="Domuz" onclick="hayvanUrunTopla('domuz', 300)" style="animation-delay: 0.6s;">🐖</div>
+                    <div class="walking-critter" title="At" onclick="hayvanUrunTopla('at', 600)" style="animation-delay: 0.9s;">🐎</div>
+                    <div style="position: absolute; bottom: 2px; right: 4px; font-size: 7px; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.7); padding: 2px 4px; border-radius: 4px;">Simülasyon Aktif</div>
                 </div>
             </div>
 
-            <!-- İnek Ahırı ve Yönetim -->
+            <!-- İnek Ahırı & Yönetim -->
             <div class="section-card" style="padding: 8px;">
                 <div class="section-title"><span>🐄 SÜT İNEĞİ AHIRI</span></div>
                 <div class="item-row" style="flex-direction: column; align-items: stretch; gap: 4px;">
                     <div style="display: flex; justify-content: space-between; font-weight: 900;">
                         <span>🐄 Süt İneği "Besi-Pro"</span>
-                        <button class="btn" onclick="hayvanUrunTopla('inek', 350)">Süt Topla (+350 🪙)</button>
+                        <button class="btn" onclick="hayvanUrunTopla('inek', 400)">Süt Topla (+400 🪙)</button>
                     </div>
                     <div style="font-size: 8px; color: var(--text-dim);">Hayvan Tokluk Durumu:</div>
-                    <div class="bar-container"><div class="bar-fill" id="inekToklukBar" style="width: 85%;"></div></div>
+                    <div class="bar-container"><div class="bar-fill" id="inekToklukBar" style="width: 80%;"></div></div>
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 2px;">
-                        <span style="font-size: 8px; color: var(--accent);">Yem Stoğu: <span id="inekYemStok">5</span></span>
+                        <span style="font-size: 8px; color: var(--accent);">Yem Stoğu: <span id="inekYemStok">6</span></span>
                         <div style="display: flex; gap: 4px;">
-                            <button class="btn buy" style="padding: 3px 6px;" onclick="hayvanYemle()">Yemle (40 🪙)</button>
+                            <button class="btn buy" style="padding: 3px 6px;" onclick="hayvanYemle()">Yemle (50 🪙)</button>
                             <button class="btn gem" style="padding: 3px 6px;" onclick="hayvanCiftlestir('inek')">🧬 Çiftleştir (10 💎)</button>
                         </div>
                     </div>
@@ -194,20 +194,20 @@
                 <div class="section-title"><span>🛒 HAYVAN PAZARI</span></div>
                 <div class="item-row">
                     <span>🐎 Çiftlik Atı Satın Al</span>
-                    <button class="btn gem" onclick="hayvanSatinAl(45)">45 💎 Al</button>
+                    <button class="btn gem" onclick="hayvanSatinAl(50)">50 💎 Al</button>
                 </div>
                 <div class="item-row">
-                    <span>🌾 Özel Karma Hayvan Yemi (10 Adet)</span>
-                    <button class="btn buy" onclick="yemPaketiAl(150)">150 🪙 Al</button>
+                    <span>🌾 Özel Karma Yem Paketi (10 Adet)</span>
+                    <button class="btn buy" onclick="yemPaketiAl(180)">180 🪙 Al</button>
                 </div>
             </div>
         </div>
 
-        <!-- 4. SAYFA: EARN (GÖREVLER) -->
+        <!-- 4. SAYFA: EARN (GÖREVLER & ÇARK) -->
         <div class="page-content" id-page="earn">
             <div class="section-card">
                 <div class="section-title"><span>🎡 GÜNÜN ŞANS ÇARKI</span></div>
-                <div style="text-align: center; padding: 8px; background: rgba(18,10,5,0.8); border-radius: 10px;">
+                <div style="text-align: center; padding: 8px; background: rgba(15,7,4,0.85); border-radius: 10px;">
                     <div style="font-size: 24px; margin-bottom: 2px;">🎁</div>
                     <button class="btn ad" style="padding: 6px 14px;" onclick="carkCevir()">Şans Çarkını Çevir</button>
                 </div>
@@ -215,11 +215,11 @@
             <div class="section-card">
                 <div class="section-title"><span>📋 GÖREVLER & ELMAS KAZAN</span></div>
                 <div class="item-row">
-                    <span>📺 Tanıtım Reklamı İzle (+25 Elmas)</span>
+                    <span>📺 Tanıtım Reklamı İzle (+30 Elmas)</span>
                     <button class="btn ad" onclick="reklamIzleOdulAl()">İzle</button>
                 </div>
                 <div class="item-row">
-                    <span>👥 Telegram Arkadaş Daveti (+35 Elmas)</span>
+                    <span>👥 Telegram Arkadaş Daveti (+40 Elmas)</span>
                     <button class="btn buy" onclick="davetEt()">Davet Linki</button>
                 </div>
             </div>
@@ -233,7 +233,7 @@
                 <button class="close-drawer" onclick="gizliMenuKapat()">✕</button>
             </div>
             <div class="drawer-item" onclick="sayfaDegisFromMenu('liderlik')">
-                <span>🏆 Global Ton Sezon Liderlik Tablosu</span>
+                <span>🏆 Global Sezon Liderlik Tablosu</span>
                 <span style="color: var(--accent);">Görüntüle →</span>
             </div>
             <div class="drawer-item" onclick="sayfaDegisFromMenu('fabrika')">
@@ -263,8 +263,8 @@
         <div class="page-content" id-page="liderlik">
             <div class="section-card">
                 <div class="section-title">🏆 GLOBAL LİDERLİK TABLOSU</div>
-                <div class="item-row"><span>🥇 FARMINGTON_PRO (Sen)</span><span style="color:var(--accent);">4,200 🪙</span></div>
-                <div class="item-row"><span>🥈 Kocaeli_AgroKing</span><span style="color:var(--text-dim);">51,800 🪙</span></div>
+                <div class="item-row"><span>🥇 FARMINGTON_ELITE (Sen)</span><span style="color:var(--accent);">5,000 🪙</span></div>
+                <div class="item-row"><span>🥈 Kocaeli_AgroKing</span><span style="color:var(--text-dim);">63,400 🪙</span></div>
             </div>
             <button class="btn buy" style="width: 100%; padding: 8px;" onclick="sayfaDegis('tarla')">← Tarlaya Geri Dön</button>
         </div>
@@ -274,7 +274,7 @@
                 <div class="section-title"><span>🏭 UN VE EKMEK FABRİKASI</span></div>
                 <div class="item-row">
                     <span>🍞 4 Buğdayı Un ve Ekmek Yap</span>
-                    <button class="btn buy" onclick="fabrikaIsle()">Üret (+1000 🪙)</button>
+                    <button class="btn buy" onclick="fabrikaIsle()">Üret (+1200 🪙)</button>
                 </div>
             </div>
             <button class="btn buy" style="width: 100%; padding: 8px;" onclick="sayfaDegis('tarla')">← Tarlaya Geri Dön</button>
@@ -299,12 +299,12 @@
     </div>
 
     <script>
-        let altin = 4200;
-        let elmas = 60;
-        let depoBugday = 10;
-        let depoDomates = 5;
+        let altin = 5000;
+        let elmas = 75;
+        let depoBugday = 12;
+        let depoDomates = 6;
         let tohumStok = 6;
-        let inekYem = 5;
+        let inekYem = 6;
         let parseller = Array(9).fill("bos");
 
         // Web Audio API Ses Motoru
@@ -316,11 +316,11 @@
                 osc.connect(gain);
                 gain.connect(ctx.destination);
                 if(tur === 'para') {
-                    osc.frequency.setValueAtTime(650, ctx.currentTime);
-                    osc.frequency.exponentialRampToValueAtTime(1100, ctx.currentTime + 0.08);
+                    osc.frequency.setValueAtTime(700, ctx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(1200, ctx.currentTime + 0.08);
                     gain.gain.setValueAtTime(0.04, ctx.currentTime);
                 } else {
-                    osc.frequency.setValueAtTime(450, ctx.currentTime);
+                    osc.frequency.setValueAtTime(500, ctx.currentTime);
                     gain.gain.setValueAtTime(0.02, ctx.currentTime);
                 }
                 osc.start(); osc.stop(ctx.currentTime + 0.08);
@@ -492,25 +492,25 @@
         }
 
         function reklamIzleOdulAl() {
-            altin += 2000;
-            elmas += 30;
+            altin += 2500;
+            elmas += 40;
             sesCal('para');
-            alert("📺 Reklam başarıyla tamamlandı! +2000 Altın ve +30 Elmas cüzdana yüklendi.");
+            alert("📺 Reklam başarıyla tamamlandı! +2500 Altın ve +40 Elmas cüzdana yüklendi.");
             arayuzGuncelle();
         }
 
         function carkCevir() {
-            altin += 800;
-            elmas += 20;
+            altin += 1000;
+            elmas += 25;
             sesCal('para');
-            alert("Şans çarkı çevrildi: +800 Altın ve +20 Elmas kazandın!");
+            alert("Şans çarkı çevrildi: +1000 Altın ve +25 Elmas kazandın!");
             arayuzGuncelle();
         }
 
         function davetEt() {
-            elmas += 35;
+            elmas += 40;
             sesCal('para');
-            alert("Arkadaş davet linki kopyalandı ve +35 Elmas ödülü yüklendi!");
+            alert("Arkadaş davet linki kopyalandı ve +40 Elmas ödülü yüklendi!");
             arayuzGuncelle();
         }
 
@@ -522,9 +522,9 @@
         function fabrikaIsle() {
             if(depoBugday >= 4) {
                 depoBugday -= 4;
-                altin += 1000;
+                altin += 1200;
                 sesCal('para');
-                alert("Fabrikada mahsuller işlendi: +1000 🪙 kazandın!");
+                alert("Fabrikada mahsuller işlendi: +1200 🪙 kazandın!");
                 arayuzGuncelle();
             } else {
                 alert("Fabrikada üretim için en az 4 Buğday gerekli!");
