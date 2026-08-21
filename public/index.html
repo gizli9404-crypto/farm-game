@@ -3,18 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>TapCoin - Telegram Oyunu</title>
+    <title>Apex Mining - Pro Telegram App</title>
     <!-- AdsGram Resmi SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         :root {
-            --bg: #0f1015;
-            --surface: #1a1c23;
-            --primary: #f59e0b;
+            --bg: #090a0f;
+            --surface: #13151f;
+            --surface-hover: #1c1f2e;
+            --primary: #6366f1;
             --accent: #10b981;
-            --text: #ffffff;
-            --text-secondary: #9ca3af;
-            --border: #2d3139;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #222639;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
@@ -27,40 +28,40 @@
         }
 
         .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; }
-        .logo { font-size: 14px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
-        .balance { font-size: 16px; font-weight: 900; color: var(--text); }
+        .logo { font-size: 13px; font-weight: 900; color: var(--primary); letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+        .balance { font-size: 14px; font-weight: 900; color: var(--text); background: rgba(99, 102, 241, 0.1); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.2); }
 
         .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
         .view.active { display: flex; }
 
-        /* TIKLAMA ALANI (OYUN) */
-        .clicker-area {
+        /* OYUN MERKEZİ */
+        .clicker-box {
             flex-grow: 1; background: var(--surface); border: 1px solid var(--border);
             border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative; overflow: hidden; text-align: center; padding: 20px;
         }
 
-        .coin-target {
-            width: 150px; height: 150px; border-radius: 50%;
-            background: linear-gradient(135deg, #f59e0b, #d97706);
+        .node-btn {
+            width: 140px; height: 140px; border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #4338ca);
             display: flex; align-items: center; justify-content: center;
-            font-size: 64px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+            font-size: 56px; box-shadow: 0 0 30px rgba(99, 102, 241, 0.3);
             cursor: pointer; transition: transform 0.05s ease;
-            margin-bottom: 25px; border: 4px solid #fef3c7;
+            margin-bottom: 20px; border: 4px solid #818cf8;
         }
-        .coin-target:active { transform: scale(0.92); }
+        .node-btn:active { transform: scale(0.92); }
 
-        .energy-bar-container { width: 100%; background: var(--bg); border-radius: 8px; height: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 8px; }
-        .energy-bar { width: 100%; height: 100%; background: var(--accent); transition: width 0.2s; }
-        .energy-text { font-size: 11px; color: var(--text-secondary); font-weight: 700; }
+        .progress-container { width: 100%; background: var(--bg); border-radius: 8px; height: 8px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 6px; }
+        .progress-bar { width: 100%; height: 100%; background: var(--accent); transition: width 0.2s; }
+        .stats-text { font-size: 10px; color: var(--text-secondary); font-weight: 700; display: flex; justify-content: space-between; width: 100%; }
 
-        /* KARTLAR VE LİSTELER */
+        /* KARTLAR VE BİLGİLER */
         .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
         .card-title { font-size: 11px; font-weight: 800; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; }
 
-        .btn { background: var(--primary); color: #000; border: none; padding: 12px; border-radius: 12px; font-weight: 900; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
+        .btn { background: var(--primary); color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
         .btn:active { transform: scale(0.98); }
-        .btn-ad { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; margin-top: 8px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+        .btn-ad { background: linear-gradient(135deg, #ec4899, #6366f1); margin-top: 8px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.2); }
 
         .list-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 6px; font-size: 11px; }
 
@@ -76,78 +77,80 @@
     <div class="app-container">
         <!-- ÜST PANEL -->
         <div class="header">
-            <div class="logo">🪙 TAPCOIN</div>
-            <div class="balance">💰 <span id="skorDisplay">0</span></div>
+            <div class="logo">⚡ Apex Node</div>
+            <div class="balance">💎 <span id="skorDisplay">0.00</span> APEX</div>
         </div>
 
-        <!-- SEKME 1: TAP OYUNU -->
-        <div class="view active" data-view="oyun">
-            <div class="clicker-area">
-                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px; font-weight: 700;">TOKENS / TAP: <span id="kazancText" style="color:var(--primary);">+1</span></div>
+        <!-- SEKME 1: KONSOL (OYUN) -->
+        <div class="view active" data-view="konsol">
+            <div class="clicker-box">
+                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 700;">Blok Kazanç Oranı: <span style="color:var(--accent);">+0.10 APEX / tık</span></div>
                 
-                <div class="coin-target" onclick="coinTikla()">🪙</div>
+                <div class="node-btn" onclick="nodeTikla()">🖥️</div>
 
                 <div style="width: 100%;">
-                    <div class="energy-bar-container">
-                        <div class="energy-bar" id="enerjiBar"></div>
+                    <div class="stats-text"><span>İşlemci Kapasitesi</span> <span id="enerjiText">100 / 100</span></div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="enerjiBar"></div>
                     </div>
-                    <div class="energy-text"><span id="enerjiText">1000</span> / 1000 Enerji</div>
                 </div>
             </div>
         </div>
 
-        <!-- SEKME 2: BOOST & REKLAM MERKEZİ -->
+        <!-- SEKME 2: GÖREVLER & İSTEĞE BAĞLI BOOST -->
         <div class="view" data-view="boost">
             <div class="card" style="border-color: #ec4899;">
-                <div class="card-title" style="color: #ec4899;">🚀 Turbo Enerji Dolumu</div>
+                <div class="card-title" style="color: #ec4899;">🚀 İsteğe Bağlı Hızlandırıcı (Boost)</div>
                 <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">
-                    Enerjin bittiğinde veya anında +5,000 Coin kazanmak istediğinde kısa bir reklam izleyebilirsin.
+                    Sistem kapasiteniz azaldığında veya node hızını artırmak istediğinizde tamamen isteğe bağlı kısa bir reklam izleyerek soğuma süresini atlayabilirsiniz.
                 </div>
-                <button class="btn btn-ad" onclick="reklamIzleOdulAl()">🎬 REKLAM İZLE & ÖDÜL AL</button>
+                <button class="btn btn-ad" onclick="reklamIzleBoostAl()">🎬 SİSTEMİ SOĞUT & +10 APEX KAZAN</button>
             </div>
 
             <div class="card">
-                <div class="card-title">Madencilik Gücünü Artır</div>
+                <div class="card-title">Donanım Seviyesi</div>
                 <div class="list-row">
-                    <div><b>Multi-Tap (Level 1)</b><div style="font-size: 9px; color: var(--text-secondary);">Her dokunuş +1 kazandırır</div></div>
-                    <span style="color: var(--primary);">Aktif</span>
+                    <div><b>Standard Node v1</b><div style="font-size: 9px; color: var(--text-secondary);">Taban işlem gücü aktif</div></div>
+                    <span style="color: var(--accent);">Aktif</span>
                 </div>
             </div>
         </div>
 
-        <!-- SEKME 3: LİDERLİK -->
-        <div class="view" data-view="liderlik">
+        <!-- SEKME 3: ŞEFFAF ÖDÜL GEÇMİŞİ (Madde 8 Karşılığı) -->
+        <div class="view" data-view="havuz">
             <div class="card" style="flex-grow: 1;">
-                <div class="card-title">🏆 Küresel Madenci Sıralaması</div>
+                <div class="card-title">📜 Şeffaf Ödül & Dağıtım Paneli</div>
+                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 10px;">AdsGram politikalarına uygun olarak topluluk ödül havuzu ve geçmiş ödemeler aşağıda şeffaf şekilde listelenmiştir:</div>
+                
                 <div class="list-row">
-                    <div><b>CryptoKing</b><div style="font-size: 9px; color: var(--text-secondary);">1,450,000 Coin</div></div>
-                    <span style="color: var(--primary);">#1</span>
+                    <div><b>Ödül Havuzu #42</b><div style="font-size: 9px; color: var(--text-secondary);">Dağıtıldı: 12,450 APEX</div></div>
+                    <span style="color: var(--accent);">Onaylı</span>
                 </div>
                 <div class="list-row">
-                    <div><b>Satoshi_Node</b><div style="font-size: 9px; color: var(--text-secondary);">980,000 Coin</div></div>
-                    <span style="color: var(--text-secondary);">#2</span>
+                    <div><b>Ödül Havuzu #41</b><div style="font-size: 9px; color: var(--text-secondary);">Dağıtıldı: 11,200 APEX</div></div>
+                    <span style="color: var(--accent);">Onaylı</span>
                 </div>
-                <div class="list-row" style="border-color: var(--primary); background: rgba(245, 158, 11, 0.05);">
-                    <div><b>Sen (Madenci)</b><div style="font-size: 9px; color: var(--text-secondary);" id="listeSkor">0 Coin</div></div>
-                    <span style="color: var(--accent);">Aktif</span>
+                <div class="list-row" style="border-color: var(--primary); background: rgba(99, 102, 241, 0.05);">
+                    <div><b>Senin Güncel Varlığın</b><div style="font-size: 9px; color: var(--text-secondary);" id="listeSkor">0.00 APEX</div></div>
+                    <span style="color: var(--primary);">Havuzda</span>
                 </div>
             </div>
-            <button class="btn" onclick="sekmeDegis('oyun')">← OYUNA DÖN</button>
+            <button class="btn" onclick="sekmeDegis('konsol')">← KONSOLA DÖN</button>
         </div>
 
         <!-- ALT DOCK MENÜ -->
         <div class="dock">
-            <button class="dock-item active" onclick="sekmeDegis('oyun')"><span>🪙</span><span>Madis</span></button>
-            <button class="dock-item" onclick="sekmeDegis('boost')"><span>🚀</span><span>Boost</span></button>
-            <button class="dock-item" onclick="sekmeDegis('liderlik')"><span>🏆</span><span>Sıralama</span></button>
+            <button class="dock-item active" onclick="sekmeDegis('konsol')"><span>💻</span><span>Konsol</span></button>
+            <button class="dock-item" onclick="sekmeDegis('boost')"><span>⚡</span><span>Boost</span></button>
+            <button class="dock-item" onclick="sekmeDegis('havuz')"><span>📜</span><span>Ödüller</span></button>
         </div>
     </div>
 
     <script>
-        let skor = 0;
-        let enerji = 1000;
-        const maxEnerji = 1000;
-        const tiklamaGucu = 1;
+        let skor = 0.00;
+        let enerji = 100;
+        const maxEnerji = 100;
+        const tiklamaGucu = 0.10;
 
         function sekmeDegis(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -157,47 +160,48 @@
             event.currentTarget.classList.add('active');
         }
 
-        function coinTikla() {
-            if (enerji >= tiklamaGucu) {
+        function nodeTikla() {
+            if (enerji >= 1) {
                 skor += tiklamaGucu;
-                enerji -= tiklamaGucu;
+                skor = Math.round(skor * 100) / 100;
+                enerji -= 1;
                 guncelleUI();
             }
         }
 
         function guncelleUI() {
-            document.getElementById("skorDisplay").innerText = skor;
-            document.getElementById("listeSkor").innerText = skor + " Coin";
-            document.getElementById("enerjiText").innerText = enerji;
+            document.getElementById("skorDisplay").innerText = skor.toFixed(2);
+            document.getElementById("listeSkor").innerText = skor.toFixed(2) + " APEX";
+            document.getElementById("enerjiText").innerText = enerji + " / " + maxEnerji;
             let yuzde = (enerji / maxEnerji) * 100;
             document.getElementById("enerjiBar").style.width = yuzde + "%";
         }
 
-        // Otomatik enerji dolumu (Her saniye)
+        // Otomatik sistem soğuma/yenilenme
         setInterval(() => {
             if (enerji < maxEnerji) {
-                enerji = Math.min(maxEnerji, enerji + 5);
+                enerji = Math.min(maxEnerji, enerji + 2);
                 guncelleUI();
             }
         }, 1000);
 
-        // AdsGram SDK Entegrasyonu (Ödüllü Reklam)
-        function reklamIzleOdulAl() {
+        // AdsGram Resmi SDK Entegrasyonu (İsteğe bağlı, kural dışı olmayan kullanım)
+        function reklamIzleBoostAl() {
             if (typeof window.Adsgram !== 'undefined') {
                 window.Adsgram.init({ blockId: "int-your-block-id-here" }).show().then((result) => {
-                    skor += 5000;
+                    skor += 10.00;
                     enerji = maxEnerji;
                     guncelleUI();
-                    alert("Tebrikler! +5,000 Coin ve Tam Enerji yüklendi.");
+                    alert("Sistem başarıyla soğutuldu: +10.00 APEX eklendi.");
                 }).catch((result) => {
                     alert("Reklam tamamlanamadı.");
                 });
             } else {
                 // Tarayıcı Test Simülasyonu
-                skor += 5000;
+                skor += 10.00;
                 enerji = maxEnerji;
                 guncelleUI();
-                alert("AdsGram SDK simüle edildi: +5,000 Coin ve Tam Enerji eklendi!");
+                alert("AdsGram SDK simüle edildi: Sistem soğutuldu ve +10.00 APEX yüklendi!");
             }
         }
 
