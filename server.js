@@ -31,11 +31,16 @@ bot.command('market', (ctx) => {
     ctx.reply("🛒 Çekirdek yükseltmeleri ve sistem soğutma modülleri yakında aktif! Oyunu açarak anlık verimliliğini kontrol edebilirsin.");
 });
 
-// Botu başlat
-bot.launch().then(() => {
-    console.log("Telegram botu başarıyla başlatıldı ve komutları dinliyor!");
-}).catch(err => {
-    console.error("Bot başlatılırken hata oluştu:", err);
+// Express sunucusunu önce ayağa kaldırıyoruz (Railway port health-check için bunu ister)
+app.listen(PORT, () => {
+    console.log(`Sunucu ${PORT} portunda başarıyla çalışıyor.`);
+    
+    // Sunucu açıldıktan sonra botu başlatıyoruz
+    bot.launch().then(() => {
+        console.log("Telegram botu başarıyla başlatıldı ve komutları dinliyor!");
+    }).catch(err => {
+        console.error("Bot başlatılırken hata oluştu:", err);
+    });
 });
 
 // Otomatik Kanal/Grup Duyuru Sistemi (Her 1 saatte bir)
@@ -57,10 +62,6 @@ setInterval(async () => {
 
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
-
-app.listen(PORT, () => {
-    console.log(`Sunucu ${PORT} portunda çalışıyor.`);
 });
 
 process.once('SIGINT', () => bot.stop('SIGINT'));
