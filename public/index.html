@@ -3,146 +3,205 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Neon Dash - Telegram Oyunu</title>
+    <title>TapCoin - Telegram Oyunu</title>
     <!-- AdsGram Resmi SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         :root {
-            --bg: #09090b;
-            --surface: #18181b;
-            --primary: #8b5cf6;
-            --accent: #06b6d4;
-            --text: #f4f4f5;
-            --border: #27272a;
+            --bg: #0f1015;
+            --surface: #1a1c23;
+            --primary: #f59e0b;
+            --accent: #10b981;
+            --text: #ffffff;
+            --text-secondary: #9ca3af;
+            --border: #2d3139;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        .game-container {
+        .app-container {
             width: 100%; max-width: 400px; height: 100%; max-height: 800px;
             background: var(--bg); border: 1px solid var(--border); border-radius: 24px;
             display: flex; flex-direction: column; justify-content: space-between;
             padding: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative; overflow: hidden;
         }
 
-        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; z-index: 10; }
-        .logo { font-size: 14px; font-weight: 900; color: var(--accent); letter-spacing: 1px; }
-        .stats { font-size: 11px; font-weight: 800; color: var(--primary); }
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; }
+        .logo { font-size: 14px; font-weight: 900; color: var(--primary); letter-spacing: 1px; }
+        .balance { font-size: 16px; font-weight: 900; color: var(--text); }
 
-        /* OYUN ALANI */
-        .game-board {
+        .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
+        .view.active { display: flex; }
+
+        /* TIKLAMA ALANI (OYUN) */
+        .clicker-area {
             flex-grow: 1; background: var(--surface); border: 1px solid var(--border);
-            border-radius: 16px; margin: 12px 0; position: relative; overflow: hidden;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center; padding: 20px;
+            border-radius: 20px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; overflow: hidden; text-align: center; padding: 20px;
         }
 
-        .target-box {
-            width: 110px; height: 110px; border-radius: 24px; background: var(--bg);
-            border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center;
-            font-size: 36px; margin-bottom: 20px; box-shadow: 0 0 25px rgba(6, 182, 212, 0.3);
-            transition: 0.1s;
+        .coin-target {
+            width: 150px; height: 150px; border-radius: 50%;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 64px; box-shadow: 0 0 30px rgba(245, 158, 11, 0.4);
+            cursor: pointer; transition: transform 0.05s ease;
+            margin-bottom: 25px; border: 4px solid #fef3c7;
         }
+        .coin-target:active { transform: scale(0.92); }
 
-        .score-display { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
-        .info-text { font-size: 11px; color: #a1a1aa; line-height: 1.4; margin-bottom: 20px; }
+        .energy-bar-container { width: 100%; background: var(--bg); border-radius: 8px; height: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 8px; }
+        .energy-bar { width: 100%; height: 100%; background: var(--accent); transition: width 0.2s; }
+        .energy-text { font-size: 11px; color: var(--text-secondary); font-weight: 700; }
 
-        /* BUTONLAR */
-        .btn { background: var(--primary); color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
+        /* KARTLAR VE LİSTELER */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
+        .card-title { font-size: 11px; font-weight: 800; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; }
+
+        .btn { background: var(--primary); color: #000; border: none; padding: 12px; border-radius: 12px; font-weight: 900; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
         .btn:active { transform: scale(0.98); }
-        .btn-accent { background: var(--accent); color: #000; margin-top: 8px; }
-        .btn-ad { background: linear-gradient(135deg, #ec4899, #8b5cf6); margin-top: 8px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
+        .btn-ad { background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; margin-top: 8px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
 
-        .hidden { display: none !important; }
+        .list-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 10px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 6px; font-size: 11px; }
+
+        /* DOCK MENÜ */
+        .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: space-around; padding: 6px; }
+        .dock-item { background: transparent; border: none; color: var(--text-secondary); border-radius: 12px; padding: 8px 12px; text-align: center; font-size: 8px; font-weight: 700; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; }
+        .dock-item span:first-child { font-size: 16px; }
+        .dock-item.active { background: var(--bg); color: var(--primary); border: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
-    <div class="game-container">
+    <div class="app-container">
         <!-- ÜST PANEL -->
         <div class="header">
-            <div class="logo">⚡ NEON DASH</div>
-            <div class="stats">SKOR: <span id="skorDegeri">0</span> | CAN: <span id="canDegeri">3</span></div>
+            <div class="logo">🪙 TAPCOIN</div>
+            <div class="balance">💰 <span id="skorDisplay">0</span></div>
         </div>
 
-        <!-- OYUN EKRANI -->
-        <div class="game-board" id="startScreen">
-            <div style="font-size: 48px; margin-bottom: 15px;">🎮</div>
-            <h2 style="font-size: 18px; margin-bottom: 8px;">Neon Dokunma Oyunu</h2>
-            <p class="info-text">Ekrana zamanında dokunarak neon küpü patlat, puanları topla! Canın bittiğinde reklam izleyerek canını yenileyebilirsin.</p>
-            <button class="btn" onclick="oyunuBaslat()">OYUNA BAŞLA</button>
+        <!-- SEKME 1: TAP OYUNU -->
+        <div class="view active" data-view="oyun">
+            <div class="clicker-area">
+                <div style="font-size: 12px; color: var(--text-secondary); margin-bottom: 15px; font-weight: 700;">TOKENS / TAP: <span id="kazancText" style="color:var(--primary);">+1</span></div>
+                
+                <div class="coin-target" onclick="coinTikla()">🪙</div>
+
+                <div style="width: 100%;">
+                    <div class="energy-bar-container">
+                        <div class="energy-bar" id="enerjiBar"></div>
+                    </div>
+                    <div class="energy-text"><span id="enerjiText">1000</span> / 1000 Enerji</div>
+                </div>
+            </div>
         </div>
 
-        <div class="game-board hidden" id="playScreen">
-            <div class="target-box" id="gameCube" onclick="puanKazan()">💎</div>
-            <div class="score-display" id="liveScore">0</div>
-            <div class="info-text">Küpün üzerine hızlıca tıkla!</div>
-            <button class="btn" style="background:#ef4444;" onclick="oyunuBitir()">OYUNU BİTİR</button>
+        <!-- SEKME 2: BOOST & REKLAM MERKEZİ -->
+        <div class="view" data-view="boost">
+            <div class="card" style="border-color: #ec4899;">
+                <div class="card-title" style="color: #ec4899;">🚀 Turbo Enerji Dolumu</div>
+                <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">
+                    Enerjin bittiğinde veya anında +5,000 Coin kazanmak istediğinde kısa bir reklam izleyebilirsin.
+                </div>
+                <button class="btn btn-ad" onclick="reklamIzleOdulAl()">🎬 REKLAM İZLE & ÖDÜL AL</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Madencilik Gücünü Artır</div>
+                <div class="list-row">
+                    <div><b>Multi-Tap (Level 1)</b><div style="font-size: 9px; color: var(--text-secondary);">Her dokunuş +1 kazandırır</div></div>
+                    <span style="color: var(--primary);">Aktif</span>
+                </div>
+            </div>
         </div>
 
-        <div class="game-board hidden" id="gameOverScreen">
-            <div style="font-size: 48px; margin-bottom: 10px;">💀</div>
-            <h2 style="font-size: 18px; color: #ef4444; margin-bottom: 5px;">Oyun Bitti!</h2>
-            <p class="info-text" id="finalScoreText">Toplam Skorun: 0</p>
-            
-            <button class="btn btn-ad" onclick="reklamIzleCanAl()">❤️ REKLAM İZLE & CAN AL (+3 CAN)</button>
-            <button class="btn btn-accent" onclick="oyunuBaslat()">TEKRAR BAŞLA</button>
+        <!-- SEKME 3: LİDERLİK -->
+        <div class="view" data-view="liderlik">
+            <div class="card" style="flex-grow: 1;">
+                <div class="card-title">🏆 Küresel Madenci Sıralaması</div>
+                <div class="list-row">
+                    <div><b>CryptoKing</b><div style="font-size: 9px; color: var(--text-secondary);">1,450,000 Coin</div></div>
+                    <span style="color: var(--primary);">#1</span>
+                </div>
+                <div class="list-row">
+                    <div><b>Satoshi_Node</b><div style="font-size: 9px; color: var(--text-secondary);">980,000 Coin</div></div>
+                    <span style="color: var(--text-secondary);">#2</span>
+                </div>
+                <div class="list-row" style="border-color: var(--primary); background: rgba(245, 158, 11, 0.05);">
+                    <div><b>Sen (Madenci)</b><div style="font-size: 9px; color: var(--text-secondary);" id="listeSkor">0 Coin</div></div>
+                    <span style="color: var(--accent);">Aktif</span>
+                </div>
+            </div>
+            <button class="btn" onclick="sekmeDegis('oyun')">← OYUNA DÖN</button>
+        </div>
+
+        <!-- ALT DOCK MENÜ -->
+        <div class="dock">
+            <button class="dock-item active" onclick="sekmeDegis('oyun')"><span>🪙</span><span>Madis</span></button>
+            <button class="dock-item" onclick="sekmeDegis('boost')"><span>🚀</span><span>Boost</span></button>
+            <button class="dock-item" onclick="sekmeDegis('liderlik')"><span>🏆</span><span>Sıralama</span></button>
         </div>
     </div>
 
     <script>
         let skor = 0;
-        let can = 3;
+        let enerji = 1000;
+        const maxEnerji = 1000;
+        const tiklamaGucu = 1;
 
-        function oyunuBaslat() {
-            skor = 0;
-            can = 3;
-            document.getElementById("skorDegeri").innerText = skor;
-            document.getElementById("canDegeri").innerText = can;
+        function sekmeDegis(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
 
-            document.getElementById("startScreen").classList.add("hidden");
-            document.getElementById("gameOverScreen").classList.add("hidden");
-            document.getElementById("playScreen").classList.remove("hidden");
+            document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+            event.currentTarget.classList.add('active');
         }
 
-        function puanKazan() {
-            skor += 10;
-            document.getElementById("skorDegeri").innerText = skor;
-            document.getElementById("liveScore").innerText = skor;
-
-            // Görsel efekt
-            const cube = document.getElementById("gameCube");
-            cube.style.transform = "scale(0.9)";
-            setTimeout(() => { cube.style.transform = "scale(1)"; }, 100);
+        function coinTikla() {
+            if (enerji >= tiklamaGucu) {
+                skor += tiklamaGucu;
+                enerji -= tiklamaGucu;
+                guncelleUI();
+            }
         }
 
-        function oyunuBitir() {
-            document.getElementById("playScreen").classList.add("hidden");
-            document.getElementById("gameOverScreen").classList.remove("hidden");
-            document.getElementById("finalScoreText").innerText = "Toplam Skorun: " + skor;
+        function guncelleUI() {
+            document.getElementById("skorDisplay").innerText = skor;
+            document.getElementById("listeSkor").innerText = skor + " Coin";
+            document.getElementById("enerjiText").innerText = enerji;
+            let yuzde = (enerji / maxEnerji) * 100;
+            document.getElementById("enerjiBar").style.width = yuzde + "%";
         }
 
-        // AdsGram SDK Entegrasyonu (Ödüllü Reklam - Can Kazanma)
-        function reklamIzleCanAl() {
+        // Otomatik enerji dolumu (Her saniye)
+        setInterval(() => {
+            if (enerji < maxEnerji) {
+                enerji = Math.min(maxEnerji, enerji + 5);
+                guncelleUI();
+            }
+        }, 1000);
+
+        // AdsGram SDK Entegrasyonu (Ödüllü Reklam)
+        function reklamIzleOdulAl() {
             if (typeof window.Adsgram !== 'undefined') {
                 window.Adsgram.init({ blockId: "int-your-block-id-here" }).show().then((result) => {
-                    can = 3;
-                    document.getElementById("canDegeri").innerText = can;
-                    document.getElementById("gameOverScreen").classList.add("hidden");
-                    document.getElementById("playScreen").classList.remove("hidden");
-                    alert("Tebrikler! Reklam izlendi, 3 can yenilendi.");
+                    skor += 5000;
+                    enerji = maxEnerji;
+                    guncelleUI();
+                    alert("Tebrikler! +5,000 Coin ve Tam Enerji yüklendi.");
                 }).catch((result) => {
                     alert("Reklam tamamlanamadı.");
                 });
             } else {
                 // Tarayıcı Test Simülasyonu
-                can = 3;
-                document.getElementById("canDegeri").innerText = can;
-                document.getElementById("gameOverScreen").classList.add("hidden");
-                document.getElementById("playScreen").classList.remove("hidden");
-                alert("AdsGram SDK simüle edildi: Canlar yenilendi!");
+                skor += 5000;
+                enerji = maxEnerji;
+                guncelleUI();
+                alert("AdsGram SDK simüle edildi: +5,000 Coin ve Tam Enerji eklendi!");
             }
         }
+
+        guncelleUI();
     </script>
 </body>
 </html>
