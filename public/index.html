@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stellar Farm: Nexus Edition</title>
+    <title>Stellar Farm: Zenith Engine</title>
     <style>
         :root {
-            --bg-base: #060913;
+            --bg-deep: #030712;
             --surface: #0f172a;
-            --surface-glass: rgba(15, 23, 42, 0.85);
+            --surface-glass: rgba(15, 23, 42, 0.9);
             --border: rgba(255, 255, 255, 0.08);
-            --green: #10b981;
-            --gold: #f59e0b;
-            --blue: #38bdf8;
-            --purple: #a78bfa;
-            --text: #f8fafc;
-            --muted: #94a3b8;
+            --accent-green: #10b981;
+            --accent-gold: #f59e0b;
+            --accent-blue: #38bdf8;
+            --accent-purple: #a78bfa;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
         }
 
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
 
         body {
-            background-color: var(--bg-base);
-            color: var(--text);
+            background-color: var(--bg-deep);
+            color: var(--text-main);
             height: 100vh;
             display: flex;
             justify-content: center;
@@ -30,107 +30,126 @@
             overflow: hidden;
         }
 
-        #app-container {
+        #game-viewport {
             width: 100%;
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: radial-gradient(circle at top, #1e293b 0%, #060913 70%);
+            background: linear-gradient(180deg, #0f172a 0%, #030712 100%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 40px rgba(0,0,0,0.8);
+            box-shadow: 0 0 60px rgba(0,0,0,0.95);
         }
 
-        /* Üst Durum Çubuğu (HUD) */
-        .hud-bar {
+        /* Toast Bildirim */
+        #toast {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: linear-gradient(135deg, var(--accent-green), #059669);
+            color: #000;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 800;
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            pointer-events: none;
+            white-space: nowrap;
+        }
+        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Üst HUD */
+        .hud-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 12px 16px;
+            padding: 10px 16px;
             background: var(--surface-glass);
             backdrop-filter: blur(12px);
             border-bottom: 1px solid var(--border);
             z-index: 10;
         }
-        .hud-pill {
+        .hud-stat {
             display: flex;
             align-items: center;
-            gap: 6px;
-            background: rgba(0,0,0,0.4);
-            padding: 5px 10px;
-            border-radius: 12px;
+            gap: 5px;
+            background: rgba(0,0,0,0.6);
+            padding: 4px 10px;
+            border-radius: 10px;
             border: 1px solid var(--border);
             font-size: 11px;
             font-weight: 800;
         }
-        .hud-pill.gold { color: var(--gold); }
-        .hud-pill.blue { color: var(--blue); }
-        .hud-pill.purple { color: var(--purple); }
+        .hud-stat.gold { color: var(--accent-gold); }
 
-        /* Ana İçerik Alanı */
-        .viewport {
+        /* İçerik Alanı */
+        .content-area {
             flex-grow: 1;
             overflow-y: auto;
             padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
         }
-        .tab-view { display: none; flex-direction: column; gap: 12px; }
-        .tab-view.active { display: flex; }
+        .tab-pane { display: none; flex-direction: column; gap: 12px; }
+        .tab-pane.active { display: flex; }
 
-        /* Kart ve Paneller */
-        .card {
+        /* Paneller */
+        .panel {
             background: var(--surface-glass);
-            backdrop-filter: blur(10px);
+            backdrop-filter: blur(12px);
             border: 1px solid var(--border);
-            border-radius: 16px;
+            border-radius: 18px;
             padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-        .card-header {
+        .panel-title {
             font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
-            color: var(--muted);
-            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            letter-spacing: 0.8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
 
-        /* Parseller Izgarası */
-        .grid-2x { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .plot-card {
-            background: linear-gradient(145deg, #111827, #0b0f19);
+        /* Tarla Izgarası */
+        .plots-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+        .plot-box {
+            background: linear-gradient(145deg, #111827, #070a13);
             border: 2px solid #1e293b;
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 12px;
             display: flex;
             flex-direction: column;
             align-items: center;
             text-align: center;
             gap: 6px;
-            min-height: 130px;
+            min-height: 135px;
             justify-content: space-between;
             position: relative;
         }
-        .plot-card.ready {
-            border-color: var(--green);
-            background: linear-gradient(145deg, rgba(16, 185, 129, 0.12), #0b0f19);
-            box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+        .plot-box.ready {
+            border-color: var(--accent-green);
+            background: linear-gradient(145deg, rgba(16, 185, 129, 0.15), #070a13);
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
         }
 
-        .progress-bar-bg { width: 100%; height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: var(--green); width: 0%; transition: width 0.1s linear; }
+        .progress-track { width: 100%; height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--accent-green); width: 0%; transition: width 0.1s linear; }
 
-        /* Buton Sistemleri */
+        /* Butonlar */
         .btn {
-            background: linear-gradient(135deg, var(--green), #059669);
+            background: linear-gradient(135deg, var(--accent-green), #059669);
             color: #000;
             border: none;
             padding: 8px 12px;
@@ -143,16 +162,16 @@
             transition: transform 0.1s;
         }
         .btn:active { transform: scale(0.95); }
-        .btn.gold { background: linear-gradient(135deg, var(--gold), #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
-        .btn.blue { background: linear-gradient(135deg, var(--blue), #0284c7); color: #fff; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
-        .btn.purple { background: linear-gradient(135deg, var(--purple), #7c3aed); color: #fff; box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3); }
-        .btn.disabled { background: #334155; color: #64748b; box-shadow: none; cursor: not-allowed; }
+        .btn.gold { background: linear-gradient(135deg, var(--accent-gold), #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
+        .btn.blue { background: linear-gradient(135deg, var(--accent-blue), #0284c7); color: #fff; box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3); }
+        .btn.purple { background: linear-gradient(135deg, var(--accent-purple), #7c3aed); color: #fff; box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3); }
+        .btn.locked { background: #334155; color: #64748b; box-shadow: none; cursor: not-allowed; }
 
-        /* Liste Öğeleri */
-        .list-item {
-            background: rgba(255,255,255,0.02);
+        /* Satır Öğeleri */
+        .row-item {
+            background: rgba(255,255,255,0.03);
             border: 1px solid var(--border);
-            border-radius: 12px;
+            border-radius: 14px;
             padding: 10px 12px;
             display: flex;
             align-items: center;
@@ -160,28 +179,7 @@
             gap: 10px;
         }
 
-        /* Bildirim Toast */
-        #toast-box {
-            position: absolute;
-            top: 70px;
-            left: 50%;
-            transform: translateX(-50%) translateY(-20px);
-            background: linear-gradient(135deg, var(--green), #059669);
-            color: #000;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-            opacity: 0;
-            transition: all 0.3s ease;
-            z-index: 100;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-        #toast-box.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-        /* Alt Navigasyon Dock */
+        /* Alt Dock Navigasyon */
         .nav-dock {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
@@ -191,10 +189,10 @@
             padding: 6px;
             z-index: 10;
         }
-        .nav-tab {
+        .nav-item {
             background: transparent;
             border: none;
-            color: var(--muted);
+            color: var(--text-muted);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -206,7 +204,7 @@
             border-radius: 10px;
             transition: 0.2s;
         }
-        .nav-tab.active {
+        .nav-item.active {
             color: #fff;
             background: rgba(16, 185, 129, 0.2);
             border: 1px solid rgba(16, 185, 129, 0.3);
@@ -216,345 +214,408 @@
 </head>
 <body>
 
-    <div id="app-container">
-        <div id="toast-box">İşlem başarılı!</div>
+    <div id="game-viewport">
+        <div id="toast">Bildirim mesajı</div>
 
         <!-- Üst HUD -->
-        <div class="hud-bar">
-            <div class="hud-pill gold"><span>🪙</span> <span id="stat-gold">750</span></div>
-            <div class="hud-pill blue"><span>📦</span> <span id="stat-inv">0/40</span></div>
-            <div class="hud-pill purple"><span>⭐</span> <span id="stat-lvl">Lvl 1</span></div>
+        <div class="hud-header">
+            <div class="hud-stat gold"><span>🪙</span> <span id="ui-gold">1000</span></div>
+            <div class="hud-stat" style="color:var(--accent-blue);"><span>📦</span> <span id="ui-inv">0/50</span></div>
+            <div class="hud-stat" style="color:var(--accent-purple);"><span>⭐</span> <span id="ui-xp">0 XP (Lvl 1)</span></div>
         </div>
 
-        <!-- Görünüm Sekmeleri -->
-        <div class="viewport">
+        <!-- Ana Sekmeler -->
+        <div class="content-area">
 
-            <!-- 1. TARLA SEKMESİ -->
-            <div id="view-farm" class="tab-view active">
-                <div class="card">
-                    <div class="card-header">
-                        <span>Aktif Tarım Parselleri</span>
-                        <select id="select-seed" style="background:#1e293b; color:#fff; border:1px solid var(--border); padding:4px 8px; border-radius:8px; font-size:10px; font-weight:700;">
-                            <option value="0">🌾 Buğday (15🪙)</option>
-                            <option value="1">🌽 Mısır (40🪙)</option>
-                            <option value="2">🍓 Çilek (90🪙)</option>
+            <!-- 1. TARLA -->
+            <div id="pane-farm" class="tab-pane active">
+                <div class="panel">
+                    <div class="panel-title">
+                        <span>Parseller (Zenith Tarım)</span>
+                        <select id="seed-select" style="background:#1e293b; color:#fff; border:1px solid var(--border); padding:4px 8px; border-radius:8px; font-size:10px; font-weight:700;">
+                            <option value="0">🌾 Buğday (20🪙)</option>
+                            <option value="1">🌽 Mısır (50🪙)</option>
+                            <option value="2">🍓 Çilek (120🪙)</option>
                         </select>
                     </div>
-                    <div class="grid-2x" id="plots-grid"></div>
+                    <div class="plots-grid" id="plots-container"></div>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">Tarım Teknolojileri</div>
+                <div class="panel">
+                    <div class="panel-title">Hızlı Teknolojiler</div>
                     <div style="display: flex; gap: 8px;">
-                        <button class="btn blue" onclick="speedUpPlots()">💧 Can Suyu (30🪙)</button>
-                        <button class="btn purple" onclick="instantGrow()">⚡ Hormon (60🪙)</button>
+                        <button class="btn blue" onclick="applyWatering()">💧 Yağmurlama (35🪙)</button>
+                        <button class="btn purple" onclick="applyFertilizer()">⚡ Süper İksir (75🪙)</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. FABRİKA VE HAYVANCILIK -->
-            <div id="view-factory" class="tab-view">
-                <div class="card">
-                    <div class="card-header">Çiftlik Hayvanları</div>
-                    <div class="list-item">
+            <!-- 2. HAYVANCILIK & FABRİKA -->
+            <div id="pane-factory" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Endüstriyel Mandıra</div>
+                    <div class="row-item">
                         <div>
                             <div style="font-weight: 800; font-size: 11px;">🐄 Süt İneği</div>
-                            <div style="font-size: 9px; color: var(--muted);">Üretim: 1x Taze Süt 🥛</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Üretim: 1x Saf Süt 🥛</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectAnimal('milk')">Sağ</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectItem('milk')">Sağ</button>
                     </div>
-                    <div class="list-item">
+                    <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🐔 Kümes Tavuğu</div>
-                            <div style="font-size: 9px; color: var(--muted);">Üretim: 1x Yumurta 🥚</div>
+                            <div style="font-weight: 800; font-size: 11px;">🐔 Kümes</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Üretim: 1x Yumurta 🥚</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectAnimal('egg')">Topla</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectItem('egg')">Topla</button>
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-header">İşleme Tesisleri</div>
-                    <div class="list-item">
+                <div class="panel">
+                    <div class="panel-title">Üretim Hatları</div>
+                    <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🍞 Değirmen & Fırın</div>
-                            <div style="font-size: 9px; color: var(--muted);">1x Buğday -> 1x Ekmek</div>
+                            <div style="font-weight: 800; font-size: 11px;">🍞 Değirmen (Ekmek)</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">1x Buğday -> 1x Ekmek</div>
                         </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processItem('bread')">Üret</button>
+                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processProduct('bread')">Pişir</button>
                     </div>
-                    <div class="list-item">
+                    <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🧀 Mandıra Peynircilik</div>
-                            <div style="font-size: 9px; color: var(--muted);">1x Süt -> 1x Peynir</div>
+                            <div style="font-weight: 800; font-size: 11px;">🧀 Peynir Kazanı</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">1x Süt -> 1x Peynir</div>
                         </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processItem('cheese')">Mayala</button>
+                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processProduct('cheese')">Mayala</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. Borsa & Pazar -->
-            <div id="view-market" class="tab-view">
-                <div class="card">
-                    <div class="card-header">Nexus Ticaret Borsası</div>
-                    <div class="list-item">
+            <!-- 3. BORSA & PAZAR -->
+            <div id="pane-market" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Küresel Çiftlik Borsası</div>
+                    <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;" id="market-inv-text">Depo Envanteri (0)</div>
-                            <div style="font-size: 9px; color: var(--muted);">Tüm mahsulleri anlık kurdan nakite çevir</div>
+                            <div style="font-weight: 800; font-size: 11px;" id="market-stock-info">Depo Envanteri (0)</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Tüm varlıkları güncel borsa kurundan bozdur</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 14px;" onclick="sellAllNexus()">Hepsini Sat 💰</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 14px;" onclick="sellAllAssets()">Hepsini Sat 💰</button>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-header">Genişleme Hakları</div>
-                    <div class="list-item">
+                <div class="panel">
+                    <div class="panel-title">Arazi Genişletme</div>
+                    <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🚜 Yeni Arazi Parseli</div>
-                            <div style="font-size: 9px; color: var(--muted);">Tarla kapasitesini 1 artırır</div>
+                            <div style="font-weight: 800; font-size: 11px;">🚜 Yeni Parsel Tapusu</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Toplam tarla kapasitesini artırır</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="unlockPlot()">600 🪙</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 4. OTOMASYON / İŞÇİLER -->
-            <div id="view-workers" class="tab-view">
-                <div class="card">
-                    <div class="card-header">Yapay Zeka & İşçi Otomasyonu</div>
-                    <div class="list-item">
-                        <div>
-                            <div style="font-weight: 800; font-size: 11px;">🤖 Nexus Tarım Botu</div>
-                            <div style="font-size: 9px; color: var(--muted);" id="worker-status">Aktif İşçi: 0 (Hazırları otomatik toplar)</div>
-                        </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="hireWorker()">Kirala (800 🪙)</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="unlockNewPlot()">750 🪙</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 5. SİSTEM AYARLARI -->
-            <div id="view-settings" class="tab-view">
-                <div class="card">
-                    <div class="card-header">Oturum Bilgileri</div>
-                    <div class="list-item">
+            <!-- 4. OTOMASYON (BOTLAR) -->
+            <div id="pane-automation" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Yapay Zeka Otomasyon Sistemleri</div>
+                    <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">Telegram Cloud Sync</div>
-                            <div style="font-size: 9px; color: var(--muted);">Veriler yerel bellekte güvenle korunuyor.</div>
+                            <div style="font-weight: 800; font-size: 11px;">🤖 Zenith Otomasyon Botu</div>
+                            <div style="font-size: 9px; color: var(--text-muted);" id="worker-count-text">Aktif Bot: 0 (Hazır tarlaları otomatik toplar)</div>
                         </div>
-                        <button class="btn blue" style="width: auto; padding: 6px 12px;" onclick="resetSaveData()">Sıfırla</button>
+                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="hireAutomationBot()">Satın Al (1000 🪙)</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. AYARLAR & KAYIT -->
+            <div id="pane-settings" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Sistem Tercihleri</div>
+                    <div class="row-item">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">Ses Efektleri (SFX)</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Web Audio sinyal sesleri</div>
+                        </div>
+                        <button class="btn blue" style="width: auto; padding: 6px 12px;" onclick="toggleAudio()" id="sfx-toggle-btn">Açık 🔊</button>
+                    </div>
+                    <div class="row-item">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">Bulut Kayıt (LocalStorage)</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">İlerlemen otomatik depolanır</div>
+                        </div>
+                        <button class="btn blue" style="width: auto; padding: 6px 12px;" onclick="hardReset()">Sıfırla</button>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Alt Dock Menü -->
+        <!-- Alt Dock Navigasyon -->
         <div class="nav-dock">
-            <button class="nav-tab active" onclick="switchTab('farm', this)"><span class="nav-icon">🌾</span><span>Tarla</span></button>
-            <button class="nav-tab" onclick="switchTab('factory', this)"><span class="nav-icon">🏭</span><span>Fabrika</span></button>
-            <button class="nav-tab" onclick="switchTab('market', this)"><span class="nav-icon">📈</span><span>Borsa</span></button>
-            <button class="nav-tab" onclick="switchTab('workers', this)"><span class="nav-icon">🤖</span><span>Botlar</span></button>
-            <button class="nav-tab" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayar</span></button>
+            <button class="nav-item active" onclick="switchTab('farm', this)"><span class="nav-icon">🌾</span><span>Tarla</span></button>
+            <button class="nav-item" onclick="switchTab('factory', this)"><span class="nav-icon">🏭</span><span>Fabrika</span></button>
+            <button class="nav-item" onclick="switchTab('market', this)"><span class="nav-icon">📈</span><span>Borsa</span></button>
+            <button class="nav-item" onclick="switchTab('automation', this)"><span class="nav-icon">🤖</span><span>Botlar</span></button>
+            <button class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayar</span></button>
         </div>
     </div>
 
     <script>
-        // Oyun Durumu (State)
-        let gameState = {
-            gold: 750,
+        // Web Audio API Ses Motoru
+        let audioActive = true;
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        function playSfx(type) {
+            if (!audioActive) return;
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            let osc = audioCtx.createOscillator();
+            let gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'click') {
+                osc.frequency.setValueAtTime(500, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.08);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+            } else if (type === 'success') {
+                osc.frequency.setValueAtTime(700, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1200, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+            }
+        }
+
+        function toggleAudio() {
+            audioActive = !audioActive;
+            document.getElementById('sfx-toggle-btn').innerText = audioActive ? "Açık 🔊" : "Kapalı 🔇";
+            showToast(audioActive ? "Ses efektleri açıldı" : "Ses efektleri kapatıldı");
+        }
+
+        // Oyun State & Kayıt Sistemi
+        let game = {
+            gold: 1000,
             xp: 0,
             level: 1,
-            maxInv: 40,
+            maxInv: 50,
             activePlots: 4,
             workers: 0,
             inventory: { wheat: 0, corn: 0, strawberry: 0, milk: 0, egg: 0, bread: 0, cheese: 0 },
             plots: Array.from({length: 8}, () => ({ status: 'empty', progress: 0, seed: null }))
         };
 
-        const seedTypes = [
-            { name: 'Buğday', cost: 15, value: 45, xp: 12, time: 3, icon: '🌾', key: 'wheat' },
-            { name: 'Mısır', cost: 40, value: 120, xp: 30, time: 6, icon: '🌽', key: 'corn' },
-            { name: 'Çilek', cost: 90, value: 280, xp: 75, time: 10, icon: '🍓', key: 'strawberry' }
+        const seedList = [
+            { name: 'Buğday', cost: 20, price: 55, xp: 15, time: 3, icon: '🌾', key: 'wheat' },
+            { name: 'Mısır', cost: 50, price: 140, xp: 35, time: 6, icon: '🌽', key: 'corn' },
+            { name: 'Çilek', cost: 120, price: 340, xp: 80, time: 10, icon: '🍓', key: 'strawberry' }
         ];
 
-        function showToast(msg) {
-            const t = document.getElementById('toast-box');
-            t.innerText = msg;
+        function saveGame() {
+            localStorage.setItem('stellar_zenith_save', JSON.stringify(game));
+        }
+
+        function loadGame() {
+            let saved = localStorage.getItem('stellar_zenith_save');
+            if (saved) {
+                try {
+                    let parsed = JSON.parse(saved);
+                    game = { ...game, ...parsed };
+                } catch(e) {}
+            }
+        }
+
+        function showToast(text) {
+            let t = document.getElementById('toast');
+            t.innerText = text;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
         function updateUI() {
-            document.getElementById('stat-gold').innerText = gameState.gold;
-            let totalInv = Object.values(gameState.inventory).reduce((a, b) => a + b, 0);
-            document.getElementById('stat-inv').innerText = `${totalInv}/${gameState.maxInv}`;
-            document.getElementById('stat-lvl').innerText = `Lvl ${gameState.level}`;
-            document.getElementById('market-inv-text').innerText = `Depo Envanteri (${totalInv})`;
-            document.getElementById('worker-status').innerText = `Aktif İşçi: ${gameState.workers} (Otomatik toplar)`;
+            document.getElementById('ui-gold').innerText = game.gold;
+            let totalInv = Object.values(game.inventory).reduce((a, b) => a + b, 0);
+            document.getElementById('ui-inv').innerText = `${totalInv}/${game.maxInv}`;
+            document.getElementById('ui-xp').innerText = `${game.xp} XP (Lvl ${game.level})`;
+            document.getElementById('market-stock-info').innerText = `Depo Envanteri (${totalInv})`;
+            document.getElementById('worker-count-text').innerText = `Aktif Bot: ${game.workers} (Otomatik toplar)`;
             renderPlots();
+            saveGame();
         }
 
         function renderPlots() {
-            const container = document.getElementById('plots-grid');
+            let container = document.getElementById('plots-container');
             container.innerHTML = '';
             for (let i = 0; i < 8; i++) {
-                let p = gameState.plots[i];
-                let box = document.createElement('div');
-                box.className = 'plot-card';
+                let p = game.plots[i];
+                let card = document.createElement('div');
+                card.className = 'plot-box';
 
-                if (i >= gameState.activePlots) {
-                    box.style.opacity = '0.35';
-                    box.innerHTML = `<div style="font-size:22px;">🔒</div><div style="font-size:9px; color:var(--muted);">Kilitli Parsel</div><button class="btn disabled">Kapalı</button>`;
+                if (i >= game.activePlots) {
+                    card.style.opacity = '0.35';
+                    card.innerHTML = `<div style="font-size:22px;">🔒</div><div style="font-size:9px; color:var(--text-muted);">Kilitli Parsel</div><button class="btn locked">Kapalı</button>`;
                 } else if (p.status === 'empty') {
-                    box.innerHTML = `<div style="font-size:24px;">🟫</div><div style="font-size:9px; color:var(--muted);">Boş Toprak</div><button class="btn" onclick="plantSeed(${i})">Ekim Yap</button>`;
+                    card.innerHTML = `<div style="font-size:24px;">🟫</div><div style="font-size:9px; color:var(--text-muted);">Boş Toprak</div><button class="btn" onclick="plantSeed(${i})">Ekim Yap</button>`;
                 } else if (p.status === 'growing') {
-                    box.innerHTML = `<div style="font-size:24px;">🌱</div><div style="font-size:9px; color:var(--gold);">Gelişiyor...</div><div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${p.progress}%"></div></div>`;
+                    card.innerHTML = `<div style="font-size:24px;">🌱</div><div style="font-size:9px; color:var(--accent-gold);">Büyüyor...</div><div class="progress-track"><div class="progress-fill" style="width:${p.progress}%"></div></div>`;
                 } else if (p.status === 'ready') {
-                    box.className += ' ready';
-                    box.innerHTML = `<div style="font-size:26px;">${p.seed.icon}</div><div style="font-size:9px; color:var(--green); font-weight:800;">HAZIR!</div><button class="btn" onclick="harvestPlot(${i})">Hasat Et</button>`;
+                    card.className += ' ready';
+                    card.innerHTML = `<div style="font-size:26px;">${p.seed.icon}</div><div style="font-size:9px; color:var(--accent-green); font-weight:800;">HAZIR!</div><button class="btn" onclick="harvestPlot(${i})">Topla</button>`;
                 }
-                container.appendChild(box);
+                container.appendChild(card);
             }
         }
 
         function plantSeed(idx) {
-            let sIdx = document.getElementById('select-seed').value;
-            let seed = seedTypes[sIdx];
-            if (gameState.gold < seed.cost) { showToast("Yeterli altın bulunmuyor!"); return; }
+            let seedIdx = document.getElementById('seed-select').value;
+            let seed = seedList[seedIdx];
+            if (game.gold < seed.cost) { showToast("Yeterli altın bulunmuyor!"); return; }
 
-            gameState.gold -= seed.cost;
-            let plot = gameState.plots[idx];
+            game.gold -= seed.cost;
+            let plot = game.plots[idx];
             plot.status = 'growing';
             plot.seed = seed;
             plot.progress = 0;
+            playSfx('click');
             updateUI();
 
             let step = 100 / (seed.time * 10);
-            let interval = setInterval(() => {
+            let timer = setInterval(() => {
                 plot.progress += step;
                 if (plot.progress >= 100) {
                     plot.progress = 100;
                     plot.status = 'ready';
-                    clearInterval(plot.timerRef);
-                    // Otomasyon kontrolü
-                    if (gameState.workers > 0) {
-                        autoHarvest(idx);
+                    clearInterval(plot.timerInterval);
+                    if (game.workers > 0) {
+                        autoCollect(idx);
                     }
                     updateUI();
                 }
                 renderPlots();
             }, 100);
-            plot.timerRef = interval;
+            plot.timerInterval = timer;
         }
 
         function harvestPlot(idx) {
-            let totalInv = Object.values(gameState.inventory).reduce((a, b) => a + b, 0);
-            if (totalInv >= gameState.maxInv) { showToast("Ambar kapasitesi dolu!"); return; }
+            let totalInv = Object.values(game.inventory).reduce((a, b) => a + b, 0);
+            if (totalInv >= game.maxInv) { showToast("Ambar kapasitesi tamamen dolu!"); return; }
 
-            let plot = gameState.plots[idx];
+            let plot = game.plots[idx];
             let seed = plot.seed;
-            gameState.inventory[seed.key]++;
-            gameState.xp += seed.xp;
+            game.inventory[seed.key]++;
+            game.xp += seed.xp;
 
-            if (gameState.xp >= gameState.level * 120) {
-                gameState.level++;
-                showToast(`🎉 Seviye Atlandı: Lvl ${gameState.level}!`);
+            if (game.xp >= game.level * 150) {
+                game.level++;
+                showToast(`🎉 Seviye Atlandı: Lvl ${game.level}!`);
             }
 
-            showToast(`+1 ${seed.name} ambarlandı!`);
+            playSfx('success');
+            showToast(`+1 ${seed.name} toplandı!`);
             plot.status = 'empty';
             plot.seed = null;
             updateUI();
         }
 
-        function autoHarvest(idx) {
-            let totalInv = Object.values(gameState.inventory).reduce((a, b) => a + b, 0);
-            if (totalInv >= gameState.maxInv) return;
-            let plot = gameState.plots[idx];
+        function autoCollect(idx) {
+            let totalInv = Object.values(game.inventory).reduce((a, b) => a + b, 0);
+            if (totalInv >= game.maxInv) return;
+            let plot = game.plots[idx];
             if (plot.status === 'ready') {
-                gameState.inventory[plot.seed.key]++;
+                game.inventory[plot.seed.key]++;
                 plot.status = 'empty';
                 plot.seed = null;
             }
         }
 
-        function collectAnimal(type) {
-            let totalInv = Object.values(gameState.inventory).reduce((a, b) => a + b, 0);
-            if (totalInv >= gameState.maxInv) { showToast("Ambar dolu!"); return; }
-            gameState.inventory[type]++;
-            showToast(type === 'milk' ? "İnek sağıldı: +1 Süt 🥛" : "Yumurta toplandı: +1 🥚");
+        function collectItem(type) {
+            let totalInv = Object.values(game.inventory).reduce((a, b) => a + b, 0);
+            if (totalInv >= game.maxInv) { showToast("Ambar dolu!"); return; }
+            game.inventory[type]++;
+            playSfx('success');
+            showToast(type === 'milk' ? "İnek sağıldı: +1 Süt 🥛" : "Kümes toplandı: +1 Yumurta 🥚");
             updateUI();
         }
 
-        function processItem(type) {
+        function processProduct(type) {
             if (type === 'bread') {
-                if (gameState.inventory.wheat < 1) { showToast("Gerekli: 1x Buğday 🌾"); return; }
-                gameState.inventory.wheat--;
-                gameState.inventory.bread++;
-                showToast("Fırında ekmek üretildi! 🍞");
+                if (game.inventory.wheat < 1) { showToast("Gerekli: 1x Buğday 🌾"); return; }
+                game.inventory.wheat--;
+                game.inventory.bread++;
+                showToast("Fırında ekmek pişirildi! 🍞");
             } else if (type === 'cheese') {
-                if (gameState.inventory.milk < 1) { showToast("Gerekli: 1x Taze Süt 🥛"); return; }
-                gameState.inventory.milk--;
-                gameState.inventory.cheese++;
+                if (game.inventory.milk < 1) { showToast("Gerekli: 1x Saf Süt 🥛"); return; }
+                game.inventory.milk--;
+                game.inventory.cheese++;
                 showToast("Mandırada peynir yapıldı! 🧀");
             }
+            playSfx('success');
             updateUI();
         }
 
-        function sellAllNexus() {
-            let inv = gameState.inventory;
-            let revenue = (inv.wheat * 45) + (inv.corn * 120) + (inv.strawberry * 280) + (inv.milk * 70) + (inv.egg * 50) + (inv.bread * 130) + (inv.cheese * 200);
-            
-            if (revenue === 0) { showToast("Satılacak ürün bulunmuyor!"); return; }
+        function sellAllAssets() {
+            let inv = game.inventory;
+            let revenue = (inv.wheat * 55) + (inv.corn * 140) + (inv.strawberry * 340) + (inv.milk * 80) + (inv.egg * 60) + (inv.bread * 160) + (inv.cheese * 240);
+            if (revenue === 0) { showToast("Satılacak envanter bulunmuyor!"); return; }
 
-            gameState.gold += revenue;
-            gameState.inventory = { wheat: 0, corn: 0, strawberry: 0, milk: 0, egg: 0, bread: 0, cheese: 0 };
-            showToast(`Borsada satış yapıldı: +${revenue} 🪙 kazandın!`);
+            game.gold += revenue;
+            game.inventory = { wheat: 0, corn: 0, strawberry: 0, milk: 0, egg: 0, bread: 0, cheese: 0 };
+            playSfx('success');
+            showToast(`Borsa satışı başarılı: +${revenue} 🪙 kazandın!`);
             updateUI();
         }
 
-        function unlockPlot() {
-            if (gameState.activePlots >= 8) { showToast("Tüm araziler açık!"); return; }
-            if (gameState.gold < 600) { showToast("Yetersiz bakiye (600 🪙 gerekli)"); return; }
-            gameState.gold -= 600;
-            gameState.activePlots++;
+        function unlockNewPlot() {
+            if (game.activePlots >= 8) { showToast("Maksimum parsele ulaşıldı!"); return; }
+            if (game.gold < 750) { showToast("Yetersiz bakiye (750 🪙 gerekli)"); return; }
+            game.gold -= 750;
+            game.activePlots++;
+            playSfx('success');
             showToast("Yeni arsa tapusu alındı! 🚜");
             updateUI();
         }
 
-        function hireWorker() {
-            if (gameState.gold < 800) { showToast("Yetersiz bakiye (800 🪙 gerekli)"); return; }
-            gameState.gold -= 800;
-            gameState.workers++;
-            showToast("Nexus Bot sisteme entegre edildi! 🤖");
+        function hireAutomationBot() {
+            if (game.gold < 1000) { showToast("Yetersiz bakiye (1000 🪙 gerekli)"); return; }
+            game.gold -= 1000;
+            game.workers++;
+            playSfx('success');
+            showToast("Zenith Otomasyon Botu aktif! 🤖");
             updateUI();
         }
 
-        function speedUpPlots() {
-            if (gameState.gold < 30) { showToast("Yetersiz altın!"); return; }
-            gameState.gold -= 30;
-            gameState.plots.forEach(p => { if (p.status === 'growing') p.progress = Math.min(100, p.progress + 35); });
-            showToast("Can suyu verildi! 💧");
+        function applyWatering() {
+            if (game.gold < 35) { showToast("Yetersiz altın!"); return; }
+            game.gold -= 35;
+            game.plots.forEach(p => { if (p.status === 'growing') p.progress = Math.min(100, p.progress + 40); });
+            playSfx('click');
+            showToast("Yağmurlama sistemi çalıştı! 💧");
             updateUI();
         }
 
-        function instantGrow() {
-            if (gameState.gold < 60) { showToast("Yetersiz altın!"); return; }
-            gameState.gold -= 600; // corrected context demo
-            gameState.plots.forEach(p => { if (p.status === 'growing') { p.progress = 100; p.status = 'ready'; } });
-            showToast("Hormon uygulandı, hepsi büyüdü! ⚡");
+        function applyFertilizer() {
+            if (game.gold < 75) { showToast("Yetersiz altın!"); return; }
+            game.gold -= 75;
+            game.plots.forEach(p => { if (p.status === 'growing') { p.progress = 100; p.status = 'ready'; } });
+            playSfx('success');
+            showToast("Süper iksir uygulandı, hepsi hazır! ⚡");
             updateUI();
         }
 
-        function resetSaveData() {
-            localStorage.clear();
+        function hardReset() {
+            localStorage.removeItem('stellar_zenith_save');
             location.reload();
         }
 
         function switchTab(name, btn) {
-            document.querySelectorAll('.tab-view').forEach(v => v.classList.v_active || v.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('view-' + name).classList.add('active');
+            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            document.getElementById('pane-' + name).classList.add('active');
             btn.classList.add('active');
         }
 
+        loadGame();
         updateUI();
     </script>
 </body>
