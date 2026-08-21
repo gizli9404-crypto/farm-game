@@ -3,20 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Crypto-Rig Tycoon: Terminal Edition</title>
+    <title>Quantum Syndicate: Telegram Mini-App</title>
+    <!-- Telegram WebApp SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-deep: #050508;
-            --surface: #0a0e17;
-            --surface-glass: rgba(10, 14, 23, 0.95);
-            --border: rgba(34, 211, 238, 0.2);
-            --neon-green: #10b981;
-            --neon-cyan: #22d3ee;
-            --neon-orange: #f97316;
-            --neon-purple: #c084fc;
-            --neon-pink: #f43f5e;
-            --text-main: #f8fafc;
-            --text-muted: #64748b;
+            --bg-deep: #0f141d;
+            --surface: #171e2e;
+            --surface-glass: rgba(23, 30, 46, 0.95);
+            --border: rgba(56, 189, 248, 0.25);
+            --neon-green: #34d399;
+            --neon-cyan: #38bdf8;
+            --neon-orange: #fb923c;
+            --neon-purple: #a78bfa;
+            --neon-pink: #f472b6;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
         }
 
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Fira Code', monospace, sans-serif; }
@@ -36,13 +38,13 @@
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: linear-gradient(180deg, #0a0e17 0%, #030712 100%);
+            background: linear-gradient(180deg, #171e2e 0%, #0f141d 100%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
             border: 1px solid var(--border);
-            box-shadow: 0 0 50px rgba(34, 211, 238, 0.15);
+            box-shadow: 0 0 50px rgba(56, 189, 248, 0.15);
         }
 
         #toast {
@@ -50,14 +52,14 @@
             top: 75px;
             left: 50%;
             transform: translateX(-50%) translateY(-20px);
-            background: rgba(34, 211, 238, 0.15);
+            background: rgba(56, 189, 248, 0.2);
             border: 1px solid var(--neon-cyan);
             color: var(--neon-cyan);
             padding: 6px 14px;
             border-radius: 8px;
             font-size: 10px;
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(34, 211, 238, 0.2);
+            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
             opacity: 0;
             transition: all 0.3s ease;
             z-index: 1000;
@@ -83,7 +85,7 @@
             padding: 4px 8px;
             border-radius: 6px;
             border: 1px solid var(--border);
-            font-size: 10px;
+            font-size: 9px;
             font-weight: 700;
         }
         .hud-stat.cash { color: var(--neon-green); }
@@ -121,7 +123,7 @@
         }
 
         .btn {
-            background: rgba(34, 211, 238, 0.1);
+            background: rgba(56, 189, 248, 0.1);
             color: var(--neon-cyan);
             border: 1px solid var(--neon-cyan);
             padding: 8px 12px;
@@ -132,9 +134,10 @@
             width: 100%;
             transition: 0.2s;
         }
-        .btn:active { background: rgba(34, 211, 238, 0.3); transform: scale(0.98); }
-        .btn.orange { background: rgba(249, 115, 22, 0.1); color: var(--neon-orange); border-color: var(--neon-orange); }
-        .btn.purple { background: rgba(192, 132, 252, 0.1); color: var(--neon-purple); border-color: var(--neon-purple); }
+        .btn:active { background: rgba(56, 189, 248, 0.3); transform: scale(0.98); }
+        .btn.purple { background: rgba(167, 139, 250, 0.1); color: var(--neon-purple); border-color: var(--neon-purple); }
+        .btn.orange { background: rgba(251, 146, 60, 0.1); color: var(--neon-orange); border-color: var(--neon-orange); }
+        .btn.green { background: rgba(52, 211, 153, 0.1); color: var(--neon-green); border-color: var(--neon-green); }
         .btn.locked { background: #1e293b; color: var(--text-muted); border-color: #334155; cursor: not-allowed; }
 
         .row-item {
@@ -148,13 +151,13 @@
             gap: 8px;
         }
 
-        /* Terminal Ekranı */
+        /* Terminal Konsolu */
         #terminal-box {
-            background: #020408;
+            background: #090d16;
             border: 1px solid var(--neon-cyan);
             border-radius: 8px;
             padding: 8px;
-            height: 160px;
+            height: 150px;
             overflow-y: auto;
             font-size: 9px;
             color: var(--neon-green);
@@ -162,13 +165,10 @@
             flex-direction: column;
             gap: 4px;
         }
-        .terminal-input-row {
-            display: flex;
-            gap: 6px;
-        }
+        .terminal-input-row { display: flex; gap: 6px; }
         .terminal-input {
             flex-grow: 1;
-            background: #030712;
+            background: #0f141d;
             border: 1px solid var(--border);
             color: #fff;
             padding: 6px 8px;
@@ -202,7 +202,7 @@
         }
         .nav-item.active {
             color: var(--neon-cyan);
-            background: rgba(34, 211, 238, 0.1);
+            background: rgba(56, 189, 248, 0.1);
             border: 1px solid var(--border);
         }
         .nav-icon { font-size: 14px; }
@@ -211,107 +211,106 @@
 <body>
 
     <div id="game-viewport">
-        <div id="toast">SYSTEM INITIALIZED</div>
+        <div id="toast">TELEGRAM MINI-APP ACTIVE</div>
 
         <!-- Üst HUD -->
         <div class="hud-header">
-            <div class="hud-stat cash"><span>💵</span> <span id="ui-cash">2500₺</span></div>
+            <div class="hud-stat cash"><span>💵</span> <span id="ui-cash">12000₺</span></div>
             <div class="hud-stat crypto"><span>🪙</span> <span id="ui-xmr">0.00 XMR</span></div>
-            <div class="hud-stat" style="color:var(--neon-purple);"><span>⚡</span> <span id="ui-hash">0 MH/s</span></div>
-            <div class="hud-stat" style="color:var(--neon-pink);"><span>🌡️</span> <span id="ui-temp">35°C</span></div>
+            <div class="hud-stat" style="color:var(--neon-purple);"><span>⚡</span> <span id="ui-hash">0 EH/s</span></div>
+            <div class="hud-stat" style="color:var(--neon-pink);"><span id="ui-user">TG: @User</span></div>
         </div>
 
-        <!-- Ana Alan -->
+        <!-- İçerik Alanı -->
         <div class="content-area">
 
-            <!-- 1. MADENCİLİK & RIGLER -->
+            <!-- 1. MADENCİLİK & KÜTLESEL DÜĞÜMLER -->
             <div id="pane-rigs" class="tab-pane active">
                 <div class="panel">
-                    <div class="panel-title"><span>Donanım & GPU Rig</span> <span id="ui-rig-count">0 Rig Aktif</span></div>
+                    <div class="panel-title"><span>Telegram Botnet & Düğüm Ekosistemi</span> <span id="ui-core-count">0 Düğüm</span></div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">ASUS RX 470 4GB (Modlu)</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">+15 MH/s | +65W Güç</div>
+                            <div style="font-weight: 700; font-size: 10px;">Mini-App Airdrop Node</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">+3.0 EH/s Güç Üretir</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="buyRig('rx470')">Satın Al (1200₺)</button>
+                        <button class="btn cyan" style="width: auto; padding: 6px 10px;" onclick="buyNode('airdrop')">Başlat (10000₺)</button>
                     </div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">ASUS RX 590 8GB</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">+30 MH/s | +120W Güç</div>
+                            <div style="font-weight: 700; font-size: 10px;">Quantum Telegram Singularity</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">+15.0 EH/s Üstün Güç</div>
                         </div>
-                        <button class="btn orange" style="width: auto; padding: 6px 10px;" onclick="buyRig('rx590')">Satın Al (3500₺)</button>
+                        <button class="btn purple" style="width: auto; padding: 6px 10px;" onclick="buyNode('singularity')">Ateşle (40000₺)</button>
                     </div>
                 </div>
 
                 <div class="panel">
-                    <div class="panel-title">Soğutma ve Optimizasyon</div>
+                    <div class="panel-title">Telegram Otomatik Staking Botu</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Sunucu Fan Desteği</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Sıcaklık artışını %20 yavaşlatır</div>
+                            <div style="font-weight: 700; font-size: 10px;">Channel Auto-Compound Bot</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Saniyede otomatik pasif XMR akışı sağlar</div>
                         </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 10px;" onclick="buyUpgrade('fans')">Yükselt (800₺)</button>
+                        <button class="btn green" style="width: auto; padding: 6px 10px;" onclick="toggleAutoBot()" id="autobot-btn">Aktifleştir</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. TERMINAL (HACK & CLI) -->
+            <!-- 2. MINI-APP CLI TERMINAL -->
             <div id="pane-terminal" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Linux CLI / Kali Terminal</div>
+                    <div class="panel-title">Telegram Root Terminal</div>
                     <div id="terminal-box">
-                        <div>[SYS] Crypto-Rig OS v2.6.4 yüklendi.</div>
-                        <div>[SYS] Komut satırı aktif. Yardım için 'help' yazın.</div>
+                        <div>[TG-SYS] WebApp tüneli bağlandı. 'help' yazarak komutları listeleyin.</div>
                     </div>
                     <div class="terminal-input-row">
-                        <input type="text" id="terminal-input" class="terminal-input" placeholder="Komut yazın (örn: help)..." onkeydown="handleTerminalInput(event)">
+                        <input type="text" id="terminal-input" class="terminal-input" placeholder="Komut yazın (örn: claim)..." onkeydown="handleTerminalInput(event)">
                         <button class="btn" style="width: 70px;" onclick="executeCommand()">Çalıştır</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. BORSA & PİYASA -->
+            <!-- 3. BORSA & DEX -->
             <div id="pane-market" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Kripto Borsası (P2P / DEX)</div>
+                    <div class="panel-title">Mini-App Likidite Borsası</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;" id="ui-market-rate">Monero (XMR) Kuru: 4500₺</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Kazılan kriptoları anında bozdur</div>
+                            <div style="font-weight: 700; font-size: 10px;" id="ui-market-rate">Monero (XMR) Kuru: 10000₺</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Tüm kripto varlıkları anında nakite çevir</div>
                         </div>
                         <button class="btn orange" style="width: auto; padding: 6px 10px;" onclick="sellAllCrypto()">Hepsini Sat 💸</button>
                     </div>
                 </div>
                 <div class="panel">
-                    <div class="panel-title">Otomasyon Botları</div>
+                    <div class="panel-title">Yapay Zeka Borsa Manipülatörü</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Python Auto-Sell Bot</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Her 10 saniyede bir otomatik bakiye çevirir</div>
+                            <div style="font-weight: 700; font-size: 10px;">Telegram Arbitrage Engine v5</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Otomatik dip alım satım yapar</div>
                         </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 10px;" onclick="buyBot()" id="bot-btn">Aktifleştir (2000₺)</button>
+                        <button class="btn green" style="width: auto; padding: 6px 10px;" onclick="buyArbitrageAI()" id="arb-btn">Bağlan (60000₺)</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. GÖREVLER & SCRIPT -->
-            <div id="pane-quests" class="tab-pane">
+            <!-- 4. GÖREVLER & AIRDROP -->
+            <div id="pane-scripts" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Script Görevleri</div>
+                    <div class="panel-title">Telegram Topluluk Görevleri</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">IDDAA / Bahis Botu Yazılımı</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Maç tahmin scripti çalıştır (Ödül: 1500₺)</div>
+                            <div style="font-weight: 700; font-size: 10px;">Kanal Abone Dağıtımı & Airdrop</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Görev tamamla (Ödül: 30000₺)</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="completeQuest('betting', 1500, this)">Çalıştır</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="runTask(30000, this)">Ödülü Topla</button>
                     </div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Telegram Mini-App Bot Tasarımı</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">UI arayüz simülasyonu (Ödül: 3000₺)</div>
+                            <div style="font-weight: 700; font-size: 10px;">Global Mini-App Ekosistem Sızması</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Ağları ele geçir (Ödül: 50000₺)</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="completeQuest('telegram', 3000, this)">Çalıştır</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="runTask(50000, this)">Operasyonu Başlat</button>
                     </div>
                 </div>
             </div>
@@ -319,13 +318,13 @@
             <!-- 5. AYARLAR -->
             <div id="pane-settings" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Sistem Bakımı</div>
+                    <div class="panel-title">Telegram Oturum Kontrolü</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Sistemi Sıfırla</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Tüm donanım ve kasayı temizler</div>
+                            <div style="font-weight: 700; font-size: 10px;">Mini-App Veritabanını Sıfırla</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Tüm düğümleri ve bakiyeyi temizler</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 10px; color:var(--neon-pink); border-color:var(--neon-pink);" onclick="hardReset()">Hard Reset</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px; color:var(--neon-pink); border-color:var(--neon-pink);" onclick="hardReset()">Format At</button>
                     </div>
                 </div>
             </div>
@@ -334,24 +333,34 @@
 
         <!-- Alt Navigasyon Dock -->
         <div class="nav-dock">
-            <button class="nav-item active" onclick="switchTab('rigs', this)"><span class="nav-icon">🖥️</span><span>Rigler</span></button>
+            <button class="nav-item active" onclick="switchTab('rigs', this)"><span class="nav-icon">🤖</span><span>Düğüm</span></button>
             <button class="nav-item" onclick="switchTab('terminal', this)"><span class="nav-icon">💻</span><span>Terminal</span></button>
             <button class="nav-item" onclick="switchTab('market', this)"><span class="nav-icon">📈</span><span>Borsa</span></button>
-            <button class="nav-item" onclick="switchTab('quests', this)"><span class="nav-icon">📜</span><span>Script</span></button>
+            <button class="nav-item" onclick="switchTab('scripts', this)"><span class="nav-icon">⭐</span><span>Airdrop</span></button>
             <button class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayar</span></button>
         </div>
     </div>
 
     <script>
+        // Telegram WebApp Entegrasyonu Başlangıcı
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.ready();
+            tg.expand();
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                let username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name;
+                document.getElementById('ui-user').innerText = `@${username}`;
+            }
+        }
+
         let game = {
-            cash: 2500,
+            cash: 12000,
             xmr: 0,
             hashrate: 0,
-            temp: 35,
-            rigs: { rx470: 0, rx590: 0 },
-            upgrades: { fans: 0 },
-            autoBot: false,
-            xmrRate: 4500
+            nodes: { airdrop: 0, singularity: 0 },
+            autoBotActive: false,
+            arbAIActive: false,
+            xmrRate: 10000
         };
 
         function showToast(text) {
@@ -361,66 +370,55 @@
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
-        // Ana Madencilik Döngüsü (1 Saniye)
+        // Ana Saniyeler Döngüsü
         setInterval(() => {
             if (game.hashrate > 0) {
-                // Her MH/s başına ufak XMR üretimi
-                let generated = (game.hashrate * 0.00005);
-                game.xmr += generated;
-
-                // Sıcaklık hesaplama
-                let coolingPower = 1 + (game.upgrades.fans * 0.3);
-                let targetTemp = 35 + Math.floor(game.hashrate / 15) / coolingPower;
-                if (game.temp < targetTemp) game.temp++;
-                if (game.temp > targetTemp) game.temp--;
+                game.xmr += (game.hashrate * 0.0012);
+            }
+            if (game.autoBotActive && game.hashrate > 0) {
+                game.xmr *= 1.06;
+            }
+            if (game.arbAIActive && game.xmr > 0) {
+                let revenue = game.xmr * 0.3 * game.xmrRate;
+                game.cash += revenue;
+                game.xmr *= 0.7;
             }
             updateUI();
         }, 1000);
 
-        // Otomatik Bot Döngüsü
-        setInterval(() => {
-            if (game.autoBot && game.xmr > 0) {
-                let earnings = game.xmr * game.xmrRate;
-                game.cash += earnings;
-                game.xmr = 0;
-                showToast(`Auto-Bot: +${earnings.toFixed(1)}₺ nakite çevrildi!`);
-            }
-        }, 10000);
-
         function updateUI() {
             document.getElementById('ui-cash').innerText = `${Math.floor(game.cash)}₺`;
             document.getElementById('ui-xmr').innerText = `${game.xmr.toFixed(4)} XMR`;
-            document.getElementById('ui-hash').innerText = `${game.hashrate} MH/s`;
-            document.getElementById('ui-temp').innerText = `${game.temp}°C`;
-            let totalRig = game.rigs.rx470 + game.rigs.rx590;
-            document.getElementById('ui-rig-count').innerText = `${totalRig} Rig Aktif`;
+            document.getElementById('ui-hash').innerText = `${game.hashrate.toFixed(1)} EH/s`;
+            let totalNodes = game.nodes.airdrop + game.nodes.singularity;
+            document.getElementById('ui-core-count').innerText = `${totalNodes} Düğüm`;
         }
 
-        function buyRig(type) {
-            if (type === 'rx470') {
-                if (game.cash < 1200) { showToast("Yetersiz bakiye!"); return; }
-                game.cash -= 1200;
-                game.rigs.rx470++;
-                game.hashrate += 15;
-                showToast("RX 470 Rig eklendi! 🖥️");
-            } else if (type === 'rx590') {
-                if (game.cash < 3500) { showToast("Yetersiz bakiye!"); return; }
-                game.cash -= 3500;
-                game.rigs.rx590++;
-                game.hashrate += 30;
-                showToast("RX 590 Rig eklendi! 🔥");
+        function buyNode(type) {
+            if (type === 'airdrop') {
+                if (game.cash < 10000) { showToast("Yetersiz bakiye!"); return; }
+                game.cash -= 10000;
+                game.nodes.airdrop++;
+                game.hashrate += 3.0;
+                showToast("Airdrop Node başarıyla kuruldu! ⚡");
+            } else if (type === 'singularity') {
+                if (game.cash < 40000) { showToast("Yetersiz bakiye!"); return; }
+                game.cash -= 40000;
+                game.nodes.singularity++;
+                game.hashrate += 15.0;
+                showToast("Telegram Singularity aktifleşti! 🔮");
             }
             updateUI();
         }
 
-        function buyUpgrade(type) {
-            if (type === 'fans') {
-                if (game.cash < 800) { showToast("Yetersiz bakiye!"); return; }
-                game.cash -= 800;
-                game.upgrades.fans++;
-                showToast("Sunucu fanları güçlendirildi! ❄️");
+        function toggleAutoBot() {
+            game.autoBotActive = !game.autoBotActive;
+            let btn = document.getElementById('autobot-btn');
+            if (game.autoBotActive) {
+                btn.innerText = "Aktif ✔️";
+                btn.className = "btn green locked";
+                showToast("Channel Auto-Compound Bot devrede!");
             }
-            updateUI();
         }
 
         function sellAllCrypto() {
@@ -428,30 +426,31 @@
             let total = game.xmr * game.xmrRate;
             game.cash += total;
             game.xmr = 0;
-            showToast(`+${total.toFixed(1)}₺ hesaba aktarıldı!`);
+            showToast(`+${total.toFixed(1)}₺ bütçeye eklendi!`);
             updateUI();
         }
 
-        function buyBot() {
-            if (game.autoBot) return;
-            if (game.cash < 2000) { showToast("Yetersiz bakiye!"); return; }
-            game.cash -= 2000;
-            game.autoBot = true;
-            document.getElementById('bot-btn').innerText = "Aktif ✔️";
-            document.getElementById('bot-btn').className = "btn purple locked";
-            showToast("Python Auto-Bot devreye girdi! 🤖");
+        function buyArbitrageAI() {
+            if (game.arbAIActive) return;
+            if (game.cash < 60000) { showToast("Yetersiz bakiye!"); return; }
+            game.cash -= 60000;
+            game.arbAIActive = true;
+            let btn = document.getElementById('arb-btn');
+            btn.innerText = "Aktif ✔️";
+            btn.className = "btn green locked";
+            showToast("Telegram Arbitrage Engine tam güçte! 🚀");
             updateUI();
         }
 
-        function completeQuest(type, reward, btn) {
+        function runTask(reward, btn) {
             game.cash += reward;
             btn.innerText = "Tamamlandı ✔️";
             btn.className = "btn locked";
-            showToast(`Script görevi bitti: +${reward}₺ kazandın!`);
+            showToast(`Görev tamamlandı: +${reward}₺!`);
             updateUI();
         }
 
-        // Terminal Mantığı
+        // Terminal Konsolu
         function handleTerminalInput(e) {
             if (e.key === 'Enter') executeCommand();
         }
@@ -463,21 +462,27 @@
 
             if (!cmd) return;
 
-            box.innerHTML += `<div>root@rig-os:~$ ${input.value}</div>`;
-            
+            box.innerHTML += `<div>tg-root@matrix:~$ ${input.value}</div>`;
+
             if (cmd === 'help') {
-                box.innerHTML += `<div>> Komutlar: status, clear, boost, cash</div>`;
-            } else if (cmd === 'status') {
-                box.innerHTML += `<div>> Hash: ${game.hashrate} MH/s | Temp: ${game.temp}C | XMR: ${game.xmr.toFixed(4)}</div>`;
-            } else if (cmd === 'clear') {
-                box.innerHTML = `<div>[SYS] Terminal temizlendi.</div>`;
-            } else if (cmd === 'boost') {
+                box.innerHTML += `<div>> Komutlar: claim, sync, blast, status, clear, cash</div>`;
+            } else if (cmd === 'claim') {
+                game.xmr += 0.8;
+                box.innerHTML += `<div>> [SUCCESS] Airdrop talep edildi: +0.8 XMR cüzdana eklendi!</div>`;
+            } else if (cmd === 'blast') {
                 if (game.hashrate > 0) {
-                    game.xmr += 0.005;
-                    box.innerHTML += `<div>> [OK] Hızlı blok çözüldü: +0.005 XMR bonus!</div>`;
+                    let p = Math.floor(Math.random() * 5000) + 2000;
+                    game.cash += p;
+                    box.innerHTML += `<div>> [SUCCESS] Mini-App patlaması başarılı: +${p}₺!</div>`;
                 } else {
-                    box.innerHTML += `<div>> [HATA] Aktif ekran kartı yok!</div>`;
+                    box.innerHTML += `<div>> [HATA] Aktif düğüm bulunamadı!</div>`;
                 }
+            } else if (cmd === 'sync') {
+                box.innerHTML += `<div>> [OK] Telegram bot API senkronizasyonu tamamlandı.</div>`;
+            } else if (cmd === 'status') {
+                box.innerHTML += `<div>> Hash: ${game.hashrate.toFixed(1)} EH/s | XMR: ${game.xmr.toFixed(4)}</div>`;
+            } else if (cmd === 'clear') {
+                box.innerHTML = `<div>[TG-SYS] Terminal temizlendi.</div>`;
             } else if (cmd === 'cash') {
                 box.innerHTML += `<div>> Mevcut Nakit: ${Math.floor(game.cash)}₺</div>`;
             } else {
@@ -486,6 +491,7 @@
 
             input.value = '';
             box.scrollTop = box.scrollHeight;
+            updateUI();
         }
 
         function hardReset() {
