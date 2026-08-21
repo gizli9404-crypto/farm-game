@@ -3,191 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>PulsePoll - Sosyal Anket & Karar Merkezi</title>
+    <title>Neon Dash - Telegram Oyunu</title>
     <!-- AdsGram Resmi SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         :root {
-            --bg: #121216;
-            --surface: #1b1b22;
-            --surface-hover: #262630;
+            --bg: #09090b;
+            --surface: #18181b;
             --primary: #8b5cf6;
-            --primary-hover: #7c3aed;
-            --accent: #ec4899;
+            --accent: #06b6d4;
             --text: #f4f4f5;
-            --text-secondary: #a1a1aa;
             --border: #27272a;
-            --success: #10b981;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        .app-container {
-            width: 100%; max-width: 410px; height: 100%; max-height: 840px;
+        .game-container {
+            width: 100%; max-width: 400px; height: 100%; max-height: 800px;
             background: var(--bg); border: 1px solid var(--border); border-radius: 24px;
             display: flex; flex-direction: column; justify-content: space-between;
-            padding: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
-            position: relative; overflow: hidden;
+            padding: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.8); position: relative; overflow: hidden;
         }
 
-        /* ÜST BİLGİ */
-        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; }
-        .logo { font-size: 14px; font-weight: 900; color: var(--primary); letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
-        .token-badge { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: var(--primary); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; }
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; z-index: 10; }
+        .logo { font-size: 14px; font-weight: 900; color: var(--accent); letter-spacing: 1px; }
+        .stats { font-size: 11px; font-weight: 800; color: var(--primary); }
 
-        /* GÖRÜNÜM ALANLARI */
-        .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
-        .view.active { display: flex; }
-
-        /* KARTLAR */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
-        .card-title { font-size: 11px; font-weight: 800; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
-
-        .poll-question { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 12px; line-height: 1.4; }
-        
-        .vote-btn { 
-            background: var(--bg); border: 1px solid var(--border); color: var(--text); 
-            padding: 12px; border-radius: 12px; font-weight: 700; font-size: 11px; cursor: pointer; 
-            width: 100%; text-align: left; margin-bottom: 8px; display: flex; justify-content: space-between; transition: 0.2s;
+        /* OYUN ALANI */
+        .game-board {
+            flex-grow: 1; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 16px; margin: 12px 0; position: relative; overflow: hidden;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center; padding: 20px;
         }
-        .vote-btn:hover { border-color: var(--primary); background: var(--surface-hover); }
+
+        .target-box {
+            width: 110px; height: 110px; border-radius: 24px; background: var(--bg);
+            border: 3px solid var(--accent); display: flex; align-items: center; justify-content: center;
+            font-size: 36px; margin-bottom: 20px; box-shadow: 0 0 25px rgba(6, 182, 212, 0.3);
+            transition: 0.1s;
+        }
+
+        .score-display { font-size: 28px; font-weight: 900; margin-bottom: 8px; }
+        .info-text { font-size: 11px; color: #a1a1aa; line-height: 1.4; margin-bottom: 20px; }
 
         /* BUTONLAR */
-        .btn { background: var(--primary); color: #fff; border: none; padding: 10px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
-        .btn:active { transform: scale(0.98); background: var(--primary-hover); }
-        
-        .btn-ad { 
-            background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; 
-            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); margin-top: 8px;
-        }
+        .btn { background: var(--primary); color: #fff; border: none; padding: 12px; border-radius: 12px; font-weight: 800; font-size: 12px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
+        .btn:active { transform: scale(0.98); }
+        .btn-accent { background: var(--accent); color: #000; margin-top: 8px; }
+        .btn-ad { background: linear-gradient(135deg, #ec4899, #8b5cf6); margin-top: 8px; box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); }
 
-        /* LİSTE / LİDERLİK SATIRLARI (AdsGram Kural 8 Karşılığı) */
-        .list-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 8px; font-size: 11px; }
-
-        /* ALT DOCK MENÜSÜ */
-        .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: space-around; padding: 6px; }
-        .dock-item { background: transparent; border: none; color: var(--text-secondary); border-radius: 12px; padding: 8px 12px; text-align: center; font-size: 8px; font-weight: 700; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: 0.2s; }
-        .dock-item span:first-child { font-size: 16px; }
-        .dock-item.active { background: var(--bg); color: var(--primary); border: 1px solid var(--border); }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- ÜST BİLGİ -->
+    <div class="game-container">
+        <!-- ÜST PANEL -->
         <div class="header">
-            <div class="logo">📊 PulsePoll</div>
-            <div class="token-badge">⭐ <span id="puanText">150</span> Puan</div>
+            <div class="logo">⚡ NEON DASH</div>
+            <div class="stats">SKOR: <span id="skorDegeri">0</span> | CAN: <span id="canDegeri">3</span></div>
         </div>
 
-        <!-- SEKME 1: ANKETLER (GÜNLÜK OYLAMA) -->
-        <div class="view active" data-view="anketler">
-            <div class="card">
-                <div class="card-title"><span>Günün Popüler Anketi</span><span style="color:var(--success);">Aktif</span></div>
-                <div class="poll-question">Yapay zeka teknolojileri önümüzdeki 5 yılda yazılım sektörünü tamamen ele geçirecek mi?</div>
-                <button class="vote-btn" onclick="oy Ver('Kesinlikle Evet')"><span>Kesinlikle Evet</span> <span style="color:var(--primary);">%74</span></button>
-                <button class="vote-btn" onclick="oyVer('Hayır, İnsan Şart')"><span>Hayır, İnsan Şart</span> <span style="color:var(--text-secondary);">%26</span></button>
-            </div>
-
-            <div class="card">
-                <div class="card-title"><span>Donanım Tercihi</span><span style="color:var(--success);">Aktif</span></div>
-                <div class="poll-question">Günlük işler ve oyunlar için ana platformunuz hangisi?</div>
-                <button class="vote-btn" onclick="oyVer('Masaüstü PC')"><span>Masaüstü Bilgisayar</span> <span style="color:var(--primary);">%82</span></button>
-                <button class="vote-btn" onclick="oyVer('Mobil / Tablet')"><span>Mobil / Tablet</span> <span style="color:var(--text-secondary);">%18</span></button>
-            </div>
+        <!-- OYUN EKRANI -->
+        <div class="game-board" id="startScreen">
+            <div style="font-size: 48px; margin-bottom: 15px;">🎮</div>
+            <h2 style="font-size: 18px; margin-bottom: 8px;">Neon Dokunma Oyunu</h2>
+            <p class="info-text">Ekrana zamanında dokunarak neon küpü patlat, puanları topla! Canın bittiğinde reklam izleyerek canını yenileyebilirsin.</p>
+            <button class="btn" onclick="oyunuBaslat()">OYUNA BAŞLA</button>
         </div>
 
-        <!-- SEKME 2: ŞANS ÇARKI VE İSTEĞE BAĞLI REKLAM -->
-        <div class="view" data-view="cark">
-            <div class="card" style="text-align: center;">
-                <div class="card-title" style="justify-content: center;">🎁 Günlük Ödül Çarkı</div>
-                <div style="font-size: 40px; margin: 15px 0;">🎡</div>
-                <div id="carkSonuc" style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Çarkı çevirerek ekstra puan kazanabilirsin.</div>
-                <button class="btn" onclick="carkCevir()">ÇARKI ÇEVİR (ÜCRETSİZ)</button>
-            </div>
-
-            <div class="card" style="border-color: var(--accent);">
-                <div class="card-title" style="color: var(--accent);">✨ Ekstra Çevir Hakkı</div>
-                <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">
-                    Günlük ücretsiz hakkın bittiğinde, isteğe bağlı kısa bir reklam izleyerek anında <b>+1 Ekstra Çevirme Hakkı</b> kazanabilirsin.
-                </div>
-                <button class="btn btn-ad" onclick="reklamGoster()">EKSTRA HAK AL (REKLAM İZLE)</button>
-            </div>
+        <div class="game-board hidden" id="playScreen">
+            <div class="target-box" id="gameCube" onclick="puanKazan()">💎</div>
+            <div class="score-display" id="liveScore">0</div>
+            <div class="info-text">Küpün üzerine hızlıca tıkla!</div>
+            <button class="btn" style="background:#ef4444;" onclick="oyunuBitir()">OYUNU BİTİR</button>
         </div>
 
-        <!-- SEKME 3: KÜRESEL LİDERLİK (AdsGram Kural 8 Karşılığı) -->
-        <div class="view" data-view="liderlik">
-            <div class="card" style="flex-grow: 1;">
-                <div class="card-title">🏆 Topluluk Puan Sıralaması</div>
-                <div class="list-row">
-                    <div><b>1. Alex_Polls</b><div style="font-size: 9px; color: var(--text-secondary);">4,250 Puan</div></div>
-                    <span style="color: var(--primary);">#1</span>
-                </div>
-                <div class="list-row">
-                    <div><b>2. CyberVoter</b><div style="font-size: 9px; color: var(--text-secondary);">3,900 Puan</div></div>
-                    <span style="color: var(--text-secondary);">#2</span>
-                </div>
-                <div class="list-row">
-                    <div><b>3. NeoUser</b><div style="font-size: 9px; color: var(--text-secondary);">3,150 Puan</div></div>
-                    <span style="color: var(--text-secondary);">#3</span>
-                </div>
-                <div class="list-row" style="border-color: var(--primary); background: rgba(139, 92, 246, 0.05);">
-                    <div><b>4. Sen (Aktif Kullanıcı)</b><div style="font-size: 9px; color: var(--text-secondary);" id="listePuanMetin">150 Puan</div></div>
-                    <span style="color: var(--success);">#4</span>
-                </div>
-            </div>
-            <button class="btn" onclick="sekmeDegis('anketler')">← ANKETLERE DÖN</button>
-        </div>
-
-        <!-- ALT MENÜ DOCK -->
-        <div class="dock">
-            <button class="dock-item active" onclick="sekmeDegis('anketler')"><span>📊</span><span>Anketler</span></button>
-            <button class="dock-item" onclick="sekmeDegis('cark')"><span>🎡</span><span>Ödül Çarkı</span></button>
-            <button class="dock-item" onclick="sekmeDegis('liderlik')"><span>🏆</span><span>Sıralama</span></button>
+        <div class="game-board hidden" id="gameOverScreen">
+            <div style="font-size: 48px; margin-bottom: 10px;">💀</div>
+            <h2 style="font-size: 18px; color: #ef4444; margin-bottom: 5px;">Oyun Bitti!</h2>
+            <p class="info-text" id="finalScoreText">Toplam Skorun: 0</p>
+            
+            <button class="btn btn-ad" onclick="reklamIzleCanAl()">❤️ REKLAM İZLE & CAN AL (+3 CAN)</button>
+            <button class="btn btn-accent" onclick="oyunuBaslat()">TEKRAR BAŞLA</button>
         </div>
     </div>
 
     <script>
-        let toplamPuan = 150;
+        let skor = 0;
+        let can = 3;
 
-        function sekmeDegis(viewName) {
-            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+        function oyunuBaslat() {
+            skor = 0;
+            can = 3;
+            document.getElementById("skorDegeri").innerText = skor;
+            document.getElementById("canDegeri").innerText = can;
 
-            document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            document.getElementById("startScreen").classList.add("hidden");
+            document.getElementById("gameOverScreen").classList.add("hidden");
+            document.getElementById("playScreen").classList.remove("hidden");
         }
 
-        function puanGuncelle(miktar) {
-            toplamPuan += miktar;
-            document.getElementById("puanText").innerText = toplamPuan;
-            document.getElementById("listePuanMetin").innerText = toplamPuan + " Puan";
+        function puanKazan() {
+            skor += 10;
+            document.getElementById("skorDegeri").innerText = skor;
+            document.getElementById("liveScore").innerText = skor;
+
+            // Görsel efekt
+            const cube = document.getElementById("gameCube");
+            cube.style.transform = "scale(0.9)";
+            setTimeout(() => { cube.style.transform = "scale(1)"; }, 100);
         }
 
-        function oyVer(secim) {
-            puanGuncelle(10);
-            alert(`Oyinuz kaydedildi: "${secim}". +10 Puan eklendi!`);
+        function oyunuBitir() {
+            document.getElementById("playScreen").classList.add("hidden");
+            document.getElementById("gameOverScreen").classList.remove("hidden");
+            document.getElementById("finalScoreText").innerText = "Toplam Skorun: " + skor;
         }
 
-        function carkCevir() {
-            const kazan = Math.floor(Math.random() * 50) + 25;
-            puanGuncelle(kazan);
-            document.getElementById("carkSonuc").innerText = `Çark çevrildi! Kazancın: +${kazan} Puan.`;
-        }
-
-        // AdsGram Resmi SDK Entegrasyonu
-        function reklamGoster() {
+        // AdsGram SDK Entegrasyonu (Ödüllü Reklam - Can Kazanma)
+        function reklamIzleCanAl() {
             if (typeof window.Adsgram !== 'undefined') {
                 window.Adsgram.init({ blockId: "int-your-block-id-here" }).show().then((result) => {
-                    puanGuncelle(100);
-                    alert("Tebrikler! Reklam başarıyla izlendi: +100 Bonus Puan ve Ekstra Hak yüklendi.");
+                    can = 3;
+                    document.getElementById("canDegeri").innerText = can;
+                    document.getElementById("gameOverScreen").classList.add("hidden");
+                    document.getElementById("playScreen").classList.remove("hidden");
+                    alert("Tebrikler! Reklam izlendi, 3 can yenilendi.");
                 }).catch((result) => {
                     alert("Reklam tamamlanamadı.");
                 });
             } else {
                 // Tarayıcı Test Simülasyonu
-                puanGuncelle(100);
-                alert("AdsGram SDK simüle edildi: +100 Bonus Puan eklendi!");
+                can = 3;
+                document.getElementById("canDegeri").innerText = can;
+                document.getElementById("gameOverScreen").classList.add("hidden");
+                document.getElementById("playScreen").classList.remove("hidden");
+                alert("AdsGram SDK simüle edildi: Canlar yenilendi!");
             }
         }
     </script>
