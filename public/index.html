@@ -3,167 +3,188 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cyber Runner: Neon Protocol</title>
-    <!-- AdsGram Resmi SDK Entegrasyonu -->
+    <title>CyberMining Protocol - TMA</title>
+    <!-- AdsGram Resmi SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         :root {
-            --bg-deep: #05050a;
-            --surface: #10101a;
-            --primary: #00f0ff;
-            --accent: #7000ff;
-            --danger: #ff0055;
-            --success: #00ff66;
-            --text-main: #ffffff;
-            --text-muted: #8b8ba7;
-            --border: #22223b;
+            --bg: #09090e;
+            --surface: #12121c;
+            --surface-hover: #1a1a29;
+            --primary: #00ffcc;
+            --accent: #7b2cbf;
+            --text: #ffffff;
+            --text-secondary: #8c8cbe;
+            --border: #232336;
+            --success: #00f593;
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-deep); color: var(--text-main); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        .app-container {
-            width: 100%; max-width: 410px; height: 100%; max-height: 840px;
-            background: linear-gradient(180deg, #0d0d1a 0%, #05050a 100%);
-            border: 2px solid var(--border); border-radius: 20px;
+        .container {
+            width: 100%; max-width: 400px; height: 100%; max-height: 810px;
+            background: linear-gradient(180deg, #10101a 0%, #09090e 100%);
+            border: 1px solid var(--border); border-radius: 24px;
             display: flex; flex-direction: column; justify-content: space-between;
-            padding: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+            padding: 16px; box-shadow: 0 24px 48px rgba(0,0,0,0.8);
             position: relative; overflow: hidden;
         }
 
-        /* ÜST PROFESYONEL HUD */
-        .hud-header {
-            background: rgba(16, 16, 26, 0.9); backdrop-filter: blur(10px);
-            border: 1px solid var(--border); border-radius: 12px; padding: 8px 12px;
-            display: flex; justify-content: space-between; align-items: center; z-index: 10;
-        }
-        .user-profile { display: flex; align-items: center; gap: 8px; }
-        .avatar { width: 32px; height: 32px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 900; }
-        .user-meta div:first-child { font-size: 11px; font-weight: 900; letter-spacing: 0.5px; }
-        .user-meta div:last-child { font-size: 8px; color: var(--primary); font-weight: 700; }
+        /* ÜST KİMLİK & BİLANÇO */
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; }
+        .user-info { display: flex; align-items: center; gap: 10px; }
+        .avatar { width: 38px; height: 38px; background: linear-gradient(135deg, var(--primary), var(--accent)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: #000; }
+        .username { font-size: 13px; font-weight: 700; }
+        .tier { font-size: 9px; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .wallet-badge { background: #05050a; border: 1px solid var(--border); padding: 5px 10px; border-radius: 8px; font-size: 10px; font-weight: 900; color: var(--success); display: flex; align-items: center; gap: 4px; }
+        .balance-box { text-align: right; }
+        .balance-amount { font-size: 16px; font-weight: 900; color: var(--success); display: flex; align-items: center; gap: 4px; justify-content: flex-end; }
+        .balance-title { font-size: 8px; color: var(--text-secondary); text-transform: uppercase; }
 
-        /* GÖRÜNÜM ALANLARI */
-        .view { display: none; flex-direction: column; gap: 10px; flex-grow: 1; margin: 8px 0; overflow-y: auto; }
+        /* SAYFA GÖRÜNÜMLERİ */
+        .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
         .view.active { display: flex; }
 
-        /* OYUN CANVAS ALANI */
-        .game-canvas-box {
-            background: #000; border: 2px solid var(--primary); border-radius: 14px;
-            flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-            position: relative; overflow: hidden; box-shadow: inset 0 0 15px rgba(0, 240, 255, 0.2);
+        /* ANA TAP ALANI (MADENCİLİK) */
+        .tap-card {
+            background: var(--surface); border: 1px solid var(--border); border-radius: 20px;
+            padding: 20px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            flex-grow: 1; position: relative; box-shadow: inset 0 0 20px rgba(0,255,204,0.03);
         }
-        canvas { display: block; width: 100%; height: 260px; background: radial-gradient(circle at center, #111122 0%, #000000 100%); }
+        .coin-btn {
+            width: 140px; height: 140px; border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #1f1f33, #09090e);
+            border: 3px solid var(--primary); box-shadow: 0 0 30px rgba(0,255,204,0.2), inset 0 0 15px rgba(0,255,204,0.1);
+            display: flex; align-items: center; justify-content: center; font-size: 50px; cursor: pointer;
+            transition: transform 0.05s ease; position: relative; margin: 20px 0;
+        }
+        .coin-btn:active { transform: scale(0.92); box-shadow: 0 0 15px rgba(0,255,204,0.4); }
 
-        /* KARTLAR VE MODÜLLER */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 12px; }
-        .card-title { font-size: 11px; font-weight: 900; color: var(--primary); margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; width: 100%; }
+        .stat-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px; text-align: left; }
+        .stat-title { font-size: 9px; color: var(--text-secondary); }
+        .stat-value { font-size: 12px; font-weight: 800; color: var(--primary); margin-top: 2px; }
+
+        /* LİSTE & GÖREV KARTLARI */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 14px; }
+        .card-title { font-size: 11px; font-weight: 800; color: var(--text); margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; letter-spacing: 0.5px; }
         
-        .list-row { display: flex; justify-content: space-between; align-items: center; background: #05050a; padding: 10px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 6px; font-size: 10px; font-weight: 800; }
+        .list-item { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .list-info div:first-child { font-size: 11px; font-weight: 700; }
+        .list-info div:last-child { font-size: 9px; color: var(--text-secondary); margin-top: 2px; }
 
         /* BUTONLAR */
-        .btn { background: var(--primary); color: #05050a; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 900; font-size: 9px; cursor: pointer; text-transform: uppercase; transition: 0.1s; box-shadow: 0 4px 12px rgba(0, 240, 255, 0.3); }
-        .btn:active { transform: scale(0.96); }
-        .btn-accent { background: var(--accent); color: #fff; box-shadow: 0 4px 12px rgba(112, 0, 255, 0.3); }
-        .btn-success { background: var(--success); color: #05050a; box-shadow: 0 4px 12px rgba(0, 255, 102, 0.3); }
-        .btn-ad { background: linear-gradient(135deg, #ff0055, #ff7000); color: #fff; box-shadow: 0 4px 12px rgba(255, 0, 85, 0.4); }
+        .btn { background: var(--primary); color: #000; border: none; padding: 8px 14px; border-radius: 10px; font-weight: 800; font-size: 10px; cursor: pointer; text-transform: uppercase; transition: 0.1s; }
+        .btn:active { transform: scale(0.95); }
+        .btn-ad { background: linear-gradient(135deg, #ff007a, #7b2cbf); color: #fff; width: 100%; padding: 12px; font-size: 11px; border-radius: 12px; margin-top: 8px; box-shadow: 0 4px 15px rgba(255,0,122,0.3); }
 
-        /* ALT NAVİGASYON DOCK */
-        .dock { background: rgba(16, 16, 26, 0.9); backdrop-filter: blur(10px); border: 1px solid var(--border); border-radius: 14px; display: flex; justify-content: space-around; padding: 6px; z-index: 10; }
-        .dock-item { background: #05050a; border: 1px solid var(--border); color: var(--text-muted); border-radius: 10px; padding: 6px 12px; text-align: center; font-size: 8px; font-weight: 900; cursor: pointer; flex: 1; margin: 0 2px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .dock-item span:first-child { font-size: 14px; }
-        .dock-item.active { background: var(--primary); color: #05050a; border-color: #fff; }
+        /* ALT NAVİGASYON (DOCK) */
+        .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: space-around; padding: 6px; }
+        .dock-item { background: transparent; border: none; color: var(--text-secondary); border-radius: 12px; padding: 8px 12px; text-align: center; font-size: 8px; font-weight: 700; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: 0.2s; }
+        .dock-item span:first-child { font-size: 16px; }
+        .dock-item.active { background: var(--bg); color: var(--primary); border: 1px solid var(--border); }
+
+        /* TIKLAMA EFEKTİ */
+        .floating-num { position: absolute; font-size: 14px; font-weight: 900; color: var(--success); pointer-events: none; animation: floatUp 0.6s ease-out forwards; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-40px); } }
     </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- ÜST PROFESYONEL BİLGİ ÇUĞU (HUD) -->
-        <div class="hud-header">
-            <div class="user-profile">
+    <div class="container">
+        <!-- ÜST BİLGİ PANELİ -->
+        <div class="header">
+            <div class="user-info">
                 <div class="avatar">CR</div>
-                <div class="user-meta">
-                    <div id="usernameDisplay">CYBER_RUNNER</div>
-                    <div>Rank: Elite Tier</div>
+                <div>
+                    <div class="username">CyberMiner</div>
+                    <div class="tier">VIP Level 1</div>
                 </div>
             </div>
-            <div class="wallet-badge">
-                🪙 <span id="krediText">1,250</span> Kredi
+            <div class="balance-box">
+                <div class="balance-title">Toplam Varlık</div>
+                <div class="balance-amount">🪙 <span id="balanceText">2,450</span></div>
             </div>
         </div>
 
-        <!-- SEKME 1: OYUN MERKEZİ (ARVADE ARCADE) -->
-        <div class="view active" data-view="oyun">
-            <div class="game-canvas-box">
-                <div style="position: absolute; top: 8px; left: 10px; font-size: 9px; color: var(--primary); font-weight: 900;">⚡ CYBER ARCADE PROTOCOL</div>
-                <div style="position: absolute; top: 8px; right: 10px; font-size: 9px; color: var(--success); font-weight: 900;">SKOR: <span id="currentScore">0</span></div>
-                
-                <canvas id="gameCanvas" width="370" height="190"></canvas>
-                
-                <div style="margin: 8px 0; display: flex; gap: 8px; width: 100%; justify-content: center; padding: 0 10px;">
-                    <button class="btn btn-success" style="flex: 2; padding: 10px;" onclick="oyunuBaslat()">OYUNU BAŞLAT</button>
-                    <button class="btn btn-accent" style="flex: 1; padding: 10px;" onclick="zipla()">ZIPLAMA ⬆</button>
+        <!-- SEKME 1: TAP & MADENCİLİK MERKEZİ -->
+        <div class="view active" data-view="tap">
+            <div class="tap-card" id="tapCard">
+                <div style="font-size: 10px; color: var(--text-secondary); font-weight: 700; letter-spacing: 1px;">NODE HASH RATE: AKTİF</div>
+                <div class="coin-btn" onclick="coinTikla(event)">⚡</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--primary);">Kazanmak İçin Dokun</div>
+
+                <div class="stats-grid" style="margin-top: 14px;">
+                    <div class="stat-item">
+                        <div class="stat-title">Tık Başı Kazanç</div>
+                        <div class="stat-value">+1 Coin</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-title">Pasif / Saat</div>
+                        <div class="stat-value">+250 Coin</div>
+                    </div>
                 </div>
             </div>
 
-            <!-- İSTEĞE BAĞLI REKLAM ALANI (AdsGram Kurallarına %100 Uyumlu) -->
-            <div class="card" style="padding: 10px;">
-                <div class="card-title"><span>📺 ADSGRAM ÖDÜLLÜ VİDEO</span><span style="color:var(--success);">İsteğe Bağlı</span></div>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div style="font-size: 9px; color: var(--text-muted);">İsteğe bağlı reklam izleyerek ekstra +100 Kredi kazan.</div>
-                    <button class="btn btn-ad" onclick="reklamGoster()">ÖDÜL AL</button>
-                </div>
+            <!-- AdsGram Kurallarına Tam Uyumlu İsteğe Bağlı Ödüllü Reklam -->
+            <div class="card" style="padding: 12px;">
+                <div class="card-title"><span>📺 ADSGRAM BONUS NODE</span><span style="color:var(--success);">İsteğe Bağlı</span></div>
+                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 6px;">Zorunlu değildir. İsteğe bağlı reklam izleyerek anında +250 coin bonus al.</div>
+                <button class="btn btn-ad" onclick="reklamGoster()">ÖDÜLLÜ REKLAMI İZLE (+250)</button>
             </div>
         </div>
 
-        <!-- SEKME 2: LİDERLİK TABLOSU (AdsGram Kural 8 İçin Şart) -->
+        <!-- SEKME 2: KÜRESEL LİDERLİK (AdsGram Kural 8 Karşılığı) -->
         <div class="view" data-view="liderlik">
             <div class="card" style="flex-grow: 1;">
-                <div class="card-title">🏆 KÜRESEL SEZON LİDERLİK TABLOSU</div>
-                <div class="list-row"><span>🥇 CyberKing_99</span><span style="color: var(--primary);">45,200 Pts</span></div>
-                <div class="list-row"><span>🥈 NeoRunner</span><span style="color: var(--primary);">38,150 Pts</span></div>
-                <div class="list-row"><span>🥉 MatrixHacker</span><span style="color: var(--primary);">29,800 Pts</span></div>
-                <div class="list-row" style="border-color: var(--primary); background: rgba(0,240,255,0.05);"><span>4. <span id="liderlikSenIsim">CYBER_RUNNER</span> (Sen)</span><span style="color: var(--success);" id="liderlikSenPuan">1,250 Pts</span></div>
+                <div class="card-title">🏆 KÜRESEL MADENCİ SIRALAMASI</div>
+                <div class="list-item">
+                    <div class="list-info"><div>1. 👑 Satoshi_Node</div><div>Seviye 45 • 1.2M Coin</div></div>
+                    <span style="color: var(--primary); font-weight: 800; font-size: 11px;">#1</span>
+                </div>
+                <div class="list-item">
+                    <div class="list-info"><div>2. 🥈 NeonHacker</div><div>Seviye 42 • 980K Coin</div></div>
+                    <span style="color: var(--text-secondary); font-weight: 800; font-size: 11px;">#2</span>
+                </div>
+                <div class="list-item">
+                    <div class="list-info"><div>3. 🥉 ByteRunner</div><div>Seviye 39 • 750K Coin</div></div>
+                    <span style="color: var(--text-secondary); font-weight: 800; font-size: 11px;">#3</span>
+                </div>
+                <div class="list-item" style="border-color: var(--primary); background: rgba(0,255,204,0.04);">
+                    <div class="list-info"><div>4. ⚡ CyberMiner (Sen)</div><div>Seviye 1 • <span id="siralamaCoin">2,450</span> Coin</div></div>
+                    <span style="color: var(--success); font-weight: 800; font-size: 11px;">#4</span>
+                </div>
             </div>
-            <button class="btn" style="width: 100%; padding: 10px;" onclick="sekmeDegis('oyun')">← OYUNA GERİ DÖN</button>
+            <button class="btn" style="width: 100%; padding: 12px;" onclick="sekmeDegis('tap')">← MADENCİLİĞE DÖN</button>
         </div>
 
-        <!-- SEKME 3: MAĞAZA VE GELİŞTİRMELER -->
-        <div class="view" data-view="magaza">
+        <!-- SEKME 3: YÜKSELTMELER (UPGRADES) -->
+        <div class="view" data-view="yukselt">
             <div class="card">
-                <div class="card-title">🛒 CYBER MAĞAZA & EKİPMAN</div>
-                <div class="list-row">
-                    <span>⚡ Quantum Booster (Hız Artışı)</span>
-                    <button class="btn" onclick="itemSatinAl(500)">500 Kredi</button>
+                <div class="card-title">⚙️ DONANIM YÜKSELTMELERİ</div>
+                <div class="list-item">
+                    <div class="list-info"><div>ASIC Rig (Tık Başı +2)</div><div>Maliyet: 1,000 Coin</div></div>
+                    <button class="btn" onclick="itemAl(1000)">Yükselt</button>
                 </div>
-                <div class="list-row">
-                    <span>🛡️ Enerji Kalkanı (Ekstra Hak)</span>
-                    <button class="btn" onclick="itemSatinAl(1000)">1000 Kredi</button>
+                <div class="list-item">
+                    <div class="list-info"><div>Quantum Server (Pasif +500)</div><div>Maliyet: 5,000 Coin</div></div>
+                    <button class="btn" onclick="itemAl(5000)">Yükselt</button>
                 </div>
             </div>
-            <button class="btn" style="width: 100%; padding: 10px;" onclick="sekmeDegis('oyun')">← OYUNA GERİ DÖN</button>
+            <button class="btn" style="width: 100%; padding: 12px;" onclick="sekmeDegis('tap')">← MADENCİLİĞE DÖN</button>
         </div>
 
-        <!-- ALT DOCK MENÜSÜ -->
+        <!-- ALT MENÜ DOCK -->
         <div class="dock">
-            <div class="dock-item active" onclick="sekmeDegis('oyun')"><span>⚡</span><span>Oyna</span></div>
-            <div class="dock-item" onclick="sekmeDegis('liderlik')"><span>🏆</span><span>Liderlik</span></div>
-            <div class="dock-item" onclick="sekmeDegis('magaza')"><span>🛒</span><span>Mağaza</span></div>
+            <button class="dock-item active" onclick="sekmeDegis('tap')"><span>⚡</span><span>Madene</span></button>
+            <button class="dock-item" onclick="sekmeDegis('liderlik')"><span>🏆</span><span>Sıralama</span></button>
+            <button class="dock-item" onclick="sekmeDegis('yukselt')"><span>⚙️</span><span>Donanım</span></button>
         </div>
     </div>
 
     <script>
-        let kredi = 1250;
-        let skor = 0;
-        let oyunAktif = false;
-        
-        // Canvas Oyun Motoru
-        const canvas = document.getElementById("gameCanvas");
-        const ctx = canvas.getContext("2d");
-
-        let player = { x: 30, y: 130, w: 20, h: 25, vy: 0, gravity: 0.6, jump: -9, grounded: true };
-        let obstacles = [];
-        let frameCount = 0;
+        let bakiye = 2450;
+        let tikGucu = 1;
 
         function sekmeDegis(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -173,124 +194,57 @@
             event.currentTarget.classList.add('active');
         }
 
-        function veriGuncelle() {
-            document.getElementById("krediText").innerText = kredi.toLocaleString();
-            document.getElementById("currentScore").innerText = skor;
-            document.getElementById("liderlikSenPuan").innerText = skor + " Pts";
+        function guncelleUI() {
+            document.getElementById("balanceText").innerText = bakiye.toLocaleString();
+            document.getElementById("siralamaCoin").innerText = bakiye.toLocaleString() + " Coin";
         }
 
-        function oyunuBaslat() {
-            if(oyunAktif) return;
-            oyunAktif = true;
-            skor = 0;
-            obstacles = [];
-            player.y = 130;
-            player.vy = 0;
-            oyunDongusu();
+        function coinTikla(event) {
+            bakiye += tikGucu;
+            guncelleUI();
+
+            // Uçan artı animasyonu
+            const card = document.getElementById("tapCard");
+            const rect = card.getBoundingClientRect();
+            const x = event.clientX - rect.left;
+            const y = event.clientY - rect.top;
+
+            const num = document.createElement("div");
+            num.className = "floating-num";
+            num.innerText = "+" + tikGucu;
+            num.style.left = x + "px";
+            num.style.top = y + "px";
+            card.appendChild(num);
+
+            setTimeout(() => num.remove(), 600);
         }
 
-        function zipla() {
-            if (player.grounded) {
-                player.vy = player.jump;
-                player.grounded = false;
-            }
-        }
-
-        function oyunDongusu() {
-            if (!oyunAktif) return;
-            frameCount++;
-
-            // Fizik güncellemeleri
-            player.vy += player.gravity;
-            player.y += player.vy;
-            if (player.y > 130) {
-                player.y = 130;
-                player.vy = 0;
-                player.grounded = true;
-            }
-
-            // Engel üretme
-            if (frameCount % 90 === 0) {
-                obstacles.push({ x: 370, y: 135, w: 15, h: 20, speed: 4 });
-            }
-
-            // Çizim
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Zemin çizgisi
-            ctx.strokeStyle = "#00f0ff";
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(0, 155);
-            ctx.lineTo(370, 155);
-            ctx.stroke();
-
-            // Oyuncu Çizimi (Neon Kutu)
-            ctx.fillStyle = "#00ff66";
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = "#00ff66";
-            ctx.fillRect(player.x, player.y, player.w, player.h);
-            ctx.shadowBlur = 0;
-
-            // Engeller
-            ctx.fillStyle = "#ff0055";
-            ctx.shadowBlur = 10;
-            ctx.shadowColor = "#ff0055";
-            for (let i = obstacles.length - 1; i >= 0; i--) {
-                let obs = obstacles[i];
-                obs.x -= obs.speed;
-                ctx.fillRect(obs.x, obs.y, obs.w, obs.h);
-
-                // Çarpışma kontrolü
-                if (player.x < obs.x + obs.w && player.x + player.w > obs.x &&
-                    player.y < obs.y + obs.h && player.y + player.h > obs.y) {
-                    oyunAktif = false;
-                    alert("Oyun Bitti! Skorunuz: " + skor);
-                    kredi += Math.floor(skor / 10);
-                    veriGuncelle();
-                }
-
-                // Ekrandan çıkma
-                if (obs.x + obs.w < 0) {
-                    obstacles.splice(i, 1);
-                    skor += 10;
-                }
-            }
-            ctx.shadowBlur = 0;
-            veriGuncelle();
-
-            if (oyunAktif) {
-                requestAnimationFrame(oyunDongusu);
-            }
-        }
-
-        // GERÇEK ADSGRAM SDK ENTEGRASYONU
+        // AdsGram Resmi Entegrasyon Kodu
         function reklamGoster() {
             if (typeof window.Adsgram !== 'undefined') {
                 window.Adsgram.init({ blockId: "int-your-block-id-here" }).show().then((result) => {
-                    // Kullanıcı reklamı başarıyla izledi
-                    kredi += 100;
-                    veriGuncelle();
-                    alert("Tebrikler! Reklam ödülü olarak +100 Kredi yüklendi.");
+                    bakiye += 250;
+                    guncelleUI();
+                    alert("Tebrikler! Reklam başarıyla izlendi: +250 Coin eklendi.");
                 }).catch((result) => {
-                    // Kullanıcı reklamı kapattı veya hata oluştu
-                    alert("Reklam tamamlanamadı.");
+                    alert("Reklam tamamlanamadı veya kapatıldı.");
                 });
             } else {
-                // Tarayıcı simülasyon modu (Test için)
-                kredi += 100;
-                veriGuncelle();
-                alert("AdsGram SDK simüle edildi: +100 Kredi eklendi!");
+                // Test Simülasyonu
+                bakiye += 250;
+                guncelleUI();
+                alert("AdsGram SDK simüle edildi: +250 Coin hesabınıza eklendi!");
             }
         }
 
-        function itemSatinAl(maliyet) {
-            if(kredi >= maliyet) {
-                kredi -= maliyet;
-                alert("Ekipman başarıyla satın alındı!");
-                veriGuncelle();
+        function itemAl(maliyet) {
+            if (bakiye >= maliyet) {
+                bakiye -= maliyet;
+                tikGucu += 1;
+                guncelleUI();
+                alert("Donanım başarıyla yükseltildi!");
             } else {
-                alert("Yeterli krediniz yok! Reklam izleyerek kredi kazanabilirsiniz.");
+                alert("Yeterli coin yok! Reklam izleyerek veya tıklayarak coin kazanabilirsin.");
             }
         }
     </script>
