@@ -5,7 +5,7 @@ const { Telegraf } = require('telegraf');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
-// Bot Token'ını buraya yaz veya Railway Environment Variables kısmına ekle
+// Bot Token ve Kanal Bilgileri
 const BOT_TOKEN = process.env.BOT_TOKEN || '8970909833:AAGyAASBhKLaGvC0KQQdQMHosVmv6_cs6A';
 const CHANNEL_ID = process.env.CHANNEL_ID || '@tiny_farm_adventure_channel';
 
@@ -14,13 +14,13 @@ const bot = new Telegraf(BOT_TOKEN);
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
-// Telegram Bot Komutları (Artık eksiksiz yanıt veriyor)
+// Telegram Bot Komutları (Apex Core S-Tier Uyumlu)
 bot.start((ctx) => {
-    const userName = ctx.from.first_name || 'Çiftçi';
-    ctx.reply(`🌾 Merhaba ${userName}! Tiny Farm Adventure dünyasına hoş geldin.\n\nAşağıdaki butona tıklayarak hemen tarlanı ekmeye ve altın kazanmaya başla!`, {
+    const userName = ctx.from.first_name || 'Operatör';
+    ctx.reply(`🌌 Merhaba ${userName}! Apex Core S-Tier sistemine hoş geldin.\n\nAşağıdaki butona tıklayarak hemen siber çekirdeği çalıştırmaya ve APEX puanları toplamaya başla!`, {
         reply_markup: {
             inline_keyboard: [
-                [{ text: "🌱 Çiftliğe Git & Oyna", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }],
+                [{ text: "💻 Konsolu Aç & Oyna", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }],
                 [{ text: "📢 Duyuru Kanalı", url: "https://t.me/tin_farm_adventure" }, { text: "💬 Sohbet Grubu", url: "https://t.me/tiny_farm_sohbet" }]
             ]
         }
@@ -28,7 +28,7 @@ bot.start((ctx) => {
 });
 
 bot.command('market', (ctx) => {
-    ctx.reply("🛒 Çiftlik marketinde en taze tohumlar ve gübreler seni bekliyor! Oyunu açarak markete göz atabilirsin.");
+    ctx.reply("🛒 Çekirdek yükseltmeleri ve sistem soğutma modülleri yakında aktif! Oyunu açarak anlık verimliliğini kontrol edebilirsin.");
 });
 
 // Botu başlat
@@ -41,11 +41,11 @@ bot.launch().then(() => {
 // Otomatik Kanal/Grup Duyuru Sistemi (Her 1 saatte bir)
 setInterval(async () => {
     try {
-        await bot.telegram.sendMessage(CHANNEL_ID, "📢 **Çiftlik Bülteni:** \nTarlalarındaki ürünler seni bekliyor! Gübrelerini kullan, hasat yap ve sıralamada zirveye yerleş! 🚀", {
+        await bot.telegram.sendMessage(CHANNEL_ID, "📢 **Sistem Bülteni:** \nÇekirdek kapasiteleri doldu! Enerjini yenilemek, kritik vuruşlar yapmak ve sıralamada zirveye yerleşmek için terminale bağlan! 🚀", {
             parse_mode: 'Markdown',
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: "🌾 Oyuna Dön", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }]
+                    [{ text: "⚡ Konsola Dön", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }]
                 ]
             }
         });
