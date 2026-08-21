@@ -3,21 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Karamürsel Agro-Singularity v1000: Ultimate Edition</title>
+    <title>Karamürsel Agro-Singularity v100: Quantum Hyper Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-deep: #010402;
-            --surface: #030e06;
-            --surface-glass: rgba(3, 14, 6, 0.98);
-            --border: rgba(52, 211, 153, 0.75);
+            --bg-base: #020804;
+            --surface-glass: rgba(3, 16, 8, 0.96);
+            --border-glow: rgba(52, 211, 153, 0.65);
             --neon-green: #34d399;
             --neon-emerald: #059669;
             --neon-amber: #fbbf24;
             --neon-cyan: #22d3ee;
             --neon-purple: #c084fc;
             --neon-pink: #ec4899;
-            --neon-crimson: #fb7185;
             --neon-gold: #fde047;
             --text-main: #f0fdf4;
             --text-muted: #6ee7b7;
@@ -26,7 +24,7 @@
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Fira Code', monospace, sans-serif; }
 
         body {
-            background-color: var(--bg-deep);
+            background-color: var(--bg-base);
             color: var(--text-main);
             height: 100vh;
             display: flex;
@@ -40,16 +38,15 @@
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: radial-gradient(circle at center, #052210 0%, #010402 100%);
+            background: radial-gradient(circle at center, #062812 0%, #020804 100%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            border: 1px solid var(--border);
-            box-shadow: 0 0 1200px rgba(52, 211, 153, 0.75), inset 0 0 50px rgba(52, 211, 153, 0.15);
+            border: 1px solid var(--border-glow);
+            box-shadow: 0 0 100px rgba(52, 211, 153, 0.4), inset 0 0 40px rgba(52, 211, 153, 0.1);
         }
 
-        /* Havai Fişek / Partikül Efekt Ekranı */
         #fx-canvas {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -59,17 +56,17 @@
 
         #toast {
             position: absolute;
-            top: 75px;
+            top: 68px;
             left: 50%;
             transform: translateX(-50%) translateY(-25px);
-            background: rgba(3, 14, 6, 0.95);
+            background: rgba(2, 12, 5, 0.98);
             border: 1px solid var(--neon-gold);
             color: var(--neon-gold);
             padding: 8px 16px;
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 10px;
             font-weight: 700;
-            box-shadow: 0 4px 40px rgba(253, 224, 71, 0.5);
+            box-shadow: 0 6px 30px rgba(253, 224, 71, 0.45);
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 1000;
@@ -83,24 +80,23 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 10px;
+            padding: 8px 12px;
             background: var(--surface-glass);
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid var(--border-glow);
             z-index: 10;
             backdrop-filter: blur(15px);
         }
         .hud-stat {
             display: flex;
             align-items: center;
-            gap: 5px;
-            background: rgba(0,0,0,0.9);
-            padding: 5px 9px;
+            gap: 6px;
+            background: rgba(0,0,0,0.85);
+            padding: 5px 10px;
             border-radius: 8px;
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-glow);
             font-size: 8.5px;
             font-weight: 700;
-            box-shadow: inset 0 0 12px rgba(52,211,153,0.2);
-            transition: transform 0.2s;
+            box-shadow: inset 0 0 10px rgba(52,211,153,0.15);
         }
         .hud-stat.cash { color: var(--neon-green); border-color: var(--neon-green); }
         .hud-stat.harvest { color: var(--neon-amber); border-color: var(--neon-amber); }
@@ -115,19 +111,19 @@
             gap: 12px;
             scroll-behavior: smooth;
         }
-        .tab-pane { display: none; flex-direction: column; gap: 10px; animation: fadeIn 0.35s cubic-bezier(0.4, 0, 0.2, 1); }
+        .tab-pane { display: none; flex-direction: column; gap: 10px; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .tab-pane.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) scale(0.99); } to { opacity: 1; transform: translateY(0) scale(1); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 
         .panel {
             background: var(--surface-glass);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-glow);
             border-radius: 14px;
             padding: 12px;
             display: flex;
             flex-direction: column;
             gap: 9px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             backdrop-filter: blur(16px);
             position: relative;
             overflow: hidden;
@@ -160,17 +156,16 @@
             cursor: pointer;
             width: 100%;
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 20px rgba(52, 211, 153, 0.2);
+            box-shadow: 0 4px 15px rgba(52, 211, 153, 0.2);
         }
-        .btn:hover { background: rgba(52, 211, 153, 0.28); box-shadow: 0 0 25px rgba(52, 211, 153, 0.4); }
+        .btn:hover { background: rgba(52, 211, 153, 0.28); box-shadow: 0 0 20px rgba(52, 211, 153, 0.35); }
         .btn:active { transform: scale(0.96); }
         .btn.green { background: rgba(52, 211, 153, 0.2); color: var(--neon-green); border-color: var(--neon-green); }
         .btn.amber { background: rgba(251, 191, 36, 0.2); color: var(--neon-amber); border-color: var(--neon-amber); }
         .btn.cyan { background: rgba(34, 211, 238, 0.2); color: var(--neon-cyan); border-color: var(--neon-cyan); }
         .btn.purple { background: rgba(192, 132, 252, 0.2); color: var(--neon-purple); border-color: var(--neon-purple); }
         .btn.pink { background: rgba(236, 72, 153, 0.2); color: var(--neon-pink); border-color: var(--neon-pink); }
-        .btn.crimson { background: rgba(251, 113, 133, 0.2); color: var(--neon-crimson); border-color: var(--neon-crimson); }
-        .btn.gold { background: rgba(253, 224, 71, 0.25); color: var(--neon-gold); border-color: var(--neon-gold); box-shadow: 0 0 25px rgba(253, 224, 71, 0.3); }
+        .btn.gold { background: rgba(253, 224, 71, 0.25); color: var(--neon-gold); border-color: var(--neon-gold); box-shadow: 0 0 20px rgba(253, 224, 71, 0.3); }
         .btn.locked { background: #041006; color: #047857; border-color: #064e3b; cursor: not-allowed; box-shadow: none; }
 
         .row-item {
@@ -189,19 +184,18 @@
         .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .card-box {
             background: rgba(0,0,0,0.85);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-glow);
             border-radius: 9px;
             padding: 10px;
             display: flex;
             flex-direction: column;
             gap: 6px;
             text-align: center;
-            box-shadow: inset 0 0 20px rgba(52,211,153,0.06);
+            box-shadow: inset 0 0 15px rgba(52,211,153,0.06);
             transition: transform 0.2s;
         }
         .card-box:hover { transform: translateY(-2px); }
 
-        /* Çiftlik Tarla Grid Sistemi (3x3) */
         .farm-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -210,7 +204,7 @@
         }
         .plot-card {
             background: rgba(0, 0, 0, 0.9);
-            border: 1px solid var(--border);
+            border: 1px solid var(--border-glow);
             border-radius: 10px;
             padding: 10px 6px;
             display: flex;
@@ -223,9 +217,9 @@
             position: relative;
             overflow: hidden;
         }
-        .plot-card:hover { border-color: var(--neon-gold); box-shadow: 0 0 20px rgba(253,224,71,0.25); }
+        .plot-card:hover { border-color: var(--neon-gold); box-shadow: 0 0 20px rgba(253,224,71,0.3); }
         .plot-card:active { transform: scale(0.93); }
-        .plot-icon { font-size: 28px; filter: drop-shadow(0 0 12px rgba(52,211,153,0.6)); transition: transform 0.3s; }
+        .plot-icon { font-size: 28px; filter: drop-shadow(0 0 10px rgba(52,211,153,0.6)); transition: transform 0.3s; }
         .plot-card:hover .plot-icon { transform: scale(1.15) rotate(5deg); }
         .plot-status { font-size: 7.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
         .plot-progress {
@@ -250,13 +244,12 @@
             box-shadow: inset 0 0 15px rgba(251,191,36,0.1);
         }
 
-        /* Log Kutuları */
         #farm-log-box, #greenhouse-log-box, #barn-log-box, #market-log-box, #agro-ai-log-box, #silo-log-box, #tractor-log-box, #irrigation-log-box, #genetics-log-box, #export-log-box {
             background: #010602;
             border: 1px solid var(--neon-green);
             border-radius: 8px;
             padding: 8px;
-            height: 80px;
+            height: 75px;
             overflow-y: auto;
             font-size: 8px;
             color: var(--neon-green);
@@ -266,12 +259,11 @@
             box-shadow: inset 0 0 10px rgba(52,211,153,0.15);
         }
 
-        /* 10 Sekmeli Kusursuz Alt Dock */
         .nav-dock {
             display: grid;
             grid-template-columns: repeat(10, 1fr);
             background: var(--surface-glass);
-            border-top: 1px solid var(--border);
+            border-top: 1px solid var(--border-glow);
             padding: 3px;
             z-index: 10;
             backdrop-filter: blur(20px);
@@ -306,38 +298,31 @@
 <body>
 
     <div id="game-viewport">
-        <!-- Havai Fişek / Görsel Efekt Tuvali -->
         <canvas id="fx-canvas"></canvas>
-        <div id="toast">KARAMÜRSEL AGRO-SINGULARITY ULTRA AKTİF 🌾</div>
+        <div id="toast">KARAMÜRSEL AGRO-SINGULARITY AKTİF 🌾</div>
 
-        <!-- Üst HUD -->
         <div class="hud-header">
             <div class="hud-stat cash"><span>💵</span> <span id="ui-cash">1,000,000,000₺</span></div>
             <div class="hud-stat harvest"><span>🌾</span> <span id="ui-crop-points">25,000 CP</span></div>
             <div class="hud-stat energy"><span>⚡</span> <span id="ui-water">5,000 L</span></div>
         </div>
 
-        <!-- İçerik Alanı (10 Üst Düzey Çiftlik Sekmesi) -->
         <div class="content-area">
 
-            <!-- 1. ANA ÇİFTLİK TARLALARI (PLOT GRID) -->
             <div id="pane-plots" class="tab-pane active">
                 <div class="panel">
-                    <div class="panel-title"><span>Karamürsel Akıllı Tarlalar (9 Parsel)</span> <span id="ui-plot-count" style="color:var(--neon-gold);">ULTRA v1000</span></div>
+                    <div class="panel-title"><span>Karamürsel Akıllı Tarlalar (9 Parsel)</span> <span style="color:var(--neon-gold);">ULTRA v100</span></div>
                     <div style="font-size: 8px; color: var(--text-muted);">Parsellere tıklayarak tohum ek, ışık hızıyla sula ve devasa efsane mahsul hasat et!</div>
-                    <div class="farm-grid" id="farm-plots-grid">
-                        <!-- 9 Parsel JavaScript ile dinamik üretilecek -->
-                    </div>
+                    <div class="farm-grid" id="farm-plots-grid"></div>
                 </div>
                 <div class="panel">
                     <div class="panel-title"><span>Tarla Canlı Günlüğü</span></div>
                     <div id="farm-log-box">
-                        <div>[FARM] Topraklar kvantize edildi. Tohum ek ve bereketi başlat!</div>
+                        <div>[FARM] Topraklar kuantum seviyesine getirildi. Tohum ekmeye başla!</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. SERA & HİDROPONİK MERKEZİ -->
             <div id="pane-greenhouse" class="tab-pane">
                 <div class="panel">
                     <div class="panel-title"><span>Yapay Zeka Kontrollü Sera</span> <span style="color:var(--neon-cyan);">Quantum Hydro</span></div>
@@ -360,7 +345,6 @@
                 </div>
             </div>
 
-            <!-- 3. HAYVANCILIK & ÇİFTLİK KÜMESİ -->
             <div id="pane-barn" class="tab-pane">
                 <div class="panel">
                     <div class="panel-title"><span>Karamürsel Hayvancılık & Süt Fabrikası</span> <span style="color:var(--neon-amber);">Mega Livestock</span></div>
@@ -385,7 +369,6 @@
                 </div>
             </div>
 
-            <!-- 4. AKILLI SULAMA & POMPA İSTASYONU -->
             <div id="pane-irrigation" class="tab-pane">
                 <div class="panel">
                     <div class="panel-title"><span>Otonom Sulama & Su Kuyusu</span> <span style="color:var(--neon-cyan);">Quantum Hydration</span></div>
@@ -408,7 +391,6 @@
                 </div>
             </div>
 
-            <!-- 5. OTONOM TRAKTÖR & TARIM ROBOTLARI -->
             <div id="pane-tractor" class="tab-pane">
                 <div class="panel">
                     <div class="panel-title"><span>Otonom Yapay Zeka Traktörleri</span> <span style="color:var(--neon-green);">AI Mech-Tractor</span></div>
@@ -433,7 +415,6 @@
                 </div>
             </div>
 
-            <!-- 6. TOHUM GENETİĞİ & AR-GE LABORATUVARI -->
             <div id="pane-genetics" class="tab-pane">
                 <div class="panel">
                     <div class="panel-title"><span>GDO & Tohum Genetiği Laboratuvarı</span> <span style="color:var(--neon-purple);">Singularity Lab</span></div>
@@ -456,10 +437,9 @@
                 </div>
             </div>
 
-            <!-- 7. SİLO & ÜRÜN DEPOSU -->
             <div id="pane-silo" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title"><span>Mega Silo & Kriyojenik Depo</span> <span style="color:var(--neon-amber);">Cryo Storage v1000</span></div>
+                    <div class="panel-title"><span>Mega Silo & Kriyojenik Depo</span> <span style="color:var(--neon-amber);">Cryo Storage v100</span></div>
                     <div style="font-size: 8px; color: var(--text-muted);">Hasat edilen mahsulleri mutlak sıfırda sakla, borsa zirvedeyken patlat!</div>
                     <div class="row-item">
                         <div>
@@ -474,7 +454,6 @@
                 </div>
             </div>
 
-            <!-- 8. AGRO BORSASI & İHRACAT MERKEZİ -->
             <div id="pane-market" class="tab-pane">
                 <div class="panel">
                     <div class="panel-title"><span>Karamürsel Global Agro Borsası</span> <span style="color:var(--neon-green);">Singularity Market</span></div>
@@ -492,7 +471,6 @@
                 </div>
             </div>
 
-            <!-- 9. KÜRESEL TARIM İMPARATORLUĞU GÖREVLERİ -->
             <div id="pane-export" class="tab-pane">
                 <div class="panel">
                     <div class="panel-title"><span>Galaktik Tarım İhracat Sözleşmeleri</span> <span style="color:var(--neon-cyan);">Cosmic Contracts</span></div>
@@ -517,7 +495,6 @@
                 </div>
             </div>
 
-            <!-- 10. AGRO AI BOT & AYARLAR -->
             <div id="pane-agroai" class="tab-pane">
                 <div class="panel">
                     <div class="panel-title"><span>Karamürsel Agro-AI Singularity Ajanı</span> <span style="color:var(--neon-gold);">ULTRA AKTİF</span></div>
@@ -546,7 +523,6 @@
 
         </div>
 
-        <!-- Alt Navigasyon Dock (10 Kusursuz Çiftlik Sekmesi) -->
         <div class="nav-dock">
             <button class="nav-item active" onclick="switchTab('plots', this)"><span class="nav-icon">🌾</span><span>Tarlalar</span></button>
             <button class="nav-item" onclick="switchTab('greenhouse', this)"><span class="nav-icon">🌿</span><span>Sera</span></button>
@@ -568,7 +544,6 @@
             tg.expand();
         }
 
-        // Havai Fişek & Görsel Gösteri Motoru
         const canvas = document.getElementById('fx-canvas');
         const ctx = canvas.getContext('2d');
         function resizeCanvas() {
@@ -594,7 +569,7 @@
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                this.vy += 0.15; // yerçekimi
+                this.vy += 0.15;
                 this.alpha -= this.decay;
             }
             draw() {
@@ -734,7 +709,6 @@
             updateUI();
         }
 
-        // Oyun Döngüsü
         setInterval(() => {
             farm.plots.forEach(plot => {
                 if (plot.state === 'growing') {
@@ -874,7 +848,6 @@
             let sold = farm.cropPoints;
             farm.cropPoints = 0;
             
-            // Ekranın ortasından havai fişek şöleni
             launchFireworks(canvas.width / 2, canvas.height / 2);
             launchFireworks(canvas.width / 3, canvas.height / 3);
             launchFireworks((canvas.width / 3) * 2, canvas.height / 3);
@@ -902,7 +875,6 @@
             farm.water = farm.maxWater;
             farm.plots.forEach(p => p.state = 'ready');
 
-            // Çoklu havai fişek patlat
             for (let i = 0; i < 5; i++) {
                 setTimeout(() => {
                     launchFireworks(Math.random() * canvas.width, Math.random() * canvas.height);
