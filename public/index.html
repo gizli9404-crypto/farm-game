@@ -3,62 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OmniTool Pro - Telegram Mini App</title>
+    <title>PulsePoll - Sosyal Anket & Karar Merkezi</title>
     <!-- AdsGram Resmi SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         :root {
-            --bg: #0f1117;
-            --surface: #1a1d26;
-            --surface-hover: #222634;
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --accent: #10b981;
-            --text: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border: #2e3548;
+            --bg: #121216;
+            --surface: #1b1b22;
+            --surface-hover: #262630;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+            --accent: #ec4899;
+            --text: #f4f4f5;
+            --text-secondary: #a1a1aa;
+            --border: #27272a;
+            --success: #10b981;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        .app-shell {
+        .app-container {
             width: 100%; max-width: 410px; height: 100%; max-height: 840px;
             background: var(--bg); border: 1px solid var(--border); border-radius: 24px;
             display: flex; flex-direction: column; justify-content: space-between;
-            padding: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            padding: 16px; box-shadow: 0 25px 50px rgba(0,0,0,0.8);
             position: relative; overflow: hidden;
         }
 
-        /* ÜST BAŞLIK */
+        /* ÜST BİLGİ */
         .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; }
-        .app-title { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; color: var(--text); display: flex; align-items: center; gap: 8px; }
-        .status-badge { font-size: 9px; background: rgba(16, 185, 129, 0.15); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.3); }
+        .logo { font-size: 14px; font-weight: 900; color: var(--primary); letter-spacing: 0.5px; display: flex; align-items: center; gap: 6px; }
+        .token-badge { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); color: var(--primary); padding: 4px 10px; border-radius: 8px; font-size: 10px; font-weight: 800; }
 
-        /* SEKME ALANLARI */
+        /* GÖRÜNÜM ALANLARI */
         .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
         .view.active { display: flex; }
 
-        /* KARTLAR VE GÖVDELER */
+        /* KARTLAR */
         .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
-        .card-title { font-size: 11px; font-weight: 800; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .card-title { font-size: 11px; font-weight: 800; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; justify-content: space-between; align-items: center; }
 
-        .input-field { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; color: var(--text); font-size: 12px; outline: none; margin-bottom: 8px; }
-        .input-field:focus { border-color: var(--primary); }
+        .poll-question { font-size: 13px; font-weight: 800; color: var(--text); margin-bottom: 12px; line-height: 1.4; }
+        
+        .vote-btn { 
+            background: var(--bg); border: 1px solid var(--border); color: var(--text); 
+            padding: 12px; border-radius: 12px; font-weight: 700; font-size: 11px; cursor: pointer; 
+            width: 100%; text-align: left; margin-bottom: 8px; display: flex; justify-content: space-between; transition: 0.2s;
+        }
+        .vote-btn:hover { border-color: var(--primary); background: var(--surface-hover); }
 
         /* BUTONLAR */
-        .btn { background: var(--primary); color: #fff; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
+        .btn { background: var(--primary); color: #fff; border: none; padding: 10px 14px; border-radius: 12px; font-weight: 800; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
         .btn:active { transform: scale(0.98); background: var(--primary-hover); }
-        .btn-accent { background: var(--accent); color: #0f1117; }
         
         .btn-ad { 
-            background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; 
-            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); margin-top: 8px;
+            background: linear-gradient(135deg, #ec4899, #8b5cf6); color: #fff; 
+            box-shadow: 0 4px 15px rgba(236, 72, 153, 0.3); margin-top: 8px;
         }
 
-        .result-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 11px; color: var(--accent); word-break: break-all; margin-top: 8px; min-height: 35px; display: flex; align-items: center; }
-
-        /* LİDERLİK TABLOSu / AKTİVİTE GEÇMİŞİ (AdsGram Kural 8 Karşılığı) */
-        .history-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 6px; font-size: 11px; }
+        /* LİSTE / LİDERLİK SATIRLARI (AdsGram Kural 8 Karşılığı) */
+        .list-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 8px; font-size: 11px; }
 
         /* ALT DOCK MENÜSÜ */
         .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: space-around; padding: 6px; }
@@ -69,80 +73,83 @@
 </head>
 <body>
 
-    <div class="app-shell">
+    <div class="app-container">
         <!-- ÜST BİLGİ -->
         <div class="header">
-            <div class="app-title">⚡ OmniTool Pro</div>
-            <div class="status-badge">Sistem Aktif</div>
+            <div class="logo">📊 PulsePoll</div>
+            <div class="token-badge">⭐ <span id="puanText">150</span> Puan</div>
         </div>
 
-        <!-- SEKME 1: ARAÇLAR (ŞİFRE & METİN İŞLEMLERİ) -->
-        <div class="view active" data-view="araclar">
+        <!-- SEKME 1: ANKETLER (GÜNLÜK OYLAMA) -->
+        <div class="view active" data-view="anketler">
             <div class="card">
-                <div class="card-title">🔒 Güvenli Şifre Üretici</div>
-                <input type="number" id="passLength" class="input-field" value="12" min="6" max="32" placeholder="Karakter Uzunluğu">
-                <button class="btn" onclick="sifreUret()">Şifre Oluştur</button>
-                <div class="result-box" id="passResult">Sonuç burada görünecek...</div>
-            </div>
-
-            <div class="card">
-                <div class="card-title">📊 Metin Karakter Analizi</div>
-                <input type="text" id=" analizInput" class="input-field" placeholder="Analiz edilecek metni yazın..." oninput="metinAnalizEt()">
-                <div style="font-size: 10px; color: var(--text-secondary); display: flex; justify-content: space-between;">
-                    <span id="charCount">Karakter: 0</span>
-                    <span id="wordCount">Kelime: 0</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- SEKME 2: PREMIUM AI & REKLAM ALANI -->
-        <div class="view" data-view="premium">
-            <div class="card" style="border-color: #f59e0b;">
-                <div class="card-title" style="color: #f59e0b;">🌟 VIP AI Asistan Kilidi</div>
-                <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 12px;">
-                    Temel araçları tamamen ücretsiz kullanabilirsiniz. İsteğe bağlı olarak kısa bir reklam izleyerek <b>24 Saatlik VIP Araç Lisansı</b> kilidini anında açabilirsiniz.
-                </div>
-                <button class="btn btn-ad" onclick="reklamGoster()">VIP LİSANSI AKTİFLEŞTİR (REKLAM İZLE)</button>
+                <div class="card-title"><span>Günün Popüler Anketi</span><span style="color:var(--success);">Aktif</span></div>
+                <div class="poll-question">Yapay zeka teknolojileri önümüzdeki 5 yılda yazılım sektörünü tamamen ele geçirecek mi?</div>
+                <button class="vote-btn" onclick="oy Ver('Kesinlikle Evet')"><span>Kesinlikle Evet</span> <span style="color:var(--primary);">%74</span></button>
+                <button class="vote-btn" onclick="oyVer('Hayır, İnsan Şart')"><span>Hayır, İnsan Şart</span> <span style="color:var(--text-secondary);">%26</span></button>
             </div>
 
             <div class="card">
-                <div class="card-title">⚙️ Aktif Lisans Durumu</div>
-                <div class="history-row">
-                    <span>Lisans Türü</span>
-                    <span style="color: var(--accent);" id="lisansDurumu">Standart (Ücretsiz)</span>
-                </div>
+                <div class="card-title"><span>Donanım Tercihi</span><span style="color:var(--success);">Aktif</span></div>
+                <div class="poll-question">Günlük işler ve oyunlar için ana platformunuz hangisi?</div>
+                <button class="vote-btn" onclick="oyVer('Masaüstü PC')"><span>Masaüstü Bilgisayar</span> <span style="color:var(--primary);">%82</span></button>
+                <button class="vote-btn" onclick="oyVer('Mobil / Tablet')"><span>Mobil / Tablet</span> <span style="color:var(--text-secondary);">%18</span></button>
             </div>
         </div>
 
-        <!-- SEKME 3: İŞLEM GEÇMİŞİ / LİDERLİK (AdsGram Kural 8 Karşılığı) -->
-        <div class="view" data-view="gecmis">
+        <!-- SEKME 2: ŞANS ÇARKI VE İSTEĞE BAĞLI REKLAM -->
+        <div class="view" data-view="cark">
+            <div class="card" style="text-align: center;">
+                <div class="card-title" style="justify-content: center;">🎁 Günlük Ödül Çarkı</div>
+                <div style="font-size: 40px; margin: 15px 0;">🎡</div>
+                <div id="carkSonuc" style="font-size: 12px; color: var(--text-secondary); margin-bottom: 12px;">Çarkı çevirerek ekstra puan kazanabilirsin.</div>
+                <button class="btn" onclick="carkCevir()">ÇARKI ÇEVİR (ÜCRETSİZ)</button>
+            </div>
+
+            <div class="card" style="border-color: var(--accent);">
+                <div class="card-title" style="color: var(--accent);">✨ Ekstra Çevir Hakkı</div>
+                <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">
+                    Günlük ücretsiz hakkın bittiğinde, isteğe bağlı kısa bir reklam izleyerek anında <b>+1 Ekstra Çevirme Hakkı</b> kazanabilirsin.
+                </div>
+                <button class="btn btn-ad" onclick="reklamGoster()">EKSTRA HAK AL (REKLAM İZLE)</button>
+            </div>
+        </div>
+
+        <!-- SEKME 3: KÜRESEL LİDERLİK (AdsGram Kural 8 Karşılığı) -->
+        <div class="view" data-view="liderlik">
             <div class="card" style="flex-grow: 1;">
-                <div class="card-title">📋 Son Sistem İşlemleri</div>
-                <div class="history-row">
-                    <div><b>Şifre Üretildi</b><div style="font-size: 9px; color: var(--text-secondary);">12 Karakterli Güvenli Mod</div></div>
-                    <span style="color: var(--accent);">Başarılı</span>
+                <div class="card-title">🏆 Topluluk Puan Sıralaması</div>
+                <div class="list-row">
+                    <div><b>1. Alex_Polls</b><div style="font-size: 9px; color: var(--text-secondary);">4,250 Puan</div></div>
+                    <span style="color: var(--primary);">#1</span>
                 </div>
-                <div class="history-row">
-                    <div><b>Metin Analizi</b><div style="font-size: 9px; color: var(--text-secondary);">Karakter ve Kelime Sayımı</div></div>
-                    <span style="color: var(--accent);">Başarılı</span>
+                <div class="list-row">
+                    <div><b>2. CyberVoter</b><div style="font-size: 9px; color: var(--text-secondary);">3,900 Puan</div></div>
+                    <span style="color: var(--text-secondary);">#2</span>
                 </div>
-                <div class="history-row">
-                    <div><b>Sistem Başlatıldı</b><div style="font-size: 9px; color: var(--text-secondary);">OmniTool v1.0 Core</div></div>
-                    <span style="color: var(--primary);">Aktif</span>
+                <div class="list-row">
+                    <div><b>3. NeoUser</b><div style="font-size: 9px; color: var(--text-secondary);">3,150 Puan</div></div>
+                    <span style="color: var(--text-secondary);">#3</span>
+                </div>
+                <div class="list-row" style="border-color: var(--primary); background: rgba(139, 92, 246, 0.05);">
+                    <div><b>4. Sen (Aktif Kullanıcı)</b><div style="font-size: 9px; color: var(--text-secondary);" id="listePuanMetin">150 Puan</div></div>
+                    <span style="color: var(--success);">#4</span>
                 </div>
             </div>
-            <button class="btn" onclick="sekmeDegis('araclar')">← ARAÇLARA DÖN</button>
+            <button class="btn" onclick="sekmeDegis('anketler')">← ANKETLERE DÖN</button>
         </div>
 
         <!-- ALT MENÜ DOCK -->
         <div class="dock">
-            <button class="dock-item active" onclick="sekmeDegis('araclar')"><span>🛠️</span><span>Araçlar</span></button>
-            <button class="dock-item" onclick="sekmeDegis('premium')"><span>🌟</span><span>VIP AI</span></button>
-            <button class="dock-item" onclick="sekmeDegis('gecmis')"><span>📋</span><span>Geçmiş</span></button>
+            <button class="dock-item active" onclick="sekmeDegis('anketler')"><span>📊</span><span>Anketler</span></button>
+            <button class="dock-item" onclick="sekmeDegis('cark')"><span>🎡</span><span>Ödül Çarkı</span></button>
+            <button class="dock-item" onclick="sekmeDegis('liderlik')"><span>🏆</span><span>Sıralama</span></button>
         </div>
     </div>
 
     <script>
+        let toplamPuan = 150;
+
         function sekmeDegis(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
@@ -151,38 +158,36 @@
             event.currentTarget.classList.add('active');
         }
 
-        function sifreUret() {
-            const length = document.getElementById("passLength").value || 12;
-            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
-            let pass = "";
-            for (let i = 0; i < length; i++) {
-                pass += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            document.getElementById("passResult").innerText = pass;
+        function puanGuncelle(miktar) {
+            toplamPuan += miktar;
+            document.getElementById("puanText").innerText = toplamPuan;
+            document.getElementById("listePuanMetin").innerText = toplamPuan + " Puan";
         }
 
-        function metinAnalizEt() {
-            const val = document.getElementById("analizInput").value;
-            document.getElementById("charCount").innerText = "Karakter: " + val.length;
-            const words = val.trim() ? val.trim().split(/\s+/).length : 0;
-            document.getElementById("wordCount").innerText = "Kelime: " + words;
+        function oyVer(secim) {
+            puanGuncelle(10);
+            alert(`Oyinuz kaydedildi: "${secim}". +10 Puan eklendi!`);
+        }
+
+        function carkCevir() {
+            const kazan = Math.floor(Math.random() * 50) + 25;
+            puanGuncelle(kazan);
+            document.getElementById("carkSonuc").innerText = `Çark çevrildi! Kazancın: +${kazan} Puan.`;
         }
 
         // AdsGram Resmi SDK Entegrasyonu
         function reklamGoster() {
             if (typeof window.Adsgram !== 'undefined') {
                 window.Adsgram.init({ blockId: "int-your-block-id-here" }).show().then((result) => {
-                    document.getElementById("lisansDurumu").innerText = "VIP Aktif (24 Saat)";
-                    document.getElementById("lisansDurumu").style.color = "#f59e0b";
-                    alert("Tebrikler! Reklam başarıyla izlendi, VIP Lisansınız aktifleşti.");
+                    puanGuncelle(100);
+                    alert("Tebrikler! Reklam başarıyla izlendi: +100 Bonus Puan ve Ekstra Hak yüklendi.");
                 }).catch((result) => {
                     alert("Reklam tamamlanamadı.");
                 });
             } else {
                 // Tarayıcı Test Simülasyonu
-                document.getElementById("lisansDurumu").innerText = "VIP Aktif (Test Modu)";
-                document.getElementById("lisansDurumu").style.color = "#f59e0b";
-                alert("AdsGram SDK simüle edildi: VIP Lisans aktifleşti!");
+                puanGuncelle(100);
+                alert("AdsGram SDK simüle edildi: +100 Bonus Puan eklendi!");
             }
         }
     </script>
