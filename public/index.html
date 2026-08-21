@@ -1,76 +1,144 @@
-import time
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini Çiftlik Oyunu</title>
+    <style>
+        body {
+            background-color: #1a202c;
+            color: white;
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            background: #2d3748;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        }
+        .stats {
+            font-size: 18px;
+            margin-bottom: 20px;
+            background: #1a202c;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .field {
+            font-size: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background: #4a5568;
+            border-radius: 8px;
+            border: 2px dashed #48bb78;
+        }
+        button {
+            background-color: #48bb78;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+        }
+        button:hover {
+            background-color: #38a169;
+        }
+        button:disabled {
+            background-color: #a0aec0;
+            cursor: not-allowed;
+        }
+        .log {
+            margin-top: 15px;
+            font-size: 14px;
+            color: #cbd5e0;
+            min-height: 40px;
+        }
+    </style>
+</head>
+<body>
 
-class CiftlikOyunu:
-    def __init__(self):
-        self.altin = 100  # Başlangıç parası
-        self.envanter = 0 # Toplanan ürün
-        self.tarla_durumu = "Boş Toprak"
+    <div class="container">
+        <h2>🌾 Mini Çiftlik Simülasyonu</h2>
+        
+        <div class="stats">
+            💰 Altın: <span id="altin">1000</span><br>
+            📦 Depo: <span id="depo">0</span> Ürün
+        </div>
 
-    def durum_goster(self):
-        print("\n" + "="*30)
-        print(f"💰 Altın: {self.altin} | 🌾 Depodaki Ürün: {self.envanter}")
-        print(f"🌱 Tarla Durumu: {self.tarla_durumu}")
-        print("="*30)
+        <div class="field" id="tarlaAlani">
+            🌱 Tarla: Boş Toprak
+        </div>
 
-    def tohum_ek(self):
-        if self.tarla_durumu == "Boş Toprak":
-            self.tarla_durumu = "Tohum Ekildi (Büyüyor...)"
-            print("\n>> Tohum tarlaya ekildi!")
-            self.durum_goster()
+        <button id="ekimBtn" onclick="tohumEk()">Tohum Ek (3 Sn)</button>
+        <button id="hasatBtn" onclick="hasatEt()" disabled>Hasat Et</button>
+        <button id="satisBtn" onclick="pazardaSat()">Pazarda Sat (+100 Altın)</button>
+
+        <div class="log" id="mesaj">Hadi çiftliğe başla! Tarlaya tohum ekerek başla.</div>
+    </div>
+
+    <script>
+        let altin = 1000;
+        let depo = 0;
+        let tarlaDurumu = "bos"; // bos, buyuyor, hazir
+
+        function guncelle() {
+            document.getElementById("altin").innerText = altin;
+            document.getElementById("depo").innerText = depo;
+        }
+
+        function mesajYaz(txt) {
+            document.getElementById("mesaj").innerText = txt;
+        }
+
+        function tohumEk() {
+            if (tarlaDurumu !== "bos") return;
+
+            tarlaDurumu = "buyuyor";
+            document.getElementById("tarlaAlani").innerText = "🌱 Tarla: Bitki Büyüyor...";
+            document.getElementById("ekimBtn").disabled = true;
+            mesajYaz("Tohum ekildi, bitkinin büyümesi bekleniyor...");
+
+            // 3 saniye sonra büyüme tamamlanır
+            setTimeout(() => {
+                tarlaDurumu = "hazir";
+                document.getElementById("tarlaAlani").innerText = "🌽 Tarla: Hasat Zamanı!";
+                mesajYaz("Ürün olgunlaştı! Şimdi hasat edebilirsin.");
+                document.getElementById("hasatBtn").disabled = false;
+            }, 3000);
+        }
+
+        function hasatEt() {
+            if (tarlaDurumu !== "hazir") return;
+
+            depo += 1;
+            tarlaDurumu = "bos";
+            document.getElementById("tarlaAlani").innerText = "🌱 Tarla: Boş Toprak";
+            document.getElementById("hasatBtn").disabled = true;
+            document.getElementById("ekimBtn").disabled = false;
             
-            # Zamanlayıcı (Süreç)
-            print("⏳ Bitki büyüyor, lütfen bekleyin...")
-            for i in range(3, 0, -1):
-                print(f"{i}...")
-                time.sleep(1)
-                
-            self.tarla_durumu = "Hasat Zamanı!"
-            print("\n>> Bitki tamamen büyüdü ve hasada hazır!")
-        else:
-            print("\n⚠ Tarlada zaten bir şeyler var veya hasat bekleniyor!")
+            mesajYaz("Ürün başarıyla hasat edildi ve depoya eklendi!");
+            guncelle();
+        }
 
-    def hasat_et(self):
-        if self.tarla_durumu == "Hasat Zamanı!":
-            self.envanter += 1
-            self.tarla_durumu = "Boş Toprak"
-            print("\n>> Ürün başarıyla hasat edildi ve depoya eklendi!")
-            self.durum_goster()
-        else:
-            print("\n⚠ Henüz hasat edilecek olgunlaşmış bir ürün yok!")
+        function pazardaSat() {
+            if (depo <= 0) {
+                mesajYaz("⚠ Pazarda satacak ürünün yok!");
+                return;
+            }
 
-    def pazar_satis(self):
-        if self.envanter > 0:
-            kazanc = self.envanter * 50
-            self.altin += kazanc
-            print(f"\n>> {self.envanter} adet ürün pazarda satıldı! Kazanılan: +{kazanc} Altın")
-            self.envanter = 0
-            self.durum_goster()
-        else:
-            print("\n⚠ Pazarda satacak ürünün yok! Önce hasat yapmalısın.")
+            let kazanc = depo * 100;
+            altin += kazanc;
+            mesajYaz(`🎉 ${depo} ürün satıldı, +${kazanc} altın kazandın!`);
+            depo = 0;
+            guncelle();
+        }
+    </script>
 
-# Oyunu Çalıştırma Döngüsü
-oyun = CiftlikOyunu()
-
-while True:
-    print("\n--- ÇİFTLİK OYUNU MENÜSÜ ---")
-    print("1. Durumu Göster")
-    print("2. Tarlaya Tohum Ek")
-    print("3. Ürünü Hasat Et")
-    print("4. Pazarda Sat & Altın Kazan")
-    print("5. Oyundan Çık")
-    
-    secim = input("Seçimin (1-5): ")
-    
-    if secim == "1":
-        oyun.durum_goster()
-    elif secim == "2":
-        oyun.tohum_ek()
-    elif secim == "3":
-        oyun.hasat_et()
-    elif secim == "4":
-        oyun.pazar_satis()
-    elif secim == "5":
-        print("Oyun kapatılıyor. İyi günler!")
-        break
-    else:
-        print("Geçersiz seçim, tekrar dene.")
+</body>
+</html>
