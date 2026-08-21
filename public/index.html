@@ -3,28 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Karamürsel Agro-Singularity v100: Quantum Hyper Edition</title>
+    <title>Karamürsel Agro v1000: Sovereign Elite</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=JetBrains+Mono:wght@700;800&display=swap');
+
         :root {
-            --bg-base: #020804;
-            --surface-glass: rgba(3, 16, 8, 0.96);
-            --border-glow: rgba(52, 211, 153, 0.65);
-            --neon-green: #34d399;
+            --bg-deep: #010402;
+            --glass-panel: rgba(4, 20, 10, 0.82);
+            --glass-card: rgba(6, 30, 14, 0.65);
+            --neon-mint: #34d399;
             --neon-emerald: #059669;
+            --neon-gold: #fde047;
             --neon-amber: #fbbf24;
             --neon-cyan: #22d3ee;
             --neon-purple: #c084fc;
             --neon-pink: #ec4899;
-            --neon-gold: #fde047;
             --text-main: #f0fdf4;
             --text-muted: #6ee7b7;
         }
 
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Fira Code', monospace, sans-serif; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
-            background-color: var(--bg-base);
+            background-color: var(--bg-deep);
             color: var(--text-main);
             height: 100vh;
             display: flex;
@@ -38,13 +40,13 @@
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: radial-gradient(circle at center, #062812 0%, #020804 100%);
+            background: radial-gradient(circle at 50% 20%, #064e3b 0%, #010402 80%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            border: 1px solid var(--border-glow);
-            box-shadow: 0 0 100px rgba(52, 211, 153, 0.4), inset 0 0 40px rgba(52, 211, 153, 0.1);
+            border: 1.5px solid rgba(52, 211, 153, 0.45);
+            box-shadow: 0 0 80px rgba(52, 211, 153, 0.35), inset 0 0 50px rgba(52, 211, 153, 0.12);
         }
 
         #fx-canvas {
@@ -54,222 +56,212 @@
             z-index: 999;
         }
 
-        #toast {
+        #floating-toast {
             position: absolute;
-            top: 68px;
+            top: 76px;
             left: 50%;
-            transform: translateX(-50%) translateY(-25px);
-            background: rgba(2, 12, 5, 0.98);
-            border: 1px solid var(--neon-gold);
+            transform: translateX(-50%) translateY(-50px);
+            background: rgba(2, 14, 6, 0.96);
+            border: 1.5px solid var(--neon-gold);
             color: var(--neon-gold);
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 10px;
-            font-weight: 700;
-            box-shadow: 0 6px 30px rgba(253, 224, 71, 0.45);
+            padding: 9px 20px;
+            border-radius: 28px;
+            font-size: 11.5px;
+            font-weight: 800;
+            box-shadow: 0 12px 40px rgba(253, 224, 71, 0.45);
             opacity: 0;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 1000;
             pointer-events: none;
             white-space: nowrap;
-            letter-spacing: 0.5px;
+            backdrop-filter: blur(16px);
         }
-        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        #floating-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        .hud-header {
+        .elite-hud {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 8px 12px;
-            background: var(--surface-glass);
-            border-bottom: 1px solid var(--border-glow);
+            padding: 12px 16px;
+            background: var(--glass-panel);
+            border-bottom: 1.5px solid rgba(52, 211, 153, 0.35);
             z-index: 10;
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(25px);
         }
-        .hud-stat {
+        .hud-pill {
             display: flex;
             align-items: center;
             gap: 6px;
-            background: rgba(0,0,0,0.85);
-            padding: 5px 10px;
-            border-radius: 8px;
-            border: 1px solid var(--border-glow);
-            font-size: 8.5px;
-            font-weight: 700;
-            box-shadow: inset 0 0 10px rgba(52,211,153,0.15);
+            background: rgba(0, 0, 0, 0.7);
+            padding: 6px 12px;
+            border-radius: 16px;
+            border: 1px solid rgba(52, 211, 153, 0.4);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10.5px;
+            font-weight: 800;
+            box-shadow: inset 0 0 15px rgba(52, 211, 153, 0.18);
         }
-        .hud-stat.cash { color: var(--neon-green); border-color: var(--neon-green); }
-        .hud-stat.harvest { color: var(--neon-amber); border-color: var(--neon-amber); }
-        .hud-stat.energy { color: var(--neon-cyan); border-color: var(--neon-cyan); }
+        .hud-pill.cash { color: var(--neon-mint); border-color: rgba(52, 211, 153, 0.65); }
+        .hud-pill.harvest { color: var(--neon-amber); border-color: rgba(251, 191, 36, 0.65); }
+        .hud-pill.water { color: var(--neon-cyan); border-color: rgba(34, 211, 238, 0.65); }
 
-        .content-area {
+        .main-container {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 12px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 14px;
             scroll-behavior: smooth;
         }
-        .tab-pane { display: none; flex-direction: column; gap: 10px; animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .tab-pane.active { display: flex; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-section { display: none; flex-direction: column; gap: 12px; animation: paneScale 0.35s cubic-bezier(0.16, 1, 0.3, 1); }
+        .tab-section.active { display: flex; }
+        @keyframes paneScale { from { opacity: 0; transform: scale(0.95) translateY(12px); } to { opacity: 1; transform: scale(1) translateY(0); } }
 
-        .panel {
-            background: var(--surface-glass);
-            border: 1px solid var(--border-glow);
-            border-radius: 14px;
-            padding: 12px;
+        .elite-card {
+            background: var(--glass-card);
+            border: 1.5px solid rgba(52, 211, 153, 0.35);
+            border-radius: 24px;
+            padding: 18px;
             display: flex;
             flex-direction: column;
-            gap: 9px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            backdrop-filter: blur(16px);
+            gap: 14px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(24px);
             position: relative;
             overflow: hidden;
         }
-        .panel::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
-            background: linear-gradient(90deg, transparent, var(--neon-green), transparent);
+        .elite-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3.5px;
+            background: linear-gradient(90deg, transparent, var(--neon-mint), transparent);
         }
-        .panel-title {
-            font-size: 10px;
-            font-weight: 700;
+        .card-header {
+            font-size: 11.5px;
+            font-weight: 800;
             text-transform: uppercase;
-            color: var(--neon-green);
+            color: var(--neon-mint);
             letter-spacing: 1px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid rgba(52,211,153,0.25);
-            padding-bottom: 6px;
+            border-bottom: 1px solid rgba(52, 211, 153, 0.22);
+            padding-bottom: 9px;
         }
 
-        .btn {
-            background: rgba(52, 211, 153, 0.15);
-            color: var(--neon-green);
-            border: 1px solid var(--neon-green);
-            padding: 9px 12px;
-            border-radius: 9px;
-            font-weight: 700;
-            font-size: 9.5px;
+        .action-btn {
+            background: linear-gradient(135deg, rgba(52, 211, 153, 0.28), rgba(5, 150, 105, 0.4));
+            color: var(--neon-mint);
+            border: 1.5px solid var(--neon-mint);
+            padding: 12px 18px;
+            border-radius: 16px;
+            font-weight: 800;
+            font-size: 11px;
             cursor: pointer;
             width: 100%;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 15px rgba(52, 211, 153, 0.2);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 6px 25px rgba(52, 211, 153, 0.3);
         }
-        .btn:hover { background: rgba(52, 211, 153, 0.28); box-shadow: 0 0 20px rgba(52, 211, 153, 0.35); }
-        .btn:active { transform: scale(0.96); }
-        .btn.green { background: rgba(52, 211, 153, 0.2); color: var(--neon-green); border-color: var(--neon-green); }
-        .btn.amber { background: rgba(251, 191, 36, 0.2); color: var(--neon-amber); border-color: var(--neon-amber); }
-        .btn.cyan { background: rgba(34, 211, 238, 0.2); color: var(--neon-cyan); border-color: var(--neon-cyan); }
-        .btn.purple { background: rgba(192, 132, 252, 0.2); color: var(--neon-purple); border-color: var(--neon-purple); }
-        .btn.pink { background: rgba(236, 72, 153, 0.2); color: var(--neon-pink); border-color: var(--neon-pink); }
-        .btn.gold { background: rgba(253, 224, 71, 0.25); color: var(--neon-gold); border-color: var(--neon-gold); box-shadow: 0 0 20px rgba(253, 224, 71, 0.3); }
-        .btn.locked { background: #041006; color: #047857; border-color: #064e3b; cursor: not-allowed; box-shadow: none; }
+        .action-btn:hover { background: rgba(52, 211, 153, 0.45); box-shadow: 0 0 35px rgba(52, 211, 153, 0.6); transform: translateY(-2px); }
+        .action-btn:active { transform: scale(0.94); }
+        .action-btn.amber { background: linear-gradient(135deg, rgba(251, 191, 36, 0.28), rgba(217, 119, 6, 0.4)); color: var(--neon-amber); border-color: var(--neon-amber); box-shadow: 0 6px 25px rgba(251,191,36,0.3); }
+        .action-btn.cyan { background: linear-gradient(135deg, rgba(34, 211, 238, 0.28), rgba(8, 145, 178, 0.4)); color: var(--neon-cyan); border-color: var(--neon-cyan); box-shadow: 0 6px 25px rgba(34,211,238,0.3); }
+        .action-btn.purple { background: linear-gradient(135deg, rgba(192, 132, 252, 0.28), rgba(126, 34, 206, 0.4)); color: var(--neon-purple); border-color: var(--neon-purple); box-shadow: 0 6px 25px rgba(192,132,252,0.3); }
+        .action-btn.pink { background: linear-gradient(135deg, rgba(236, 72, 153, 0.28), rgba(190, 24, 93, 0.4)); color: var(--neon-pink); border-color: var(--neon-pink); box-shadow: 0 6px 25px rgba(236,72,153,0.3); }
+        .action-btn.gold { background: linear-gradient(135deg, rgba(253, 224, 71, 0.35), rgba(202, 138, 4, 0.45)); color: var(--neon-gold); border-color: var(--neon-gold); box-shadow: 0 0 35px rgba(253, 224, 71, 0.5); }
+        .action-btn.locked { background: rgba(2, 15, 5, 0.9); color: #047857; border-color: #064e3b; cursor: not-allowed; box-shadow: none; }
 
-        .row-item {
-            background: rgba(0,0,0,0.8);
-            border: 1px solid rgba(52,211,153,0.2);
-            border-radius: 9px;
-            padding: 9px 11px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 8px;
-            transition: all 0.2s;
-        }
-        .row-item:hover { border-color: var(--neon-green); box-shadow: 0 0 15px rgba(52,211,153,0.15); }
-
-        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .card-box {
-            background: rgba(0,0,0,0.85);
-            border: 1px solid var(--border-glow);
-            border-radius: 9px;
-            padding: 10px;
+        .flex-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .sub-box {
+            background: rgba(0, 0, 0, 0.6);
+            border: 1.5px solid rgba(52, 211, 153, 0.35);
+            border-radius: 18px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 9px;
             text-align: center;
-            box-shadow: inset 0 0 15px rgba(52,211,153,0.06);
-            transition: transform 0.2s;
+            box-shadow: inset 0 0 18px rgba(52,211,153,0.08);
+            transition: all 0.25s;
         }
-        .card-box:hover { transform: translateY(-2px); }
+        .sub-box:hover { transform: translateY(-3px); border-color: var(--neon-mint); box-shadow: 0 0 25px rgba(52,211,153,0.25); }
 
-        .farm-grid {
+        .plot-matrix {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 8px;
-            margin-top: 4px;
+            gap: 12px;
+            margin-top: 6px;
         }
-        .plot-card {
-            background: rgba(0, 0, 0, 0.9);
-            border: 1px solid var(--border-glow);
-            border-radius: 10px;
-            padding: 10px 6px;
+        .plot-node {
+            background: rgba(2, 16, 6, 0.85);
+            border: 1.5px solid rgba(52, 211, 153, 0.4);
+            border-radius: 18px;
+            padding: 14px 8px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 6px;
+            gap: 7px;
             text-align: center;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
+            backdrop-filter: blur(14px);
         }
-        .plot-card:hover { border-color: var(--neon-gold); box-shadow: 0 0 20px rgba(253,224,71,0.3); }
-        .plot-card:active { transform: scale(0.93); }
-        .plot-icon { font-size: 28px; filter: drop-shadow(0 0 10px rgba(52,211,153,0.6)); transition: transform 0.3s; }
-        .plot-card:hover .plot-icon { transform: scale(1.15) rotate(5deg); }
-        .plot-status { font-size: 7.5px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
-        .plot-progress {
+        .plot-node:hover { border-color: var(--neon-gold); box-shadow: 0 0 30px rgba(253,224,71,0.4); transform: translateY(-4px); }
+        .plot-node:active { transform: scale(0.92); }
+        .plot-emoji { font-size: 38px; filter: drop-shadow(0 0 18px rgba(52,211,153,0.85)); transition: transform 0.3s; }
+        .plot-node:hover .plot-emoji { transform: scale(1.3) rotate(10deg); }
+        .plot-desc { font-size: 8.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.6px; }
+        .plot-bar {
             width: 100%;
-            height: 5px;
-            background: #022c14;
-            border-radius: 3px;
+            height: 7px;
+            background: rgba(2, 44, 20, 0.95);
+            border-radius: 4px;
             overflow: hidden;
             border: 1px solid rgba(52,211,153,0.35);
         }
-        .plot-progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-emerald), var(--neon-green)); transition: width 0.3s; }
+        .plot-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-emerald), var(--neon-mint)); transition: width 0.3s; }
 
-        .livestock-box {
-            background: rgba(0,0,0,0.85);
-            border: 1px solid var(--neon-amber);
-            border-radius: 9px;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-            text-align: center;
-            box-shadow: inset 0 0 15px rgba(251,191,36,0.1);
-        }
-
-        #farm-log-box, #greenhouse-log-box, #barn-log-box, #market-log-box, #agro-ai-log-box, #silo-log-box, #tractor-log-box, #irrigation-log-box, #genetics-log-box, #export-log-box {
+        .terminal-log {
             background: #010602;
-            border: 1px solid var(--neon-green);
-            border-radius: 8px;
-            padding: 8px;
-            height: 75px;
+            border: 1.5px solid var(--neon-mint);
+            border-radius: 14px;
+            padding: 12px;
+            height: 95px;
             overflow-y: auto;
-            font-size: 8px;
-            color: var(--neon-green);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 9px;
+            color: var(--neon-mint);
             display: flex;
             flex-direction: column;
-            gap: 3px;
-            box-shadow: inset 0 0 10px rgba(52,211,153,0.15);
+            gap: 5px;
+            box-shadow: inset 0 0 20px rgba(52,211,153,0.18);
         }
 
-        .nav-dock {
-            display: grid;
-            grid-template-columns: repeat(10, 1fr);
-            background: var(--surface-glass);
-            border-top: 1px solid var(--border-glow);
-            padding: 3px;
-            z-index: 10;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.8);
+        .list-row {
+            background: rgba(0, 0, 0, 0.55);
+            border: 1.5px solid rgba(52, 211, 153, 0.3);
+            border-radius: 18px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            transition: all 0.2s;
         }
-        .nav-item {
+        .list-row:hover { border-color: var(--neon-mint); box-shadow: 0 0 22px rgba(52,211,153,0.25); }
+
+        .elite-dock {
+            display: grid;
+            grid-template-columns: repeat(11, 1fr);
+            background: var(--glass-panel);
+            border-top: 1.5px solid rgba(52, 211, 153, 0.35);
+            padding: 5px 2px;
+            z-index: 10;
+            backdrop-filter: blur(25px);
+            box-shadow: 0 -25px 45px rgba(0,0,0,0.9);
+        }
+        .dock-btn {
             background: transparent;
             border: none;
             color: var(--text-muted);
@@ -277,263 +269,297 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
-            font-size: 3.5px;
-            font-weight: 700;
-            padding: 5px 0;
+            font-size: 3.8px;
+            font-weight: 800;
+            padding: 6px 0;
             cursor: pointer;
-            border-radius: 6px;
+            border-radius: 12px;
             transition: all 0.2s;
         }
-        .nav-item:hover { color: var(--neon-green); }
-        .nav-item.active {
+        .dock-btn:hover { color: var(--neon-mint); }
+        .dock-btn.active {
             color: var(--neon-gold);
-            background: rgba(253, 224, 71, 0.15);
-            border: 1px solid rgba(253, 224, 71, 0.4);
-            box-shadow: 0 0 20px rgba(253, 224, 71, 0.3);
+            background: rgba(253, 224, 71, 0.2);
+            border: 1px solid rgba(253, 224, 71, 0.5);
+            box-shadow: 0 0 25px rgba(253, 224, 71, 0.4);
         }
-        .nav-icon { font-size: 11px; transition: transform 0.2s; }
-        .nav-item.active .nav-icon { transform: scale(1.2); }
+        .dock-icon { font-size: 12px; transition: transform 0.2s; }
+        .dock-btn.active .dock-icon { transform: scale(1.35); }
     </style>
 </head>
 <body>
 
     <div id="game-viewport">
         <canvas id="fx-canvas"></canvas>
-        <div id="toast">KARAMÜRSEL AGRO-SINGULARITY AKTİF 🌾</div>
+        <div id="floating-toast">KARAMÜRSEL AGRO v1000 SOVEREIGN 🌟</div>
 
-        <div class="hud-header">
-            <div class="hud-stat cash"><span>💵</span> <span id="ui-cash">1,000,000,000₺</span></div>
-            <div class="hud-stat harvest"><span>🌾</span> <span id="ui-crop-points">25,000 CP</span></div>
-            <div class="hud-stat energy"><span>⚡</span> <span id="ui-water">5,000 L</span></div>
+        <div class="elite-hud">
+            <div class="hud-pill cash"><span>💵</span> <span id="ui-cash">2,000,000,000₺</span></div>
+            <div class="hud-pill harvest"><span>🌾</span> <span id="ui-crop-points">50,000 CP</span></div>
+            <div class="hud-pill water"><span>⚡</span> <span id="ui-water">10,000 L</span></div>
         </div>
 
-        <div class="content-area">
+        <div class="main-container">
 
-            <div id="pane-plots" class="tab-pane active">
-                <div class="panel">
-                    <div class="panel-title"><span>Karamürsel Akıllı Tarlalar (9 Parsel)</span> <span style="color:var(--neon-gold);">ULTRA v100</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Parsellere tıklayarak tohum ek, ışık hızıyla sula ve devasa efsane mahsul hasat et!</div>
-                    <div class="farm-grid" id="farm-plots-grid"></div>
+            <!-- 1. TARLA -->
+            <div id="tab-plots" class="tab-section active">
+                <div class="elite-card">
+                    <div class="card-header"><span>Karamürsel Akıllı Tarlalar (9 Parsel)</span> <span style="color:var(--neon-gold);">SOVEREIGN v1000</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Kuantum tohumları ekin, lazerle sula ve efsane hasat topla!</div>
+                    <div class="plot-matrix" id="farm-plots-grid"></div>
                 </div>
-                <div class="panel">
-                    <div class="panel-title"><span>Tarla Canlı Günlüğü</span></div>
-                    <div id="farm-log-box">
-                        <div>[FARM] Topraklar kuantum seviyesine getirildi. Tohum ekmeye başla!</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="pane-greenhouse" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>Yapay Zeka Kontrollü Sera</span> <span style="color:var(--neon-cyan);">Quantum Hydro</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Topraksız tarım ve fotonik ultraviyole ışıkla %1000 hız!</div>
-                    <div class="grid-2">
-                        <div class="card-box" style="border-color: var(--neon-cyan);">
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-cyan);">Fotonik UV LED</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Büyüme hızını 4x katlar</div>
-                            <button class="btn cyan" style="font-size: 8px; padding: 6px;" onclick="buyGreenhouseUpgrade('uv')">Kur (150M₺)</button>
-                        </div>
-                        <div class="card-box" style="border-color: var(--neon-green);">
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-green);">Karamürsel Efsane İncir</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Saniyede +1,000 CP Üretir</div>
-                            <button class="btn green" style="font-size: 8px; padding: 6px;" onclick="buyGreenhouseUpgrade('fig')">Kur (300M₺)</button>
-                        </div>
-                    </div>
-                    <div id="greenhouse-log-box">
-                        <div>[GREENHOUSE] Kvant seraları tam kapasite foton yayıyor.</div>
+                <div class="elite-card">
+                    <div class="card-header"><span>Canlı Tarla Günlüğü</span></div>
+                    <div id="log-plots" class="terminal-log">
+                        <div>[SYSTEM] Sovereign toprak matrisi başlatıldı.</div>
                     </div>
                 </div>
             </div>
 
-            <div id="pane-barn" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>Karamürsel Hayvancılık & Süt Fabrikası</span> <span style="color:var(--neon-amber);">Mega Livestock</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Robotik inekler ve altın arı kovanlarıyla devasa pasif nakit akışı!</div>
-                    <div class="grid-2">
-                        <div class="livestock-box">
-                            <div style="font-size: 22px;">🐄</div>
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-amber);">Cyborg Holştayn Sürüsü</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Saniyede +50M₺ Süt Geliri</div>
-                            <button class="btn amber" style="font-size: 8px; padding: 6px;" onclick="buyLivestock('cow')">Ahır Kur (100M₺)</button>
+            <!-- 2. SERA -->
+            <div id="tab-greenhouse" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Yapay Zeka Hidroponik Sera</span> <span style="color:var(--neon-cyan);">Photon Matrix</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Topraksız dikey tarım üniteleri ve fotonik ultraviyole hızlandırıcılar!</div>
+                    <div class="flex-grid-2">
+                        <div class="sub-box" style="border-color: var(--neon-cyan);">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-cyan);">Fotonik UV Lamba</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Büyüme hızını 4 katına çıkarır</div>
+                            <button class="action-btn cyan" style="font-size: 9px; padding: 8px;" onclick="upgradeGreenhouse('uv')">Kur (150M₺)</button>
                         </div>
-                        <div class="livestock-box" style="border-color: var(--neon-purple);">
-                            <div style="font-size: 22px;">🐝</div>
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-purple);">Karamürsel Kuantum Bal Arılığı</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Saniyede +250 CP Polen</div>
-                            <button class="btn purple" style="font-size: 8px; padding: 6px;" onclick="buyLivestock('bee')">Kovan Ekle (200M₺)</button>
-                        </div>
-                    </div>
-                    <div id="barn-log-box">
-                        <div>[BARN] Otomatik sağım robotları ve arılıklar aktif.</div>
-                    </div>
-                </div>
-            </div>
-
-            <div id="pane-irrigation" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>Otonom Sulama & Su Kuyusu</span> <span style="color:var(--neon-cyan);">Quantum Hydration</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Derin nükleer sondaj kuyuları ve yapay zeka damla sulama ağı!</div>
-                    <div class="grid-2">
-                        <div class="card-box" style="border-color: var(--neon-cyan);">
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-cyan);">Nükleer Su Türbini</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Su kapasitesini +25,000 L yapar</div>
-                            <button class="btn cyan" style="font-size: 8px; padding: 6px;" onclick="buyWaterUpgrade('solar')">Yükle (80M₺)</button>
-                        </div>
-                        <div class="card-box" style="border-color: var(--neon-green);">
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-green);">Karamürsel Mega Baraj</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Tüm tarlaları anında coşturur</div>
-                            <button class="btn green" style="font-size: 8px; padding: 6px;" onclick="buyWaterUpgrade('dam')">Bağlan (250M₺)</button>
+                        <div class="sub-box" style="border-color: var(--neon-mint);">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-mint);">Efsane İncir Serası</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Saniyede +2,000 CP Üretir</div>
+                            <button class="action-btn" style="font-size: 9px; padding: 8px;" onclick="upgradeGreenhouse('fig')">Kur (300M₺)</button>
                         </div>
                     </div>
-                    <div id="irrigation-log-box">
-                        <div>[WATER] Nükleer su pompaları senkronize çalışıyor.</div>
+                    <div id="log-greenhouse" class="terminal-log">
+                        <div>[GREENHOUSE] Fotokimyasal dikey seralar aktif.</div>
                     </div>
                 </div>
             </div>
 
-            <div id="pane-tractor" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>Otonom Yapay Zeka Traktörleri</span> <span style="color:var(--neon-green);">AI Mech-Tractor</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Yapay zeka güdümlü uçan drone filoları ve lazerli hasat makineleri!</div>
-                    <div class="grid-2">
-                        <div class="card-box">
-                            <div style="font-size: 22px;">🚜</div>
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-green);">Laser Harvester 3000</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Saniyede Otomatik Hasat (3s)</div>
-                            <button class="btn green" style="font-size: 8px; padding: 6px;" onclick="buyTractor('auto')">Konuşlandır (400M₺)</button>
+            <!-- 3. AHIR -->
+            <div id="tab-barn" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Karamürsel Otomasyon Hayvancılık</span> <span style="color:var(--neon-amber);">Mega Livestock</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Robotik inekler ve kuantum arı kovanlarıyla devasa pasif gelir!</div>
+                    <div class="flex-grid-2">
+                        <div class="sub-box" style="border-color: var(--neon-amber);">
+                            <div style="font-size: 26px;">🐄</div>
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-amber);">Cyborg Holştayn Sürüsü</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Saniyede +100M₺ Süt Geliri</div>
+                            <button class="action-btn amber" style="font-size: 9px; padding: 8px;" onclick="upgradeBarn('cow')">Ahır Kur (100M₺)</button>
                         </div>
-                        <div class="card-box" style="border-color: var(--neon-amber);">
-                            <div style="font-size: 22px;">🛸</div>
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-amber);">Hyper-Agro Drone Armada</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Havadan anlık nakit ve CP yağmuru</div>
-                            <button class="btn amber" style="font-size: 8px; padding: 6px;" onclick="buyTractor('drone')">Uçur (700M₺)</button>
+                        <div class="sub-box" style="border-color: var(--neon-purple);">
+                            <div style="font-size: 26px;">🐝</div>
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-purple);">Kuantum Bal Arılığı</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Saniyede +500 CP Polen</div>
+                            <button class="action-btn purple" style="font-size: 9px; padding: 8px;" onclick="upgradeBarn('bee')">Kovan Ekle (200M₺)</button>
                         </div>
                     </div>
-                    <div id="tractor-log-box">
-                        <div>[TRACTOR] Mech-Traktörler yörünge koordinatlarını kilitledi.</div>
+                    <div id="log-barn" class="terminal-log">
+                        <div>[BARN] Sağım ve polen robotları devrede.</div>
                     </div>
                 </div>
             </div>
 
-            <div id="pane-genetics" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>GDO & Tohum Genetiği Laboratuvarı</span> <span style="color:var(--neon-purple);">Singularity Lab</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Kuantum mutasyon tohumlarıyla mahsul verimini 50 katına fırlat!</div>
-                    <div class="grid-2">
-                        <div class="card-box" style="border-color: var(--neon-purple);">
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-purple);">Quantum Super-Wheat</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Hasat Çarpanı: 15x</div>
-                            <button class="btn purple" style="font-size: 8px; padding: 6px;" onclick="unlockGenetics('wheat')">Geliştir (300M₺)</button>
+            <!-- 4. SU -->
+            <div id="tab-irrigation" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Nükleer Sulama & Su Sondajı</span> <span style="color:var(--neon-cyan);">Quantum Hydration</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Derin nükleer su kuyuları ve akıllı damla sulama ağları!</div>
+                    <div class="flex-grid-2">
+                        <div class="sub-box" style="border-color: var(--neon-cyan);">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-cyan);">Nükleer Su Türbini</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Su kapasitesini +50,000 L artırır</div>
+                            <button class="action-btn cyan" style="font-size: 9px; padding: 8px;" onclick="upgradeWater('solar')">Yükle (80M₺)</button>
                         </div>
-                        <div class="card-box" style="border-color: var(--neon-pink);">
-                            <div style="font-size: 9px; font-weight: 700; color: var(--neon-pink);">Cosmic Divine Olive</div>
-                            <div style="font-size: 7px; color: var(--text-muted);">Hasat Çarpanı: 50x</div>
-                            <button class="btn pink" style="font-size: 8px; padding: 6px;" onclick="unlockGenetics('olive')">Geliştir (600M₺)</button>
+                        <div class="sub-box" style="border-color: var(--neon-mint);">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-mint);">Karamürsel Mega Baraj</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Tüm tarlaları anında olgunlaştırır</div>
+                            <button class="action-btn" style="font-size: 9px; padding: 8px;" onclick="upgradeWater('dam')">Bağlan (250M₺)</button>
                         </div>
                     </div>
-                    <div id="genetics-log-box">
+                    <div id="log-irrigation" class="terminal-log">
+                        <div>[WATER] Nükleer pompalar senkronize çalışıyor.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. TRAKTÖR -->
+            <div id="tab-tractor" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Yapay Zeka Otonom Mech-Traktörler</span> <span style="color:var(--neon-mint);">AI Mech-Fleet</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Lazerli otomatik hasat makineleri ve havadan koruma drone filoları!</div>
+                    <div class="flex-grid-2">
+                        <div class="sub-box">
+                            <div style="font-size: 26px;">🚜</div>
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-mint);">Laser Harvester 3000</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Otomatik saniyede hasat toplar</div>
+                            <button class="action-btn" style="font-size: 9px; padding: 8px;" onclick="upgradeTractor('auto')">Konuşlandır (400M₺)</button>
+                        </div>
+                        <div class="sub-box" style="border-color: var(--neon-amber);">
+                            <div style="font-size: 26px;">🛸</div>
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-amber);">Hyper-Agro Drone Armada</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Havadan anlık nakit ve CP yağmuru</div>
+                            <button class="action-btn amber" style="font-size: 9px; padding: 8px;" onclick="upgradeTractor('drone')">Uçur (700M₺)</button>
+                        </div>
+                    </div>
+                    <div id="log-tractor" class="terminal-log">
+                        <div>[TRACTOR] Mech-Traktörler uydu koordinatlarına kilitlendi.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 6. AR-GE -->
+            <div id="tab-genetics" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>GDO & Tohum Genetiği Laboratuvarı</span> <span style="color:var(--neon-purple);">Singularity Lab</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Kuantum mutasyon tohumlarıyla mahsul verimini katlayarak uçurun!</div>
+                    <div class="flex-grid-2">
+                        <div class="sub-box" style="border-color: var(--neon-purple);">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-purple);">Quantum Super-Wheat</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Hasat Çarpanı: 25x</div>
+                            <button class="action-btn purple" style="font-size: 9px; padding: 8px;" onclick="upgradeGenetics('wheat')">Geliştir (300M₺)</button>
+                        </div>
+                        <div class="sub-box" style="border-color: var(--neon-pink);">
+                            <div style="font-size: 11px; font-weight: 800; color: var(--neon-pink);">Cosmic Divine Olive</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Hasat Çarpanı: 100x</div>
+                            <button class="action-btn pink" style="font-size: 9px; padding: 8px;" onclick="upgradeGenetics('olive')">Geliştir (600M₺)</button>
+                        </div>
+                    </div>
+                    <div id="log-genetics" class="terminal-log">
                         <div>[LAB] Genetik splicer evrensel DNA dizilimlerini tarıyor.</div>
                     </div>
                 </div>
             </div>
 
-            <div id="pane-silo" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>Mega Silo & Kriyojenik Depo</span> <span style="color:var(--neon-amber);">Cryo Storage v100</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Hasat edilen mahsulleri mutlak sıfırda sakla, borsa zirvedeyken patlat!</div>
-                    <div class="row-item">
+            <!-- 7. SİLO -->
+            <div id="tab-silo" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Kriyojenik Mega Silo & Depo</span> <span style="color:var(--neon-amber);">Cryo Storage v1000</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Toplanan mahsulleri mutlak sıfırda saklayın, borsa zirvedeyken satın!</div>
+                    <div class="list-row">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Kriyojenik Silo: <span id="ui-silo-cap">250,000 CP</span></div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Sınırsız güvence ve koruma alanı</div>
+                            <div style="font-weight: 800; font-size: 11px;">Kriyojenik Silo: <span id="ui-silo-cap">500,000 CP</span></div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Sınırsız güvenli mahsul depolama alanı</div>
                         </div>
-                        <button class="btn amber" style="width: auto; padding: 6px 10px;" onclick="upgradeSilo()">Genişlet (200M₺)</button>
+                        <button class="action-btn amber" style="width: auto; padding: 8px 14px;" onclick="upgradeSilo()">Genişlet (200M₺)</button>
                     </div>
-                    <div id="silo-log-box">
-                        <div>[SILO] Kriyojenik soğutucular stabil çalışıyor.</div>
+                    <div id="log-silo" class="terminal-log">
+                        <div>[SILO] Kriyojenik soğutma üniteleri stabil çalışıyor.</div>
                     </div>
                 </div>
             </div>
 
-            <div id="pane-market" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>Karamürsel Global Agro Borsası</span> <span style="color:var(--neon-green);">Singularity Market</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Toplanan Crop Points varlıklarını devasa galaktik servete dönüştür!</div>
-                    <div class="row-item" style="border-color: var(--neon-green);">
+            <!-- 8. BORSA -->
+            <div id="tab-market" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Karamürsel Global Agro Borsası</span> <span style="color:var(--neon-mint);">Sovereign Market</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Crop Points varlıklarını galaktik servete ve devasa nakde dönüştürün!</div>
+                    <div class="list-row" style="border-color: var(--neon-mint);">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;" id="ui-cp-rate">1 CP = 100,000₺ Borsa Kuru</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Tüm mahsul stokunu galaksiye ihraç et</div>
+                            <div style="font-weight: 800; font-size: 11px;" id="ui-cp-rate">1 CP = 250,000₺ Borsa Kuru</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Tüm mahsul stokunu evrene ihraç edin</div>
                         </div>
-                        <button class="btn green" style="width: auto; padding: 6px 10px;" onclick="sellAllCrops()">Hepsini Sat 💰</button>
+                        <button class="action-btn" style="width: auto; padding: 8px 14px;" onclick="sellAllCrops()">Hepsini Sat 💰</button>
                     </div>
-                    <div id="market-log-box">
+                    <div id="log-market" class="terminal-log">
                         <div>[MARKET] Galaktik tarım endeksleri rekor tazeledi.</div>
                     </div>
                 </div>
             </div>
 
-            <div id="pane-export" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>Galaktik Tarım İhracat Sözleşmeleri</span> <span style="color:var(--neon-cyan);">Cosmic Contracts</span></div>
-                    <div style="font-size: 8px; color: var(--text-muted);">Güneş sistemi kolonileriyle devasa tarım anlaşmaları imzala!</div>
-                    <div class="row-item">
+            <!-- 9. İHRACAT -->
+            <div id="tab-export" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Galaktik Tarım İhracat Sözleşmeleri</span> <span style="color:var(--neon-cyan);">Cosmic Contracts</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Güneş sistemi kolonileriyle devasa tonajlı gıda anlaşmaları imzalayın!</div>
+                    <div class="list-row">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Mars Kolonisi Gıda Tedariği</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Ödül: 2,000M₺ Nakit Akışı</div>
+                            <div style="font-weight: 800; font-size: 11px;">Mars Kolonisi Gıda Tedariği</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Ödül: 5,000M₺ Nakit Akışı</div>
                         </div>
-                        <button class="btn cyan" style="width: auto; padding: 6px 10px;" onclick="signContract(2000000000, 50000, this)">Anlaş (50k CP)</button>
+                        <button class="action-btn cyan" style="width: auto; padding: 8px 14px;" onclick="signContract(5000000000, 50000, this)">Anlaş (50k CP)</button>
                     </div>
-                    <div class="row-item">
+                    <div class="list-row">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Andromeda Galaktik Monopoli</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Ödül: 10,000M₺ Nakit Akışı</div>
+                            <div style="font-weight: 800; font-size: 11px;">Andromeda Galaktik Monopoli</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Ödül: 25,000M₺ Nakit Akışı</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 10px;" onclick="signContract(10000000000, 200000, this)">İmzala (200k CP)</button>
+                        <button class="action-btn gold" style="width: auto; padding: 8px 14px;" onclick="signContract(25000000000, 200000, this)">İmzala (200k CP)</button>
                     </div>
-                    <div id="export-log-box">
+                    <div id="log-export" class="terminal-log">
                         <div>[EXPORT] Hiperuzay nakliye konteynerleri rıhtımda hazır.</div>
                     </div>
                 </div>
             </div>
 
-            <div id="pane-agroai" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title"><span>Karamürsel Agro-AI Singularity Ajanı</span> <span style="color:var(--neon-gold);">ULTRA AKTİF</span></div>
-                    <div id="agro-ai-log-box">
-                        <div>[AGRO-AI] Evrensel tarım zekası entegre edildi.</div>
+            <!-- 10. ÇARK -->
+            <div id="tab-wheel" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Karamürsel Kuantum Şans Çarkı</span> <span style="color:var(--neon-gold);">Lucky Spinner</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Her gün galaktik sandıktan büyük sürpriz ödüller kazanın!</div>
+                    <div style="text-align: center; padding: 18px; background: rgba(0,0,0,0.55); border-radius: 18px; border: 1.5px solid var(--neon-gold);">
+                        <div style="font-size: 40px;" id="wheel-icon">🎁</div>
+                        <div style="font-size: 12px; font-weight: 800; color: var(--neon-gold); margin: 9px 0;" id="wheel-result-text">Ödülünü Almaya Hazır Mısın?</div>
+                        <button class="action-btn gold" onclick="spinWheel()">Çarkı Çevir 🚀</button>
                     </div>
-                    <div class="row-item" style="background: rgba(253,224,71,0.08); border-color: var(--neon-gold);">
-                        <div>
-                            <div style="font-weight: 700; font-size: 10px; color: var(--neon-gold);">Kuantum Bereket Patlaması 🌟</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Tüm tarlaları coşturur, havai fişek şöleni başlatır!</div>
-                        </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 10px;" onclick="triggerCosmicFireworks()">Şöleni Başlat 🚀</button>
+                    <div id="log-wheel" class="terminal-log">
+                        <div>[WHEEL] Çark mekanizması kuantum enerjisiyle dolduruldu.</div>
                     </div>
                 </div>
-                <div class="panel">
-                    <div class="panel-title">Sistem Sıfırlama</div>
-                    <div class="row-item">
+            </div>
+
+            <!-- 11. AI & SİSTEM -->
+            <div id="tab-agroai" class="tab-section">
+                <div class="elite-card">
+                    <div class="card-header"><span>Karamürsel Agro-AI Sovereign Ajanı</span> <span style="color:var(--neon-gold);">ULTRA AKTİF</span></div>
+                    <div id="log-agroai" class="terminal-log">
+                        <div>[AGRO-AI] Evrensel tarım zekası başarıyla entegre edildi.</div>
+                    </div>
+                    <div class="list-row" style="background: rgba(253,224,71,0.08); border-color: var(--neon-gold);">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Çiftliği Sıfırla</div>
+                            <div style="font-weight: 800; font-size: 11px; color: var(--neon-gold);">Kuantum Bereket Patlaması 🌟</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Tüm tarlaları anında coşturur, havai fişek şöleni başlatır!</div>
+                        </div>
+                        <button class="action-btn gold" style="width: auto; padding: 8px 14px;" onclick="triggerCosmicFireworks()">Şöleni Başlat 🚀</button>
+                    </div>
+                </div>
+                <div class="elite-card">
+                    <div class="card-header">Hava Durumu Simülasyonu</div>
+                    <div class="flex-grid-2">
+                        <button class="action-btn cyan" style="font-size: 9px;" onclick="setWeather('rain')">Kuantum Yağmuru 🌧️</button>
+                        <button class="action-btn gold" style="font-size: 9px;" onclick="setWeather('sunny')">Güneş Patlaması ☀️</button>
+                    </div>
+                </div>
+                <div class="elite-card">
+                    <div class="card-header">Sistem Sıfırlama</div>
+                    <div class="list-row">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">Çiftliği Sıfırla</div>
                             <div style="font-size: 8px; color: var(--text-muted);">Tüm tarım verilerini fabrika ayarlarına döndürür</div>
                         </div>
-                        <button class="btn" style="border-color:var(--text-muted); color:var(--text-muted); width: auto; padding: 6px 10px;" onclick="hardReset()">Sıfırla</button>
+                        <button class="action-btn" style="border-color:var(--text-muted); color:var(--text-muted); width: auto; padding: 8px 14px;" onclick="hardReset()">Sıfırla</button>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <div class="nav-dock">
-            <button class="nav-item active" onclick="switchTab('plots', this)"><span class="nav-icon">🌾</span><span>Tarlalar</span></button>
-            <button class="nav-item" onclick="switchTab('greenhouse', this)"><span class="nav-icon">🌿</span><span>Sera</span></button>
-            <button class="nav-item" onclick="switchTab('barn', this)"><span class="nav-icon">🐄</span><span>Ahır</span></button>
-            <button class="nav-item" onclick="switchTab('irrigation', this)"><span class="nav-icon">💧</span><span>Su</span></button>
-            <button class="nav-item" onclick="switchTab('tractor', this)"><span class="nav-icon">🚜</span><span>Traktör</span></button>
-            <button class="nav-item" onclick="switchTab('genetics', this)"><span class="nav-icon">🧬</span><span>Ar-Ge</span></button>
-            <button class="nav-item" onclick="switchTab('silo', this)"><span class="nav-icon">📦</span><span>Silo</span></button>
-            <button class="nav-item" onclick="switchTab('market', this)"><span class="nav-icon">📈</span><span>Borsa</span></button>
-            <button class="nav-item" onclick="switchTab('export', this)"><span class="nav-icon">🚢</span><span>İhracat</span></button>
-            <button class="nav-item" onclick="switchTab('agroai', this)"><span class="nav-icon">🤖</span><span>AI</span></button>
+        <div class="elite-dock">
+            <button class="dock-btn active" onclick="switchTab('plots', this)"><span class="dock-icon">🌾</span><span>Tarla</span></button>
+            <button class="dock-btn" onclick="switchTab('greenhouse', this)"><span class="dock-icon">🌿</span><span>Sera</span></button>
+            <button class="dock-btn" onclick="switchTab('barn', this)"><span class="dock-icon">🐄</span><span>Ahır</span></button>
+            <button class="dock-btn" onclick="switchTab('irrigation', this)"><span class="dock-icon">💧</span><span>Su</span></button>
+            <button class="dock-btn" onclick="switchTab('tractor', this)"><span class="dock-icon">🚜</span><span>Traktör</span></button>
+            <button class="dock-btn" onclick="switchTab('genetics', this)"><span class="dock-icon">🧬</span><span>Ar-Ge</span></button>
+            <button class="dock-btn" onclick="switchTab('silo', this)"><span class="dock-icon">📦</span><span>Silo</span></button>
+            <button class="dock-btn" onclick="switchTab('market', this)"><span class="dock-icon">📈</span><span>Borsa</span></button>
+            <button class="dock-btn" onclick="switchTab('export', this)"><span class="dock-icon">🚢</span><span>İhracat</span></button>
+            <button class="dock-btn" onclick="switchTab('wheel', this)"><span class="dock-icon">🎁</span><span>Çark</span></button>
+            <button class="dock-btn" onclick="switchTab('agroai', this)"><span class="dock-icon">🤖</span><span>AI</span></button>
         </div>
     </div>
 
@@ -542,6 +568,24 @@
         if (tg) {
             tg.ready();
             tg.expand();
+        }
+
+        // Web Audio API Tıklama / Akor Ses Efektleri
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(freq = 523.25, type = 'sine', duration = 0.08) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                osc.type = type;
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
         }
 
         const canvas = document.getElementById('fx-canvas');
@@ -554,40 +598,72 @@
         resizeCanvas();
 
         let particles = [];
-        class FireworkParticle {
-            constructor(x, y, color) {
+        let weatherMode = 'normal';
+
+        class Particle {
+            constructor(x, y, color, type = 'firework') {
                 this.x = x;
                 this.y = y;
                 this.color = color;
-                const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 6 + 2;
-                this.vx = Math.cos(angle) * speed;
-                this.vy = Math.sin(angle) * speed;
-                this.alpha = 1;
-                this.decay = Math.random() * 0.02 + 0.015;
+                this.type = type;
+                if (type === 'firework') {
+                    const angle = Math.random() * Math.PI * 2;
+                    const speed = Math.random() * 8 + 2;
+                    this.vx = Math.cos(angle) * speed;
+                    this.vy = Math.sin(angle) * speed;
+                    this.alpha = 1;
+                    this.decay = Math.random() * 0.018 + 0.01;
+                } else if (type === 'rain') {
+                    this.vx = 0.8;
+                    this.vy = Math.random() * 11 + 7;
+                    this.alpha = 0.75;
+                }
             }
             update() {
                 this.x += this.vx;
                 this.y += this.vy;
-                this.vy += 0.15;
-                this.alpha -= this.decay;
+                if (this.type === 'firework') {
+                    this.vy += 0.2;
+                    this.alpha -= this.decay;
+                }
+                if (this.y > canvas.height && this.type === 'rain') {
+                    this.y = 0;
+                    this.x = Math.random() * canvas.width;
+                }
             }
             draw() {
                 ctx.save();
                 ctx.globalAlpha = Math.max(0, this.alpha);
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
-                ctx.arc(this.x, this.y, 3, 0, Math.PI * 2);
-                ctx.fill();
+                if (this.type === 'rain') {
+                    ctx.fillRect(this.x, this.y, 1.5, 14);
+                } else {
+                    ctx.arc(this.x, this.y, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                }
                 ctx.restore();
             }
         }
 
         function launchFireworks(px, py) {
+            playSound(659.25, 'triangle', 0.12);
             const colors = ['#34d399', '#fbbf24', '#22d3ee', '#c084fc', '#fde047', '#ec4899'];
             const color = colors[Math.floor(Math.random() * colors.length)];
-            for (let i = 0; i < 35; i++) {
-                particles.push(new FireworkParticle(px, py, color));
+            for (let i = 0; i < 50; i++) {
+                particles.push(new Particle(px, py, color, 'firework'));
+            }
+        }
+
+        function setWeather(mode) {
+            weatherMode = mode;
+            particles = particles.filter(p => p.type !== 'rain');
+            if (mode === 'rain') {
+                for(let i=0; i<60; i++) particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height, '#22d3ee', 'rain'));
+                showToast("Kuantum Yağmuru Aktif! 🌧️");
+            } else {
+                showToast("Güneş Patlaması Zirvede! ☀️");
+                launchFireworks(canvas.width/2, canvas.height/2);
             }
         }
 
@@ -596,19 +672,19 @@
             particles.forEach((p, index) => {
                 p.update();
                 p.draw();
-                if (p.alpha <= 0) particles.splice(index, 1);
+                if (p.type === 'firework' && p.alpha <= 0) particles.splice(index, 1);
             });
             requestAnimationFrame(loopFX);
         }
         loopFX();
 
         let farm = {
-            cash: 1000000000,
-            cropPoints: 25000,
-            water: 5000,
-            maxWater: 25000,
-            siloCapacity: 250000,
-            cpRate: 100000,
+            cash: 2000000000,
+            cropPoints: 50000,
+            water: 10000,
+            maxWater: 50000,
+            siloCapacity: 500000,
+            cpRate: 250000,
             greenhouseUV: false,
             greenhouseFig: false,
             cows: 0,
@@ -617,21 +693,11 @@
             drones: 0,
             geneticsWheat: false,
             geneticsOlive: false,
-            plots: [
-                { id: 0, state: 'empty', crop: null, progress: 0, maxTime: 4 },
-                { id: 1, state: 'empty', crop: null, progress: 0, maxTime: 4 },
-                { id: 2, state: 'empty', crop: null, progress: 0, maxTime: 4 },
-                { id: 3, state: 'empty', crop: null, progress: 0, maxTime: 4 },
-                { id: 4, state: 'empty', crop: null, progress: 0, maxTime: 4 },
-                { id: 5, state: 'empty', crop: null, progress: 0, maxTime: 4 },
-                { id: 6, state: 'empty', crop: null, progress: 0, maxTime: 4 },
-                { id: 7, state: 'empty', crop: null, progress: 0, maxTime: 4 },
-                { id: 8, state: 'empty', crop: null, progress: 0, maxTime: 4 }
-            ]
+            plots: Array.from({length: 9}, (_, i) => ({ id: i, state: 'empty', crop: null, progress: 0, maxTime: 4 }))
         };
 
         function showToast(text) {
-            let t = document.getElementById('toast');
+            let t = document.getElementById('floating-toast');
             t.innerText = text;
             t.classList.add('show');
             setTimeout(() => t.classList.remove('show'), 2200);
@@ -649,34 +715,34 @@
             let grid = document.getElementById('farm-plots-grid');
             grid.innerHTML = '';
             farm.plots.forEach(plot => {
-                let card = document.createElement('div');
-                card.className = 'plot-card';
+                let node = document.createElement('div');
+                node.className = 'plot-node';
                 
-                let icon = '🌱';
-                let statusText = 'Boş Parsel';
+                let emoji = '🌱';
+                let descText = 'Boş Parsel';
                 if (plot.state === 'growing') {
-                    icon = plot.crop === 'wheat' ? '🌾' : plot.crop === 'corn' ? '🌽' : '🫒';
-                    statusText = `Büyüyor (%${Math.floor((plot.progress / plot.maxTime) * 100)})`;
+                    emoji = plot.crop === 'wheat' ? '🌾' : plot.crop === 'corn' ? '🌽' : '🫒';
+                    descText = `Büyüyor (%${Math.floor((plot.progress / plot.maxTime) * 100)})`;
                 } else if (plot.state === 'ready') {
-                    icon = plot.crop === 'wheat' ? '🌾' : plot.crop === 'corn' ? '🌽' : '🫒';
-                    statusText = 'Hasada Hazır! 🌟';
+                    emoji = plot.crop === 'wheat' ? '🌾' : plot.crop === 'corn' ? '🌽' : '🫒';
+                    descText = 'Hasada Hazır! 🌟';
                 }
 
-                card.innerHTML = `
-                    <div class="plot-icon">${icon}</div>
-                    <div class="plot-status">${statusText}</div>
-                    <div class="plot-progress">
-                        <div class="plot-progress-fill" style="width: ${(plot.progress / plot.maxTime) * 100}%"></div>
+                node.innerHTML = `
+                    <div class="plot-emoji">${emoji}</div>
+                    <div class="plot-desc">${descText}</div>
+                    <div class="plot-bar">
+                        <div class="plot-bar-fill" style="width: ${(plot.progress / plot.maxTime) * 100}%"></div>
                     </div>
                 `;
 
-                card.onclick = (e) => {
-                    const rect = card.getBoundingClientRect();
+                node.onclick = (e) => {
+                    const rect = node.getBoundingClientRect();
                     const parentRect = canvas.getBoundingClientRect();
                     launchFireworks(rect.left - parentRect.left + rect.width / 2, rect.top - parentRect.top + rect.height / 2);
                     handlePlotClick(plot.id);
                 };
-                grid.appendChild(card);
+                grid.appendChild(node);
             });
         }
 
@@ -688,13 +754,15 @@
                 plot.state = 'growing';
                 plot.crop = Math.random() > 0.5 ? 'wheat' : 'corn';
                 plot.progress = 0;
-                plot.maxTime = (farm.greenhouseUV || farm.autos > 0) ? 2 : 4;
-                showToast("Kuantum Tohum Ekildi ve Sulandı! 💧");
-                appendLog('farm-log-box', `[PLANT] Parsel #${id + 1} üzerine ${plot.crop} ekildi.`);
+                plot.maxTime = (farm.greenhouseUV || weatherMode === 'rain' || farm.autos > 0) ? 2 : 4;
+                playSound(493.88, 'sine', 0.06);
+                showToast("Kuantum Tohum Ekildi! 💧");
+                appendLog('log-plots', `[PLANT] Parsel #${id + 1} üzerine ${plot.crop} ekildi.`);
             } else if (plot.state === 'ready') {
-                let reward = plot.crop === 'wheat' ? 1500 : 3500;
-                if (farm.geneticsWheat && plot.crop === 'wheat') reward *= 15;
-                if (farm.geneticsOlive && plot.crop === 'corn') reward *= 50;
+                let reward = plot.crop === 'wheat' ? 2500 : 5000;
+                if (farm.geneticsWheat && plot.crop === 'wheat') reward *= 25;
+                if (farm.geneticsOlive && plot.crop === 'corn') reward *= 100;
+                if (weatherMode === 'sunny') reward *= 2;
                 
                 farm.cropPoints += reward;
                 if (farm.cropPoints > farm.siloCapacity) farm.cropPoints = farm.siloCapacity;
@@ -702,8 +770,9 @@
                 plot.state = 'empty';
                 plot.crop = null;
                 plot.progress = 0;
+                playSound(987.77, 'sine', 0.12);
                 showToast(`Efsane Hasat Toplandı: +${reward} CP! 🌟`);
-                appendLog('farm-log-box', `[HARVEST] Parsel #${id + 1} toplandı: +${reward} CP kazandı.`);
+                appendLog('log-plots', `[HARVEST] Parsel #${id + 1} toplandı: +${reward} CP.`);
             }
             renderPlots();
             updateUI();
@@ -712,121 +781,134 @@
         setInterval(() => {
             farm.plots.forEach(plot => {
                 if (plot.state === 'growing') {
-                    plot.progress += 1;
-                    if (plot.progress >= plot.maxTime) {
-                        plot.state = 'ready';
-                    }
+                    plot.progress += (weatherMode === 'rain' ? 2 : 1);
+                    if (plot.progress >= plot.maxTime) plot.state = 'ready';
                 }
             });
 
             if (farm.autos > 0) {
                 farm.plots.forEach(plot => {
                     if (plot.state === 'ready') {
-                        farm.cropPoints += 2000;
+                        farm.cropPoints += 3000;
                         plot.state = 'empty';
                         plot.progress = 0;
                     }
                 });
             }
 
-            if (farm.cows > 0) {
-                farm.cash += (50000000 * farm.cows);
-            }
-            if (farm.bees > 0 || farm.greenhouseFig) {
-                farm.cropPoints += (500 * (farm.bees + (farm.greenhouseFig ? 10 : 0)));
-            }
+            if (farm.cows > 0) farm.cash += (100000000 * farm.cows);
+            if (farm.bees > 0 || farm.greenhouseFig) farm.cropPoints += (1000 * (farm.bees + (farm.greenhouseFig ? 15 : 0)));
 
             renderPlots();
             updateUI();
         }, 1000);
 
-        function buyGreenhouseUpgrade(type) {
+        function spinWheel() {
+            playSound(783.99, 'square', 0.15);
+            let rewards = [
+                { type: 'cash', val: 1000000000, text: '1Bilyon₺ Nakit Ödül Kazandın! 💵' },
+                { type: 'cp', val: 100000, text: '100,000 CP Hasat Puanı Kazandın! 🌾' },
+                { type: 'water', val: 25000, text: '25,000 Litre Su Desteği! 💧' }
+            ];
+            let won = rewards[Math.floor(Math.random() * rewards.length)];
+            if (won.type === 'cash') farm.cash += won.val;
+            if (won.type === 'cp') farm.cropPoints += won.val;
+            if (won.type === 'water') { farm.water += won.val; if(farm.water > farm.maxWater) farm.water = farm.maxWater; }
+
+            document.getElementById('wheel-result-text').innerText = won.text;
+            launchFireworks(canvas.width/2, canvas.height/2);
+            showToast(won.text);
+            appendLog('log-wheel', `[WHEEL] Çark çevrildi: ${won.text}`);
+            updateUI();
+        }
+
+        function upgradeGreenhouse(type) {
             if (type === 'uv') {
-                if (farm.greenhouseUV) { showToast("UV Işıklar zaten kurulu!"); return; }
+                if (farm.greenhouseUV) { showToast("UV Işıklar zaten aktif!"); return; }
                 if (farm.cash < 150000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 150000000;
                 farm.greenhouseUV = true;
-                appendLog('greenhouse-log-box', "[GREENHOUSE] Fotonik UV lambalar kuruldu. Büyüme hızı 4x arttı.");
+                appendLog('log-greenhouse', "[GREENHOUSE] Fotonik UV lambalar kuruldu.");
                 showToast("Fotonik UV Sera Aktif! 🌿");
             } else if (type === 'fig') {
                 if (farm.greenhouseFig) { showToast("İncir serası zaten aktif!"); return; }
                 if (farm.cash < 300000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 300000000;
                 farm.greenhouseFig = true;
-                appendLog('greenhouse-log-box', "[GREENHOUSE] Karamürsel Efsane İncir Seraları kuruldu.");
+                appendLog('log-greenhouse', "[GREENHOUSE] Karamürsel Efsane İncir Seraları kuruldu.");
                 showToast("Efsane İncir Serası Kuruldu! 🍇");
             }
             updateUI();
         }
 
-        function buyLivestock(type) {
+        function upgradeBarn(type) {
             if (type === 'cow') {
                 if (farm.cash < 100000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 100000000;
                 farm.cows++;
-                appendLog('barn-log-box', `[BARN] Cyborg Holştayn sürüsü eklendi (Toplam: ${farm.cows})`);
+                appendLog('log-barn', `[BARN] Cyborg Holştayn sürüsü eklendi (Toplam: ${farm.cows})`);
                 showToast("Cyborg İnek Sürüsü Eklendi! 🐄");
             } else if (type === 'bee') {
                 if (farm.cash < 200000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 200000000;
                 farm.bees++;
-                appendLog('barn-log-box', `[BARN] Kuantum bal arılığı eklendi (Toplam: ${farm.bees})`);
+                appendLog('log-barn', `[BARN] Kuantum bal arılığı eklendi (Toplam: ${farm.bees})`);
                 showToast("Kuantum Arı Kovanı Eklendi! 🐝");
             }
             updateUI();
         }
 
-        function buyWaterUpgrade(type) {
+        function upgradeWater(type) {
             if (type === 'solar') {
                 if (farm.cash < 80000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 80000000;
-                farm.maxWater += 25000;
+                farm.maxWater += 50000;
                 farm.water = farm.maxWater;
-                appendLog('irrigation-log-box', "[WATER] Nükleer türbin kuruldu. Su kapasitesi devasa arttı.");
+                appendLog('log-irrigation', "[WATER] Nükleer türbin kuruldu. Su kapasitesi devasa arttı.");
                 showToast("Nükleer Su Türbini Aktif! 💧");
             } else if (type === 'dam') {
                 if (farm.cash < 250000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 250000000;
                 farm.water = farm.maxWater;
                 farm.plots.forEach(p => { if (p.state === 'empty') p.state = 'ready'; });
-                appendLog('irrigation-log-box', "[WATER] Mega Baraj açıldı, tüm tarlalar taştı ve olgunlaştı!");
+                appendLog('log-irrigation', "[WATER] Mega Baraj açıldı, tüm tarlalar olgunlaştı!");
                 showToast("Mega Baraj Hatları Açıldı! 🌊");
             }
             updateUI();
         }
 
-        function buyTractor(type) {
+        function upgradeTractor(type) {
             if (type === 'auto') {
                 if (farm.cash < 400000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 400000000;
                 farm.autos++;
-                appendLog('tractor-log-box', "[TRACTOR] Laser Harvester 3000 sahaya indi.");
+                appendLog('log-tractor', "[TRACTOR] Laser Harvester 3000 sahaya indi.");
                 showToast("Lazer Hasat Makinesi Konuşlandırıldı! 🚜");
             } else if (type === 'drone') {
                 if (farm.cash < 700000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 700000000;
                 farm.drones++;
-                farm.cropPoints += 50000;
-                appendLog('tractor-log-box', "[TRACTOR] Hyper-Agro Drone Armada gökyüzünü kapladı.");
+                farm.cropPoints += 100000;
+                appendLog('log-tractor', "[TRACTOR] Hyper-Agro Drone Armada gökyüzünü kapladı.");
                 showToast("Agro-Drone Armada Uçuruldu! 🛸");
             }
             updateUI();
         }
 
-        function unlockGenetics(type) {
+        function upgradeGenetics(type) {
             if (type === 'wheat') {
                 if (farm.geneticsWheat) { showToast("Zaten kilit açıldı!"); return; }
                 if (farm.cash < 300000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 300000000;
                 farm.geneticsWheat = true;
-                appendLog('genetics-log-box', "[LAB] Quantum Super-Wheat genetiği çözüldü (15x Hasat).");
+                appendLog('log-genetics', "[LAB] Quantum Super-Wheat genetiği çözüldü (25x Hasat).");
                 showToast("Quantum Super-Wheat Aktif! 🧬");
             } else if (type === 'olive') {
                 if (farm.geneticsOlive) { showToast("Zaten kilit açıldı!"); return; }
                 if (farm.cash < 600000000) { showToast("Yetersiz bakiye!"); return; }
                 farm.cash -= 600000000;
                 farm.geneticsOlive = true;
-                appendLog('genetics-log-box', "[LAB] Cosmic Divine Olive genetiği çözüldü (50x Hasat).");
+                appendLog('log-genetics', "[LAB] Cosmic Divine Olive genetiği çözüldü (100x Hasat).");
                 showToast("Cosmic Divine Olive Aktif! 🫒");
             }
             updateUI();
@@ -835,8 +917,8 @@
         function upgradeSilo() {
             if (farm.cash < 200000000) { showToast("Yetersiz bakiye!"); return; }
             farm.cash -= 200000000;
-            farm.siloCapacity += 250000;
-            appendLog('silo-log-box', `[SILO] Kriyojenik silo kapasitesi ${farm.siloCapacity} CP oldu.`);
+            farm.siloCapacity += 500000;
+            appendLog('log-silo', `[SILO] Kriyojenik silo kapasitesi ${farm.siloCapacity} CP oldu.`);
             showToast("Kriyojenik Silo Genişletildi! 📦");
             updateUI();
         }
@@ -849,10 +931,7 @@
             farm.cropPoints = 0;
             
             launchFireworks(canvas.width / 2, canvas.height / 2);
-            launchFireworks(canvas.width / 3, canvas.height / 3);
-            launchFireworks((canvas.width / 3) * 2, canvas.height / 3);
-
-            appendLog('market-log-box', `[MARKET] ${sold} CP galaktik pazara ihraç edildi: +${revenue}₺ servet.`);
+            appendLog('log-market', `[MARKET] ${sold} CP galaktik pazara ihraç edildi: +${revenue}₺ servet.`);
             showToast(`Devasa İhracat Başarılı: +${revenue}₺! 💰`);
             updateUI();
         }
@@ -862,26 +941,26 @@
             farm.cropPoints -= cost;
             farm.cash += reward;
             btn.innerText = "İmzalandı ✔️";
-            btn.className = "btn locked";
+            btn.className = "action-btn locked";
             
             launchFireworks(canvas.width / 2, canvas.height / 2);
-            appendLog('export-log-box', `[EXPORT] Galaktik sözleşme imzalandı: +${reward}₺`);
+            appendLog('log-export', `[EXPORT] Galaktik sözleşme imzalandi: +${reward}₺`);
             showToast(`Galaktik Anlaşma Tamamlandı! +${reward}₺ 🚢`);
             updateUI();
         }
 
         function triggerCosmicFireworks() {
-            farm.cropPoints += 50000;
+            farm.cropPoints += 100000;
             farm.water = farm.maxWater;
             farm.plots.forEach(p => p.state = 'ready');
 
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 6; i++) {
                 setTimeout(() => {
                     launchFireworks(Math.random() * canvas.width, Math.random() * canvas.height);
-                }, i * 200);
+                }, i * 180);
             }
 
-            appendLog('agro-ai-log-box', "[AGRO-AI] Kuantum bereket patlatıldı: Tüm tarlalar altın mahsullerle doldu!");
+            appendLog('log-agroai', "[AGRO-AI] Kuantum bereket patlatıldı: Tüm tarlalar altın mahsullerle doldu!");
             showToast("Kuantum Bereket Şöleni Başladı! 🌟🚀");
             updateUI();
         }
@@ -899,9 +978,9 @@
         }
 
         function switchTab(name, btn) {
-            document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-            document.getElementById('pane-' + name).classList.add('active');
+            document.querySelectorAll('.tab-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.dock-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + name).classList.add('active');
             btn.classList.add('active');
         }
 
