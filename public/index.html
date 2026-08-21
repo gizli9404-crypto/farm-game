@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cyber-Agro Çiftlik Oyunu</title>
+    <title>Cyber-Agro: Çiftlik Oyunu</title>
     <style>
+        * { box-sizing: border-box; }
         body {
-            background-color: #1b2838;
+            background-color: #121c24;
             color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
@@ -14,176 +15,334 @@
             display: flex;
             justify-content: center;
         }
-        .game-container {
-            width: 500px;
-            background: #2a3f5f;
-            border: 3px solid #4a6984;
-            border-radius: 12px;
-            padding: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+        .game-wrapper {
+            width: 650px;
+            background: #2b3e50;
+            border: 4px solid #4a6b82;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
         }
+
         /* 1. ÜST BİLGİ ÇUBUĞU (HUD) */
         .hud {
-            background: #1e2d42;
-            border: 2px solid #577399;
+            background: #1a2733;
+            border: 2px solid #52799e;
+            border-radius: 10px;
+            padding: 12px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .profile-area {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #243442;
+            padding: 6px 12px;
             border-radius: 8px;
-            padding: 10px;
+            border: 1px solid #3d5a73;
+        }
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: #e67e22;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+        .profile-info .name { font-size: 13px; font-weight: bold; color: #f1c40f; }
+        .profile-info .lvl { font-size: 11px; color: #bdc3c7; }
+
+        .resources {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .res-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: bold;
+            font-size: 15px;
+            background: #243442;
+            padding: 6px 12px;
+            border-radius: 8px;
+            border: 1px solid #3d5a73;
+        }
+        .gold-text { color: #f1c40f; }
+        .gem-text { color: #3498db; }
+        .settings-btn {
+            background: #34495e;
+            border: 1px solid #52799e;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        /* 2. ORTA OYUN ALANI (GRID & EYLEMLER) */
+        .grid-container {
+            background: #1e824c;
+            border: 3px dashed #2ecc71;
+            border-radius: 12px;
+            padding: 20px;
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .grid-header-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        .hud-left {
-            font-size: 14px;
+        .grid-title {
             font-weight: bold;
-            color: #f39c12;
+            font-size: 16px;
+            color: #fff;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
         }
-        .hud-right span {
-            margin-left: 10px;
+        .side-action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        .action-btn {
+            background: #d35400;
+            border: 2px solid #e67e22;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
             font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
         }
-        .gold { color: #f1c40f; }
-        .diamond { color: #3498db; }
+        .action-btn:hover { background: #e67e22; }
 
-        /* 2. ORTA OYUN ALANI (GRID) */
-        .grid-area {
-            background: #27ae60;
-            border: 3px dashed #2ecc71;
-            border-radius: 8px;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 15px;
-            position: relative;
-        }
-        .plot-grid {
+        /* Tarla Parselleri */
+        .plots-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-top: 10px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
         }
         .plot {
-            background: #8b5a2b;
-            border: 2px solid #5c3a21;
-            border-radius: 6px;
-            padding: 15px;
-            font-size: 13px;
+            background: #795548;
+            border: 3px solid #5d4037;
+            border-radius: 8px;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            transition: 0.2s;
+            position: relative;
+            transition: 0.1s;
+            padding: 5px;
+            text-align: center;
         }
-        .plot:hover {
-            opacity: 0.9;
-            transform: scale(1.02);
+        .plot:hover { transform: scale(1.03); border-color: #8d6e63; }
+        .plot.empty { background: #6d4c41; }
+        .plot.growing { background: #5d4037; border-color: #f39c12; }
+        .plot.ready { background: #4e342e; border-color: #2ecc71; }
+        
+        .plot-text { font-size: 12px; font-weight: bold; margin-top: 4px; }
+        
+        /* İlerleme Çubuğu (Timer Bar) */
+        .progress-box {
+            width: 100%;
+            background: #2c3e50;
+            border-radius: 4px;
+            height: 8px;
+            margin-top: 5px;
+            overflow: hidden;
+            display: none;
+        }
+        .progress-fill {
+            height: 100%;
+            background: #2ecc71;
+            width: 0%;
+            transition: width 0.1s linear;
         }
 
         /* 3. ALT NAVİGASYON (DOCK) */
         .dock {
-            background: #1e2d42;
-            border: 2px solid #577399;
-            border-radius: 8px;
+            background: #1a2733;
+            border: 2px solid #52799e;
+            border-radius: 10px;
             display: flex;
             justify-content: space-around;
             padding: 10px;
         }
-        .dock-btn {
-            background: #34495e;
-            color: white;
-            border: 1px solid #7f8c8d;
-            border-radius: 6px;
-            padding: 8px 12px;
-            font-size: 12px;
-            cursor: pointer;
-        }
-        .dock-btn.active {
-            background: #27ae60;
-            border-color: #2ecc71;
+        .dock-item {
+            background: #243442;
+            border: 2px solid #3d5a73;
+            color: #bdc3c7;
+            border-radius: 8px;
+            padding: 8px 16px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 11px;
             font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .dock-item span { font-size: 18px; margin-bottom: 2px; }
+        .dock-item.active, .dock-item:hover {
+            background: #27ae60;
+            color: white;
+            border-color: #2ecc71;
         }
 
-        .log-box {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #bdc3c7;
-            text-align: center;
-            min-height: 20px;
+        .notification-bar {
+            margin-top: 12px;
+            background: #1a2733;
+            border-left: 4px solid #f1c40f;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #ecf0f1;
         }
     </style>
 </head>
 <body>
 
-    <div class="game-container">
+    <div class="game-wrapper">
         <!-- 1. ÜST BİLGİ ÇUBUĞU (HUD) -->
         <div class="hud">
-            <div class="hud-left">👨‍🌾 ÇİFTÇİ_ALİ (LVL 5)</div>
-            <div class="hud-right">
-                <span class="gold">🪙 <span id="altin">15850</span></span>
-                <span class="diamond">💎 <span id="elmas">320</span></span>
+            <div class="profile-area">
+                <div class="avatar">👨‍🌾</div>
+                <div class="profile-info">
+                    <div class="name">ÇİFTÇİ_ALİ</div>
+                    <div class="lvl">LVL 5</div>
+                </div>
             </div>
+            <div class="resources">
+                <div class="res-item">🪙 <span id="altin">15850</span></div>
+                <div class="res-item">💎 <span id="elmas">320</span></div>
+            </div>
+            <button class="settings-btn" onclick="alert('Ayarlar paneli')">⚙️</button>
         </div>
 
         <!-- 2. ORTA OYUN ALANI (GRID) -->
-        <div class="grid-area">
-            <strong>🌾 TARLA ALANI (ETKİLEŞİM)</strong>
-            <div class="plot-grid">
-                <div class="plot" id="parsel1" onclick="tarlayaTikla()">
-                    🌱 <br><span id="parselDurumu">Boş Toprak</span>
-                </div>
-                <div class="plot" style="background: #34495e; cursor: default;">
-                    🏠 <br>Ahır (Kilitli)
+        <div class="grid-container">
+            <div class="grid-header-row">
+                <span class="grid-title">🌾 ETKİLEŞİM BÖLGESİ (TARLA)</span>
+                <div class="side-action-buttons">
+                    <button class="action-btn" onclick="insaEt()">🔨 İNŞA ET</button>
+                    <button class="action-btn" onclick="pazarAc()">🛒 PAZAR</button>
                 </div>
             </div>
-            <div class="log-box" id="mesaj">Tarlaya tıklayarak tohum ekebilirsin.</div>
+
+            <!-- Tarlalar -->
+            <div class="plots-grid" id="parselListesi">
+                <!-- Javascript ile dinamik dolacak -->
+            </div>
         </div>
 
         <!-- 3. ALT NAVİGASYON (DOCK) -->
         <div class="dock">
-            <button class="dock-btn active">🌿 TARLA</button>
-            <button class="dock-btn" onclick="pazariAc()">🛒 PAZAR</button>
-            <button class="dock-btn">🐄 AHIR</button>
-            <button class="dock-btn">👥 SOSYAL</button>
+            <div class="dock-item active"><span>🌿</span>TARLA</div>
+            <div class="dock-item" onclick="pazarAc()"><span>🛒</span>PAZAR</div>
+            <div class="dock-item" onclick="alert('Ahır sistemi yakında eklenecek!')"><span>🐄</span>AHIR</div>
+            <div class="dock-item" onclick="alert('Sosyal menü')"><span>👥</span>SOSYAL</div>
+        </div>
+
+        <div class="notification-bar" id="mesajKutusu">
+            Hoş geldin Çiftçi Ali! Boş tarlalara tıklayarak tohum ekebilir, ürünleri hasat edip pazarda satabilirsin.
         </div>
     </div>
 
     <script>
         let altin = 15850;
         let elmas = 320;
-        let durum = "bos"; // bos, ekildi, hazir
+        
+        // 6 adet tarla parselinin başlangıç durumları
+        let parseller = [
+            { id: 0, durum: "bos", sure: 0, maxSure: 5 },
+            { id: 1, durum: "bos", sure: 0, maxSure: 5 },
+            { id: 2, durum: "bos", sure: 0, maxSure: 5 },
+            { id: 3, durum: "bos", sure: 0, maxSure: 5 },
+            { id: 4, durum: "bos", sure: 0, maxSure: 5 },
+            { id: 5, durum: "bos", sure: 0, maxSure: 5 }
+        ];
 
-        function guncelleUI() {
+        function arayuzuGuncelle() {
             document.getElementById("altin").innerText = altin;
             document.getElementById("elmas").innerText = elmas;
+            
+            const container = document.getElementById("parselListesi");
+            container.innerHTML = "";
+
+            parseller.forEach((p, index) => {
+                let div = document.createElement("div");
+                div.className = "plot " + p.durum;
+                div.onclick = () => parselTikla(index);
+
+                if (p.durum === "bos") {
+                    div.innerHTML = `<span>🌱</span><div class="plot-text">BOŞ TOPRAK</div>`;
+                } else if (p.durum === "buyuyor") {
+                    let yuzde = ((p.maxSure - p.sure) / p.maxSure) * 100;
+                    div.innerHTML = `<span>🤖💧</span><div class="plot-text">BÜYÜYOR (${p.sure}s)</div>
+                                     <div class="progress-box" style="display:block;"><div class="progress-fill" style="width:${yuzde}%"></div></div>`;
+                } else if (p.durum === "hazir") {
+                    div.innerHTML = `<span>🌽</span><div class="plot-text" style="color:#2ecc71;">HASAT ZAMANI!</div>`;
+                }
+                container.appendChild(div);
+            });
         }
 
-        function tarlayaTikla() {
-            const parsel = document.getElementById("parselDurumu");
-            const mesaj = document.getElementById("mesaj");
-
-            if (durum === "bos") {
-                durum = "ekildi";
-                parsel.innerText = "Büyüyor... ⏳";
-                mesaj.innerText = "Tohum ekildi, bitki büyüyor...";
-                
-                // 3 saniye sonra büyüme tamamlanır
-                setTimeout(() => {
-                    durum = "hazir";
-                    parsel.innerText = "Hasat Zamanı! 🌽";
-                    mesaj.innerText = "Ürün olgunlaştı! Hasat etmek için tarlaya tıkla.";
-                }, 3000);
-
-            } else if (durum === "hazir") {
-                durum = "bos";
+        function parselTikla(index) {
+            let p = parseller[index];
+            if (p.durum === "bos") {
+                p.durum = "buyuyor";
+                p.sure = 5; // 5 saniye büyüme süresi
+                document.getElementById("mesajKutusuinnerText") = "Tohum ekildi ve sulama robotu devreye girdi!";
+                arayuzuGuncelle();
+            } else if (p.durum === "hazir") {
+                p.durum = "bos";
                 altin += 150; // Hasat kazancı
-                parsel.innerText = "Boş Toprak";
-                mesaj.innerText = "Hasat yapıldı! +150 Altın kazandın.";
-                guncelleUI();
-            } else if (durum === "ekildi") {
-                mesaj.innerText = "⚠ Bitki hala büyüme aşamasında, lütfen bekle!";
+                document.getElementById("mesajKutusu").innerText = "Ürün başarıyla hasat edildi! +150 Altın kazandın.";
+                arayuzuGuncelle();
+            } else if (p.durum === "buyuyor") {
+                document.getElementById("mesajKutusu").innerText = "⚠ Bu parseldeki bitki henüz büyümedi, lütfen bekle!";
             }
         }
 
-        function pazariAc() {
-            alert("🛒 Pazar Paneli: Ürünlerini satıp altınları katlayabileceğin yerdesin!");
-        }
-    </script>
+        // Her 1 saniyede bir büyüme sürelerini işlet
+        setInterval(() => {
+            let degisiklik = false;
+            parseller.forEach(p => {
+                if (p.durum === "buyuyor") {
+                    p.sure--;
+                    degisiklik = true;
+                    if (p.sure <= 0) {
+                        p.durum = "hazir";
+                    }
+                }
+            });
+            if (degisiklik) arayuzuGuncelle();
+        }, 1000);
 
+        function insaEt() {
+            alert("🔨 İnşa Modu: Yeni tarla parselleri veya depo binaları kurabilirsin!");
+        }
+
+        function pazarAc() {
+            let miktar = prompt("Pazara satmak istediğin mısır miktarını gir (Her biri 100 Altın):", "1");
+            if(miktar && !isNaN(miktar)) {
+                let kazanc = parseInt(miktar) * 100;
+                altin += kazanc;
+                document.getElementById("mesajKutusu").innerText = `🛒 Pazarda ${miktar} ürün satıldı, +${kazanc} altın eklendi!`;
+                arayuzuGuncelle();
+            }
+        }
+
+        // İlk açılış
+        arayuzuGuncelle();
+    </script>
 </body>
 </html>
