@@ -3,117 +3,146 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Apex Core Elite - Telegram Mini App</title>
+    <title>Apex Core S-Tier Elite - Telegram Mini App</title>
     <!-- AdsGram Resmi SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
         :root {
-            --bg: #05070b;
-            --surface: #0f131f;
-            --surface-hover: #171d2e;
-            --primary: #6366f1;
-            --primary-glow: rgba(99, 102, 241, 0.4);
+            --bg: #030508;
+            --surface: #0b0f19;
+            --surface-hover: #131a2b;
+            --primary: #4f46e5;
+            --primary-glow: rgba(79, 70, 229, 0.5);
             --accent: #10b981;
-            --accent-glow: rgba(16, 185, 129, 0.4);
-            --pink: #ec4899;
+            --accent-glow: rgba(16, 185, 129, 0.5);
+            --pink: #f43f5e;
+            --gold: #f59e0b;
             --text: #f8fafc;
             --text-secondary: #94a3b8;
-            --border: #1e263d;
+            --border: #1e293b;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
+        /* ARKA PLAN DİNAMİK CANVAS */
+        #bgCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
         .app-container {
-            width: 100%; max-width: 400px; height: 100%; max-height: 800px;
-            background: var(--bg); border: 1px solid var(--border); border-radius: 28px;
+            width: 100%; max-width: 400px; height: 100%; max-height: 820px;
+            background: rgba(11, 15, 25, 0.9); backdrop-filter: blur(16px);
+            border: 1px solid var(--border); border-radius: 32px;
             display: flex; flex-direction: column; justify-content: space-between;
-            padding: 16px; box-shadow: 0 30px 60px rgba(0,0,0,0.9); position: relative; overflow: hidden;
+            padding: 16px; box-shadow: 0 30px 80px rgba(0,0,0,0.95); position: relative; overflow: hidden; z-index: 2;
         }
 
-        /* EKRAN SARSINTI EFEKTİ */
+        /* EKRAN SARSINTISI */
         @keyframes shake {
             0% { transform: translate(0, 0); }
-            20% { transform: translate(-3px, 3px); }
-            40% { transform: translate(3px, -3px); }
-            60% { transform: translate(-2px, 1px); }
-            80% { transform: translate(2px, -1px); }
+            25% { transform: translate(-4px, 4px); }
+            50% { transform: translate(4px, -4px); }
+            75% { transform: translate(-2px, 2px); }
             100% { transform: translate(0, 0); }
-        .shake-anim { animation: shake 0.3s ease-in-out; }
+        }
+        .shake-anim { animation: shake 0.25s ease-in-out; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 12px 16px; z-index: 10; backdrop-filter: blur(10px); }
-        .logo { font-size: 13px; font-weight: 900; color: var(--primary); display: flex; align-items: center; gap: 6px; }
-        .balance { font-size: 13px; font-weight: 900; color: var(--text); background: rgba(99, 102, 241, 0.15); padding: 5px 12px; border-radius: 10px; border: 1px solid rgba(99, 102, 241, 0.3); }
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 12px 16px; z-index: 10; }
+        .logo { font-size: 13px; font-weight: 900; color: #818cf8; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
+        .balance { font-size: 13px; font-weight: 900; color: var(--text); background: rgba(79, 70, 229, 0.15); padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(79, 70, 229, 0.3); }
 
         .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
         .view.active { display: flex; }
 
-        /* OYUN ALANI */
+        /* OYUN MERKEZİ */
         .clicker-box {
             flex-grow: 1; background: var(--surface); border: 1px solid var(--border);
-            border-radius: 22px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative; overflow: hidden; text-align: center; padding: 20px;
         }
 
+        .rank-badge { font-size: 10px; font-weight: 800; color: var(--gold); background: rgba(245, 158, 11, 0.1); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+
         .core-btn {
-            width: 150px; height: 150px; border-radius: 50%;
-            background: radial-gradient(circle, #818cf8 0%, #4338ca 70%, #312e81 100%);
+            width: 160px; height: 160px; border-radius: 50%;
+            background: radial-gradient(circle, #6366f1 0%, #3730a3 70%, #1e1b4b 100%);
             display: flex; align-items: center; justify-content: center;
-            font-size: 60px; box-shadow: 0 0 50px var(--primary-glow);
-            cursor: pointer; transition: transform 0.08s ease, box-shadow 0.08s ease;
-            margin-bottom: 24px; border: 4px solid #a5b4fc; position: relative;
+            font-size: 64px; box-shadow: 0 0 60px var(--primary-glow);
+            cursor: pointer; transition: transform 0.06s cubic-bezier(0.3, 1.5, 0.5, 1), box-shadow 0.06s ease;
+            margin-bottom: 20px; border: 4px solid #818cf8; position: relative;
         }
-        .core-btn:active { transform: scale(0.90); box-shadow: 0 0 20px var(--primary-glow); }
+        .core-btn:active { transform: scale(0.88); box-shadow: 0 0 20px var(--primary-glow); }
 
         /* PARÇACIK EFEKTİ */
         .particle {
             position: absolute; font-size: 14px; font-weight: 900; color: var(--accent);
-            pointer-events: none; animation: particleAnim 0.7s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-            z-index: 100; text-shadow: 0 0 10px var(--accent-glow);
+            pointer-events: none; animation: particleAnim 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            z-index: 100; text-shadow: 0 0 12px var(--accent-glow);
         }
+        .particle.crit { color: var(--gold); font-size: 18px; text-shadow: 0 0 15px rgba(245, 158, 11, 0.8); }
         @keyframes particleAnim {
             0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--dx), var(--dy)) scale(1.3); opacity: 0; }
+            100% { transform: translate(var(--dx), var(--dy)) scale(1.4); opacity: 0; }
         }
 
         .progress-container { width: 100%; background: var(--bg); border-radius: 10px; height: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 6px; }
         .progress-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.2s; }
         .stats-text { font-size: 11px; color: var(--text-secondary); font-weight: 700; display: flex; justify-content: space-between; width: 100%; }
 
-        /* KARTLAR VE GÖREVLER */
-        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 14px; }
+        /* KARTLAR VE LİSTELER */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 14px; }
         .card-title { font-size: 11px; font-weight: 800; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-        .btn { background: var(--primary); color: #fff; border: none; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.15s; }
+        .btn { background: var(--primary); color: #fff; border: none; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.15s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); }
         .btn:active { transform: scale(0.98); }
-        .btn-ad { background: linear-gradient(135deg, var(--pink), var(--primary)); margin-top: 8px; box-shadow: 0 4px 20px rgba(236, 72, 153, 0.3); }
+        .btn-ad { background: linear-gradient(135deg, var(--pink), var(--primary)); margin-top: 8px; box-shadow: 0 4px 20px rgba(244, 63, 94, 0.3); }
 
-        .list-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 12px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 8px; font-size: 11px; }
+        .list-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 12px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 8px; font-size: 11px; }
 
         /* DOCK MENÜ */
-        .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; display: flex; justify-content: space-around; padding: 6px; z-index: 10; backdrop-filter: blur(10px); }
+        .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; display: flex; justify-content: space-around; padding: 6px; z-index: 10; backdrop-filter: blur(10px); }
         .dock-item { background: transparent; border: none; color: var(--text-secondary); border-radius: 14px; padding: 8px 10px; text-align: center; font-size: 8px; font-weight: 700; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: 0.2s; }
         .dock-item span:first-child { font-size: 18px; }
-        .dock-item.active { background: var(--bg); color: var(--primary); border: 1px solid var(--border); }
+        .dock-item.active { background: var(--bg); color: #818cf8; border: 1px solid var(--border); }
+
+        /* DAHİLİ SICAK BİLGİLENDİRME MODALI (POPUP) */
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 5, 8, 0.85); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: var(--surface); border: 1px solid var(--pink); border-radius: 24px;
+            padding: 24px; text-align: center; width: 100%; max-width: 320px;
+            box-shadow: 0 10px 40px rgba(244, 63, 94, 0.3); animation: modalPop 0.3s cubic-bezier(0.1, 1.2, 0.3, 1);
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
     </style>
 </head>
 <body>
 
+    <!-- Dinamik Arka Plan Efekti -->
+    <canvas id="bgCanvas"></canvas>
+
     <div class="app-container" id="appContainer">
         <!-- ÜST PANEL -->
         <div class="header">
-            <div class="logo">⚡ APEX ELITE</div>
+            <div class="logo">⚡ APEX S-TIER</div>
             <div class="balance">💎 <span id="skorDisplay">0.00</span> APEX</div>
         </div>
 
-        <!-- SEKME 1: KONSOL (OYUN & GÖRSEL EFEKTLER) -->
+        <!-- SEKME 1: KONSOL (OYUN) -->
         <div class="view active" data-view="konsol">
             <div class="clicker-box" id="clickArea">
-                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 14px; font-weight: 700;">Verimlilik: <span style="color:var(--accent);">+0.10 APEX / tık</span></div>
+                <div class="rank-badge" id="rankBadge">RÜTBE: NOVICE NODE</div>
+                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 700;">Verimlilik: <span style="color:var(--accent);">+<span id="gucDisplay">0.10</span> APEX / tık</span></div>
                 
                 <div class="core-btn" id="coreButton" onclick="coreTikla(event)">🌌</div>
 
                 <div style="width: 100%;">
-                    <div class="stats-text"><span>Çekirdek Soğutma</span> <span id="enerjiText">100 / 100</span></div>
+                    <div class="stats-text"><span>Çekirdek Kapasitesi</span> <span id="enerjiText">100 / 100</span></div>
                     <div class="progress-container">
                         <div class="progress-bar" id="enerjiBar"></div>
                     </div>
@@ -124,18 +153,18 @@
         <!-- SEKME 2: GÖREVLER & İSTEĞE BAĞLI BOOST -->
         <div class="view" data-view="gorevler">
             <div class="card" style="border-color: var(--pink);">
-                <div class="card-title" style="color: var(--pink);">🚀 İsteğe Bağlı Turbo Soğutma</div>
+                <div class="card-title" style="color: var(--pink);">🚀 Acil Soğutma ve Turbo Boost</div>
                 <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">
-                    Çekirdek kapasitesini anında doldurmak ve bonus +10.00 APEX kazanmak için isteğe bağlı reklam izleyebilirsiniz.
+                    Sistemi anında fullemek, aşırı yükü kaldırmak ve bonus +10.00 APEX kazanmak için destekleyici kısa videoyu izleyin.
                 </div>
-                <button class="btn btn-ad" onclick="reklamIzleBoostAl()">🎬 ÇEKİRDEĞİ FULLENDİR (+10 APEX)</button>
+                <button class="btn btn-ad" onclick="reklamIzleBoostAl()">🎬 SİSTEMİ SOĞUT VE +10 APEX KAZAN</button>
             </div>
 
             <div class="card">
-                <div class="card-title">Günlük Topluluk Görevleri</div>
+                <div class="card-title">Topluluk Görevleri</div>
                 <div class="list-row">
-                    <div><b>Kanal Duyurularını İncele</b><div style="font-size: 9px; color: var(--text-secondary);">Topluluk güncellemelerine göz at</div></div>
-                    <button class="btn" style="width: auto; padding: 6px 12px; font-size: 9px;" onclick="gorevTamamla(this)">Kontrol Et</button>
+                    <div><b>Kanal Doğrulaması</b><div style="font-size: 9px; color: var(--text-secondary);">Ağ bildirimlerini kontrol et</div></div>
+                    <button class="btn" style="width: auto; padding: 6px 12px; font-size: 9px;" onclick="gorevTamamla(this)">Ödülü Al</button>
                 </div>
             </div>
         </div>
@@ -144,19 +173,19 @@
         <div class="view" data-view="havuz">
             <div class="card" style="flex-grow: 1;">
                 <div class="card-title">📜 Şeffaf Ödül Havuzu</div>
-                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 10px;">AdsGram standartlarına uygun şeffaf dağıtım geçmişi:</div>
+                <div style="font-size: 10px; color: var(--text-secondary); margin-bottom: 10px;">AdsGram standartlarına tam uyumlu havuz geçmişi:</div>
                 
                 <div class="list-row">
-                    <div><b>Havuz Dağıtımı #88</b><div style="font-size: 9px; color: var(--text-secondary);">Durum: Tamamlandı (24,500 APEX)</div></div>
+                    <div><b>Havuz Dağıtımı #104</b><div style="font-size: 9px; color: var(--text-secondary);">Durum: Onaylandı (31,400 APEX)</div></div>
                     <span style="color: var(--accent);">Onaylı</span>
                 </div>
                 <div class="list-row">
-                    <div><b>Havuz Dağıtımı #87</b><div style="font-size: 9px; color: var(--text-secondary);">Durum: Tamamlandı (22,100 APEX)</div></div>
+                    <div><b>Havuz Dağıtımı #103</b><div style="font-size: 9px; color: var(--text-secondary);">Durum: Onaylandı (29,800 APEX)</div></div>
                     <span style="color: var(--accent);">Onaylı</span>
                 </div>
-                <div class="list-row" style="border-color: var(--primary); background: rgba(99, 102, 241, 0.05);">
-                    <div><b>Senin Cüzdan Bakiyen</b><div style="font-size: 9px; color: var(--text-secondary);" id="listeSkor">0.00 APEX</div></div>
-                    <span style="color: var(--primary);">Aktif</span>
+                <div class="list-row" style="border-color: var(--primary); background: rgba(79, 70, 229, 0.05);">
+                    <div><b>Senin Cüzdan Varlığın</b><div style="font-size: 9px; color: var(--text-secondary);" id="listeSkor">0.00 APEX</div></div>
+                    <span style="color: #818cf8;">Aktif</span>
                 </div>
             </div>
             <button class="btn" onclick="sekmeDegis('konsol')">← KONSOLA DÖN</button>
@@ -170,13 +199,76 @@
         </div>
     </div>
 
+    <!-- DAHA SICAK, UYGULAMA İÇİ BİLGİLENDİRME MODALI (ZORLUK & REKLAM YÖNLENDİRME) -->
+    <div class="modal-overlay" id="overloadModal">
+        <div class="modal-card">
+            <div style="font-size: 36px; margin-bottom: 10px;">⚠️</div>
+            <div style="font-size: 14px; font-weight: 900; color: var(--pink); margin-bottom: 6px;">SİSTEM AŞIRI YÜKLENDİ!</div>
+            <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px;">
+                Çekirdek ısı limiti aşıldı ve işlemci kilitlendi. Tıklamaya devam etmek için sistemi soğutmanız veya kısa bir optimizasyon reklamı izlemeniz gerekiyor.
+            </div>
+            <button class="btn btn-ad" style="margin-bottom: 8px;" onclick="reklamIzleBoostAl()">🎬 SİSTEMİ ACİL SOĞUT (+10 APEX)</button>
+            <button class="btn" style="background: transparent; border: 1px solid var(--border); color: var(--text-secondary);" onclick="modalKapat()">Bekle ve Soğumasını İzle</button>
+        </div>
+    </div>
+
     <script>
+        // --- 1. ARKAPLAN DİNAMİK CANVAS ANİMASYONU ---
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let particles = [];
+        for(let i=0; i<35; i++) {
+            particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 0.6,
+                vy: (Math.random() - 0.5) * 0.6,
+                radius: Math.random() * 2 + 1
+            });
+        }
+
+        function animateBg() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(79, 70, 229, 0.15)';
+            ctx.strokeStyle = 'rgba(79, 70, 229, 0.08)';
+
+            particles.forEach((p, index) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                for(let j = index + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+        // --- 2. OYUN MANTIĞI VE SES SİSTEMİ ---
         let skor = 0.00;
         let enerji = 100;
         const maxEnerji = 100;
-        const tiklamaGucu = 0.10;
+        let tiklamaGucu = 0.10;
 
-        // Gelişmiş Web Audio API Ses Sentezleyicisi
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function sesCal(tur) {
             if (audioCtx.state === 'suspended') { audioCtx.resume(); }
@@ -184,87 +276,105 @@
             let gain = audioCtx.createGain();
             osc.connect(gain);
             gain.connect(audioCtx.destination);
-
             let now = audioCtx.currentTime;
+
             if (tur === 'click') {
                 osc.type = 'sine';
-                osc.frequency.setValueAtTime(500, now);
-                osc.frequency.exponentialRampToValueAtTime(200, now + 0.06);
-                gain.gain.setValueAtTime(0.12, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
-                osc.start(now);
-                osc.stop(now + 0.06);
+                osc.frequency.setValueAtTime(550, now);
+                osc.frequency.exponentialRampToValueAtTime(220, now + 0.05);
+                gain.gain.setValueAtTime(0.1, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                osc.start(now); osc.stop(now + 0.05);
+            } else if (tur === 'crit') {
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(800, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.12);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                osc.start(now); osc.stop(now + 0.12);
             } else if (tur === 'success') {
                 osc.type = 'triangle';
-                osc.frequency.setValueAtTime(400, now);
-                osc.frequency.setValueAtTime(800, now + 0.1);
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(880, now + 0.15);
                 gain.gain.setValueAtTime(0.2, now);
                 gain.gain.exponentialRampToValueAtTime(0.001, now + 0.3);
-                osc.start(now);
-                osc.stop(now + 0.3);
+                osc.start(now); osc.stop(now + 0.3);
             } else if (tur === 'error') {
                 osc.type = 'sawtooth';
-                osc.frequency.setValueAtTime(150, now);
-                osc.frequency.setValueAtTime(100, now + 0.1);
-                gain.gain.setValueAtTime(0.15, now);
-                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.15);
-                osc.start(now);
-                osc.stop(now + 0.15);
+                osc.frequency.setValueAtTime(140, now);
+                gain.gain.setValueAtTime(0.12, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
+                osc.start(now); osc.stop(now + 0.12);
             }
         }
 
         function sekmeDegis(viewName) {
             document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
             document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
-
             document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
             event.currentTarget.classList.add('active');
             sesCal('click');
         }
 
         function coreTikla(event) {
-            if (enerji >= 1) {
-                skor += tiklamaGucu;
+            if (enerji >= 2) {
+                let isCrit = Math.random() < 0.15; // %15 şansla Kritik Vuruş
+                let kazan = isCrit ? tiklamaGucu * 2 : tiklamaGucu;
+                
+                skor += kazan;
                 skor = Math.round(skor * 100) / 100;
-                enerji -= 1;
+                enerji -= 2; // Zorluk artırıldı (daha hızlı tükenir)
+                
                 guncelleUI();
-                sesCal('click');
-                 olusturParcaciklar(event);
+                sesCal(isCrit ? 'crit' : 'click');
+                olusturParcaciklar(event, isCrit, kazan);
+
+                // Eğer enerji kritik seviyeye düştüyse zorluk modalını tetikle
+                if (enerji <= 0) {
+                    setTimeout(() => { modalAc(); }, 200);
+                }
             } else {
                 sesCal('error');
                 sarsintiEfekti();
+                modalAc();
             }
         }
 
-        // Çoklu Rastgele Parçacık Efekti
-        function olusturParcaciklar(event) {
+        function olusturParcaciklar(event, isCrit, miktar) {
             const container = document.getElementById('clickArea');
             const rect = container.getBoundingClientRect();
-            
             let x = event.clientX ? event.clientX - rect.left : rect.width / 2;
             let y = event.clientY ? event.clientY - rect.top : rect.height / 2;
 
-            for (let i = 0; i < 3; i++) {
-                const el = document.createElement('div');
-                el.className = 'particle';
-                el.innerText = `+${tiklamaGucu.toFixed(2)}`;
-                el.style.left = `${x}px`;
-                el.style.top = `${y}px`;
+            const el = document.createElement('div');
+            el.className = isCrit ? 'particle crit' : 'particle';
+            el.innerText = isCrit ? `CRIT! +${miktar.toFixed(2)}` : `+${miktar.toFixed(2)}`;
+            el.style.left = `${x}px`;
+            el.style.top = `${y}px`;
 
-                let dx = (Math.random() - 0.5) * 80;
-                let dy = -40 - Math.random() * 60;
-                el.style.setProperty('--dx', `${dx}px`);
-                el.style.setProperty('--dy', `${dy}px`);
+            let dx = (Math.random() - 0.5) * 90;
+            let dy = -50 - Math.random() * 50;
+            el.style.setProperty('--dx', `${dx}px`);
+            el.style.setProperty('--dy', `${dy}px`);
 
-                container.appendChild(el);
-                setTimeout(() => { el.remove(); }, 700);
-            }
+            container.appendChild(el);
+            setTimeout(() => { el.remove(); }, 800);
         }
 
         function sarsintiEfekti() {
             const app = document.getElementById('appContainer');
             app.classList.add('shake-anim');
-            setTimeout(() => { app.classList.remove('shake-anim'); }, 300);
+            setTimeout(() => { app.classList.remove('shake-anim'); }, 250);
+        }
+
+        function modalAc() {
+            document.getElementById('overloadModal').classList.add('active');
+            sesCal('error');
+        }
+
+        function modalKapat() {
+            document.getElementById('overloadModal').classList.remove('active');
+            sesCal('click');
         }
 
         function guncelleUI() {
@@ -273,6 +383,12 @@
             document.getElementById("enerjiText").innerText = enerji + " / " + maxEnerji;
             let yuzde = (enerji / maxEnerji) * 100;
             document.getElementById("enerjiBar").style.width = yuzde + "%";
+
+            // Rütbe Güncelleme Mantığı
+            let badge = document.getElementById("rankBadge");
+            if (skor > 100) { badge.innerText = "RÜTBE: APEX LEGEND"; badge.style.color = "#f43f5e"; }
+            else if (skor > 30) { badge.innerText = "RÜTBE: MASTER GRID"; badge.style.color = "#10b981"; }
+            else { badge.innerText = "RÜTBE: NOVICE NODE"; badge.style.color = "#f59e0b"; }
         }
 
         function gorevTamamla(btn) {
@@ -283,11 +399,9 @@
             sesCal('success');
         }
 
-        // Otomatik Soğuma ve Pasif Gelir (Saniyede +0.01 APEX)
+        // Otomatik Soğuma & Pasif Gelir Döngüsü
         setInterval(() => {
-            if (enerji < maxEnerji) {
-                enerji = Math.min(maxEnerji, enerji + 2);
-            }
+            if (enerji < maxEnerji) { enerji = Math.min(maxEnerji, enerji + 1); }
             skor += 0.01;
             skor = Math.round(skor * 100) / 100;
             guncelleUI();
@@ -300,18 +414,19 @@
                     skor += 10.00;
                     enerji = maxEnerji;
                     guncelleUI();
+                    modalKapat();
                     sesCal('success');
-                    alert("Turbo aktif: +10.00 APEX yüklendi ve çekirdek soğutuldu.");
                 }).catch((result) => {
-                    alert("Reklam tamamlanamadı.");
+                    // Kullanıcı reklamı kapatsa bile oyunda akışın bozulmaması için yumuşak hata yönetimi
+                    modalKapat();
                 });
             } else {
                 // Tarayıcı Test Simülasyonu
                 skor += 10.00;
                 enerji = maxEnerji;
                 guncelleUI();
+                modalKapat();
                 sesCal('success');
-                alert("AdsGram SDK simüle edildi: Çekirdek soğutuldu ve +10.00 APEX eklendi!");
             }
         }
 
