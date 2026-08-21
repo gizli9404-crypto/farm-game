@@ -2,78 +2,237 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <title>Basit Çiftlik Oyunu</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber-Agro Farm</title>
     <style>
-        body { background: #1b2838; color: white; font-family: Arial, sans-serif; text-align: center; padding-top: 50px; }
-        .kutu { background: #2a3f5f; width: 350px; margin: 0 auto; padding: 20px; border-radius: 10px; border: 2px solid #4a6984; }
-        .tarla { background: #795548; padding: 25px; margin: 15px 0; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: bold; }
-        .tarla:hover { opacity: 0.9; }
-        button { background: #27ae60; color: white; border: none; padding: 10px 15px; font-size: 16px; border-radius: 5px; cursor: pointer; width: 100%; margin-top: 5px; }
-        button:hover { background: #2ecc71; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: #121c24;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .app-container {
+            width: 100%;
+            max-width: 420px;
+            height: 100%;
+            max-height: 750px;
+            background: #2b3e50;
+            border: 3px solid #4a6b82;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
+        }
+
+        /* 1. ÜST BİLGİ ÇUBUĞU (HUD) */
+        .hud {
+            background: #1a2733;
+            border: 2px solid #52799e;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .profile { display: flex; align-items: center; gap: 8px; }
+        .avatar { width: 30px; height: 30px; background: #e67e22; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; }
+        .username { font-size: 12px; font-weight: bold; color: #f1c40f; }
+        .lvl { font-size: 10px; color: #bdc3c7; }
+        .resources { display: flex; gap: 10px; font-size: 13px; font-weight: bold; }
+        .res-box { background: #243442; padding: 4px 8px; border-radius: 6px; border: 1px solid #3d5a73; }
+
+        /* 2. ORTA OYUN ALANI (GRID) */
+        .game-grid-area {
+            background: #1e824c;
+            border: 2px dashed #2ecc71;
+            border-radius: 8px;
+            padding: 12px;
+            flex-grow: 1;
+            margin: 10px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .grid-header { display: flex; justify-content: space-between; align-items: center; font-size: 13px; font-weight: bold; }
+        .action-mini-btns { display: flex; gap: 5px; }
+        .mini-btn { background: #d35400; border: none; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold; }
+        
+        .plots {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-top: 10px;
+        }
+        .plot {
+            background: #795548;
+            border: 2px solid #5d4037;
+            border-radius: 6px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 12px;
+            min-height: 70px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .plot.ready { border-color: #2ecc71; background: #4e342e; }
+        
+        .adsgram-reward-box {
+            background: #243442;
+            border: 1px solid #f39c12;
+            padding: 8px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 11px;
+            cursor: pointer;
+            margin-top: 8px;
+        }
+        .adsgram-reward-box:hover { background: #2c3e50; }
+
+        /* 3. ALT NAVİGASYON (DOCK) */
+        .dock {
+            background: #1a2733;
+            border: 2px solid #52799e;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-around;
+            padding: 8px;
+        }
+        .dock-item {
+            background: #243442;
+            border: 1px solid #3d5a73;
+            color: #bdc3c7;
+            border-radius: 6px;
+            padding: 6px 10px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+            margin: 0 3px;
+        }
+        .dock-item.active { background: #27ae60; color: white; border-color: #2ecc71; }
+        
+        .status-msg { font-size: 11px; color: #f1c40f; text-align: center; min-height: 15px; }
     </style>
 </head>
 <body>
 
-    <div class="kutu">
-        <h2>🌾 Çiftlik Paneli</h2>
-        <p>💰 Altın: <span id="altin">1000</span> | 📦 Depo: <span id="depo">0</span></p>
-        
-        <div class="tarla" id="tarlaDiv" onclick="tiklaIslem()">
-            🌱 Boş Toprak (Ek)
+    <div class="app-container">
+        <!-- 1. ÜST BİLGİ ÇUBUĞU (HUD) -->
+        <div class="hud">
+            <div class="profile">
+                <div class="avatar">👨‍🌾</div>
+                <div>
+                    <div class="username">ÇİFTÇİ_ALİ</div>
+                    <div class="lvl">LVL 5</div>
+                </div>
+            </div>
+            <div class="resources">
+                <div class="res-box">🪙 <span id="altin">15850</span></div>
+                <div class="res-box">💎 <span id="elmas">320</span></div>
+            </div>
         </div>
 
-        <button onclick="pazardaSat()">Pazarda Sat (+100 Altın)</button>
-        <p id="bilgi" style="font-size: 14px; color: #bdc3c7; margin-top: 15px;">Tarlaya tıklayarak tohum ekebilirsin.</p>
+        <!-- 2. ORTA OYUN ALANI (GRID) -->
+        <div class="game-grid-area">
+            <div class="grid-header">
+                <span>🌾 TARLA ALANI</span>
+                <div class="action-mini-btns">
+                    <button class="mini-btn" onclick="alert('İnşa Menüsü')">🔨 İNŞA</button>
+                    <button class="mini-btn" onclick="pazariAc()">🛒 PAZAR</button>
+                </div>
+            </div>
+
+            <div class="plots">
+                <div class="plot" id="p0" onclick="tarlayaTikla(0)">
+                    <span>🌱</span>
+                    <span id="p0-text">Boş Toprak</span>
+                </div>
+                <div class="plot" id="p1" onclick="tarlayaTikla(1)">
+                    <span>🌱</span>
+                    <span id="p1-text">Boş Toprak</span>
+                </div>
+            </div>
+
+            <div class="status-msg" id="bilgiMesaji">Tohum ekmek için tarlaya dokun.</div>
+
+            <!-- AdsGram Uyumlu Ödüllü Reklam Alanı (Kural 9'a uygun dengeli kazanç) -->
+            <div class="adsgram-reward-box" onclick="reklamIzleOdulAl()">
+                📺 Reklam İzle & Enerji/Altın Kazan (+50 Altın)
+            </div>
+        </div>
+
+        <!-- 3. ALT NAVİGASYON (DOCK) -->
+        <div class="dock">
+            <div class="dock-item active">🌿 TARLA</div>
+            <div class="dock-item" onclick="pazariAc()">🛒 PAZAR</div>
+            <div class="dock-item" onclick="alert('Ahır sistemi aktif')">🐄 AHIR</div>
+            <div class="dock-item" onclick="alert('Sosyal paneli')">👥 SOSYAL</div>
+        </div>
     </div>
 
     <script>
-        let altin = 1000;
-        let depo = 0;
-        let durum = "bos"; // bos, buyuyor, hazir
+        let altin = 15850;
+        let parselDurumu = ["bos", "bos"]; // bos, buyuyor, hazir
 
-        function tiklaIslem() {
-            let tarlaDiv = document.getElementById("tarlaDiv");
-            let bilgi = document.getElementById("bilgi");
-
-            if (durum === "bos") {
-                durum = "buyuyor";
-                tarlaDiv.style.background = "#e67e22";
-                tarlaDiv.innerHTML = "⏳ Bitki Büyüyor...";
-                bilgi.innerText = "Tohum ekildi, 3 saniye bekleniyor...";
-
-                setTimeout(() => {
-                    durum = "hazir";
-                    tarlaDiv.style.background = "#27ae60";
-                    tarlaDiv.innerHTML = "🌽 Hasat Zamanı! (Tıkla)";
-                    bilgi.innerText = "Ürün olgunlaştı! Şimdi hasat etmek için tarlaya tıkla.";
-                }, 3000);
-
-            } else if (durum === "hazir") {
-                durum = "bos";
-                depo += 1;
-                tarlaDiv.style.background = "#795548";
-                tarlaDiv.innerHTML = "🌱 Boş Toprak (Ek)";
-                bilgi.innerText = "Ürün depoya eklendi! Pazarda satabilirsin.";
-                
-                document.getElementById("depo").innerText = depo;
-            } else if (durum === "buyuyor") {
-                bilgi.innerText = "⚠ Bitki henüz büyümedi, lütfen bekle!";
+        function guncelle() {
+            document.getElementById("altin").innerText = altin;
+            for(let i=0; i<2; i++) {
+                let pText = document.getElementById(`p${i}-text`);
+                let pDiv = document.getElementById(`p${i}`);
+                if(parselDurumu[i] === "bos") {
+                    pText.innerText = "Boş Toprak";
+                    pDiv.className = "plot";
+                } else if(parselDurumu[i] === "buyuyor") {
+                    pText.innerText = "Büyüyor... ⏳";
+                    pDiv.className = "plot";
+                } else if(parselDurumu[i] === "hazir") {
+                    pText.innerText = "Hasat Zamanı! 🌽";
+                    pDiv.className = "plot ready";
+                }
             }
         }
 
-        function pazardaSat() {
-            if (depo > 0) {
-                let kazan = depo * 100;
-                altin += kazan;
-                document.getElementById("altin").innerText = altin;
-                depo = 0;
-                document.getElementById("depo").innerText = depo;
-                document.getElementById("bilgi").innerText = `🎉 ${kazan} altın kazandın!`;
+        function tarlayaTikla(i) {
+            let mesaj = document.getElementById("bilgiMesaji");
+            if(parselDurumu[i] === "bos") {
+                parselDurumu[i] = "buyuyor";
+                mesaj.innerText = "Tohum ekildi, robot sulama yapıyor...";
+                guncelle();
+                setTimeout(() => {
+                    parselDurumu[i] = "hazir";
+                    mesaj.innerText = "Ürün olgunlaştı, toplamak için tıkla!";
+                    guncelle();
+                }, 3000);
+            } else if(parselDurumu[i] === "hazir") {
+                parselDurumu[i] = "bos";
+                altin += 100;
+                mesaj.innerText = "Hasat yapıldı! +100 Altın kazandın.";
+                guncelle();
             } else {
-                document.getElementById("bilgi").innerText = "⚠ Satılacak ürünün yok, önce hasat yap!";
+                mesaj.innerText = "Bitki henüz büyüme aşamasında!";
             }
+        }
+
+        function pazariAc() {
+            alert("🛒 Pazar Paneli: Ürünlerini burada altına dönüştürebilirsin.");
+        }
+
+        function reklamIzleOdulAl() {
+            // AdsGram entegrasyon mantığı (Simüle edilmiş)
+            altin += 50;
+            document.getElementById("bilgiMesaji").innerText = "🎁 Reklam ödülü başarıyla eklendi: +50 Altın!";
+            guncelle();
         }
     </script>
-
 </body>
 </html>
