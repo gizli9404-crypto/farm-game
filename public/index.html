@@ -3,23 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stellar Farm: Quantum Singularity</title>
+    <title>Crypto-Rig Tycoon: Terminal Edition</title>
     <style>
         :root {
-            --bg-deep: #010206;
-            --surface: #070e1a;
-            --surface-glass: rgba(7, 14, 26, 0.96);
-            --border: rgba(255, 255, 255, 0.08);
-            --accent-green: #10b981;
-            --accent-gold: #f59e0b;
-            --accent-blue: #38bdf8;
-            --accent-purple: #a78bfa;
-            --accent-cyan: #22d3ee;
+            --bg-deep: #050508;
+            --surface: #0a0e17;
+            --surface-glass: rgba(10, 14, 23, 0.95);
+            --border: rgba(34, 211, 238, 0.2);
+            --neon-green: #10b981;
+            --neon-cyan: #22d3ee;
+            --neon-orange: #f97316;
+            --neon-purple: #c084fc;
+            --neon-pink: #f43f5e;
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --text-muted: #64748b;
         }
 
-        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; }
+        * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Fira Code', monospace, sans-serif; }
 
         body {
             background-color: var(--bg-deep);
@@ -36,43 +36,28 @@
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: linear-gradient(180deg, #070e1a 0%, #010206 100%);
+            background: linear-gradient(180deg, #0a0e17 0%, #030712 100%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 80px rgba(0,0,0,0.98);
+            border: 1px solid var(--border);
+            box-shadow: 0 0 50px rgba(34, 211, 238, 0.15);
         }
 
-        /* Uçan Değer Efekti */
-        .float-number {
-            position: absolute;
-            font-size: 13px;
-            font-weight: 900;
-            color: var(--accent-cyan);
-            pointer-events: none;
-            animation: floatUpAnim 0.8s ease-out forwards;
-            z-index: 600;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.9);
-        }
-        @keyframes floatUpAnim {
-            0% { transform: translateY(0) scale(0.8); opacity: 1; }
-            100% { transform: translateY(-60px) scale(1.35); opacity: 0; }
-        }
-
-        /* Toast Bildirim */
         #toast {
             position: absolute;
-            top: 85px;
+            top: 75px;
             left: 50%;
             transform: translateX(-50%) translateY(-20px);
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-            color: #000;
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: 800;
-            box-shadow: 0 8px 20px rgba(34, 211, 238, 0.4);
+            background: rgba(34, 211, 238, 0.15);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(34, 211, 238, 0.2);
             opacity: 0;
             transition: all 0.3s ease;
             z-index: 1000;
@@ -81,146 +66,123 @@
         }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Üst HUD */
         .hud-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 10px 16px;
+            padding: 10px 14px;
             background: var(--surface-glass);
-            backdrop-filter: blur(14px);
             border-bottom: 1px solid var(--border);
             z-index: 10;
         }
         .hud-stat {
             display: flex;
             align-items: center;
-            gap: 5px;
-            background: rgba(0,0,0,0.6);
-            padding: 4px 10px;
-            border-radius: 10px;
+            gap: 4px;
+            background: rgba(0,0,0,0.5);
+            padding: 4px 8px;
+            border-radius: 6px;
             border: 1px solid var(--border);
-            font-size: 11px;
-            font-weight: 800;
-        }
-        .hud-stat.gold { color: var(--accent-gold); }
-
-        /* Bilgi Bantları */
-        .banner-container {
-            display: flex;
-            flex-direction: column;
-            z-index: 9;
-        }
-        .market-ticker {
-            background: rgba(245, 158, 11, 0.1);
-            border-bottom: 1px solid rgba(245, 158, 11, 0.2);
-            color: var(--accent-gold);
             font-size: 10px;
-            font-weight: 800;
-            padding: 5px 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-weight: 700;
         }
+        .hud-stat.cash { color: var(--neon-green); }
+        .hud-stat.crypto { color: var(--neon-orange); }
 
-        /* İçerik Alanı */
         .content-area {
             flex-grow: 1;
             overflow-y: auto;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-        .tab-pane { display: none; flex-direction: column; gap: 12px; }
-        .tab-pane.active { display: flex; }
-
-        /* Paneller */
-        .panel {
-            background: var(--surface-glass);
-            backdrop-filter: blur(14px);
-            border: 1px solid var(--border);
-            border-radius: 18px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .panel-title {
-            font-size: 11px;
-            font-weight: 800;
-            text-transform: uppercase;
-            color: var(--text-muted);
-            letter-spacing: 0.8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        /* Tarla Izgarası */
-        .plots-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-        .plot-box {
-            background: linear-gradient(145deg, #0f172a, #040812);
-            border: 2px solid #1e293b;
-            border-radius: 16px;
             padding: 12px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-            gap: 6px;
-            min-height: 135px;
+            gap: 12px;
+        }
+        .tab-pane { display: none; flex-direction: column; gap: 10px; }
+        .tab-pane.active { display: flex; }
+
+        .panel {
+            background: var(--surface-glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .panel-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--neon-cyan);
+            letter-spacing: 1px;
+            display: flex;
             justify-content: space-between;
-            position: relative;
-        }
-        .plot-box.ready {
-            border-color: var(--accent-cyan);
-            background: linear-gradient(145deg, rgba(34, 211, 238, 0.15), #040812);
-            box-shadow: 0 0 20px rgba(34, 211, 238, 0.3);
+            align-items: center;
         }
 
-        .progress-track { width: 100%; height: 5px; background: rgba(0,0,0,0.5); border-radius: 3px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--accent-cyan); width: 0%; transition: width 0.1s linear; }
-
-        /* Butonlar */
         .btn {
-            background: linear-gradient(135deg, var(--accent-cyan), #0284c7);
-            color: #000;
-            border: none;
+            background: rgba(34, 211, 238, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid var(--neon-cyan);
             padding: 8px 12px;
-            border-radius: 10px;
-            font-weight: 800;
+            border-radius: 6px;
+            font-weight: 700;
             font-size: 10px;
             cursor: pointer;
             width: 100%;
-            box-shadow: 0 4px 12px rgba(34, 211, 238, 0.3);
-            transition: transform 0.1s;
+            transition: 0.2s;
         }
-        .btn:active { transform: scale(0.95); }
-        .btn.gold { background: linear-gradient(135deg, var(--accent-gold), #d97706); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3); }
-        .btn.purple { background: linear-gradient(135deg, var(--accent-purple), #7c3aed); color: #fff; box-shadow: 0 4px 12px rgba(167, 139, 250, 0.3); }
-        .btn.locked { background: #334155; color: #64748b; box-shadow: none; cursor: not-allowed; }
+        .btn:active { background: rgba(34, 211, 238, 0.3); transform: scale(0.98); }
+        .btn.orange { background: rgba(249, 115, 22, 0.1); color: var(--neon-orange); border-color: var(--neon-orange); }
+        .btn.purple { background: rgba(192, 132, 252, 0.1); color: var(--neon-purple); border-color: var(--neon-purple); }
+        .btn.locked { background: #1e293b; color: var(--text-muted); border-color: #334155; cursor: not-allowed; }
 
-        /* Satır Öğeleri */
         .row-item {
-            background: rgba(255,255,255,0.03);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 10px 12px;
+            background: rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 8px 10px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
         }
 
-        /* Alt Dock Navigasyon */
+        /* Terminal Ekranı */
+        #terminal-box {
+            background: #020408;
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            padding: 8px;
+            height: 160px;
+            overflow-y: auto;
+            font-size: 9px;
+            color: var(--neon-green);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .terminal-input-row {
+            display: flex;
+            gap: 6px;
+        }
+        .terminal-input {
+            flex-grow: 1;
+            background: #030712;
+            border: 1px solid var(--border);
+            color: #fff;
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            outline: none;
+        }
+
         .nav-dock {
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             background: var(--surface-glass);
-            backdrop-filter: blur(15px);
             border-top: 1px solid var(--border);
-            padding: 6px;
+            padding: 4px;
             z-index: 10;
         }
         .nav-item {
@@ -231,151 +193,125 @@
             flex-direction: column;
             align-items: center;
             gap: 2px;
-            font-size: 9px;
+            font-size: 8px;
             font-weight: 700;
             padding: 6px 0;
             cursor: pointer;
-            border-radius: 10px;
+            border-radius: 6px;
             transition: 0.2s;
         }
         .nav-item.active {
-            color: #fff;
-            background: rgba(34, 211, 238, 0.2);
-            border: 1px solid rgba(34, 211, 238, 0.3);
+            color: var(--neon-cyan);
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid var(--border);
         }
-        .nav-icon { font-size: 15px; }
+        .nav-icon { font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div id="game-viewport">
-        <div id="toast">Bildirim mesajı</div>
+        <div id="toast">SYSTEM INITIALIZED</div>
 
         <!-- Üst HUD -->
         <div class="hud-header">
-            <div class="hud-stat gold"><span>🪙</span> <span id="ui-gold">3000</span></div>
-            <div class="hud-stat" style="color:var(--accent-cyan);"><span>📦</span> <span id="ui-inv">0/120</span></div>
-            <div class="hud-stat" style="color:var(--accent-purple);"><span>⭐</span> <span id="ui-xp">0 XP (Lvl 1)</span></div>
+            <div class="hud-stat cash"><span>💵</span> <span id="ui-cash">2500₺</span></div>
+            <div class="hud-stat crypto"><span>🪙</span> <span id="ui-xmr">0.00 XMR</span></div>
+            <div class="hud-stat" style="color:var(--neon-purple);"><span>⚡</span> <span id="ui-hash">0 MH/s</span></div>
+            <div class="hud-stat" style="color:var(--neon-pink);"><span>🌡️</span> <span id="ui-temp">35°C</span></div>
         </div>
 
-        <!-- Piyasa Bandı -->
-        <div class="banner-container">
-            <div class="market-ticker">
-                <span id="ticker-text">📈 Kuantum Borsa: Stabil (1.0x)</span>
-                <span id="ticker-timer">00:45</span>
-            </div>
-        </div>
-
-        <!-- Ana Sekmeler -->
+        <!-- Ana Alan -->
         <div class="content-area">
 
-            <!-- 1. TARLA -->
-            <div id="pane-farm" class="tab-pane active">
+            <!-- 1. MADENCİLİK & RIGLER -->
+            <div id="pane-rigs" class="tab-pane active">
                 <div class="panel">
-                    <div class="panel-title">
-                        <span>Kuantum Parselleri</span>
-                        <select id="seed-select" style="background:#1e293b; color:#fff; border:1px solid var(--border); padding:4px 8px; border-radius:8px; font-size:10px; font-weight:700;">
-                            <option value="0">🌾 Kuantum Buğday (30🪙)</option>
-                            <option value="1">🌽 Nükleer Mısır (75🪙)</option>
-                            <option value="2">🍓 Plazma Çilek (160🪙)</option>
-                            <option value="3">🎃 Karanlık Madde Kabağı (350🪙)</option>
-                        </select>
-                    </div>
-                    <div class="plots-grid" id="plots-container"></div>
-                </div>
-
-                <div class="panel">
-                    <div class="panel-title">Otomasyon & Drone Filosu</div>
+                    <div class="panel-title"><span>Donanım & GPU Rig</span> <span id="ui-rig-count">0 Rig Aktif</span></div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🛸 Yapay Zeka Hasat Dronu</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Hazır tarlaları anında toplar</div>
+                            <div style="font-weight: 700; font-size: 10px;">ASUS RX 470 4GB (Modlu)</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">+15 MH/s | +65W Güç</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 12px;" onclick="toggleAutoHarvester()" id="auto-harvester-btn">Aktifleştir (750🪙)</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 2. FABRİKA & LABORATUVAR -->
-            <div id="pane-factory" class="tab-pane">
-                <div class="panel">
-                    <div class="panel-title">Klonlama ve Sentez Üniteleri</div>
-                    <div class="row-item">
-                        <div>
-                            <div style="font-weight: 800; font-size: 11px;">🧬 Sentetik Protein İneği</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Verim: 1x Kuantum Süt 🥛</div>
-                        </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectItem('milk')">Sentezle</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="buyRig('rx470')">Satın Al (1200₺)</button>
                     </div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">⚡ Fotovoltaik Kümes</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Verim: 1x Enerji Yumurtası 🥚</div>
+                            <div style="font-weight: 700; font-size: 10px;">ASUS RX 590 8GB</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">+30 MH/s | +120W Güç</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="collectItem('egg')">Topla</button>
+                        <button class="btn orange" style="width: auto; padding: 6px 10px;" onclick="buyRig('rx590')">Satın Al (3500₺)</button>
                     </div>
                 </div>
 
                 <div class="panel">
-                    <div class="panel-title">Moleküler İşleme Tesisi</div>
+                    <div class="panel-title">Soğutma ve Optimizasyon</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🍞 Kuantum Fırın</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">1x Buğday -> 1x Lazer Ekmek</div>
+                            <div style="font-weight: 700; font-size: 10px;">Sunucu Fan Desteği</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Sıcaklık artışını %20 yavaşlatır</div>
                         </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processProduct('bread')">Dönüştür</button>
-                    </div>
-                    <div class="row-item">
-                        <div>
-                            <div style="font-weight: 800; font-size: 11px;">🧀 Nanoteknoloji Mandıra</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">1x Süt -> 1x Kristal Peynir</div>
-                        </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="processProduct('cheese')">İşle</button>
+                        <button class="btn purple" style="width: auto; padding: 6px 10px;" onclick="buyUpgrade('fans')">Yükselt (800₺)</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. BORSA -->
+            <!-- 2. TERMINAL (HACK & CLI) -->
+            <div id="pane-terminal" class="tab-pane">
+                <div class="panel">
+                    <div class="panel-title">Linux CLI / Kali Terminal</div>
+                    <div id="terminal-box">
+                        <div>[SYS] Crypto-Rig OS v2.6.4 yüklendi.</div>
+                        <div>[SYS] Komut satırı aktif. Yardım için 'help' yazın.</div>
+                    </div>
+                    <div class="terminal-input-row">
+                        <input type="text" id="terminal-input" class="terminal-input" placeholder="Komut yazın (örn: help)..." onkeydown="handleTerminalInput(event)">
+                        <button class="btn" style="width: 70px;" onclick="executeCommand()">Çalıştır</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 3. BORSA & PİYASA -->
             <div id="pane-market" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Galaktik Ticaret Borsası</div>
+                    <div class="panel-title">Kripto Borsası (P2P / DEX)</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;" id="market-stock-info">Depo Envanteri (0)</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Anlık galaktik kur üzerinden nakite çevir</div>
+                            <div style="font-weight: 700; font-size: 10px;" id="ui-market-rate">Monero (XMR) Kuru: 4500₺</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Kazılan kriptoları anında bozdur</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 14px;" onclick="sellAllAssets()">Hepsini Sat 💰</button>
+                        <button class="btn orange" style="width: auto; padding: 6px 10px;" onclick="sellAllCrypto()">Hepsini Sat 💸</button>
                     </div>
                 </div>
                 <div class="panel">
-                    <div class="panel-title">Genişleme Lisansları</div>
+                    <div class="panel-title">Otomasyon Botları</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🛰️ Yeni Sektör Parseli</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Tarla kapasitesini artırır</div>
+                            <div style="font-weight: 700; font-size: 10px;">Python Auto-Sell Bot</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Her 10 saniyede bir otomatik bakiye çevirir</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="unlockNewPlot()">1600 🪙</button>
+                        <button class="btn purple" style="width: auto; padding: 6px 10px;" onclick="buyBot()" id="bot-btn">Aktifleştir (2000₺)</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. ARAŞTIRMA (PERKS) -->
-            <div id="pane-perks" class="tab-pane">
+            <!-- 4. GÖREVLER & SCRIPT -->
+            <div id="pane-quests" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Kuantum Ar-Ge Laboratuvarı</div>
+                    <div class="panel-title">Script Görevleri</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">🚀 Zaman Büken Büyüme</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Tüm hasat sürelerini %20 kısaltır</div>
+                            <div style="font-weight: 700; font-size: 10px;">IDDAA / Bahis Botu Yazılımı</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Maç tahmin scripti çalıştır (Ödül: 1500₺)</div>
                         </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="buyPerk('speed')" id="perk-speed-btn">Araştır (500 XP)</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="completeQuest('betting', 1500, this)">Çalıştır</button>
                     </div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">💎 Galaktik Monopol</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Borsa satışlarında kalıcı +%25 kazanç</div>
+                            <div style="font-weight: 700; font-size: 10px;">Telegram Mini-App Bot Tasarımı</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">UI arayüz simülasyonu (Ödül: 3000₺)</div>
                         </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="buyPerk('market')" id="perk-market-btn">Araştır (650 XP)</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="completeQuest('telegram', 3000, this)">Çalıştır</button>
                     </div>
                 </div>
             </div>
@@ -383,140 +319,40 @@
             <!-- 5. AYARLAR -->
             <div id="pane-settings" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Sistem Yapılandırması</div>
+                    <div class="panel-title">Sistem Bakımı</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;">Ses Efektleri (SFX)</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Web Audio sinyal tetikleyici</div>
+                            <div style="font-weight: 700; font-size: 10px;">Sistemi Sıfırla</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Tüm donanım ve kasayı temizler</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 12px;" onclick="toggleAudio()" id="sfx-btn">Açık 🔊</button>
-                    </div>
-                    <div class="row-item">
-                        <div>
-                            <div style="font-weight: 800; font-size: 11px;">Veri Sıfırlama</div>
-                            <div style="font-size: 9px; color: var(--text-muted);">Tüm ilerlemeyi sıfırlar</div>
-                        </div>
-                        <button class="btn" style="width: auto; padding: 6px 12px;" onclick="hardReset()">Sıfırla</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px; color:var(--neon-pink); border-color:var(--neon-pink);" onclick="hardReset()">Hard Reset</button>
                     </div>
                 </div>
             </div>
 
         </div>
 
-        <!-- Alt Dock Navigasyon -->
+        <!-- Alt Navigasyon Dock -->
         <div class="nav-dock">
-            <button class="nav-item active" onclick="switchTab('farm', this)"><span class="nav-icon">🌾</span><span>Parsel</span></button>
-            <button class="nav-item" onclick="switchTab('factory', this)"><span class="nav-icon">🧬</span><span>Laboratuvar</span></button>
+            <button class="nav-item active" onclick="switchTab('rigs', this)"><span class="nav-icon">🖥️</span><span>Rigler</span></button>
+            <button class="nav-item" onclick="switchTab('terminal', this)"><span class="nav-icon">💻</span><span>Terminal</span></button>
             <button class="nav-item" onclick="switchTab('market', this)"><span class="nav-icon">📈</span><span>Borsa</span></button>
-            <button class="nav-item" onclick="switchTab('perks', this)"><span class="nav-icon">🚀</span><span>Ar-Ge</span></button>
+            <button class="nav-item" onclick="switchTab('quests', this)"><span class="nav-icon">📜</span><span>Script</span></button>
             <button class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayar</span></button>
         </div>
     </div>
 
     <script>
-        let audioActive = true;
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        function playSfx(type) {
-            if (!audioActive) return;
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            let osc = audioCtx.createOscillator();
-            let gain = audioCtx.createGain();
-            osc.connect(gain);
-            gain.connect(audioCtx.destination);
-
-            if (type === 'click') {
-                osc.frequency.setValueAtTime(600, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(900, audioCtx.currentTime + 0.06);
-                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.06);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.06);
-            } else if (type === 'success') {
-                osc.frequency.setValueAtTime(800, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(1600, audioCtx.currentTime + 0.1);
-                gain.gain.setValueAtTime(0.06, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.15);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.15);
-            }
-        }
-
-        function toggleAudio() {
-            audioActive = !audioActive;
-            document.getElementById('sfx-btn').innerText = audioActive ? "Açık 🔊" : "Kapalı 🔇";
-            showToast(audioActive ? "Sesler açıldı" : "Sesler kapatıldı");
-        }
-
-        function spawnFloatText(text, x, y) {
-            let el = document.createElement('div');
-            el.className = 'float-number';
-            el.innerText = text;
-            el.style.left = `${x || 200}px`;
-            el.style.top = `${y || 300}px`;
-            document.getElementById('game-viewport').appendChild(el);
-            setTimeout(() => el.remove(), 800);
-        }
-
         let game = {
-            gold: 3000,
-            xp: 0,
-            level: 1,
-            maxInv: 120,
-            activePlots: 4,
-            marketMultiplier: 1.0,
-            marketTimeLeft: 45,
-            autoHarvesterActive: false,
-            perks: { speedUnlocked: false, marketBonus: false },
-            inventory: { wheat: 0, corn: 0, strawberry: 0, pumpkin: 0, milk: 0, egg: 0, bread: 0, cheese: 0 },
-            plots: Array.from({length: 8}, () => ({ status: 'empty', progress: 0, seed: null })),
-            lastSavedTime: Date.now()
+            cash: 2500,
+            xmr: 0,
+            hashrate: 0,
+            temp: 35,
+            rigs: { rx470: 0, rx590: 0 },
+            upgrades: { fans: 0 },
+            autoBot: false,
+            xmrRate: 4500
         };
-
-        const seedList = [
-            { name: 'Kuantum Buğday', cost: 30, basePrice: 80, xp: 22, time: 2.5, icon: '🌾', key: 'wheat' },
-            { name: 'Nükleer Mısır', cost: 75, basePrice: 190, xp: 48, time: 5, icon: '🌽', key: 'corn' },
-            { name: 'Plazma Çilek', cost: 160, basePrice: 440, xp: 105, time: 8, icon: '🍓', key: 'strawberry' },
-            { name: 'Karanlık Madde Kabağı', cost: 350, basePrice: 980, xp: 240, time: 14, icon: '🎃', key: 'pumpkin' }
-        ];
-
-        // Piyasa Zamanlayıcısı
-        setInterval(() => {
-            game.marketTimeLeft--;
-            if (game.marketTimeLeft <= 0) {
-                game.marketTimeLeft = 45;
-                let multipliers = [0.85, 1.0, 1.4, 1.9, 2.8];
-                let names = ["📉 Durgun Kur", "📈 Stabil", "🔥 Yüksek Talep", "🚀 Galaktik Patlama"];
-                game.marketMultiplier = multipliers[Math.floor(Math.random() * multipliers.length)];
-                document.getElementById('ticker-text').innerText = `📈 Kuantum Borsa: ${names[Math.floor(Math.random()*names.length)]} (${game.marketMultiplier}x)`;
-            }
-            document.getElementById('ticker-timer').innerText = `00:${game.marketTimeLeft < 10 ? '0' : ''}${game.marketTimeLeft}`;
-        }, 1000);
-
-        function saveGame() {
-            game.lastSavedTime = Date.now();
-            localStorage.setItem('stellar_quantum_save', JSON.stringify(game));
-        }
-
-        function loadGame() {
-            let saved = localStorage.getItem('stellar_quantum_save');
-            if (saved) {
-                try {
-                    let parsed = JSON.parse(saved);
-                    game = { ...game, ...parsed };
-                } catch(e) {}
-            }
-            if (game.autoHarvesterActive) {
-                document.getElementById('auto-harvester-btn').innerText = "Aktif (Çalışıyor)";
-                document.getElementById('auto-harvester-btn').className = "btn locked";
-            }
-            if (game.perks.speedUnlocked) {
-                document.getElementById('perk-speed-btn').innerText = "Araştırıldı ✔️";
-                document.getElementById('perk-speed-btn').className = "btn purple locked";
-            }
-            if (game.perks.marketBonus) {
-                document.getElementById('perk-market-btn').innerText = "Araştırıldı ✔️";
-                document.getElementById('perk-market-btn').className = "btn purple locked";
-            }
-        }
 
         function showToast(text) {
             let t = document.getElementById('toast');
@@ -525,194 +361,135 @@
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
+        // Ana Madencilik Döngüsü (1 Saniye)
+        setInterval(() => {
+            if (game.hashrate > 0) {
+                // Her MH/s başına ufak XMR üretimi
+                let generated = (game.hashrate * 0.00005);
+                game.xmr += generated;
+
+                // Sıcaklık hesaplama
+                let coolingPower = 1 + (game.upgrades.fans * 0.3);
+                let targetTemp = 35 + Math.floor(game.hashrate / 15) / coolingPower;
+                if (game.temp < targetTemp) game.temp++;
+                if (game.temp > targetTemp) game.temp--;
+            }
+            updateUI();
+        }, 1000);
+
+        // Otomatik Bot Döngüsü
+        setInterval(() => {
+            if (game.autoBot && game.xmr > 0) {
+                let earnings = game.xmr * game.xmrRate;
+                game.cash += earnings;
+                game.xmr = 0;
+                showToast(`Auto-Bot: +${earnings.toFixed(1)}₺ nakite çevrildi!`);
+            }
+        }, 10000);
+
         function updateUI() {
-            document.getElementById('ui-gold').innerText = game.gold;
-            let totalInv = Object.values(game.inventory).reduce((a, b) => a + b, 0);
-            document.getElementById('ui-inv').innerText = `${totalInv}/${game.maxInv}`;
-            document.getElementById('ui-xp').innerText = `${game.xp} XP (Lvl ${game.level})`;
-            document.getElementById('market-stock-info').innerText = `Depo Envanteri (${totalInv})`;
-
-            renderPlots();
-            saveGame();
+            document.getElementById('ui-cash').innerText = `${Math.floor(game.cash)}₺`;
+            document.getElementById('ui-xmr').innerText = `${game.xmr.toFixed(4)} XMR`;
+            document.getElementById('ui-hash').innerText = `${game.hashrate} MH/s`;
+            document.getElementById('ui-temp').innerText = `${game.temp}°C`;
+            let totalRig = game.rigs.rx470 + game.rigs.rx590;
+            document.getElementById('ui-rig-count').innerText = `${totalRig} Rig Aktif`;
         }
 
-        function renderPlots() {
-            let container = document.getElementById('plots-container');
-            container.innerHTML = '';
-            for (let i = 0; i < 8; i++) {
-                let p = game.plots[i];
-                let card = document.createElement('div');
-                card.className = 'plot-box';
+        function buyRig(type) {
+            if (type === 'rx470') {
+                if (game.cash < 1200) { showToast("Yetersiz bakiye!"); return; }
+                game.cash -= 1200;
+                game.rigs.rx470++;
+                game.hashrate += 15;
+                showToast("RX 470 Rig eklendi! 🖥️");
+            } else if (type === 'rx590') {
+                if (game.cash < 3500) { showToast("Yetersiz bakiye!"); return; }
+                game.cash -= 3500;
+                game.rigs.rx590++;
+                game.hashrate += 30;
+                showToast("RX 590 Rig eklendi! 🔥");
+            }
+            updateUI();
+        }
 
-                if (i >= game.activePlots) {
-                    card.style.opacity = '0.35';
-                    card.innerHTML = `<div style="font-size:22px;">🔒</div><div style="font-size:9px; color:var(--text-muted);">Kilitli Sektör</div><button class="btn locked">Kapalı</button>`;
-                } else if (p.status === 'empty') {
-                    card.innerHTML = `<div style="font-size:24px;">🟫</div><div style="font-size:9px; color:var(--text-muted);">Boş Toprak</div><button class="btn" onclick="plantSeed(${i}, event)">Ekim Yap</button>`;
-                } else if (p.status === 'growing') {
-                    card.innerHTML = `<div style="font-size:24px;">⚡</div><div style="font-size:9px; color:var(--accent-cyan);">Sentezleniyor...</div><div class="progress-track"><div class="progress-fill" style="width:${p.progress}%"></div></div>`;
-                } else if (p.status === 'ready') {
-                    card.className += ' ready';
-                    card.innerHTML = `<div style="font-size:26px;">${p.seed.icon}</div><div style="font-size:9px; color:var(--accent-cyan); font-weight:800;">HAZIR!</div><button class="btn" onclick="harvestPlot(${i}, event)">Topla</button>`;
+        function buyUpgrade(type) {
+            if (type === 'fans') {
+                if (game.cash < 800) { showToast("Yetersiz bakiye!"); return; }
+                game.cash -= 800;
+                game.upgrades.fans++;
+                showToast("Sunucu fanları güçlendirildi! ❄️");
+            }
+            updateUI();
+        }
+
+        function sellAllCrypto() {
+            if (game.xmr <= 0) { showToast("Satılacak kripto yok!"); return; }
+            let total = game.xmr * game.xmrRate;
+            game.cash += total;
+            game.xmr = 0;
+            showToast(`+${total.toFixed(1)}₺ hesaba aktarıldı!`);
+            updateUI();
+        }
+
+        function buyBot() {
+            if (game.autoBot) return;
+            if (game.cash < 2000) { showToast("Yetersiz bakiye!"); return; }
+            game.cash -= 2000;
+            game.autoBot = true;
+            document.getElementById('bot-btn').innerText = "Aktif ✔️";
+            document.getElementById('bot-btn').className = "btn purple locked";
+            showToast("Python Auto-Bot devreye girdi! 🤖");
+            updateUI();
+        }
+
+        function completeQuest(type, reward, btn) {
+            game.cash += reward;
+            btn.innerText = "Tamamlandı ✔️";
+            btn.className = "btn locked";
+            showToast(`Script görevi bitti: +${reward}₺ kazandın!`);
+            updateUI();
+        }
+
+        // Terminal Mantığı
+        function handleTerminalInput(e) {
+            if (e.key === 'Enter') executeCommand();
+        }
+
+        function executeCommand() {
+            let input = document.getElementById('terminal-input');
+            let cmd = input.value.trim().toLowerCase();
+            let box = document.getElementById('terminal-box');
+
+            if (!cmd) return;
+
+            box.innerHTML += `<div>root@rig-os:~$ ${input.value}</div>`;
+            
+            if (cmd === 'help') {
+                box.innerHTML += `<div>> Komutlar: status, clear, boost, cash</div>`;
+            } else if (cmd === 'status') {
+                box.innerHTML += `<div>> Hash: ${game.hashrate} MH/s | Temp: ${game.temp}C | XMR: ${game.xmr.toFixed(4)}</div>`;
+            } else if (cmd === 'clear') {
+                box.innerHTML = `<div>[SYS] Terminal temizlendi.</div>`;
+            } else if (cmd === 'boost') {
+                if (game.hashrate > 0) {
+                    game.xmr += 0.005;
+                    box.innerHTML += `<div>> [OK] Hızlı blok çözüldü: +0.005 XMR bonus!</div>`;
+                } else {
+                    box.innerHTML += `<div>> [HATA] Aktif ekran kartı yok!</div>`;
                 }
-                container.appendChild(card);
-            }
-        }
-
-        function plantSeed(idx, e) {
-            let seedIdx = document.getElementById('seed-select').value;
-            let seed = seedList[seedIdx];
-            if (game.gold < seed.cost) { showToast("Yetersiz bakiye!"); return; }
-
-            game.gold -= seed.cost;
-            let plot = game.plots[idx];
-            plot.status = 'growing';
-            plot.seed = seed;
-            plot.progress = 0;
-            playSfx('click');
-            updateUI();
-
-            let speedMultiplier = game.perks.speedUnlocked ? 1.4 : 1.0;
-            let step = (100 / (seed.time * 10)) * speedMultiplier;
-            let timer = setInterval(() => {
-                plot.progress += step;
-                if (plot.progress >= 100) {
-                    plot.progress = 100;
-                    plot.status = 'ready';
-                    clearInterval(plot.timerInterval);
-                    if (game.autoHarvesterActive) {
-                        setTimeout(() => autoHarvestPlot(idx), 200);
-                    } else {
-                        updateUI();
-                    }
-                }
-                renderPlots();
-            }, 100);
-            plot.timerInterval = timer;
-        }
-
-        function autoHarvestPlot(idx) {
-            let plot = game.plots[idx];
-            if (plot.status !== 'ready') return;
-            let totalInv = Object.values(game.inventory).reduce((a, b) => a + b, 0);
-            if (totalInv >= game.maxInv) return;
-
-            let seed = plot.seed;
-            game.inventory[seed.key]++;
-            game.xp += seed.xp;
-            plot.status = 'empty';
-            plot.seed = null;
-            updateUI();
-        }
-
-        function harvestPlot(idx, e) {
-            let totalInv = Object.values(game.inventory).reduce((a, b) => a + b, 0);
-            if (totalInv >= game.maxInv) { showToast("Depo kapasitesi tamamen dolu!"); return; }
-
-            let plot = game.plots[idx];
-            let seed = plot.seed;
-            game.inventory[seed.key]++;
-            game.xp += seed.xp;
-
-            if (game.xp >= game.level * 300) {
-                game.level++;
-                showToast(`🎉 Seviye Atlandı: Lvl ${game.level}!`);
+            } else if (cmd === 'cash') {
+                box.innerHTML += `<div>> Mevcut Nakit: ${Math.floor(game.cash)}₺</div>`;
+            } else {
+                box.innerHTML += `<div>> Bilinmeyen komut. 'help' yazın.</div>`;
             }
 
-            playSfx('success');
-            spawnFloatText(`+1 ${seed.name}`, e.clientX || 200, e.clientY || 300);
-            showToast(`+1 ${seed.name} toplandı!`);
-            plot.status = 'empty';
-            plot.seed = null;
-            updateUI();
-        }
-
-        function collectItem(type) {
-            let totalInv = Object.values(game.inventory).reduce((a, b) => a + b, 0);
-            if (totalInv >= game.maxInv) { showToast("Depo kapasitesi dolu!"); return; }
-            game.inventory[type]++;
-            playSfx('success');
-            showToast(type === 'milk' ? "Kuantum süt sentezlendi! 🥛" : "Enerji yumurtası alındı! 🥚");
-            updateUI();
-        }
-
-        function processProduct(type) {
-            if (type === 'bread') {
-                if (game.inventory.wheat < 1) { showToast("Gerekli: 1x Kuantum Buğday 🌾"); return; }
-                game.inventory.wheat--;
-                game.inventory.bread++;
-                showToast("Lazer ekmek üretildi! 🍞");
-            } else if (type === 'cheese') {
-                if (game.inventory.milk < 1) { showToast("Gerekli: 1x Kuantum Süt 🥛"); return; }
-                game.inventory.milk--;
-                game.inventory.cheese++;
-                showToast("Kristal peynir işlendi! 🧀");
-            }
-            playSfx('success');
-            updateUI();
-        }
-
-        function sellAllAssets() {
-            let inv = game.inventory;
-            let rawRevenue = (inv.wheat * 80) + (inv.corn * 190) + (inv.strawberry * 440) + (inv.pumpkin * 980) + (inv.milk * 110) + (inv.egg * 90) + (inv.bread * 220) + (inv.cheese * 320);
-            let perkMultiplier = game.perks.marketBonus ? 1.25 : 1.0;
-            let finalRevenue = Math.floor(rawRevenue * game.marketMultiplier * perkMultiplier);
-
-            if (finalRevenue === 0) { showToast("Satılacak envanter bulunmuyor!"); return; }
-
-            game.gold += finalRevenue;
-            game.inventory = { wheat: 0, corn: 0, strawberry: 0, pumpkin: 0, milk: 0, egg: 0, bread: 0, cheese: 0 };
-            playSfx('success');
-            showToast(`Galaktik borsa satışı başarılı: +${finalRevenue} 🪙!`);
-            updateUI();
-        }
-
-        function unlockNewPlot() {
-            if (game.activePlots >= 8) { showToast("Maksimum sektöre ulaşıldı!"); return; }
-            if (game.gold < 1600) { showToast("Yetersiz bakiye (1600 🪙 gerekli)"); return; }
-            game.gold -= 1600;
-            game.activePlots++;
-            playSfx('success');
-            showToast("Yeni sektör parseli açıldı! 🛰️");
-            updateUI();
-        }
-
-        function toggleAutoHarvester() {
-            if (game.autoHarvesterActive) return;
-            if (game.gold < 750) { showToast("Yetersiz bakiye (750 🪙 gerekli)"); return; }
-            game.gold -= 750;
-            game.autoHarvesterActive = true;
-            document.getElementById('auto-harvester-btn').innerText = "Aktif (Çalışıyor)";
-            document.getElementById('auto-harvester-btn').className = "btn locked";
-            playSfx('success');
-            showToast("Yapay Zeka Hasat Dronu aktif! 🛸");
-            updateUI();
-        }
-
-        function buyPerk(type) {
-            if (type === 'speed') {
-                if (game.perks.speedUnlocked) return;
-                if (game.xp < 500) { showToast("Yetersiz XP (500 XP gerekli)"); return; }
-                game.xp -= 500;
-                game.perks.speedUnlocked = true;
-                document.getElementById('perk-speed-btn').innerText = "Araştırıldı ✔️";
-                document.getElementById('perk-speed-btn').className = "btn purple locked";
-                showToast("Zaman Büken Büyüme aktif! 🚀");
-            } else if (type === 'market') {
-                if (game.perks.marketBonus) return;
-                if (game.xp < 650) { showToast("Yetersiz XP (650 XP gerekli)"); return; }
-                game.xp -= 650;
-                game.perks.marketBonus = true;
-                document.getElementById('perk-market-btn').innerText = "Araştırıldı ✔️";
-                document.getElementById('perk-market-btn').className = "btn purple locked";
-                showToast("Galaktik Monopol aktif! 💎");
-            }
-            playSfx('success');
-            updateUI();
+            input.value = '';
+            box.scrollTop = box.scrollHeight;
         }
 
         function hardReset() {
-            localStorage.removeItem('stellar_quantum_save');
+            localStorage.clear();
             location.reload();
         }
 
@@ -723,7 +500,6 @@
             btn.classList.add('active');
         }
 
-        loadGame();
         updateUI();
     </script>
 </body>
