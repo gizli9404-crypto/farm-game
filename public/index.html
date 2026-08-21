@@ -2,123 +2,187 @@
 <html lang="tr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CYBER RIG - Mining Simulator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OmniTool Pro - Telegram Mini App</title>
+    <!-- AdsGram Resmi SDK -->
     <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
-        
-        body { 
-            background: #0a0a0c; color: #00ffcc; font-family: 'Share Tech Mono', monospace; 
-            margin: 0; padding: 0; user-select: none; display: flex; flex-direction: column; height: 100vh;
+        :root {
+            --bg: #0f1117;
+            --surface: #1a1d26;
+            --surface-hover: #222634;
+            --primary: #6366f1;
+            --primary-hover: #4f46e5;
+            --accent: #10b981;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #2e3548;
         }
-        
-        .header { text-align: center; padding: 15px; border-bottom: 1px solid #00ffcc44; background: #111; }
-        .title { font-size: 20px; letter-spacing: 2px; }
-        
-        .mining-area { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; }
-        
-        .balance-container { text-align: center; margin-bottom: 30px; }
-        .balance-title { color: #888; font-size: 14px; }
-        .balance-amount { font-size: 40px; text-shadow: 0 0 15px rgba(0, 255, 204, 0.5); margin: 10px 0; }
-        
-        .gpu-card {
-            background: #15151a; border: 1px solid #00ffcc; border-radius: 10px;
-            padding: 20px; width: 100%; max-width: 300px; text-align: center;
-            box-shadow: inset 0 0 20px rgba(0, 255, 204, 0.1);
-        }
-        
-        .gpu-name { font-size: 18px; color: #fff; margin-bottom: 10px; }
-        .stats { display: flex; justify-content: space-between; font-size: 12px; color: #aaa; margin-bottom: 20px; }
-        
-        .tap-btn {
-            background: rgba(0, 255, 204, 0.1); border: 2px solid #00ffcc; color: #00ffcc;
-            width: 150px; height: 150px; border-radius: 50%; font-size: 24px; font-family: inherit;
-            cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto;
-        }
-        .tap-btn:active { transform: scale(0.95); background: rgba(0, 255, 204, 0.3); }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
 
-        .bottom-nav { background: #111; padding: 15px; border-top: 1px solid #00ffcc44; }
-        
-        .boost-card {
-            background: #1a1a24; border: 1px dashed #ff0055; border-radius: 8px; padding: 15px;
-            display: flex; justify-content: space-between; align-items: center;
+        .app-shell {
+            width: 100%; max-width: 410px; height: 100%; max-height: 840px;
+            background: var(--bg); border: 1px solid var(--border); border-radius: 24px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            position: relative; overflow: hidden;
         }
-        .boost-info h4 { margin: 0; color: #ff0055; font-size: 16px; }
-        .boost-info p { margin: 5px 0 0 0; font-size: 11px; color: #aaa; }
+
+        /* ÜST BAŞLIK */
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 12px 16px; }
+        .app-title { font-size: 14px; font-weight: 800; letter-spacing: 0.5px; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .status-badge { font-size: 9px; background: rgba(16, 185, 129, 0.15); color: var(--accent); padding: 4px 8px; border-radius: 6px; font-weight: 700; border: 1px solid rgba(16, 185, 129, 0.3); }
+
+        /* SEKME ALANLARI */
+        .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
+        .view.active { display: flex; }
+
+        /* KARTLAR VE GÖVDELER */
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; padding: 16px; }
+        .card-title { font-size: 11px; font-weight: 800; color: var(--text-secondary); margin-bottom: 10px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .input-field { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; color: var(--text); font-size: 12px; outline: none; margin-bottom: 8px; }
+        .input-field:focus { border-color: var(--primary); }
+
+        /* BUTONLAR */
+        .btn { background: var(--primary); color: #fff; border: none; padding: 10px 16px; border-radius: 10px; font-weight: 800; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.1s; }
+        .btn:active { transform: scale(0.98); background: var(--primary-hover); }
+        .btn-accent { background: var(--accent); color: #0f1117; }
         
-        .ad-btn {
-            background: #ff0055; color: #fff; border: none; padding: 10px 15px;
-            border-radius: 5px; font-family: inherit; font-weight: bold; cursor: pointer;
+        .btn-ad { 
+            background: linear-gradient(135deg, #f59e0b, #ef4444); color: #fff; 
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3); margin-top: 8px;
         }
+
+        .result-box { background: var(--bg); border: 1px solid var(--border); border-radius: 10px; padding: 10px; font-size: 11px; color: var(--accent); word-break: break-all; margin-top: 8px; min-height: 35px; display: flex; align-items: center; }
+
+        /* LİDERLİK TABLOSu / AKTİVİTE GEÇMİŞİ (AdsGram Kural 8 Karşılığı) */
+        .history-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 6px; font-size: 11px; }
+
+        /* ALT DOCK MENÜSÜ */
+        .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 16px; display: flex; justify-content: space-around; padding: 6px; }
+        .dock-item { background: transparent; border: none; color: var(--text-secondary); border-radius: 12px; padding: 8px 12px; text-align: center; font-size: 8px; font-weight: 700; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: 0.2s; }
+        .dock-item span:first-child { font-size: 16px; }
+        .dock-item.active { background: var(--bg); color: var(--primary); border: 1px solid var(--border); }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="title">_SYSTEM.RIG_MASTER_</div>
-    </div>
-
-    <div class="mining-area">
-        <div class="balance-container">
-            <div class="balance-title">TOPLAM KAZIM (CYBER)</div>
-            <div class="balance-amount" id="balance">0.000</div>
+    <div class="app-shell">
+        <!-- ÜST BİLGİ -->
+        <div class="header">
+            <div class="app-title">⚡ OmniTool Pro</div>
+            <div class="status-badge">Sistem Aktif</div>
         </div>
 
-        <div class="gpu-card">
-            <div class="gpu-name">ASUS RX 470 (Modlu)</div>
-            <div class="stats">
-                <span>Güç: 24 MH/s</span>
-                <span>Sıcaklık: 65°C</span>
+        <!-- SEKME 1: ARAÇLAR (ŞİFRE & METİN İŞLEMLERİ) -->
+        <div class="view active" data-view="araclar">
+            <div class="card">
+                <div class="card-title">🔒 Güvenli Şifre Üretici</div>
+                <input type="number" id="passLength" class="input-field" value="12" min="6" max="32" placeholder="Karakter Uzunluğu">
+                <button class="btn" onclick="sifreUret()">Şifre Oluştur</button>
+                <div class="result-box" id="passResult">Sonuç burada görünecek...</div>
             </div>
-            
-            <button class="tap-btn" onclick="mine()">KAZ (TAP)</button>
-        </div>
-    </div>
 
-    <div class="bottom-nav">
-        <div class="boost-card">
-            <div class="boost-info">
-                <h4>OVERCLOCK MODU</h4>
-                <p>Reklam izle, 30 sn boyunca 2x kazım yap!</p>
+            <div class="card">
+                <div class="card-title">📊 Metin Karakter Analizi</div>
+                <input type="text" id=" analizInput" class="input-field" placeholder="Analiz edilecek metni yazın..." oninput="metinAnalizEt()">
+                <div style="font-size: 10px; color: var(--text-secondary); display: flex; justify-content: space-between;">
+                    <span id="charCount">Karakter: 0</span>
+                    <span id="wordCount">Kelime: 0</span>
+                </div>
             </div>
-            <button class="ad-btn" onclick="watchAd()">AKTİF ET</button>
+        </div>
+
+        <!-- SEKME 2: PREMIUM AI & REKLAM ALANI -->
+        <div class="view" data-view="premium">
+            <div class="card" style="border-color: #f59e0b;">
+                <div class="card-title" style="color: #f59e0b;">🌟 VIP AI Asistan Kilidi</div>
+                <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 12px;">
+                    Temel araçları tamamen ücretsiz kullanabilirsiniz. İsteğe bağlı olarak kısa bir reklam izleyerek <b>24 Saatlik VIP Araç Lisansı</b> kilidini anında açabilirsiniz.
+                </div>
+                <button class="btn btn-ad" onclick="reklamGoster()">VIP LİSANSI AKTİFLEŞTİR (REKLAM İZLE)</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">⚙️ Aktif Lisans Durumu</div>
+                <div class="history-row">
+                    <span>Lisans Türü</span>
+                    <span style="color: var(--accent);" id="lisansDurumu">Standart (Ücretsiz)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEKME 3: İŞLEM GEÇMİŞİ / LİDERLİK (AdsGram Kural 8 Karşılığı) -->
+        <div class="view" data-view="gecmis">
+            <div class="card" style="flex-grow: 1;">
+                <div class="card-title">📋 Son Sistem İşlemleri</div>
+                <div class="history-row">
+                    <div><b>Şifre Üretildi</b><div style="font-size: 9px; color: var(--text-secondary);">12 Karakterli Güvenli Mod</div></div>
+                    <span style="color: var(--accent);">Başarılı</span>
+                </div>
+                <div class="history-row">
+                    <div><b>Metin Analizi</b><div style="font-size: 9px; color: var(--text-secondary);">Karakter ve Kelime Sayımı</div></div>
+                    <span style="color: var(--accent);">Başarılı</span>
+                </div>
+                <div class="history-row">
+                    <div><b>Sistem Başlatıldı</b><div style="font-size: 9px; color: var(--text-secondary);">OmniTool v1.0 Core</div></div>
+                    <span style="color: var(--primary);">Aktif</span>
+                </div>
+            </div>
+            <button class="btn" onclick="sekmeDegis('araclar')">← ARAÇLARA DÖN</button>
+        </div>
+
+        <!-- ALT MENÜ DOCK -->
+        <div class="dock">
+            <button class="dock-item active" onclick="sekmeDegis('araclar')"><span>🛠️</span><span>Araçlar</span></button>
+            <button class="dock-item" onclick="sekmeDegis('premium')"><span>🌟</span><span>VIP AI</span></button>
+            <button class="dock-item" onclick="sekmeDegis('gecmis')"><span>📋</span><span>Geçmiş</span></button>
         </div>
     </div>
 
     <script>
-        let balance = 0.000;
-        let clickValue = 0.001;
-        const balanceEl = document.getElementById("balance");
+        function sekmeDegis(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
 
-        // Tıklama (Kazım) Fonksiyonu
-        function mine() {
-            balance += clickValue;
-            balanceEl.innerText = balance.toFixed(3);
-            
-            // Tıklama efekti eklenebilir
-            if (navigator.vibrate) navigator.vibrate(50); // Telefonda titreme yapar
+            document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+            event.currentTarget.classList.add('active');
         }
 
-        // AdsGram Reklam Fonksiyonu
-        function watchAd() {
+        function sifreUret() {
+            const length = document.getElementById("passLength").value || 12;
+            const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*";
+            let pass = "";
+            for (let i = 0; i < length; i++) {
+                pass += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            document.getElementById("passResult").innerText = pass;
+        }
+
+        function metinAnalizEt() {
+            const val = document.getElementById("analizInput").value;
+            document.getElementById("charCount").innerText = "Karakter: " + val.length;
+            const words = val.trim() ? val.trim().split(/\s+/).length : 0;
+            document.getElementById("wordCount").innerText = "Kelime: " + words;
+        }
+
+        // AdsGram Resmi SDK Entegrasyonu
+        function reklamGoster() {
             if (typeof window.Adsgram !== 'undefined') {
-                window.Adsgram.init({ blockId: "senin-reklam-kodun" }).show()
-                .then(() => {
-                    alert("Overclock Başarılı! Kazım gücü 2 katına çıktı.");
-                    clickValue = 0.002; // Reklam bitince tıklama gücünü artır
-                    setTimeout(() => { 
-                        clickValue = 0.001; 
-                        alert("Overclock bitti. Güç normale döndü.");
-                    }, 30000);
-                })
-                .catch(() => alert("Reklam tam izlenmedi."));
+                window.Adsgram.init({ blockId: "int-your-block-id-here" }).show().then((result) => {
+                    document.getElementById("lisansDurumu").innerText = "VIP Aktif (24 Saat)";
+                    document.getElementById("lisansDurumu").style.color = "#f59e0b";
+                    alert("Tebrikler! Reklam başarıyla izlendi, VIP Lisansınız aktifleşti.");
+                }).catch((result) => {
+                    alert("Reklam tamamlanamadı.");
+                });
             } else {
-                // Test Modu
-                alert("TEST: Reklam izlendi, x2 Güç aktif!");
-                clickValue = 0.002;
-                setTimeout(() => clickValue = 0.001, 30000);
+                // Tarayıcı Test Simülasyonu
+                document.getElementById("lisansDurumu").innerText = "VIP Aktif (Test Modu)";
+                document.getElementById("lisansDurumu").style.color = "#f59e0b";
+                alert("AdsGram SDK simüle edildi: VIP Lisans aktifleşti!");
             }
         }
     </script>
