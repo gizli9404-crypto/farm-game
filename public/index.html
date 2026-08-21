@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tiny Farm Adventure - Telegram Mini App</title>
+    <title>Crypto Agro Tycoon - Telegram Mini App</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            background-color: #0f171e;
+            background-color: #070a0f;
             color: #fff;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -19,154 +19,154 @@
             width: 100%;
             max-width: 420px;
             height: 100%;
-            max-height: 750px;
-            background: #1b2838;
-            border: 2px solid #2a475e;
+            max-height: 840px;
+            background: #0e1621;
+            border: 2px solid #1b2838;
             border-radius: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            padding: 10px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.9);
             overflow: hidden;
         }
 
         /* 1. ÜST BİLGİ ÇUBUĞU (HUD) */
         .hud {
-            background: #171a21;
-            border: 1px solid #2a475e;
+            background: #17212b;
+            border: 1px solid #2b3b4e;
             border-radius: 10px;
-            padding: 10px;
+            padding: 8px 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
         .profile { display: flex; align-items: center; gap: 8px; }
-        .avatar { width: 32px; height: 32px; background: #e67e22; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .username { font-size: 12px; font-weight: bold; color: #f1c40f; }
-        .lvl { font-size: 10px; color: #8f98a0; }
-        .resources { display: flex; gap: 8px; font-size: 12px; font-weight: bold; }
-        .res-box { background: #22303c; padding: 4px 8px; border-radius: 6px; border: 1px solid #2a475e; }
+        .avatar { width: 34px; height: 34px; background: #e67e22; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+        .username { font-size: 11px; font-weight: bold; color: #f1c40f; }
+        .lvl { font-size: 9px; color: #7f8c8d; }
+        .resources { display: flex; gap: 5px; font-size: 10px; font-weight: bold; }
+        .res-box { background: #0e1621; padding: 4px 6px; border-radius: 6px; border: 1px solid #2b3b4e; }
 
-        /* İÇERİK SAYFALARI */
+        /* SAYFA ALANI */
         .page-content {
             flex-grow: 1;
-            margin: 10px 0;
+            margin: 6px 0;
             display: none;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             overflow-y: auto;
+            padding-right: 2px;
         }
         .page-content.active { display: flex; }
 
-        /* TARLA SAYFASI */
+        /* TARLA SAYFASI (9'LU GELİŞMİŞ PARSEL) */
         .game-grid-area {
-            background: #1b4d3e;
+            background: #112e21;
             border: 2px dashed #2ecc71;
             border-radius: 10px;
-            padding: 12px;
+            padding: 8px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             flex-grow: 1;
         }
-        .grid-header { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: bold; }
-        .action-mini-btns { display: flex; gap: 5px; }
-        .mini-btn { background: #c0392b; border: none; color: white; padding: 4px 8px; border-radius: 4px; font-size: 10px; cursor: pointer; font-weight: bold; }
-        .mini-btn.market-btn { background: #2980b9; }
-
+        .grid-header { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: bold; }
+        
         .plots {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-            margin-top: 8px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 4px;
         }
         .plot {
-            background: #5c4033;
-            border: 2px solid #3d2817;
-            border-radius: 8px;
-            padding: 10px;
+            background: #3e2723;
+            border: 2px solid #2d1b18;
+            border-radius: 6px;
+            padding: 4px;
             text-align: center;
             cursor: pointer;
-            font-size: 11px;
-            min-height: 80px;
+            font-size: 9px;
+            min-height: 65px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            position: relative;
         }
-        .plot.ready { border-color: #2ecc71; background: #3b5323; }
-        
-        .adsgram-reward-box {
-            background: #22303c;
-            border: 1px solid #f39c12;
-            padding: 8px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 11px;
-            cursor: pointer;
-            color: #f1c40f;
-            font-weight: bold;
-        }
-        .adsgram-reward-box:hover { background: #2a3f5f; }
+        .plot.ready { border-color: #2ecc71; background: #1b4d3e; }
 
-        /* MARKET & PAZAR SAYFASI */
-        .market-section, .barn-section, .social-section {
-            background: #171a21;
-            border: 1px solid #2a475e;
-            border-radius: 10px;
-            padding: 12px;
-        }
-        .section-title { font-size: 14px; font-weight: bold; color: #66c0f4; margin-bottom: 8px; border-bottom: 1px solid #2a475e; padding-bottom: 4px; }
-        .market-item {
+        /* ADSGRAM REKLAM ENTEGRASYON KARTI */
+        .adsgram-card {
+            background: linear-gradient(135deg, #17212b, #2b3b4e);
+            border: 1px solid #f39c12;
+            padding: 6px 8px;
+            border-radius: 8px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: #22303c;
-            padding: 8px 10px;
-            border-radius: 6px;
-            margin-bottom: 6px;
-            font-size: 12px;
+            cursor: pointer;
         }
-        .buy-sell-btn {
+        .ads-text h4 { font-size: 10px; color: #f1c40f; }
+        .ads-text p { font-size: 8px; color: #8a9ba8; }
+        .ads-btn { background: #f39c12; color: #000; border: none; padding: 4px 8px; border-radius: 4px; font-size: 9px; font-weight: bold; cursor: pointer; }
+
+        /* KARTLAR VE LİSTELER */
+        .section-card {
+            background: #17212b;
+            border: 1px solid #2b3b4e;
+            border-radius: 10px;
+            padding: 8px;
+            margin-bottom: 4px;
+        }
+        .section-title { font-size: 11px; font-weight: bold; color: #3498db; margin-bottom: 5px; border-bottom: 1px solid #2b3b4e; padding-bottom: 3px; }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0e1621;
+            padding: 5px 6px;
+            border-radius: 6px;
+            margin-bottom: 4px;
+            font-size: 10px;
+        }
+        .btn-action {
             background: #27ae60;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 3px 6px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 11px;
+            font-size: 9px;
         }
-        .buy-sell-btn.sell { background: #e67e22; }
+        .btn-action.sell { background: #d35400; }
+        .btn-action.buy { background: #2980b9; }
 
-        /* 3. ALT NAVİGASYON (DOCK) */
+        /* ALT NAVİGASYON (DOCK) */
         .dock {
-            background: #171a21;
-            border: 1px solid #2a475e;
+            background: #17212b;
+            border: 1px solid #2b3b4e;
             border-radius: 10px;
             display: flex;
             justify-content: space-around;
-            padding: 8px;
+            padding: 5px;
         }
         .dock-item {
-            background: #22303c;
-            border: 1px solid #2a475e;
-            color: #8f98a0;
+            background: #0e1621;
+            border: 1px solid #2b3b4e;
+            color: #8a9ba8;
             border-radius: 6px;
-            padding: 6px 10px;
+            padding: 5px 2px;
             text-align: center;
-            font-size: 10px;
+            font-size: 8px;
             font-weight: bold;
             cursor: pointer;
             flex: 1;
-            margin: 0 2px;
-            transition: 0.2s;
+            margin: 0 1px;
         }
-        .dock-item.active { background: #2a475e; color: white; border-color: #66c0f4; }
+        .dock-item.active { background: #2b3b4e; color: white; border-color: #3498db; }
 
-        .status-msg { font-size: 11px; color: #f1c40f; text-align: center; min-height: 15px; }
+        .status-msg { font-size: 9px; color: #f1c40f; text-align: center; min-height: 12px; }
     </style>
 </head>
 <body>
@@ -178,209 +178,267 @@
                 <div class="avatar">👨‍🌾</div>
                 <div>
                     <div class="username">ÇİFTÇİ_ALİ</div>
-                    <div class="lvl">LVL 5</div>
+                    <div class="lvl">LVL 8 • VIP Üye</div>
                 </div>
             </div>
             <div class="resources">
-                <div class="res-box">🪙 <span id="altin">15900</span></div>
-                <div class="res-box">💎 <span id="elmas">320</span></div>
+                <div class="res-box">🪙 <span id="altin">18400</span></div>
+                <div class="res-box">💎 <span id="elmas">450</span></div>
             </div>
         </div>
 
-        <!-- SAYFA 1: TARLA -->
+        <!-- SAYFA 1: TARLA (9 Parsel Modülü) -->
         <div class="page-content active" id-page="tarla">
             <div class="game-grid-area">
                 <div class="grid-header">
-                    <span>🌾 TARLA ALANI</span>
-                    <div class="action-mini-btns">
-                        <button class="mini-btn" onclick="sayfaDegis('insa')">🔨 İNŞA</button>
-                        <button class="mini-btn market-btn" onclick="sayfaDegis('pazar')">🛒 PAZAR</button>
-                    </div>
+                    <span>🌾 ENDÜSTRİYEL TARLA (9 PARSEL)</span>
                 </div>
 
-                <div class="plots">
-                    <div class="plot" id="p0" onclick="tarlayaTikla(0)">
-                        <span>🌱</span>
-                        <span id="p0-text">Boş Toprak</span>
-                    </div>
-                    <div class="plot" id="p1" onclick="tarlayaTikla(1)">
-                        <span>🌱</span>
-                        <span id="p1-text">Boş Toprak</span>
-                    </div>
+                <div class="plots" id="parselAlani">
+                    <!-- Javascript ile dinamik üretilir -->
                 </div>
 
-                <div class="status-msg" id="bilgiMesaji">Tohum ekmek için tarlaya dokun.</div>
+                <div class="status-msg" id="bilgiMesaji">Toprakları yönet, otomatik sulama sistemini çalıştır.</div>
 
-                <!-- AdsGram Uyumlu Ödüllü Reklam -->
-                <div class="adsgram-reward-box" onclick="reklamIzleOdulAl()">
-                    📺 Reklam İzle & Enerji Kazan (+50 Altın)
+                <!-- AdsGram Reklam SDK Entegrasyon Alanı -->
+                <div class="adsgram-card" onclick="adsGramReklamCalistir()">
+                    <div class="ads-text">
+                        <h4>📺 AdsGram Sponsorlu Ödül</h4>
+                        <p>Video izle, +300 Coin ve VIP Puanı kazan</p>
+                    </div>
+                    <button class="ads-btn">İZLE</button>
                 </div>
             </div>
         </div>
 
-        <!-- SAYFA 2: PAZAR & MARKET -->
-        <div class="page-content" id-page="pazar">
-            <div class="market-section">
-                <div class="section-title">🛒 ÜRÜN PAZARI (SATIN AL & SAT)</div>
-                <div class="market-item">
-                    <span>🌽 Hasat Edilen Mısır (Depoda: <span id="depoMuzisir">0</span>)</span>
-                    <button class="buy-sell-btn sell" onclick="urunuSat()">150 Altına Sat</button>
+        <!-- SAYFA 2: PAZAR VE BORSALAR -->
+        <div class="page-content" id-page="market">
+            <div class="section-card">
+                <div class="section-title">📈 CANLI MAHSUL BORSASI & DEPO</div>
+                <div class="item-row">
+                    <span>🌽 Buğday (Depo: <span id="depoBugday">4</span>)</span>
+                    <button class="btn-action sell" onclick="mahsulPazarSat('Bugday', 120)">Hepsini Sat (120 🪙/Adet)</button>
                 </div>
-                <div class="market-item">
-                    <span>🍅 Domates Tohumu</span>
-                    <button class="buy-sell-btn" onclick="tohumAl('Domates', 50)">50 🪙 Al</button>
+                <div class="item-row">
+                    <span>🍅 Organik Domates (Depo: <span id="depoDomates">2</span>)</span>
+                    <button class="btn-action sell" onclick="mahsulPazarSat('Domates', 250)">Hepsini Sat (250 🪙/Adet)</button>
                 </div>
-                <div class="market-item">
-                    <span>🥔 Patates Tohumu</span>
-                    <button class="buy-sell-btn" onclick="tohumAl('Patates', 80)">80 🪙 Al</button>
+                <div class="item-row">
+                    <span>🍓 Çilek (Depo: <span id="depoSilek">1</span>)</span>
+                    <button class="btn-action sell" onclick="mahsulPazarSat('Silek', 500)">Hepsini Sat (500 🪙/Adet)</button>
                 </div>
             </div>
-            <div class="market-section">
-                <div class="section-title">📦 DEPO DURUMU</div>
-                <p style="font-size: 11px; color: #8f98a0;">Topladığın mahsuller burada birikir, pazar üzerinden altına çevrilir.</p>
-            </div>
-        </div>
-
-        <!-- SAYFA 3: AHIR -->
-        <div class="page-content" id-page="ahir">
-            <div class="barn-section">
-                <div class="section-title">🐄 AHIR VE HAYVANLAR</div>
-                <div class="market-item">
-                    <span>🤖 Süt Otomatı İnek (Aktif)</span>
-                    <span style="color: #2ecc71; font-size: 11px;">Üretiyor 🥛</span>
+            <div class="section-card">
+                <div class="section-title">🛒 TARIMSAL GİRDİ MAĞAZASI</div>
+                <div class="item-row">
+                    <span>⚡ Hızlandırıcı Hormon (Süre -10sn)</span>
+                    <button class="btn-action buy" onclick="itemSatinAl(300)">300 🪙 Al</button>
                 </div>
-                <div class="market-item">
-                    <span>🐔 Tavuk Kümesi (Seviye 1)</span>
-                    <button class="buy-sell-btn" onclick="alert('Kümes yükseltildi!')">Yükselt (500 🪙)</button>
+                <div class="item-row">
+                    <span>🛡️ Otomatik Koruma Kalkanı (24 Saat)</span>
+                    <button class="btn-action buy" onclick="itemSatinAl(750)">750 🪙 Al</button>
                 </div>
             </div>
         </div>
 
-        <!-- SAYFA 4: SOSYAL -->
-        <div class="page-content" id-page="sosyal">
-            <div class="social-section">
-                <div class="section-title">👥 ARKADAŞLAR & LİDERLİK</div>
-                <div class="market-item">
+        <!-- SAYFA 3: FABRİKA VE AHIR -->
+        <div class="page-content" id-page="fabrika">
+            <div class="section-card">
+                <div class="section-title">🐄 OTOMATİK SÜT FABRİKALARI</div>
+                <div class="item-row">
+                    <span>🥛 Süt Ünitesi (Seviye 2)</span>
+                    <button class="btn-action" onclick="uretimTopla('Süt', 250)">Ürünü Topla (+250 🪙)</button>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">🐔 AKILLI KÜMES SİSTEMLERİ</div>
+                <div class="item-row">
+                    <span>🥚 Altın Yumurta İstasyonu</span>
+                    <button class="btn-action" onclick="uretimTopla('Yumurta', 180)">Ürünü Topla (+180 🪙)</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAYFA 4: EARN, GÖREVLER VE ÇARK -->
+        <div class="page-content" id-page="earn">
+            <div class="section-card">
+                <div class="section-title">🎁 GÜNLÜK ÖDÜL SERİSİ (STREAK)</div>
+                <div class="item-row">
+                    <span>📅 Gün 1 (Alındı) / Gün 2 (Aktif)</span>
+                    <button class="btn-action" onclick="gunlukBonusAl()">Ödülü Al (+500 🪙)</button>
+                </div>
+            </div>
+            <div class="section-card">
+                <div class="section-title">📋 GÖREVLER & SOSYAL KANALLAR</div>
+                <div class="item-row">
+                    <span>📢 Telegram Duyuru Kanalına Katıl</span>
+                    <button class="btn-action" onclick="gorevTamamla(1000)">Kontrol Et (+1000 🪙)</button>
+                </div>
+                <div class="item-row">
+                    <span>👥 Arkadaşını Davet Et (Referans)</span>
+                    <button class="btn-action" onclick="gorevTamamla(2500)">Davet Linki Al</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- SAYFA 5: LİDERLİK TABLOSU -->
+        <div class="page-content" id-page="liderlik">
+            <div class="section-card">
+                <div class="section-title">🏆 GLOBAL TON LİDERLİK TABLOSU</div>
+                <div class="item-row">
                     <span>🥇 ÇİFTÇİ_ALİ (Sen)</span>
-                    <span style="color: #f1c40f;">15,900 🪙</span>
+                    <span style="color: #f1c40f;" id="skorPuan">18,400 🪙</span>
                 </div>
-                <div class="market-item">
-                    <span>🥈 Ahmet_Farm</span>
-                    <span style="color: #8f98a0;">12,400 🪙</span>
+                <div class="item-row">
+                    <span>🥈 CryptoKing_TR</span>
+                    <span style="color: #95a5a6;">32,100 🪙</span>
                 </div>
-            </div>
-        </div>
-
-        <!-- SAYAÇ / İNŞA SAYFASI (Modal) -->
-        <div class="page-content" id-page="insa">
-            <div class="market-section">
-                <div class="section-title">🔨 İNŞAAT VE GELİŞTİRME</div>
-                <div class="market-item">
-                    <span>🏗️ Yeni Tarla Parseli Aç</span>
-                    <button class="buy-sell-btn" onclick="alert('Yeni parsel yakında açılacak!')">1000 🪙</button>
-                </div>
-                <div class="market-item">
-                    <span>💧 Otomatik Sulama Robotu</span>
-                    <button class="buy-sell-btn" onclick="alert('Robot aktif!')">Aktif</button>
+                <div class="item-row">
+                    <span>🥉 Kocaeli_Whale</span>
+                    <span style="color: #cd7f32;">28,900 🪙</span>
                 </div>
             </div>
         </div>
 
-        <!-- 3. ALT NAVİGASYON (DOCK) -->
+        <!-- ALT NAVİGASYON (DOCK - 5 Buton) -->
         <div class="dock">
-            <div class="dock-item active" onclick="sayfaDegis('tarla')">🌿 TARLA</div>
-            <div class="dock-item" onclick="sayfaDegis('pazar')">🛒 PAZAR</div>
-            <div class="dock-item" onclick="sayfaDegis('ahir')">🐄 AHIR</div>
-            <div class="dock-item" onclick="sayfaDegis('sosyal')">👥 SOSYAL</div>
+            <div class="dock-item active" onclick="sayfaDegis('tarla')">🌿 Tarla</div>
+            <div class="dock-item" onclick="sayfaDegis('market')">📈 Pazar</div>
+            <div class="dock-item" onclick="sayfaDegis('fabrika')">🏭 Fabrika</div>
+            <div class="dock-item" onclick="sayfaDegis('earn')">🎁 Earn</div>
+            <div class="dock-item" onclick="sayfaDegis('liderlik')">🏆 Sıralama</div>
         </div>
     </div>
 
     <script>
-        let altin = 15900;
-        let depoMuzisir = 0;
-        let parselDurumu = ["bos", "bos"];
+        let altin = 18400;
+        let depoBugday = 4;
+        let depoDomates = 2;
+        let depoSilek = 1;
+        
+        // 9 Parsel Veri Dizisi
+        let parseller = Array(9).fill("bos");
+
+        function parselleriCiz() {
+            let alan = document.getElementById("parselAlani");
+            alan.innerHTML = "";
+            for(let i=0; i<9; i++) {
+                let pDurum = parseller[i];
+                let icerik = "<span>🌱</span><span>Boş Toprak</span>";
+                let ekstraSinif = "";
+
+                if(pDurum === "buyuyor") {
+                    icerik = "<span>⏳</span><span>Büyüyor...</span>";
+                } else if(pDurum === "hazir") {
+                    icerik = "<span>🌽</span><span>Hasat Et!</span>";
+                    ekstraSinif = "ready";
+                }
+
+                let div = document.createElement("div");
+                div.className = `plot ${ekstraSinif}`;
+                div.innerHTML = icerik;
+                div.onclick = () => parselTikla(i);
+                alan.appendChild(div);
+            }
+        }
 
         function sayfaDegis(sayfaAdi) {
-            // Sekme aktifliklerini değiştir
             document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
             document.querySelector(`[id-page="${sayfaAdi}"]`).classList.add('active');
 
-            // Dock buton renkleri
             document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
-            if(sayfaAdi === 'tarla' || sayfaAdi === 'insa') document.querySelectorAll('.dock-item')[0].classList.add('active');
-            if(sayfaAdi === 'pazar') document.querySelectorAll('.dock-item')[1].classList.add('active');
-            if(sayfaAdi === 'ahir') document.querySelectorAll('.dock-item')[2].classList.add('active');
-            if(sayfaAdi === 'sosyal') document.querySelectorAll('.dock-item')[3].classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        function guncelle() {
-            document.getElementById("altin").innerText = altin;
-            document.getElementById("depoMuzisir").innerText = depoMuzisir;
-            
-            for(let i=0; i<2; i++) {
-                let pText = document.getElementById(`p${i}-text`);
-                let pDiv = document.getElementById(`p${i}`);
-                if(parselDurumu[i] === "bos") {
-                    pText.innerText = "Boş Toprak";
-                    pDiv.className = "plot";
-                } else if(parselDurumu[i] === "buyuyor") {
-                    pText.innerText = "Büyüyor... ⏳";
-                    pDiv.className = "plot";
-                } else if(parselDurumu[i] === "hazir") {
-                    pText.innerText = "Hasat Zamanı! 🌽";
-                    pDiv.className = "plot ready";
-                }
-            }
+        function guncelleUI() {
+            document.getElementById("altin").innerText = altin.toLocaleString();
+            document.getElementById("skorPuan").innerText = altin.toLocaleString() + " 🪙";
+            document.getElementById("depoBugday").innerText = depoBugday;
+            document.getElementById("depoDomates").innerText = depoDomates;
+            document.getElementById("depoSilek").innerText = depoSilek;
+            parselleriCiz();
         }
 
-        function tarlayaTikla(i) {
+        function parselTikla(i) {
             let mesaj = document.getElementById("bilgiMesaji");
-            if(parselDurumu[i] === "bos") {
-                parselDurumu[i] = "buyuyor";
-                mesaj.innerText = "Tohum ekildi, robot sulama yapıyor...";
-                guncelle();
+            if(parseller[i] === "bos") {
+                parseller[i] = "buyuyor";
+                mesaj.innerText = `Parsel #${i+1} ekimi yapıldı, otomatik sistem işletiliyor...`;
+                guncelleUI();
                 setTimeout(() => {
-                    parselDurumu[i] = "hazir";
-                    mesaj.innerText = "Ürün olgunlaştı, toplamak için tıkla!";
-                    guncelle();
-                }, 3000);
-            } else if(parselDurumu[i] === "hazir") {
-                parselDurumu[i] = "bos";
-                depoMuzisir += 1;
-                mesaj.innerText = "Hasat yapıldı! Ürün depoya eklendi.";
-                guncelle();
+                    parseller[i] = "hazir";
+                    mesaj.innerText = `Parsel #${i+1} mahsulü olgunlaştı!`;
+                    guncelleUI();
+                }, 2500);
+            } else if(parseller[i] === "hazir") {
+                parseller[i] = "bos";
+                depoBugday += 1;
+                mesaj.innerText = `Parsel #${i+1} başarıyla toplandı, depoya buğday eklendi.`;
+                guncelleUI();
             } else {
-                mesaj.innerText = "Bitki henüz büyüme aşamasında!";
+                mesaj.innerText = "Ürünün büyüme süreci devam ediyor, lütfen bekleyin.";
             }
         }
 
-        function urunuSat() {
-            if(depoMuzisir > 0) {
-                let kazan = depoMuzisir * 150;
-                altin += kazan;
-                depoMuzisir = 0;
-                alert(`Pazarda ürünler satıldı! +${kazan} Altın kazandın.`);
-                guncelle();
+        function mahsulPazarSat(tur, fiyat) {
+            if(tur === 'Bugday' && depoBugday > 0) {
+                let kazanc = depoBugday * fiyat;
+                altin += kazanc;
+                depoBugday = 0;
+                alert(`Pazarda ${kazanc} 🪙 karşılığında buğdaylar satıldı!`);
+            } else if(tur === 'Domates' && depoDomates > 0) {
+                let kazanc = depoDomates * fiyat;
+                altin += kazanc;
+                depoDomates = 0;
+                alert(`Pazarda ${kazanc} 🪙 karşılığında domatesler satıldı!`);
+            } else if(tur === 'Silek' && depoSilek > 0) {
+                let kazanc = depoSilek * fiyat;
+                altin += kazanc;
+                depoSilek = 0;
+                alert(`Pazarda ${kazanc} 🪙 karşılığında çilekler satıldı!`);
             } else {
-                alert("Depoda satılacak ürün yok! Önce tarladan hasat yap.");
+                alert("Depoda bu üründen bulunmuyor!");
             }
+            guncelleUI();
         }
 
-        function tohumAl(isim, fiyat) {
+        function itemSatinAl(fiyat) {
             if(altin >= fiyat) {
                 altin -= fiyat;
-                alert(`${isim} tohumu başarıyla satın alındı!`);
-                guncelle();
+                alert("Öğe başarıyla satın alındı ve aktif edildi!");
+                guncelleUI();
             } else {
-                alert("Yeterli altın yok!");
+                alert("Yeterli bakiyeniz bulunmuyor!");
             }
         }
 
-        function reklamIzleOdulAl() {
-            altin += 50;
-            document.getElementById("bilgiMesaji").innerText = "🎁 Reklam ödülü eklendi: +50 Altın!";
-            guncelle();
+        function uretimTopla(tur, miktar) {
+            altin += miktar;
+            alert(`${tur} tesisinden gelir toplandı: +${miktar} 🪙`);
+            guncelleUI();
         }
+
+        function gunlukBonusAl() {
+            altin += 500;
+            alert("Günlük seri bonusu hesaba aktarıldı: +500 🪙");
+            guncelleUI();
+        }
+
+        function gorevTamamla(odul) {
+            altin += odul;
+            alert(`Görev doğrulandı ve ödül cüzdana eklendi: +${odul} 🪙`);
+            guncelleUI();
+        }
+
+        function adsGramReklamCalistir() {
+            // AdsGram SDK entegrasyon kancası
+            altin += 300;
+            document.getElementById("bilgiMesaji").innerText = "🎁 Reklam Onaylandı: +300 Coin Eklendi!";
+            guncelleUI();
+        }
+
+        // İlk yükleme
+        parselleriCiz();
     </script>
 </body>
 </html>
