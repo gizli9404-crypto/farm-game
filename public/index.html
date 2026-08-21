@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stellar Farm: Ultimate Evolution</title>
+    <title>Stellar Farm: Singularity Edition</title>
     <style>
         :root {
-            --bg-deep: #030712;
-            --surface: #0f172a;
-            --surface-glass: rgba(15, 23, 42, 0.94);
+            --bg-deep: #02040a;
+            --surface: #0b1329;
+            --surface-glass: rgba(11, 19, 41, 0.95);
             --border: rgba(255, 255, 255, 0.08);
             --accent-green: #10b981;
             --accent-gold: #f59e0b;
@@ -36,15 +36,15 @@
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: linear-gradient(180deg, #0f172a 0%, #030712 100%);
+            background: linear-gradient(180deg, #0b1329 0%, #02040a 100%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 60px rgba(0,0,0,0.95);
+            box-shadow: 0 0 70px rgba(0,0,0,0.95);
         }
 
-        /* Uçan Değer Efekti (Floating Text) */
+        /* Uçan Değer Efekti */
         .float-number {
             position: absolute;
             font-size: 13px;
@@ -57,13 +57,13 @@
         }
         @keyframes floatUpAnim {
             0% { transform: translateY(0) scale(0.8); opacity: 1; }
-            100% { transform: translateY(-50px) scale(1.25); opacity: 0; }
+            100% { transform: translateY(-55px) scale(1.3); opacity: 0; }
         }
 
         /* Toast Bildirim */
         #toast {
             position: absolute;
-            top: 80px;
+            top: 85px;
             left: 50%;
             transform: translateX(-50%) translateY(-20px);
             background: linear-gradient(135deg, var(--accent-green), #059669);
@@ -105,7 +105,12 @@
         }
         .hud-stat.gold { color: var(--accent-gold); }
 
-        /* Piyasa & Hava Durumu Bantları */
+        /* Bilgi Bantları */
+        .banner-container {
+            display: flex;
+            flex-direction: column;
+            z-index: 9;
+        }
         .market-ticker {
             background: rgba(245, 158, 11, 0.1);
             border-bottom: 1px solid rgba(245, 158, 11, 0.2);
@@ -116,20 +121,20 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 9;
         }
-        .weather-banner {
-            background: rgba(56, 189, 248, 0.1);
-            border-bottom: 1px solid rgba(56, 189, 248, 0.2);
-            color: var(--accent-blue);
+        .event-banner {
+            background: rgba(167, 139, 250, 0.15);
+            border-bottom: 1px solid rgba(167, 139, 250, 0.3);
+            color: var(--accent-purple);
             font-size: 10px;
             font-weight: 800;
             padding: 5px 14px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 9;
+            display: none;
         }
+        .event-banner.active { display: flex; }
 
         /* İçerik Alanı */
         .content-area {
@@ -262,19 +267,21 @@
 
         <!-- Üst HUD -->
         <div class="hud-header">
-            <div class="hud-stat gold"><span>🪙</span> <span id="ui-gold">2000</span></div>
-            <div class="hud-stat" style="color:var(--accent-blue);"><span>📦</span> <span id="ui-inv">0/80</span></div>
+            <div class="hud-stat gold"><span>🪙</span> <span id="ui-gold">2500</span></div>
+            <div class="hud-stat" style="color:var(--accent-blue);"><span>📦</span> <span id="ui-inv">0/100</span></div>
             <div class="hud-stat" style="color:var(--accent-purple);"><span>⭐</span> <span id="ui-xp">0 XP (Lvl 1)</span></div>
         </div>
 
-        <!-- Piyasa & Hava Durumu Bilgi Bantları -->
-        <div class="market-ticker">
-            <span id="ticker-text">📈 Piyasa: Standart Kur (1.0x)</span>
-            <span id="ticker-timer">00:45</span>
-        </div>
-        <div class="weather-banner">
-            <span id="weather-text">☀️ Hava: Güneşli (Normal Büyüme)</span>
-            <span id="weather-timer">01:30</span>
+        <!-- Bilgi ve Etkinlik Bantları -->
+        <div class="banner-container">
+            <div class="market-ticker">
+                <span id="ticker-text">📈 Piyasa: Standart Kur (1.0x)</span>
+                <span id="ticker-timer">00:45</span>
+            </div>
+            <div class="event-banner" id="event-banner">
+                <span id="event-text">⚡ Etkinlik: Altın Yağmuru!</span>
+                <button class="btn gold" style="width:auto; padding:2px 8px; font-size:9px;" onclick="claimEventBonus()">Topla!</button>
+            </div>
         </div>
 
         <!-- Ana Sekmeler -->
@@ -284,25 +291,25 @@
             <div id="pane-farm" class="tab-pane active">
                 <div class="panel">
                     <div class="panel-title">
-                        <span>Ultimate Tarım Parselleri</span>
+                        <span>Singularity Parselleri</span>
                         <select id="seed-select" style="background:#1e293b; color:#fff; border:1px solid var(--border); padding:4px 8px; border-radius:8px; font-size:10px; font-weight:700;">
                             <option value="0">🌾 Buğday (25🪙)</option>
                             <option value="1">🌽 Mısır (60🪙)</option>
                             <option value="2">🍓 Çilek (140🪙)</option>
-                            <option value="3">🎃 Endüstriyel Bal Kabağı (300🪙)</option>
+                            <option value="3">🎃 Bal Kabağı (300🪙)</option>
                         </select>
                     </div>
                     <div class="plots-grid" id="plots-container"></div>
                 </div>
 
                 <div class="panel">
-                    <div class="panel-title">Otomasyon & İşçi Yönetimi</div>
+                    <div class="panel-title">Otomasyon & Lojistik</div>
                     <div class="row-item">
                         <div>
                             <div style="font-weight: 800; font-size: 11px;">🤖 Otopilot Hasat Robotu</div>
                             <div style="font-size: 9px; color: var(--text-muted);">Hazır tarlaları otomatik toplar</div>
                         </div>
-                        <button class="btn blue" style="width: auto; padding: 6px 12px;" onclick="toggleAutoHarvester()" id="auto-harvester-btn">Aktifleştir (500🪙)</button>
+                        <button class="btn blue" style="width: auto; padding: 6px 12px;" onclick="toggleAutoHarvester()" id="auto-harvester-btn">Aktifleştir (600🪙)</button>
                     </div>
                 </div>
             </div>
@@ -365,21 +372,28 @@
                             <div style="font-weight: 800; font-size: 11px;">🚜 Yeni Parsel Genişletme</div>
                             <div style="font-size: 9px; color: var(--text-muted);">Toplam tarla kapasitesini artırır</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="unlockNewPlot()">1200 🪙</button>
+                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="unlockNewPlot()">1400 🪙</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. GÖREVLER & BAŞARIMLAR -->
-            <div id="pane-quests" class="tab-pane">
+            <!-- 4. YETENEK AĞACI (PERKS) -->
+            <div id="pane-perks" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Kariyer Hedefleri</div>
+                    <div class="panel-title">Usta Çiftçi Yetenekleri</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;" id="quest-title-text">🎯 15 Hasat Topla</div>
-                            <div style="font-size: 9px; color: var(--text-muted);" id="quest-progress-text">İlerleme: 0/15 (Ödül: 500 🪙)</div>
+                            <div style="font-weight: 800; font-size: 11px;">🌱 Biyolojik Hızlandırıcı</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Tüm büyüme sürelerini %15 kısaltır</div>
                         </div>
-                        <button class="btn gold" style="width: auto; padding: 6px 12px;" onclick="claimQuestReward()" id="quest-btn">Ödül Al</button>
+                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="buyPerk('speed')" id="perk-speed-btn">Aç (3 Lvl / 400 XP)</button>
+                    </div>
+                    <div class="row-item">
+                        <div>
+                            <div style="font-weight: 800; font-size: 11px;">📈 Borsa Spekülatörü</div>
+                            <div style="font-size: 9px; color: var(--text-muted);">Satış fiyatlarına kalıcı +%20 bonus</div>
+                        </div>
+                        <button class="btn purple" style="width: auto; padding: 6px 12px;" onclick="buyPerk('market')" id="perk-market-btn">Aç (500 XP)</button>
                     </div>
                 </div>
             </div>
@@ -412,13 +426,12 @@
             <button class="nav-item active" onclick="switchTab('farm', this)"><span class="nav-icon">🌾</span><span>Tarla</span></button>
             <button class="nav-item" onclick="switchTab('factory', this)"><span class="nav-icon">🏭</span><span>Fabrika</span></button>
             <button class="nav-item" onclick="switchTab('market', this)"><span class="nav-icon">📈</span><span>Borsa</span></button>
-            <button class="nav-item" onclick="switchTab('quests', this)"><span class="nav-icon">🎯</span><span>Görev</span></button>
+            <button class="nav-item" onclick="switchTab('perks', this)"><span class="nav-icon">⚡</span><span>Yetenek</span></button>
             <button class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayar</span></button>
         </div>
     </div>
 
     <script>
-        // Web Audio Ses Motoru
         let audioActive = true;
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         
@@ -431,17 +444,17 @@
             gain.connect(audioCtx.destination);
 
             if (type === 'click') {
-                osc.frequency.setValueAtTime(500, audioCtx.currentTime);
-                osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.08);
-                gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.08);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.08);
+                osc.frequency.setValueAtTime(550, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(850, audioCtx.currentTime + 0.07);
+                gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.07);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.07);
             } else if (type === 'success') {
-                osc.frequency.setValueAtTime(700, audioCtx.currentTime);
-                osc.frequency.setValueAtTime(1400, audioCtx.currentTime + 0.12);
-                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.2);
-                osc.start(); osc.stop(audioCtx.currentTime + 0.2);
+                osc.frequency.setValueAtTime(750, audioCtx.currentTime);
+                osc.frequency.setValueAtTime(1500, audioCtx.currentTime + 0.1);
+                gain.gain.setValueAtTime(0.07, audioCtx.currentTime);
+                gain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.18);
+                osc.start(); osc.stop(audioCtx.currentTime + 0.18);
             }
         }
 
@@ -461,22 +474,19 @@
             setTimeout(() => el.remove(), 800);
         }
 
-        // Oyun Durumu
         let game = {
-            gold: 2000,
+            gold: 2500,
             xp: 0,
             level: 1,
-            maxInv: 80,
+            maxInv: 100,
             activePlots: 4,
-            totalHarvests: 0,
             marketMultiplier: 1.0,
             marketTimeLeft: 45,
-            weather: 'sunny', // sunny, rainy, drought
-            weatherMultiplier: 1.0,
-            weatherTimeLeft: 90,
             autoHarvesterActive: false,
+            perks: { speedUnlocked: false, marketBonus: false },
             inventory: { wheat: 0, corn: 0, strawberry: 0, pumpkin: 0, milk: 0, egg: 0, bread: 0, cheese: 0 },
-            plots: Array.from({length: 8}, () => ({ status: 'empty', progress: 0, seed: null }))
+            plots: Array.from({length: 8}, () => ({ status: 'empty', progress: 0, seed: null })),
+            lastSavedTime: Date.now()
         };
 
         const seedList = [
@@ -486,39 +496,57 @@
             { name: 'Bal Kabağı', cost: 300, basePrice: 850, xp: 210, time: 16, icon: '🎃', key: 'pumpkin' }
         ];
 
-        // Piyasa ve Hava Durumu Zamanlayıcısı
+        let activeEventBonus = null;
+
+        // Piyasa ve Rastgele Etkinlik Motoru
         setInterval(() => {
-            // Piyasa
             game.marketTimeLeft--;
             if (game.marketTimeLeft <= 0) {
                 game.marketTimeLeft = 45;
-                let multipliers = [0.75, 1.0, 1.25, 1.6, 2.2];
+                let multipliers = [0.8, 1.0, 1.3, 1.7, 2.5];
                 let names = ["📉 Durgun", "📈 Standart", "🔥 Yüksek Talep", "🚀 İhracat Patlaması"];
-                let idx = Math.floor(Math.random() * names.length);
-                game.marketMultiplier = multipliers[idx];
-                document.getElementById('ticker-text').innerText = `📈 Piyasa: ${names[idx]} (${game.marketMultiplier}x)`;
+                game.marketMultiplier = multipliers[Math.floor(Math.random() * multipliers.length)];
+                document.getElementById('ticker-text').innerText = `📈 Piyasa: ${names[Math.floor(Math.random()*names.length)]} (${game.marketMultiplier}x)`;
             }
             document.getElementById('ticker-timer').innerText = `00:${game.marketTimeLeft < 10 ? '0' : ''}${game.marketTimeLeft}`;
 
-            // Hava Durumu
-            game.weatherTimeLeft--;
-            if (game.weatherTimeLeft <= 0) {
-                game.weatherTimeLeft = 90;
-                let wTypes = ['sunny', 'rainy', 'drought'];
-                let wNames = { sunny: '☀️ Güneşli (1.0x)', rainy: '🌧️ Yağmurlu (+50% Hız)', drought: '🔥 Kurak (-30% Hız)' };
-                game.weather = wTypes[Math.floor(Math.random() * wTypes.length)];
-                game.weatherMultiplier = game.weather === 'rainy' ? 1.5 : (game.weather === 'drought' ? 0.7 : 1.0);
-                document.getElementById('weather-text').innerText = `Hava: ${wNames[game.weather]}`;
+            // Rastgele Etkinlik Tetikleyicisi (%5 ihtimal)
+            if (!activeEventBonus && Math.random() < 0.05) {
+                activeEventBonus = 400;
+                document.getElementById('event-banner').classList.add('active');
+                showToast("⚡ Gizli Altın Yağmuru Etkinliği Başladı!");
             }
-            document.getElementById('weather-timer'].innerText = `01:${game.weatherTimeLeft < 10 ? '0' : ''}${game.weatherTimeLeft}`;
         }, 1000);
 
+        function claimEventBonus() {
+            if (!activeEventBonus) return;
+            game.gold += activeEventBonus;
+            showToast(`+${activeEventBonus} 🪙 etkinlik ödülü toplandı!`);
+            activeEventBonus = null;
+            document.getElementById('event-banner').classList.remove('active');
+            playSfx('success');
+            updateUI();
+        }
+
+        // Asenkron Idle (Çevrimdışı) Hesaplayıcı
+        function calculateOfflineProgress() {
+            let now = Date.now();
+            let diffSeconds = Math.floor((now - game.lastSavedTime) / 1000);
+            if (diffSeconds > 30 && game.autoHarvesterActive) {
+                let simulatedHarvests = Math.floor(diffSeconds / 5);
+                let bonusGold = simulatedHarvests * 25;
+                game.gold += bonusGold;
+                showToast(`🤖 Sen yokken işçiler ${bonusGold} 🪙 kazandı!`);
+            }
+        }
+
         function saveGame() {
-            localStorage.setItem('stellar_ultimate_save', JSON.stringify(game));
+            game.lastSavedTime = Date.now();
+            localStorage.setItem('stellar_singularity_save', JSON.stringify(game));
         }
 
         function loadGame() {
-            let saved = localStorage.getItem('stellar_ultimate_save');
+            let saved = localStorage.getItem('stellar_singularity_save');
             if (saved) {
                 try {
                     let parsed = JSON.parse(saved);
@@ -527,8 +555,17 @@
             }
             if (game.autoHarvesterActive) {
                 document.getElementById('auto-harvester-btn').innerText = "Aktif (Çalışıyor)";
-                document.getElementById('auto-harvester-btn'].className = "btn blue locked";
+                document.getElementById('auto-harvester-btn').className = "btn blue locked";
             }
+            if (game.perks.speedUnlocked) {
+                document.getElementById('perk-speed-btn').innerText = "Aktif ✔️";
+                document.getElementById('perk-speed-btn').className = "btn purple locked";
+            }
+            if (game.perks.marketBonus) {
+                document.getElementById('perk-market-btn').innerText = "Aktif ✔️";
+                document.getElementById('perk-market-btn').className = "btn purple locked";
+            }
+            calculateOfflineProgress();
         }
 
         function showToast(text) {
@@ -544,10 +581,6 @@
             document.getElementById('ui-inv').innerText = `${totalInv}/${game.maxInv}`;
             document.getElementById('ui-xp').innerText = `${game.xp} XP (Lvl ${game.level})`;
             document.getElementById('market-stock-info').innerText = `Depo Envanteri (${totalInv})`;
-            
-            let qTarget = 15;
-            let qDone = Math.min(game.totalHarvests, qTarget);
-            document.getElementById('quest-progress-text').innerText = `İlerleme: ${qDone}/${qTarget} (Ödül: 500 🪙)`;
 
             renderPlots();
             saveGame();
@@ -589,15 +622,14 @@
             playSfx('click');
             updateUI();
 
-            let step = (100 / (seed.time * 10));
+            let speedMultiplier = game.perks.speedUnlocked ? 1.35 : 1.0;
+            let step = (100 / (seed.time * 10)) * speedMultiplier;
             let timer = setInterval(() => {
-                plot.progress += (step * game.weatherMultiplier);
+                plot.progress += step;
                 if (plot.progress >= 100) {
                     plot.progress = 100;
                     plot.status = 'ready';
                     clearInterval(plot.timerInterval);
-
-                    // Otopilot açıksa otomatik topla
                     if (game.autoHarvesterActive) {
                         setTimeout(() => autoHarvestPlot(idx), 200);
                     } else {
@@ -618,7 +650,6 @@
             let seed = plot.seed;
             game.inventory[seed.key]++;
             game.xp += seed.xp;
-            game.totalHarvests++;
             plot.status = 'empty';
             plot.seed = null;
             updateUI();
@@ -632,9 +663,8 @@
             let seed = plot.seed;
             game.inventory[seed.key]++;
             game.xp += seed.xp;
-            game.totalHarvests++;
 
-            if (game.xp >= game.level * 200) {
+            if (game.xp >= game.level * 250) {
                 game.level++;
                 showToast(`🎉 Seviye Atlandı: Lvl ${game.level}!`);
             }
@@ -675,7 +705,8 @@
         function sellAllAssets() {
             let inv = game.inventory;
             let rawRevenue = (inv.wheat * 65) + (inv.corn * 160) + (inv.strawberry * 380) + (inv.pumpkin * 850) + (inv.milk * 90) + (inv.egg * 70) + (inv.bread * 180) + (inv.cheese * 260);
-            let finalRevenue = Math.floor(rawRevenue * game.marketMultiplier);
+            let perkMultiplier = game.perks.marketBonus ? 1.2 : 1.0;
+            let finalRevenue = Math.floor(rawRevenue * game.marketMultiplier * perkMultiplier);
 
             if (finalRevenue === 0) { showToast("Satılacak envanter bulunmuyor!"); return; }
 
@@ -688,8 +719,8 @@
 
         function unlockNewPlot() {
             if (game.activePlots >= 8) { showToast("Maksimum parsele ulaşıldı!"); return; }
-            if (game.gold < 1200) { showToast("Yetersiz bakiye (1200 🪙 gerekli)"); return; }
-            game.gold -= 1200;
+            if (game.gold < 1400) { showToast("Yetersiz bakiye (1400 🪙 gerekli)"); return; }
+            game.gold -= 1400;
             game.activePlots++;
             playSfx('success');
             showToast("Yeni arsa tapusu alındı! 🚜");
@@ -698,8 +729,8 @@
 
         function toggleAutoHarvester() {
             if (game.autoHarvesterActive) return;
-            if (game.gold < 500) { showToast("Yetersiz bakiye (500 🪙 gerekli)"); return; }
-            game.gold -= 500;
+            if (game.gold < 600) { showToast("Yetersiz bakiye (600 🪙 gerekli)"); return; }
+            game.gold -= 600;
             game.autoHarvesterActive = true;
             document.getElementById('auto-harvester-btn').innerText = "Aktif (Çalışıyor)";
             document.getElementById('auto-harvester-btn').className = "btn blue locked";
@@ -708,20 +739,30 @@
             updateUI();
         }
 
-        function claimQuestReward() {
-            if (game.totalHarvests >= 15) {
-                game.gold += 500;
-                game.totalHarvests = 0;
-                playSfx('success');
-                showToast("Görev ödülü alındı: +500 🪙!");
-                updateUI();
-            } else {
-                showToast("Görev henüz tamamlanmadı!");
+        function buyPerk(type) {
+            if (type === 'speed') {
+                if (game.perks.speedUnlocked) return;
+                if (game.xp < 400) { showToast("Yetersiz XP (400 XP gerekli)"); return; }
+                game.xp -= 400;
+                game.perks.speedUnlocked = true;
+                document.getElementById('perk-speed-btn').innerText = "Aktif ✔️";
+                document.getElementById('perk-speed-btn').className = "btn purple locked";
+                showToast("Biyolojik Hızlandırıcı yeteneği açıldı! ⚡");
+            } else if (type === 'market') {
+                if (game.perks.marketBonus) return;
+                if (game.xp < 500) { showToast("Yetersiz XP (500 XP gerekli)"); return; }
+                game.xp -= 500;
+                game.perks.marketBonus = true;
+                document.getElementById('perk-market-btn').innerText = "Aktif ✔️";
+                document.getElementById('perk-market-btn').className = "btn purple locked";
+                showToast("Borsa Spekülatörü yeteneği açıldı! 📈");
             }
+            playSfx('success');
+            updateUI();
         }
 
         function hardReset() {
-            localStorage.removeItem('stellar_ultimate_save');
+            localStorage.removeItem('stellar_singularity_save');
             location.reload();
         }
 
