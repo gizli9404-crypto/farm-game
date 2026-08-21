@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Karamürsel Agro Elite: Sovereign v3000</title>
+    <title>AgroVerse Sovereign: Quantum Infinity Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=JetBrains+Mono:wght@700;800&display=swap');
 
         :root {
-            --bg-deep: #020604;
-            --glass-panel: rgba(3, 20, 10, 0.85);
-            --glass-card: rgba(6, 32, 16, 0.75);
-            --neon-mint: #10b981;
+            --bg-deep: #010402;
+            --glass-panel: rgba(2, 18, 9, 0.92);
+            --glass-card: rgba(4, 30, 14, 0.82);
+            --neon-mint: #00ff88;
             --neon-emerald: #059669;
-            --neon-gold: #f59e0b;
-            --neon-amber: #d97706;
-            --neon-cyan: #06b6d4;
-            --neon-purple: #8b5cf6;
-            --neon-pink: #db2777;
+            --neon-gold: #ffb703;
+            --neon-amber: #fb8500;
+            --neon-cyan: #00f0ff;
+            --neon-purple: #b5179e;
             --text-main: #f0fdf4;
             --text-muted: #6ee7b7;
         }
@@ -40,13 +39,13 @@
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: radial-gradient(circle at 50% 10%, #064e3b 0%, #022c22 45%, #020604 90%);
+            background: radial-gradient(circle at 50% 15%, #033a23 0%, #011c10 50%, #010402 95%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
-            border: 2px solid rgba(16, 185, 129, 0.4);
-            box-shadow: 0 0 120px rgba(16, 185, 129, 0.35), inset 0 0 70px rgba(16, 185, 129, 0.12);
+            border: 2px solid rgba(0, 255, 136, 0.45);
+            box-shadow: 0 0 160px rgba(0, 255, 136, 0.3), inset 0 0 80px rgba(0, 255, 136, 0.12);
         }
 
         #fx-canvas {
@@ -64,11 +63,11 @@
             background: rgba(1, 14, 6, 0.98);
             border: 2px solid var(--neon-gold);
             color: var(--neon-gold);
-            padding: 10px 24px;
+            padding: 11px 24px;
             border-radius: 30px;
             font-size: 12px;
             font-weight: 800;
-            box-shadow: 0 15px 50px rgba(245, 158, 11, 0.5);
+            box-shadow: 0 20px 60px rgba(255, 183, 3, 0.6);
             opacity: 0;
             transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 1000;
@@ -78,14 +77,14 @@
         }
         #floating-toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* ÜST PROFİL VE HUD */
+        /* ÜST HUD */
         .elite-hud {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 12px 16px;
             background: var(--glass-panel);
-            border-bottom: 2px solid rgba(16, 185, 129, 0.35);
+            border-bottom: 2px solid rgba(0, 255, 136, 0.35);
             z-index: 10;
             backdrop-filter: blur(30px);
         }
@@ -96,34 +95,34 @@
             background: rgba(0,0,0,0.6);
             padding: 4px 10px 4px 4px;
             border-radius: 20px;
-            border: 1px solid rgba(16,185,129,0.3);
+            border: 1px solid rgba(0,255,136,0.35);
         }
         .user-avatar {
-            width: 26px; height: 26px;
+            width: 28px; height: 28px;
             background: linear-gradient(135deg, var(--neon-gold), var(--neon-amber));
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 13px;
-            box-shadow: 0 0 10px rgba(245,158,11,0.5);
+            box-shadow: 0 0 12px rgba(255,183,3,0.7);
         }
         .hud-pills-group { display: flex; gap: 6px; }
         .hud-pill {
             display: flex;
             align-items: center;
             gap: 5px;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.75);
             padding: 5px 10px;
             border-radius: 16px;
-            border: 1px solid rgba(16, 185, 129, 0.4);
+            border: 1px solid rgba(0, 255, 136, 0.45);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 10.5px;
+            font-size: 10px;
             font-weight: 800;
-            box-shadow: inset 0 0 15px rgba(16, 185, 129, 0.15);
+            box-shadow: inset 0 0 15px rgba(0, 255, 136, 0.15);
         }
-        .hud-pill.cash { color: var(--neon-mint); border-color: rgba(16, 185, 129, 0.6); }
-        .hud-pill.harvest { color: var(--neon-gold); border-color: rgba(245, 158, 11, 0.6); }
+        .hud-pill.cash { color: var(--neon-mint); border-color: rgba(0, 255, 136, 0.65); }
+        .hud-pill.harvest { color: var(--neon-gold); border-color: rgba(255, 183, 3, 0.65); }
 
         .main-container {
             flex-grow: 1;
@@ -140,23 +139,23 @@
 
         .elite-card {
             background: var(--glass-card);
-            border: 2px solid rgba(16, 185, 129, 0.35);
+            border: 2px solid rgba(0, 255, 136, 0.4);
             border-radius: 24px;
             padding: 18px;
             display: flex;
             flex-direction: column;
             gap: 14px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(25px);
             position: relative;
             overflow: hidden;
         }
         .elite-card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--neon-mint), var(--neon-gold), transparent);
+            background: linear-gradient(90deg, transparent, var(--neon-mint), var(--neon-gold), var(--neon-cyan), transparent);
         }
         .card-header {
-            font-size: 11.5px;
+            font-size: 12px;
             font-weight: 800;
             text-transform: uppercase;
             color: var(--neon-mint);
@@ -164,12 +163,12 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1.5px solid rgba(16, 185, 129, 0.2);
+            border-bottom: 1.5px solid rgba(0, 255, 136, 0.25);
             padding-bottom: 8px;
         }
 
         .action-btn {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.3), rgba(5, 150, 105, 0.5));
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.3), rgba(5, 150, 105, 0.5));
             color: var(--text-main);
             border: 2px solid var(--neon-mint);
             padding: 12px 16px;
@@ -179,31 +178,31 @@
             cursor: pointer;
             width: 100%;
             transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.3);
         }
-        .action-btn:hover { background: rgba(16, 185, 129, 0.5); box-shadow: 0 0 35px rgba(16, 185, 129, 0.6); transform: translateY(-2px); }
+        .action-btn:hover { background: rgba(0, 255, 136, 0.5); box-shadow: 0 0 40px rgba(0, 255, 136, 0.7); transform: translateY(-2px); }
         .action-btn:active { transform: scale(0.94); }
-        .action-btn.gold { background: linear-gradient(135deg, rgba(245, 158, 11, 0.35), rgba(217, 119, 6, 0.5)); color: var(--neon-gold); border-color: var(--neon-gold); box-shadow: 0 0 35px rgba(245,158,11,0.45); }
-        .action-btn.cyan { background: linear-gradient(135deg, rgba(6, 182, 212, 0.35), rgba(8, 145, 178, 0.5)); color: var(--neon-cyan); border-color: var(--neon-cyan); box-shadow: 0 0 35px rgba(6,182,212,0.45); }
-        .action-btn.purple { background: linear-gradient(135deg, rgba(139, 92, 246, 0.35), rgba(109, 40, 217, 0.5)); color: #c084fc; border-color: #8b5cf6; box-shadow: 0 0 35px rgba(139,92,246,0.45); }
+        .action-btn.gold { background: linear-gradient(135deg, rgba(255, 183, 3, 0.35), rgba(251, 133, 0, 0.5)); color: var(--neon-gold); border-color: var(--neon-gold); box-shadow: 0 0 40px rgba(255,183,3,0.5); }
+        .action-btn.cyan { background: linear-gradient(135deg, rgba(0, 240, 255, 0.35), rgba(0, 150, 180, 0.5)); color: var(--neon-cyan); border-color: var(--neon-cyan); box-shadow: 0 0 40px rgba(0,240,255,0.5); }
+        .action-btn.purple { background: linear-gradient(135deg, rgba(181, 23, 158, 0.35), rgba(120, 10, 100, 0.5)); color: #ff75f0; border-color: var(--neon-purple); box-shadow: 0 0 40px rgba(181,23,158,0.5); }
         .action-btn.locked { background: rgba(1, 12, 5, 0.9); color: #047857; border-color: #064e3b; cursor: not-allowed; box-shadow: none; }
 
         .flex-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
         .sub-box {
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid rgba(16, 185, 129, 0.3);
+            background: rgba(0, 0, 0, 0.65);
+            border: 2px solid rgba(0, 255, 136, 0.35);
             border-radius: 18px;
             padding: 14px;
             display: flex;
             flex-direction: column;
             gap: 8px;
             text-align: center;
-            box-shadow: inset 0 0 15px rgba(16,185,129,0.08);
+            box-shadow: inset 0 0 15px rgba(0,255,136,0.08);
             transition: all 0.25s;
         }
-        .sub-box:hover { transform: translateY(-3px); border-color: var(--neon-mint); box-shadow: 0 0 25px rgba(16,185,129,0.25); }
+        .sub-box:hover { transform: translateY(-3px); border-color: var(--neon-mint); box-shadow: 0 0 30px rgba(0,255,136,0.3); }
 
-        /* İZOMETRİK / 3D TARLA IZGARASI */
+        /* TARLA MATRİSİ */
         .plot-matrix {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -211,8 +210,8 @@
             margin-top: 4px;
         }
         .plot-node {
-            background: rgba(2, 16, 7, 0.88);
-            border: 2px solid rgba(16, 185, 129, 0.4);
+            background: rgba(2, 20, 9, 0.9);
+            border: 2px solid rgba(0, 255, 136, 0.45);
             border-radius: 18px;
             padding: 14px 6px;
             display: flex;
@@ -224,25 +223,25 @@
             transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             position: relative;
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6);
         }
-        .plot-node:hover { border-color: var(--neon-gold); box-shadow: 0 0 30px rgba(245,158,11,0.4); transform: translateY(-4px); }
+        .plot-node:hover { border-color: var(--neon-gold); box-shadow: 0 0 35px rgba(255,183,3,0.5); transform: translateY(-4px); }
         .plot-node:active { transform: scale(0.92); }
-        .plot-emoji { font-size: 36px; filter: drop-shadow(0 0 15px rgba(16,185,129,0.8)); transition: transform 0.3s; }
+        .plot-emoji { font-size: 34px; filter: drop-shadow(0 0 15px rgba(0,255,136,0.8)); transition: transform 0.3s; }
         .plot-node:hover .plot-emoji { transform: scale(1.3) rotate(10deg); }
         .plot-desc { font-size: 8.5px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .plot-bar {
             width: 100%;
-            height: 7px;
-            background: rgba(1, 35, 15, 0.9);
+            height: 6px;
+            background: rgba(1, 40, 18, 0.9);
             border-radius: 4px;
             overflow: hidden;
-            border: 1px solid rgba(16,185,129,0.35);
+            border: 1px solid rgba(0,255,136,0.4);
         }
         .plot-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--neon-emerald), var(--neon-mint)); transition: width 0.3s; }
 
         .terminal-log {
-            background: #000301;
+            background: #000402;
             border: 2px solid var(--neon-mint);
             border-radius: 14px;
             padding: 10px;
@@ -254,12 +253,12 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
-            box-shadow: inset 0 0 20px rgba(16,185,129,0.15);
+            box-shadow: inset 0 0 20px rgba(0,255,136,0.15);
         }
 
         .list-row {
-            background: rgba(0, 0, 0, 0.55);
-            border: 2px solid rgba(16, 185, 129, 0.3);
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid rgba(0, 255, 136, 0.35);
             border-radius: 18px;
             padding: 12px 16px;
             display: flex;
@@ -268,18 +267,18 @@
             gap: 10px;
             transition: all 0.2s;
         }
-        .list-row:hover { border-color: var(--neon-mint); box-shadow: 0 0 20px rgba(16,185,129,0.25); }
+        .list-row:hover { border-color: var(--neon-mint); box-shadow: 0 0 25px rgba(0,255,136,0.3); }
 
-        /* ÜST SEGMENT ALT MENÜ (DOCK) */
+        /* ALT DOCK MENÜ */
         .elite-dock {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             background: var(--glass-panel);
-            border-top: 2px solid rgba(16, 185, 129, 0.35);
+            border-top: 2px solid rgba(0, 255, 136, 0.4);
             padding: 8px 4px;
             z-index: 10;
             backdrop-filter: blur(30px);
-            box-shadow: 0 -25px 40px rgba(0,0,0,0.8);
+            box-shadow: 0 -25px 40px rgba(0,0,0,0.85);
         }
         .dock-btn {
             background: transparent;
@@ -289,7 +288,7 @@
             flex-direction: column;
             align-items: center;
             gap: 3px;
-            font-size: 9px;
+            font-size: 8.5px;
             font-weight: 800;
             padding: 6px 0;
             cursor: pointer;
@@ -299,11 +298,11 @@
         .dock-btn:hover { color: var(--neon-mint); }
         .dock-btn.active {
             color: var(--neon-gold);
-            background: rgba(245, 158, 11, 0.2);
-            border: 1px solid rgba(245, 158, 11, 0.5);
-            box-shadow: 0 0 25px rgba(245, 158, 11, 0.4);
+            background: rgba(255, 183, 3, 0.22);
+            border: 1px solid rgba(255, 183, 3, 0.55);
+            box-shadow: 0 0 30px rgba(255, 183, 3, 0.45);
         }
-        .dock-icon { font-size: 16px; transition: transform 0.2s; }
+        .dock-icon { font-size: 15px; transition: transform 0.2s; }
         .dock-btn.active .dock-icon { transform: scale(1.35); }
     </style>
 </head>
@@ -311,17 +310,17 @@
 
     <div id="game-viewport">
         <canvas id="fx-canvas"></canvas>
-        <div id="floating-toast">KARAMÜRSEL AGRO ELITE 🌟</div>
+        <div id="floating-toast">AGROVERSE INFINITY 🌟</div>
 
-        <!-- ÜST BİLGİ BARİ -->
+        <!-- ÜST HUD BAR -->
         <div class="elite-hud">
             <div class="user-badge">
                 <div class="user-avatar">👑</div>
-                <div style="font-size: 11px; font-weight: 800; color: var(--text-main);">Sovereign</div>
+                <div style="font-size: 11px; font-weight: 800; color: var(--text-main);">Sovereign Master</div>
             </div>
             <div class="hud-pills-group">
-                <div class="hud-pill cash"><span>💵</span> <span id="ui-cash">5,000,000,000₺</span></div>
-                <div class="hud-pill harvest"><span>🌾</span> <span id="ui-crop-points">100,000 CP</span></div>
+                <div class="hud-pill cash"><span>💵</span> <span id="ui-cash">25,000,000,000₺</span></div>
+                <div class="hud-pill harvest"><span>🌾</span> <span id="ui-crop-points">500,000 CP</span></div>
             </div>
         </div>
 
@@ -330,39 +329,39 @@
             <!-- 1. SEKME: TARLA -->
             <div id="tab-plots" class="tab-section active">
                 <div class="elite-card">
-                    <div class="card-header"><span>Karamürsel Kuantum Tarlaları</span> <span style="color:var(--neon-gold);">9 Parsel Aktif</span></div>
-                    <div style="font-size: 9px; color: var(--text-muted);">Kuantum tohumları ekin, lazerle sula ve efsane hasat toplayın!</div>
+                    <div class="card-header"><span>Kuantum Tarım Matrisi</span> <span style="color:var(--neon-gold);">9 Parsel Aktif</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Tohumları ekin, fotonik lazerle hızlandırın ve efsane hasatları toplayın!</div>
                     <div class="plot-matrix" id="farm-plots-grid"></div>
                 </div>
                 <div class="elite-card">
-                    <div class="card-header"><span>Canlı Tarla Terminali</span></div>
+                    <div class="card-header"><span>Canlı Operasyon Terminali</span></div>
                     <div id="log-plots" class="terminal-log">
-                        <div>[SYSTEM] Sovereign v3000 tarla matrisi aktif.</div>
+                        <div>[SYSTEM] AgroVerse Infinity v5000 aktif ve kararlı.</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. SEKME: ENDÜSTRİ & AHIR -->
+            <!-- 2. SEKME: ENDÜSTRİ -->
             <div id="tab-industry" class="tab-section">
                 <div class="elite-card">
                     <div class="card-header"><span>Otonom Hayvancılık & Sera</span> <span style="color:var(--neon-cyan);">Mega Passive</span></div>
-                    <div style="font-size: 9px; color: var(--text-muted);">Cyborg inekler ve fotonik seralarla saniyeler içinde devasa gelirler üretin!</div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Cyborg inekler ve fotonik seralarla saniyeler içinde devasa pasif gelirler üretin!</div>
                     <div class="flex-grid-2">
                         <div class="sub-box" style="border-color: var(--neon-gold);">
-                            <div style="font-size: 26px;">🐄</div>
+                            <div style="font-size: 24px;">🐄</div>
                             <div style="font-size: 11px; font-weight: 800; color: var(--neon-gold);">Cyborg İnek Sürüsü</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Saniyede +250M₺ Nakit</div>
-                            <button class="action-btn gold" style="font-size: 9px; padding: 7px;" onclick="upgradeIndustry('cow')">Ahır Kur (100M₺)</button>
+                            <div style="font-size: 8px; color: var(--text-muted);">Saniyede +1B₺ Nakit</div>
+                            <button class="action-btn gold" style="font-size: 9px; padding: 7px;" onclick="upgradeIndustry('cow')">Ahır Kur (500M₺)</button>
                         </div>
                         <div class="sub-box" style="border-color: var(--neon-cyan);">
-                            <div style="font-size: 26px;">🌿</div>
+                            <div style="font-size: 24px;">🌿</div>
                             <div style="font-size: 11px; font-weight: 800; color: var(--neon-cyan);">Fotonik UV Sera</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Büyüme hızını 4 katına çıkarır</div>
-                            <button class="action-btn cyan" style="font-size: 9px; padding: 7px;" onclick="upgradeIndustry('uv')">Kur (150M₺)</button>
+                            <div style="font-size: 8px; color: var(--text-muted);">Büyüme hızını 5 katına çıkarır</div>
+                            <button class="action-btn cyan" style="font-size: 9px; padding: 7px;" onclick="upgradeIndustry('uv')">Kur (750M₺)</button>
                         </div>
                     </div>
                     <div id="log-industry" class="terminal-log">
-                        <div>[INDUSTRY] Otomasyon birimleri senkronize.</div>
+                        <div>[INDUSTRY] Otomasyon hatları senkronize.</div>
                     </div>
                 </div>
             </div>
@@ -371,42 +370,42 @@
             <div id="tab-market" class="tab-section">
                 <div class="elite-card">
                     <div class="card-header"><span>GDO Genetik & Küresel Borsa</span> <span style="color:var(--neon-mint);">Singularity Lab</span></div>
-                    <div style="font-size: 9px; color: var(--text-muted);">Kuantum mutasyon tohumlarıyla hasat çarpanını uçurun, borsada satın!</div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Kuantum mutasyon tohumlarıyla hasat çarpanını uçurun, borsada yüksek kârla sat!</div>
                     <div class="list-row" style="border-color: var(--neon-mint);">
                         <div>
-                            <div style="font-weight: 800; font-size: 11px;" id="ui-cp-rate">1 CP = 500,000₺ Borsa Kuru</div>
+                            <div style="font-weight: 800; font-size: 10.5px;" id="ui-cp-rate">1 CP = 2,000,000₺ Borsa Kuru</div>
                             <div style="font-size: 8px; color: var(--text-muted);">Tüm mahsul stokunu galaktik pazara ihraç edin</div>
                         </div>
                         <button class="action-btn" style="width: auto; padding: 7px 12px;" onclick="sellAllCrops()">Hepsini Sat 💰</button>
                     </div>
                     <div class="flex-grid-2" style="margin-top: 4px;">
-                        <button class="action-btn purple" style="font-size: 9px;" onclick="upgradeGenetics('wheat')">Super-Wheat (50x) 🧬</button>
-                        <button class="action-btn pink" style="font-size: 9px;" onclick="upgradeGenetics('olive')">Divine Olive (250x) 🫒</button>
+                        <button class="action-btn purple" style="font-size: 9px;" onclick="upgradeGenetics('wheat')">Super-Wheat (100x) 🧬</button>
+                        <button class="action-btn gold" style="font-size: 9px;" onclick="upgradeGenetics('olive')">Divine Olive (500x) 🫒</button>
                     </div>
                     <div id="log-market" class="terminal-log" style="margin-top: 4px;">
-                        <div>[MARKET] Borsa endeksleri üst seviyede.</div>
+                        <div>[MARKET] Borsa endeksleri tavan yaptı.</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. SEKME: İHRACAT & SÖZLEŞMELER -->
+            <!-- 4. SEKME: İHRACAT -->
             <div id="tab-export" class="tab-section">
                 <div class="elite-card">
                     <div class="card-header"><span>Galaktik İhracat Sözleşmeleri</span> <span style="color:var(--neon-gold);">Cosmic Contracts</span></div>
-                    <div style="font-size: 9px; color: var(--text-muted);">Güneş sistemi kolonileriyle büyük tonajlı gıda anlaşmaları imzalayın!</div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Güneş sistemi kolonileriyle devasa tonajlı gıda anlaşmaları imzalayın!</div>
                     <div class="list-row">
                         <div>
                             <div style="font-weight: 800; font-size: 11px;">Mars Kolonisi Tedariği</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Ödül: 15,000M₺ Nakit</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Ödül: 50,000M₺ Nakit</div>
                         </div>
-                        <button class="action-btn cyan" style="width: auto; padding: 7px 12px;" onclick="signContract(15000000000, 50000, this)">Anlaş (50k CP)</button>
+                        <button class="action-btn cyan" style="width: auto; padding: 7px 12px;" onclick="signContract(50000000000, 40000, this)">Anlaş (40k CP)</button>
                     </div>
                     <div class="list-row">
                         <div>
                             <div style="font-weight: 800; font-size: 11px;">Andromeda Monopoli</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Ödül: 50,000M₺ Nakit</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Ödül: 250,000M₺ Nakit</div>
                         </div>
-                        <button class="action-btn gold" style="width: auto; padding: 7px 12px;" onclick="signContract(50000000000, 200000, this)">İmzala (200k CP)</button>
+                        <button class="action-btn gold" style="width: auto; padding: 7px 12px;" onclick="signContract(250000000000, 150000, this)">İmzala (150k CP)</button>
                     </div>
                     <div id="log-export" class="terminal-log">
                         <div>[EXPORT] Hiperuzay konteynerleri hazır.</div>
@@ -414,14 +413,14 @@
                 </div>
             </div>
 
-            <!-- 5. SEKME: ŞANS ÇARKI -->
+            <!-- 5. SEKME: ŞANS ÇARKı -->
             <div id="tab-wheel" class="tab-section">
                 <div class="elite-card">
-                    <div class="card-header"><span>Karamürsel Kuantum Şans Çarkı</span> <span style="color:var(--neon-gold);">Lucky Spinner</span></div>
-                    <div style="font-size: 9px; color: var(--text-muted);">Galaktik sandıktan her gün büyük sürpriz ödüller kazanın!</div>
-                    <div style="text-align: center; padding: 14px; background: rgba(0,0,0,0.55); border-radius: 18px; border: 2px solid var(--neon-gold);">
-                        <div style="font-size: 38px;">🎁</div>
-                        <div style="font-size: 11.5px; font-weight: 800; color: var(--neon-gold); margin: 8px 0;" id="wheel-result-text">Ödülünü Almaya Hazır Mısın?</div>
+                    <div class="card-header"><span>Kuantum Şans Çarkı</span> <span style="color:var(--neon-gold);">Lucky Spinner</span></div>
+                    <div style="font-size: 9px; color: var(--text-muted);">Galaktik sandıktan her gün muazzam sürpriz ödüller kazanın!</div>
+                    <div style="text-align: center; padding: 14px; background: rgba(0,0,0,0.6); border-radius: 18px; border: 2px solid var(--neon-gold);">
+                        <div style="font-size: 36px;">🎁</div>
+                        <div style="font-size: 11px; font-weight: 800; color: var(--neon-gold); margin: 8px 0;" id="wheel-result-text">Ödülünü Almaya Hazır Mısın?</div>
                         <button class="action-btn gold" onclick="spinWheel()">Çarkı Çevir 🚀</button>
                     </div>
                     <div id="log-wheel" class="terminal-log">
@@ -433,11 +432,11 @@
             <!-- 6. SEKME: AI & ŞÖLEN -->
             <div id="tab-agroai" class="tab-section">
                 <div class="elite-card">
-                    <div class="card-header"><span>Karamürsel Agro-AI Sovereign Ajanı</span> <span style="color:var(--neon-gold);">ULTRA AKTİF</span></div>
+                    <div class="card-header"><span>Agro-AI Sovereign Ajanı</span> <span style="color:var(--neon-gold);">ULTRA AKTİF</span></div>
                     <div id="log-agroai" class="terminal-log">
-                        <div>[AGRO-AI] Evrensel zeka entegre edildi.</div>
+                        <div>[AGRO-AI] Evrensel yapay zeka çekirdeği aktif.</div>
                     </div>
-                    <div class="list-row" style="background: rgba(245,158,11,0.1); border-color: var(--neon-gold);">
+                    <div class="list-row" style="background: rgba(255,183,3,0.1); border-color: var(--neon-gold);">
                         <div>
                             <div style="font-weight: 800; font-size: 11px; color: var(--neon-gold);">Kuantum Bereket Patlaması 🌟</div>
                             <div style="font-size: 8px; color: var(--text-muted);">Tüm tarlaları anında coşturur, havai fişek şöleni başlatır!</div>
@@ -456,7 +455,7 @@
 
         </div>
 
-        <!-- ÜST SEGMENT ALT MENÜ (DOCK) -->
+        <!-- ALT DOCK MENÜ -->
         <div class="elite-dock">
             <button class="dock-btn active" onclick="switchTab('plots', this)"><span class="dock-icon">🌾</span><span>Tarla</span></button>
             <button class="dock-btn" onclick="switchTab('industry', this)"><span class="dock-icon">🐄</span><span>Endüstri</span></button>
@@ -505,20 +504,20 @@
                 this.x = x; this.y = y; this.color = color; this.type = type;
                 if (type === 'firework') {
                     const angle = Math.random() * Math.PI * 2;
-                    const speed = Math.random() * 8 + 2;
+                    const speed = Math.random() * 9 + 2;
                     this.vx = Math.cos(angle) * speed;
                     this.vy = Math.sin(angle) * speed;
                     this.alpha = 1;
-                    this.decay = Math.random() * 0.015 + 0.008;
+                    this.decay = Math.random() * 0.012 + 0.006;
                 } else if (type === 'rain') {
-                    this.vx = 1; this.vy = Math.random() * 10 + 6; this.alpha = 0.8;
+                    this.vx = 1; this.vy = Math.random() * 12 + 8; this.alpha = 0.85;
                 } else if (type === 'meteor') {
-                    this.vx = -Math.random() * 7 - 3; this.vy = Math.random() * 8 + 5; this.alpha = 1;
+                    this.vx = -Math.random() * 8 - 4; this.vy = Math.random() * 10 + 6; this.alpha = 1;
                 }
             }
             update() {
                 this.x += this.vx; this.y += this.vy;
-                if (this.type === 'firework') { this.vy += 0.2; this.alpha -= this.decay; }
+                if (this.type === 'firework') { this.vy += 0.22; this.alpha -= this.decay; }
                 else if (this.type === 'meteor') { this.alpha -= 0.015; }
                 if (this.y > canvas.height && (this.type === 'rain' || this.type === 'meteor')) {
                     this.y = 0; this.x = Math.random() * canvas.width;
@@ -529,28 +528,28 @@
                 ctx.globalAlpha = Math.max(0, this.alpha);
                 ctx.fillStyle = this.color;
                 ctx.beginPath();
-                if (this.type === 'rain') { ctx.fillRect(this.x, this.y, 1.5, 12); }
-                else if (this.type === 'meteor') { ctx.fillRect(this.x, this.y, 2.5, 20); }
-                else { ctx.arc(this.x, this.y, 4, 0, Math.PI * 2); ctx.fill(); }
+                if (this.type === 'rain') { ctx.fillRect(this.x, this.y, 1.8, 14); }
+                else if (this.type === 'meteor') { ctx.fillRect(this.x, this.y, 3, 22); }
+                else { ctx.arc(this.x, this.y, 4.5, 0, Math.PI * 2); ctx.fill(); }
                 ctx.restore();
             }
         }
 
         function launchFireworks(px, py) {
-            playSound(783.99, 'triangle', 0.1);
-            const colors = ['#10b981', '#f59e0b', '#06b6d4', '#8b5cf6', '#db2777', '#fef08a'];
+            playSound(880, 'triangle', 0.1);
+            const colors = ['#00ff88', '#ffb703', '#00f0ff', '#b5179e', '#ff70a6', '#fdffb6'];
             const color = colors[Math.floor(Math.random() * colors.length)];
-            for (let i = 0; i < 50; i++) particles.push(new Particle(px, py, color, 'firework'));
+            for (let i = 0; i < 60; i++) particles.push(new Particle(px, py, color, 'firework'));
         }
 
         function setWeather(mode) {
             weatherMode = mode;
             particles = particles.filter(p => p.type !== 'rain' && p.type !== 'meteor');
             if (mode === 'rain') {
-                for(let i=0; i<60; i++) particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height, '#06b6d4', 'rain'));
+                for(let i=0; i<70; i++) particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height, '#00f0ff', 'rain'));
                 showToast("Kuantum Yağmuru Aktif! 🌧️");
             } else if (mode === 'meteor') {
-                for(let i=0; i<35; i++) particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height, '#f59e0b', 'meteor'));
+                for(let i=0; i<40; i++) particles.push(new Particle(Math.random() * canvas.width, Math.random() * canvas.height, '#ffb703', 'meteor'));
                 showToast("Meteor Şöleni Başladı! ☄️");
                 launchFireworks(canvas.width/2, canvas.height/2);
             }
@@ -567,15 +566,15 @@
         loopFX();
 
         let farm = {
-            cash: 5000000000,
-            cropPoints: 100000,
-            siloCapacity: 2000000,
-            cpRate: 500000,
+            cash: 25000000000,
+            cropPoints: 500000,
+            siloCapacity: 10000000,
+            cpRate: 2000000,
             greenhouseUV: false,
             cows: 0,
             geneticsWheat: false,
             geneticsOlive: false,
-            plots: Array.from({length: 9}, (_, i) => ({ id: i, state: 'empty', crop: null, progress: 0, maxTime: 4 }))
+            plots: Array.from({length: 9}, (_, i) => ({ id: i, state: 'empty', crop: null, progress: 0, maxTime: 3 }))
         };
 
         function showToast(text) {
@@ -634,22 +633,22 @@
                 plot.state = 'growing';
                 plot.crop = Math.random() > 0.5 ? 'wheat' : 'corn';
                 plot.progress = 0;
-                plot.maxTime = (farm.greenhouseUV || weatherMode === 'rain') ? 2 : 4;
-                playSound(523.25, 'sine', 0.05);
+                plot.maxTime = (farm.greenhouseUV || weatherMode === 'rain') ? 1.5 : 3;
+                playSound(587.33, 'sine', 0.05);
                 showToast("Kuantum Tohum Ekildi! 🌱");
                 appendLog('log-plots', `[PLANT] Parsel #${id + 1} üzerine ${plot.crop} ekildi.`);
             } else if (plot.state === 'ready') {
-                let reward = plot.crop === 'wheat' ? 5000 : 10000;
-                if (farm.geneticsWheat && plot.crop === 'wheat') reward *= 50;
-                if (farm.geneticsOlive && plot.crop === 'corn') reward *= 250;
-                if (weatherMode === 'meteor') reward *= 3;
+                let reward = plot.crop === 'wheat' ? 25000 : 50000;
+                if (farm.geneticsWheat && plot.crop === 'wheat') reward *= 100;
+                if (farm.geneticsOlive && plot.crop === 'corn') reward *= 500;
+                if (weatherMode === 'meteor') reward *= 4;
                 
                 farm.cropPoints += reward;
                 if (farm.cropPoints > farm.siloCapacity) farm.cropPoints = farm.siloCapacity;
                 
                 plot.state = 'empty'; plot.crop = null; plot.progress = 0;
-                playSound(1046.5, 'sine', 0.1);
-                showToast(`Efsane Hasat: +${reward} CP! 🌟`);
+                playSound(1174.66, 'sine', 0.1);
+                showToast(`Efsane Hasat: +${reward.toLocaleString()} CP! 🌟`);
                 appendLog('log-plots', `[HARVEST] Parsel #${id + 1} toplandı: +${reward} CP.`);
             }
             renderPlots();
@@ -663,16 +662,16 @@
                     if (plot.progress >= plot.maxTime) plot.state = 'ready';
                 }
             });
-            if (farm.cows > 0) farm.cash += (250000000 * farm.cows);
+            if (farm.cows > 0) farm.cash += (1000000000 * farm.cows);
             renderPlots();
             updateUI();
         }, 1000);
 
         function spinWheel() {
-            playSound(880, 'square', 0.12);
+            playSound(987.77, 'square', 0.12);
             let rewards = [
-                { type: 'cash', val: 5000000000, text: '5 Bilyon₺ Nakit Ödül Kazandın! 💵' },
-                { type: 'cp', val: 250000, text: '250,000 CP Hasat Puanı Kazandın! 🌾' }
+                { type: 'cash', val: 25000000000, text: '25 Bilyon₺ Nakit Ödül Kazandın! 💵' },
+                { type: 'cp', val: 1000000, text: '1,000,000 CP Hasat Puanı Kazandın! 🌾' }
             ];
             let won = rewards[Math.floor(Math.random() * rewards.length)];
             if (won.type === 'cash') farm.cash += won.val;
@@ -687,14 +686,14 @@
 
         function upgradeIndustry(type) {
             if (type === 'cow') {
-                if (farm.cash < 100000000) { showToast("Yetersiz bakiye!"); return; }
-                farm.cash -= 100000000; farm.cows++;
+                if (farm.cash < 500000000) { showToast("Yetersiz bakiye!"); return; }
+                farm.cash -= 500000000; farm.cows++;
                 appendLog('log-industry', `[INDUSTRY] Cyborg İnek eklendi (Toplam: ${farm.cows})`);
                 showToast("Cyborg İnek Sürüsü Eklendi! 🐄");
             } else if (type === 'uv') {
                 if (farm.greenhouseUV) { showToast("UV Işıklar zaten aktif!"); return; }
-                if (farm.cash < 150000000) { showToast("Yetersiz bakiye!"); return; }
-                farm.cash -= 150000000; farm.greenhouseUV = true;
+                if (farm.cash < 750000000) { showToast("Yetersiz bakiye!"); return; }
+                farm.cash -= 750000000; farm.greenhouseUV = true;
                 appendLog('log-industry', "[INDUSTRY] Fotonik UV seralar kuruldu.");
                 showToast("Fotonik UV Sera Aktif! 🌿");
             }
@@ -704,15 +703,15 @@
         function upgradeGenetics(type) {
             if (type === 'wheat') {
                 if (farm.geneticsWheat) { showToast("Zaten aktif!"); return; }
-                if (farm.cash < 300000000) { showToast("Yetersiz bakiye!"); return; }
-                farm.cash -= 300000000; farm.geneticsWheat = true;
-                appendLog('log-market', "[LAB] Quantum Super-Wheat genetiği çözüldü (50x).");
+                if (farm.cash < 1000000000) { showToast("Yetersiz bakiye!"); return; }
+                farm.cash -= 1000000000; farm.geneticsWheat = true;
+                appendLog('log-market', "[LAB] Quantum Super-Wheat genetiği çözüldü (100x).");
                 showToast("Quantum Super-Wheat Aktif! 🧬");
             } else if (type === 'olive') {
                 if (farm.geneticsOlive) { showToast("Zaten aktif!"); return; }
-                if (farm.cash < 600000000) { showToast("Yetersiz bakiye!"); return; }
-                farm.cash -= 600000000; farm.geneticsOlive = true;
-                appendLog('log-market', "[LAB] Cosmic Divine Olive genetiği çözüldü (250x).");
+                if (farm.cash < 2500000000) { showToast("Yetersiz bakiye!"); return; }
+                farm.cash -= 2500000000; farm.geneticsOlive = true;
+                appendLog('log-market', "[LAB] Cosmic Divine Olive genetiği çözüldü (500x).");
                 showToast("Cosmic Divine Olive Aktif! 🫒");
             }
             updateUI();
@@ -726,8 +725,8 @@
             farm.cropPoints = 0;
             
             launchFireworks(canvas.width / 2, canvas.height / 2);
-            appendLog('log-market', `[MARKET] ${sold} CP ihraç edildi: +${revenue}₺ kazanç.`);
-            showToast(`İhracat Başarılı: +${revenue}₺! 💰`);
+            appendLog('log-market', `[MARKET] ${sold} CP ihraç edildi: +${revenue.toLocaleString()}₺ kazanç.`);
+            showToast(`İhracat Başarılı: +${revenue.toLocaleString()}₺! 💰`);
             updateUI();
         }
 
@@ -737,17 +736,17 @@
             btn.innerText = "İmzalandı ✔️"; btn.className = "action-btn locked";
             launchFireworks(canvas.width / 2, canvas.height / 2);
             appendLog('log-export', `[EXPORT] Sözleşme imzalandı: +${reward}₺`);
-            showToast(`Anlaşma Tamamlandı! +${reward}₺ 🚢`);
+            showToast(`Anlaşma Tamamlandı! +${reward.toLocaleString()}₺ 🚢`);
             updateUI();
         }
 
         function triggerCosmicFireworks() {
-            farm.cropPoints += 250000;
+            farm.cropPoints += 1000000;
             farm.plots.forEach(p => p.state = 'ready');
-            for (let i = 0; i < 6; i++) {
-                setTimeout(() => launchFireworks(Math.random() * canvas.width, Math.random() * canvas.height), i * 150);
+            for (let i = 0; i < 8; i++) {
+                setTimeout(() => launchFireworks(Math.random() * canvas.width, Math.random() * canvas.height), i * 140);
             }
-            appendLog('log-agroai', "[AGRO-AI] Kuantum bereket patlatıldı: Tarlalar doldu!");
+            appendLog('log-agroai', "[AGRO-AI] Kuantum bereket patlatıldı: Tarlalar fulllendi!");
             showToast("Kuantum Bereket Şöleni Başladı! 🌟🚀");
             updateUI();
         }
