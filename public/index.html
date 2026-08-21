@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Quantum Syndicate: Telegram Mini-App</title>
-    <!-- Telegram WebApp SDK -->
+    <title>Syndicate-Net: Omniversal Singularity Core v12.0</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-deep: #0f141d;
-            --surface: #171e2e;
-            --surface-glass: rgba(23, 30, 46, 0.95);
-            --border: rgba(56, 189, 248, 0.25);
-            --neon-green: #34d399;
-            --neon-cyan: #38bdf8;
-            --neon-orange: #fb923c;
-            --neon-purple: #a78bfa;
-            --neon-pink: #f472b6;
-            --text-main: #f1f5f9;
-            --text-muted: #94a3b8;
+            --bg-deep: #000000;
+            --surface: #040108;
+            --surface-glass: rgba(4, 1, 8, 0.98);
+            --border: rgba(168, 85, 247, 0.4);
+            --neon-purple: #a855f7;
+            --neon-cyan: #06b6d4;
+            --neon-emerald: #10b981;
+            --neon-amber: #f59e0b;
+            --neon-crimson: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #64748b;
         }
 
         * { box-sizing: border-box; user-select: none; -webkit-user-select: none; margin: 0; padding: 0; font-family: 'Fira Code', monospace, sans-serif; }
@@ -38,13 +37,13 @@
             max-width: 440px;
             height: 100%;
             max-height: 900px;
-            background: linear-gradient(180deg, #171e2e 0%, #0f141d 100%);
+            background: linear-gradient(180deg, #040108 0%, #000000 100%);
             display: flex;
             flex-direction: column;
             position: relative;
             overflow: hidden;
             border: 1px solid var(--border);
-            box-shadow: 0 0 50px rgba(56, 189, 248, 0.15);
+            box-shadow: 0 0 200px rgba(168, 85, 247, 0.25);
         }
 
         #toast {
@@ -52,14 +51,14 @@
             top: 75px;
             left: 50%;
             transform: translateX(-50%) translateY(-20px);
-            background: rgba(56, 189, 248, 0.2);
-            border: 1px solid var(--neon-cyan);
-            color: var(--neon-cyan);
+            background: rgba(168, 85, 247, 0.2);
+            border: 1px solid var(--neon-purple);
+            color: var(--neon-purple);
             padding: 6px 14px;
             border-radius: 8px;
             font-size: 10px;
             font-weight: 700;
-            box-shadow: 0 4px 15px rgba(56, 189, 248, 0.3);
+            box-shadow: 0 4px 25px rgba(168, 85, 247, 0.4);
             opacity: 0;
             transition: all 0.3s ease;
             z-index: 1000;
@@ -81,15 +80,15 @@
             display: flex;
             align-items: center;
             gap: 4px;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0,0,0,0.85);
             padding: 4px 8px;
             border-radius: 6px;
             border: 1px solid var(--border);
             font-size: 9px;
             font-weight: 700;
         }
-        .hud-stat.cash { color: var(--neon-green); }
-        .hud-stat.crypto { color: var(--neon-orange); }
+        .hud-stat.cash { color: var(--neon-emerald); }
+        .hud-stat.crypto { color: var(--neon-amber); }
 
         .content-area {
             flex-grow: 1;
@@ -115,7 +114,7 @@
             font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
-            color: var(--neon-cyan);
+            color: var(--neon-purple);
             letter-spacing: 1px;
             display: flex;
             justify-content: space-between;
@@ -123,9 +122,9 @@
         }
 
         .btn {
-            background: rgba(56, 189, 248, 0.1);
-            color: var(--neon-cyan);
-            border: 1px solid var(--neon-cyan);
+            background: rgba(168, 85, 247, 0.12);
+            color: var(--neon-purple);
+            border: 1px solid var(--neon-purple);
             padding: 8px 12px;
             border-radius: 6px;
             font-weight: 700;
@@ -134,14 +133,15 @@
             width: 100%;
             transition: 0.2s;
         }
-        .btn:active { background: rgba(56, 189, 248, 0.3); transform: scale(0.98); }
-        .btn.purple { background: rgba(167, 139, 250, 0.1); color: var(--neon-purple); border-color: var(--neon-purple); }
-        .btn.orange { background: rgba(251, 146, 60, 0.1); color: var(--neon-orange); border-color: var(--neon-orange); }
-        .btn.green { background: rgba(52, 211, 153, 0.1); color: var(--neon-green); border-color: var(--neon-green); }
+        .btn:active { background: rgba(168, 85, 247, 0.3); transform: scale(0.98); }
+        .btn.cyan { background: rgba(6, 182, 212, 0.12); color: var(--neon-cyan); border-color: var(--neon-cyan); }
+        .btn.emerald { background: rgba(16, 185, 129, 0.12); color: var(--neon-emerald); border-color: var(--neon-emerald); }
+        .btn.amber { background: rgba(245, 158, 11, 0.12); color: var(--neon-amber); border-color: var(--neon-amber); }
+        .btn.crimson { background: rgba(244, 63, 94, 0.12); color: var(--neon-crimson); border-color: var(--neon-crimson); }
         .btn.locked { background: #1e293b; color: var(--text-muted); border-color: #334155; cursor: not-allowed; }
 
         .row-item {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.65);
             border: 1px solid rgba(255,255,255,0.05);
             border-radius: 8px;
             padding: 8px 10px;
@@ -151,16 +151,42 @@
             gap: 8px;
         }
 
-        /* Terminal Konsolu */
+        /* Omniversal Radar */
+        #omni-radar {
+            background: #010003;
+            border: 1px solid var(--neon-purple);
+            border-radius: 8px;
+            height: 130px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .omni-node {
+            position: absolute;
+            background: var(--neon-cyan);
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            box-shadow: 0 0 25px var(--neon-cyan);
+            animation: pulse-omni 0.8s infinite alternate;
+        }
+        @keyframes pulse-omni {
+            0% { transform: scale(0.2); opacity: 0.2; }
+            100% { transform: scale(2.1); opacity: 1; }
+        }
+
+        /* Terminal */
         #terminal-box {
-            background: #090d16;
-            border: 1px solid var(--neon-cyan);
+            background: #000;
+            border: 1px solid var(--neon-purple);
             border-radius: 8px;
             padding: 8px;
-            height: 150px;
+            height: 130px;
             overflow-y: auto;
             font-size: 9px;
-            color: var(--neon-green);
+            color: var(--neon-purple);
             display: flex;
             flex-direction: column;
             gap: 4px;
@@ -168,7 +194,7 @@
         .terminal-input-row { display: flex; gap: 6px; }
         .terminal-input {
             flex-grow: 1;
-            background: #0f141d;
+            background: #040108;
             border: 1px solid var(--border);
             color: #fff;
             padding: 6px 8px;
@@ -201,8 +227,8 @@
             transition: 0.2s;
         }
         .nav-item.active {
-            color: var(--neon-cyan);
-            background: rgba(56, 189, 248, 0.1);
+            color: var(--neon-purple);
+            background: rgba(168, 85, 247, 0.12);
             border: 1px solid var(--border);
         }
         .nav-icon { font-size: 14px; }
@@ -211,106 +237,102 @@
 <body>
 
     <div id="game-viewport">
-        <div id="toast">TELEGRAM MINI-APP ACTIVE</div>
+        <div id="toast">OMNIVERSAL SINGULARITY ACTIVE</div>
 
         <!-- Üst HUD -->
         <div class="hud-header">
-            <div class="hud-stat cash"><span>💵</span> <span id="ui-cash">12000₺</span></div>
+            <div class="hud-stat cash"><span>💵</span> <span id="ui-cash">5000000₺</span></div>
             <div class="hud-stat crypto"><span>🪙</span> <span id="ui-xmr">0.00 XMR</span></div>
-            <div class="hud-stat" style="color:var(--neon-purple);"><span>⚡</span> <span id="ui-hash">0 EH/s</span></div>
-            <div class="hud-stat" style="color:var(--neon-pink);"><span id="ui-user">TG: @User</span></div>
+            <div class="hud-stat" style="color:var(--neon-cyan);"><span>⚛️</span> <span id="ui-omni">0.0 O-Flux</span></div>
+            <div class="hud-stat" style="color:var(--neon-purple);"><span id="ui-realms">0 Realm</span></div>
         </div>
 
         <!-- İçerik Alanı -->
         <div class="content-area">
 
-            <!-- 1. MADENCİLİK & KÜTLESEL DÜĞÜMLER -->
+            <!-- 1. OMNIVERSE & RADAR -->
             <div id="pane-rigs" class="tab-pane active">
                 <div class="panel">
-                    <div class="panel-title"><span>Telegram Botnet & Düğüm Ekosistemi</span> <span id="ui-core-count">0 Düğüm</span></div>
-                    <div class="row-item">
-                        <div>
-                            <div style="font-weight: 700; font-size: 10px;">Mini-App Airdrop Node</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">+3.0 EH/s Güç Üretir</div>
-                        </div>
-                        <button class="btn cyan" style="width: auto; padding: 6px 10px;" onclick="buyNode('airdrop')">Başlat (10000₺)</button>
-                    </div>
-                    <div class="row-item">
-                        <div>
-                            <div style="font-weight: 700; font-size: 10px;">Quantum Telegram Singularity</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">+15.0 EH/s Üstün Güç</div>
-                        </div>
-                        <button class="btn purple" style="width: auto; padding: 6px 10px;" onclick="buyNode('singularity')">Ateşle (40000₺)</button>
+                    <div class="panel-title"><span>Çoklu Evren Radar Matrisi</span> <span id="ui-realm-count">0 Aktif</span></div>
+                    <div id="omni-radar">
+                        <div style="position: absolute; font-size: 8px; color: var(--text-muted); top: 4px; left: 6px;">Omniversal Singularity Stabilized...</div>
                     </div>
                 </div>
 
                 <div class="panel">
-                    <div class="panel-title">Telegram Otomatik Staking Botu</div>
+                    <div class="panel-title">Boyutsal Geçitler & Realmler</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Channel Auto-Compound Bot</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Saniyede otomatik pasif XMR akışı sağlar</div>
+                            <div style="font-weight: 700; font-size: 10px;">Quantum Realm Shifter</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">+300.0 O-Flux & Otonom Likidite Sifonlama</div>
                         </div>
-                        <button class="btn green" style="width: auto; padding: 6px 10px;" onclick="toggleAutoBot()" id="autobot-btn">Aktifleştir</button>
+                        <button class="btn cyan" style="width: auto; padding: 6px 10px;" onclick="buyRealm('shifter')">Aç (2500000₺)</button>
+                    </div>
+                    <div class="row-item">
+                        <div>
+                            <div style="font-weight: 700; font-size: 10px;">Omniversal God Core</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">+1200.0 O-Flux Sınırsız Gerçeklik Üretimi</div>
+                        </div>
+                        <button class="btn crimson" style="width: auto; padding: 6px 10px;" onclick="buyRealm('core')">Mühürle (10000000₺)</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 2. MINI-APP CLI TERMINAL -->
+            <!-- 2. OMNI TERMINAL -->
             <div id="pane-terminal" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Telegram Root Terminal</div>
+                    <div class="panel-title">Omni-Shell v12.0 Core</div>
                     <div id="terminal-box">
-                        <div>[TG-SYS] WebApp tüneli bağlandı. 'help' yazarak komutları listeleyin.</div>
+                        <div>[OMNI] Sınırsız evrenler arası tünel aktif. 'help' yazarak komutları listeleyin.</div>
                     </div>
                     <div class="terminal-input-row">
-                        <input type="text" id="terminal-input" class="terminal-input" placeholder="Komut yazın (örn: claim)..." onkeydown="handleTerminalInput(event)">
+                        <input type="text" id="terminal-input" class="terminal-input" placeholder="Komut girin (örn: omni-shift)..." onkeydown="handleTerminalInput(event)">
                         <button class="btn" style="width: 70px;" onclick="executeCommand()">Çalıştır</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 3. BORSA & DEX -->
+            <!-- 3. KÜRESEL BORSA & LİKİDİTE -->
             <div id="pane-market" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Mini-App Likidite Borsası</div>
+                    <div class="panel-title">Omniversal Likidite Borsası</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;" id="ui-market-rate">Monero (XMR) Kuru: 10000₺</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Tüm kripto varlıkları anında nakite çevir</div>
+                            <div style="font-weight: 700; font-size: 10px;" id="ui-market-rate">Monero (XMR) Kuru: 500000₺</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Evrensel varlıkları anlık nakite dönüştür</div>
                         </div>
-                        <button class="btn orange" style="width: auto; padding: 6px 10px;" onclick="sellAllCrypto()">Hepsini Sat 💸</button>
+                        <button class="btn amber" style="width: auto; padding: 6px 10px;" onclick="sellAllCrypto()">Hepsini Sat 💸</button>
                     </div>
                 </div>
                 <div class="panel">
-                    <div class="panel-title">Yapay Zeka Borsa Manipülatörü</div>
+                    <div class="panel-title">Infinite Quantum Loop Engine</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Telegram Arbitrage Engine v5</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Otomatik dip alım satım yapar</div>
+                            <div style="font-weight: 700; font-size: 10px;">God-Level Yield Engine</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Zaman ve mekânı katlayarak bileşke kar üretir</div>
                         </div>
-                        <button class="btn green" style="width: auto; padding: 6px 10px;" onclick="buyArbitrageAI()" id="arb-btn">Bağlan (60000₺)</button>
+                        <button class="btn emerald" style="width: auto; padding: 6px 10px;" onclick="buyOmniEngine()" id="omni-btn">Bağlan (50000000₺)</button>
                     </div>
                 </div>
             </div>
 
-            <!-- 4. GÖREVLER & AIRDROP -->
+            <!-- 4. TANRITSAL HAKİMİYET GÖREVLERİ -->
             <div id="pane-scripts" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Telegram Topluluk Görevleri</div>
+                    <div class="panel-title">Tanrısal Hakimiyet Operasyonları</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Kanal Abone Dağıtımı & Airdrop</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Görev tamamla (Ödül: 30000₺)</div>
+                            <div style="font-weight: 700; font-size: 10px;">Tüm Gerçeklik Çizgilerini Senkronize Et</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Sınırsız evrensel akış (Ödül: 25000000₺)</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="runTask(30000, this)">Ödülü Topla</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="runOmniOp(25000000, this)">Operasyonu Başlat</button>
                     </div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Global Mini-App Ekosistem Sızması</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Ağları ele geçir (Ödül: 50000₺)</div>
+                            <div style="font-weight: 700; font-size: 10px;">Omniverse Mutlak Hakimi Ol</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Tüm boyutların kontrolünü ele geçir (Ödül: 100000000₺)</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="runTask(50000, this)">Operasyonu Başlat</button>
+                        <button class="btn" style="width: auto; padding: 6px 10px;" onclick="runOmniOp(100000000, this)">Tahta Geç</button>
                     </div>
                 </div>
             </div>
@@ -318,13 +340,13 @@
             <!-- 5. AYARLAR -->
             <div id="pane-settings" class="tab-pane">
                 <div class="panel">
-                    <div class="panel-title">Telegram Oturum Kontrolü</div>
+                    <div class="panel-title">Omniversal Sıfırlama</div>
                     <div class="row-item">
                         <div>
-                            <div style="font-weight: 700; font-size: 10px;">Mini-App Veritabanını Sıfırla</div>
-                            <div style="font-size: 8px; color: var(--text-muted);">Tüm düğümleri ve bakiyeyi temizler</div>
+                            <div style="font-weight: 700; font-size: 10px;">Matrisi Sıfırla</div>
+                            <div style="font-size: 8px; color: var(--text-muted);">Tüm omniversal verileri kalıcı olarak siler</div>
                         </div>
-                        <button class="btn" style="width: auto; padding: 6px 10px; color:var(--neon-pink); border-color:var(--neon-pink);" onclick="hardReset()">Format At</button>
+                        <button class="btn" style="border-color:var(--text-muted); color:var(--text-muted); width: auto; padding: 6px 10px;" onclick="hardReset()">Sıfırla</button>
                     </div>
                 </div>
             </div>
@@ -333,34 +355,28 @@
 
         <!-- Alt Navigasyon Dock -->
         <div class="nav-dock">
-            <button class="nav-item active" onclick="switchTab('rigs', this)"><span class="nav-icon">🤖</span><span>Düğüm</span></button>
+            <button class="nav-item active" onclick="switchTab('rigs', this)"><span class="nav-icon">⚛️</span><span>Omni</span></button>
             <button class="nav-item" onclick="switchTab('terminal', this)"><span class="nav-icon">💻</span><span>Terminal</span></button>
             <button class="nav-item" onclick="switchTab('market', this)"><span class="nav-icon">📈</span><span>Borsa</span></button>
-            <button class="nav-item" onclick="switchTab('scripts', this)"><span class="nav-icon">⭐</span><span>Airdrop</span></button>
+            <button class="nav-item" onclick="switchTab('scripts', this)"><span class="nav-icon">👑</span><span>Hakimiyet</span></button>
             <button class="nav-item" onclick="switchTab('settings', this)"><span class="nav-icon">⚙️</span><span>Ayar</span></button>
         </div>
     </div>
 
     <script>
-        // Telegram WebApp Entegrasyonu Başlangıcı
         const tg = window.Telegram?.WebApp;
         if (tg) {
             tg.ready();
             tg.expand();
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                let username = tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name;
-                document.getElementById('ui-user').innerText = `@${username}`;
-            }
         }
 
         let game = {
-            cash: 12000,
+            cash: 5000000,
             xmr: 0,
-            hashrate: 0,
-            nodes: { airdrop: 0, singularity: 0 },
-            autoBotActive: false,
-            arbAIActive: false,
-            xmrRate: 10000
+            omniEnergy: 0,
+            realmCount: 0,
+            omniActive: false,
+            xmrRate: 500000
         };
 
         function showToast(text) {
@@ -370,18 +386,45 @@
             setTimeout(() => t.classList.remove('show'), 2000);
         }
 
-        // Ana Saniyeler Döngüsü
+        // Radar Döngüsü
+        function spawnOmniNodes() {
+            let radar = document.getElementById('omni-radar');
+            radar.querySelectorAll('.omni-node').forEach(n => n.remove());
+
+            let count = Math.min(game.realmCount + 4, 16);
+            document.getElementById('ui-realm-count').innerText = `${count} Aktif`;
+
+            for (let i = 0; i < count; i++) {
+                let node = document.createElement('div');
+                node.className = 'omni-node';
+                node.style.top = `${Math.floor(Math.random() * 65) + 20}%`;
+                node.style.left = `${Math.floor(Math.random() * 85) + 10}%`;
+                radar.appendChild(node);
+
+                if (game.realmCount > 0) {
+                    setTimeout(() => {
+                        if (node && node.parentNode) {
+                            let autoLoot = Math.floor(Math.random() * 300000) + 100000;
+                            game.cash += autoLoot;
+                            node.remove();
+                            updateUI();
+                        }
+                    }, 2000);
+                }
+            }
+        }
+        setInterval(spawnOmniNodes, 3500);
+        spawnOmniNodes();
+
+        // Zaman Döngüsü (1 Saniye)
         setInterval(() => {
-            if (game.hashrate > 0) {
-                game.xmr += (game.hashrate * 0.0012);
+            if (game.omniEnergy > 0) {
+                game.xmr += (game.omniEnergy * 0.03);
             }
-            if (game.autoBotActive && game.hashrate > 0) {
-                game.xmr *= 1.06;
-            }
-            if (game.arbAIActive && game.xmr > 0) {
-                let revenue = game.xmr * 0.3 * game.xmrRate;
-                game.cash += revenue;
-                game.xmr *= 0.7;
+            if (game.omniActive && game.xmr > 0) {
+                let rev = game.xmr * 0.99 * game.xmrRate;
+                game.cash += rev;
+                game.xmr *= 0.01;
             }
             updateUI();
         }, 1000);
@@ -389,36 +432,26 @@
         function updateUI() {
             document.getElementById('ui-cash').innerText = `${Math.floor(game.cash)}₺`;
             document.getElementById('ui-xmr').innerText = `${game.xmr.toFixed(4)} XMR`;
-            document.getElementById('ui-hash').innerText = `${game.hashrate.toFixed(1)} EH/s`;
-            let totalNodes = game.nodes.airdrop + game.nodes.singularity;
-            document.getElementById('ui-core-count').innerText = `${totalNodes} Düğüm`;
+            document.getElementById('ui-omni').innerText = `${game.omniEnergy.toFixed(1)} O-Flux`;
+            document.getElementById('ui-realms').innerText = `${game.realmCount} Realm`;
         }
 
-        function buyNode(type) {
-            if (type === 'airdrop') {
-                if (game.cash < 10000) { showToast("Yetersiz bakiye!"); return; }
-                game.cash -= 10000;
-                game.nodes.airdrop++;
-                game.hashrate += 3.0;
-                showToast("Airdrop Node başarıyla kuruldu! ⚡");
-            } else if (type === 'singularity') {
-                if (game.cash < 40000) { showToast("Yetersiz bakiye!"); return; }
-                game.cash -= 40000;
-                game.nodes.singularity++;
-                game.hashrate += 15.0;
-                showToast("Telegram Singularity aktifleşti! 🔮");
+        function buyRealm(type) {
+            if (type === 'shifter') {
+                if (game.cash < 2500000) { showToast("Yetersiz bakiye!"); return; }
+                game.cash -= 2500000;
+                game.realmCount++;
+                game.omniEnergy += 300.0;
+                showToast("Quantum Realm Shifter açıldı! ⚛️");
+            } else if (type === 'core') {
+                if (game.cash < 10000000) { showToast("Yetersiz bakiye!"); return; }
+                game.cash -= 10000000;
+                game.realmCount += 4;
+                game.omniEnergy += 1200.0;
+                showToast("Omniversal God Core mühürlendi! 🌌");
             }
+            spawnOmniNodes();
             updateUI();
-        }
-
-        function toggleAutoBot() {
-            game.autoBotActive = !game.autoBotActive;
-            let btn = document.getElementById('autobot-btn');
-            if (game.autoBotActive) {
-                btn.innerText = "Aktif ✔️";
-                btn.className = "btn green locked";
-                showToast("Channel Auto-Compound Bot devrede!");
-            }
         }
 
         function sellAllCrypto() {
@@ -426,27 +459,27 @@
             let total = game.xmr * game.xmrRate;
             game.cash += total;
             game.xmr = 0;
-            showToast(`+${total.toFixed(1)}₺ bütçeye eklendi!`);
+            showToast(`+${total.toFixed(1)}₺ cüzdana aktarıldı!`);
             updateUI();
         }
 
-        function buyArbitrageAI() {
-            if (game.arbAIActive) return;
-            if (game.cash < 60000) { showToast("Yetersiz bakiye!"); return; }
-            game.cash -= 60000;
-            game.arbAIActive = true;
-            let btn = document.getElementById('arb-btn');
+        function buyOmniEngine() {
+            if (game.omniActive) return;
+            if (game.cash < 50000000) { showToast("Yetersiz bakiye!"); return; }
+            game.cash -= 50000000;
+            game.omniActive = true;
+            let btn = document.getElementById('omni-btn');
             btn.innerText = "Aktif ✔️";
-            btn.className = "btn green locked";
-            showToast("Telegram Arbitrage Engine tam güçte! 🚀");
+            btn.className = "btn emerald locked";
+            showToast("God-Level Yield Engine maksimum güçte! 🚀");
             updateUI();
         }
 
-        function runTask(reward, btn) {
+        function runOmniOp(reward, btn) {
             game.cash += reward;
             btn.innerText = "Tamamlandı ✔️";
             btn.className = "btn locked";
-            showToast(`Görev tamamlandı: +${reward}₺!`);
+            showToast(`Tanrısal operasyon başarılı: +${reward}₺!`);
             updateUI();
         }
 
@@ -462,27 +495,21 @@
 
             if (!cmd) return;
 
-            box.innerHTML += `<div>tg-root@matrix:~$ ${input.value}</div>`;
+            box.innerHTML += `<div>omni@matrix:~$ ${input.value}</div>`;
 
             if (cmd === 'help') {
-                box.innerHTML += `<div>> Komutlar: claim, sync, blast, status, clear, cash</div>`;
-            } else if (cmd === 'claim') {
-                game.xmr += 0.8;
-                box.innerHTML += `<div>> [SUCCESS] Airdrop talep edildi: +0.8 XMR cüzdana eklendi!</div>`;
-            } else if (cmd === 'blast') {
-                if (game.hashrate > 0) {
-                    let p = Math.floor(Math.random() * 5000) + 2000;
-                    game.cash += p;
-                    box.innerHTML += `<div>> [SUCCESS] Mini-App patlaması başarılı: +${p}₺!</div>`;
-                } else {
-                    box.innerHTML += `<div>> [HATA] Aktif düğüm bulunamadı!</div>`;
-                }
-            } else if (cmd === 'sync') {
-                box.innerHTML += `<div>> [OK] Telegram bot API senkronizasyonu tamamlandı.</div>`;
+                box.innerHTML += `<div>> Komutlar: omni-shift, omni-mint, status, clear, cash</div>`;
+            } else if (cmd === 'omni-shift') {
+                let p = Math.floor(Math.random() * 2000000) + 1000000;
+                game.cash += p;
+                box.innerHTML += `<div>> [SUCCESS] Evrenler arası kayma: +${p}₺!</div>`;
+            } else if (cmd === 'omni-mint') {
+                game.xmr += 500.0;
+                box.innerHTML += `<div>> [SUCCESS] Saf tanrısal enerji mühürlendi: +500.0 XMR eklendi!</div>`;
             } else if (cmd === 'status') {
-                box.innerHTML += `<div>> Hash: ${game.hashrate.toFixed(1)} EH/s | XMR: ${game.xmr.toFixed(4)}</div>`;
+                box.innerHTML += `<div>> O-Flux: ${game.omniEnergy.toFixed(1)} | Realms: ${game.realmCount}</div>`;
             } else if (cmd === 'clear') {
-                box.innerHTML = `<div>[TG-SYS] Terminal temizlendi.</div>`;
+                box.innerHTML = `<div>[OMNI] Terminal temizlendi.</div>`;
             } else if (cmd === 'cash') {
                 box.innerHTML += `<div>> Mevcut Nakit: ${Math.floor(game.cash)}₺</div>`;
             } else {
