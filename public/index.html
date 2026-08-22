@@ -266,25 +266,29 @@
             saveData();
         }
 
-        // --- GÜNCELLENMİŞ MONETAG TETİKLEYİCİSİ ---
+        // --- GÜVENLİ MONETAG / FALLBACK TETİKLEYİCİSİ ---
         function reklamIzleBoostAl() {
             if (typeof show_11631125 === 'function') {
+                // Gerçek Monetag Reklam fonksiyonu aktifse çalıştır
                 show_11631125().then(() => {
-                    // Reklam başarıyla tamamlandıysa ödülü ver
-                    gameData.skor += 10.00;
-                    gameData.enerji = maxEnerji;
-                    guncelleUI();
-                    saveData();
-                    modalKapat();
+                    odulVerVeSogut();
                 }).catch((err) => {
-                    console.log("Reklam gösterilemedi veya kapatıldı.", err);
-                    alert("Reklam yüklenemedi veya engelleyiciye takıldı. Lütfen tarayıcı/reklam engelleyicinizi kontrol edin.");
+                    console.log("Reklam gösterilemedi, test/yedek moda geçiliyor.", err);
+                    odulVerVeSogut(); // Hata verse bile kullanıcıyı mağdur etme
                 });
             } else {
-                // Eğer script yüklenemediyse (Test/Fallback ortamı)
-                console.warn("Monetag fonksiyonu bulunamadı (show_11631125 is not defined).");
-                alert("Reklam betiği yüklenemedi. Engelleyicinizi kapatıp tekrar deneyin.");
+                // Betik yüklenemediyse (Telegram WebView engeli vb.) direkt ödülü verip sistemi çalıştırmaya devam et
+                console.warn("Monetag fonksiyonu bulunamadı, güvenli mod üzerinden ödül verildi.");
+                odulVerVeSogut();
             }
+        }
+
+        function odulVerVeSogut() {
+            gameData.skor += 10.00;
+            gameData.enerji = maxEnerji;
+            guncelleUI();
+            saveData();
+            modalKapat();
         }
 
         // --- BAŞLATICI ---
