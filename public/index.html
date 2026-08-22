@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apex Core S-Tier Elite - Telegram Mini App</title>
-    <!-- Monetag Telegram Mini App SDK Script -->
-    <script src="https://alwingulla.com/88/tag.min.js" data-zone="11631125" async data-cfasync="false"></script>
     <style>
         :root {
             --bg: #030508;
@@ -266,18 +264,30 @@
             saveData();
         }
 
-        // --- MONETAG REKLAM ENTEGRASYONU (PANELİN ORİJİNAL YAPISI) ---
+        // --- MONETAG SDK DİNAMİK YÜKLEYİCİ ---
+        function loadMonetagSDK() {
+            if (document.getElementById('monetag-sdk')) return;
+            const script = document.createElement('script');
+            script.id = 'monetag-sdk';
+            script.src = 'https://alwingulla.com/88/tag.min.js';
+            script.setAttribute('data-zone', '11631125');
+            script.async = true;
+            script.dataset.cfasync = 'false';
+            document.head.appendChild(script);
+        }
+        loadMonetagSDK();
+
+        // --- MONETAG REKLAM ENTEGRASYONU ---
         function reklamIzleBoostAl() {
-            if (typeof show_11631125 === 'function') {
-                show_11631125().then(() => {
-                    // Kullanıcı reklamı başarıyla izleyip kapattığında tetiklenir
+            if (typeof window.show_11631125 === 'function') {
+                window.show_11631125().then(() => {
                     odulVerVeSogut();
                 }).catch((err) => {
-                    console.warn("Reklam gösterilemedi, yedek akış devreye giriyor:", err);
+                    console.warn("Reklam gösterimi hata verdi, yedek ödül:", err);
                     odulVerVeSogut();
                 });
             } else {
-                console.warn("Monetag fonksiyonu yüklenemedi, doğrudan ödül veriliyor.");
+                console.warn("Monetag fonksiyonu yüklenemedi, test ödülü veriliyor.");
                 odulVerVeSogut();
             }
         }
