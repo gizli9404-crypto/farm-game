@@ -124,7 +124,7 @@
             <div class="card" style="border-color: var(--pink);">
                 <div class="card-title" style="color: var(--pink);">🚀 Acil Soğutma ve Turbo Boost</div>
                 <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">
-                    Sistemi anında fullemek, aşırı yükü kaldırmak ve bonus +10.00 APEX kazanmak için destekleyici reklamı izleyin.
+                    Sistemi anında fullemek ve bonus +10.00 APEX kazanmak için tıklayın.
                 </div>
                 <button class="btn btn-ad" onclick="reklamIzleBoostAl()">🎬 SİSTEMİ SOĞUT VE +10 APEX KAZAN</button>
             </div>
@@ -266,20 +266,19 @@
             saveData();
         }
 
-        // --- MONETAG REKLAM ENTEGRASYONU (REWARDED INTERSTITIAL) ---
+        // --- GÜVENLİ MONETAG REKLAM KONTROLÜ ---
         function reklamIzleBoostAl() {
             if (typeof window.show_11631125 === 'function') {
                 window.show_11631125().then(() => {
-                    // Kullanıcı reklamı başarıyla izlediğinde ödül verilir
+                    console.log("Reklam başarıyla izlendi, ödül yükleniyor.");
                     odulVerVeSogut();
                 }).catch((err) => {
-                    console.log("Reklam gösterim hatası veya kapatıldı:", err);
-                    // Hata durumunda veya reklam kapatıldığında akışın kesilmemesi için
+                    console.warn("Reklam gösterilemedi veya kapatıldı, yedek ödül tetikleniyor:", err);
+                    // Kullanıcı reklam havuzunda boşluk nedeniyle reklam göremezse oyunu tıkamamak için ödülü veriyoruz
                     odulVerVeSogut();
                 });
             } else {
-                // Eğer script henüz yüklenmediyse güvenli geçiş
-                console.warn("Monetag scripti yüklenemedi, test modunda ödül verildi.");
+                console.warn("Monetag SDK yüklenemedi (AdBlock engelliyor olabilir). Doğrudan ödül veriliyor.");
                 odulVerVeSogut();
             }
         }
