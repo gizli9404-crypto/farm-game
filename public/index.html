@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apex Core S-Tier Elite - Telegram Mini App</title>
+    <!-- Monetag Telegram Mini App SDK Script -->
+    <script src="https://alwingulla.com/88/tag.min.js" data-zone="11631125" async data-cfasync="false"></script>
     <style>
         :root {
             --bg: #030508;
@@ -122,9 +124,9 @@
             <div class="card" style="border-color: var(--pink);">
                 <div class="card-title" style="color: var(--pink);">🚀 Acil Soğutma ve Turbo Boost</div>
                 <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">
-                    Sistemi anında fullemek, aşırı yükü kaldırmak ve bonus +10.00 APEX kazanmak için soğutma modülünü çalıştırın.
+                    Sistemi anında fullemek, aşırı yükü kaldırmak ve bonus +10.00 APEX kazanmak için destekleyici reklamı izleyin.
                 </div>
-                <button class="btn btn-ad" onclick="reklamIzleBoostAl()">❄️ SİSTEMİ SOĞUT VE +10 APEX KAZAN</button>
+                <button class="btn btn-ad" onclick="reklamIzleBoostAl()">🎬 SİSTEMİ SOĞUT VE +10 APEX KAZAN</button>
             </div>
 
             <div class="card">
@@ -159,7 +161,7 @@
         <div class="modal-card">
             <div style="font-size: 36px; margin-bottom: 10px;">⚠️</div>
             <div style="font-size: 14px; font-weight: 900; color: var(--pink); margin-bottom: 6px;">SİSTEM AŞIRI YÜKLENDİ!</div>
-            <button class="btn btn-ad" style="margin-bottom: 8px;" onclick="reklamIzleBoostAl()">❄️ SİSTEMİ ACİL SOĞUT</button>
+            <button class="btn btn-ad" style="margin-bottom: 8px;" onclick="reklamIzleBoostAl()">🎬 SİSTEMİ ACİL SOĞUT</button>
             <button class="btn" style="background: transparent; border: 1px solid var(--border); color: var(--text-secondary);" onclick="modalKapat()">Bekle</button>
         </div>
     </div>
@@ -264,12 +266,22 @@
             saveData();
         }
 
-        // --- SİMÜLASYONLU SOĞUTMA VE ÖDÜL SİSTEMİ ---
+        // --- MONETAG REKLAM ENTEGRASYONU (REWARDED INTERSTITIAL) ---
         function reklamIzleBoostAl() {
-            // Reklam yerine yumuşak bir simülasyon gecikmesi vererek ödülü doğrudan işler
-            setTimeout(() => {
+            if (typeof window.show_11631125 === 'function') {
+                window.show_11631125().then(() => {
+                    // Kullanıcı reklamı başarıyla izlediğinde ödül verilir
+                    odulVerVeSogut();
+                }).catch((err) => {
+                    console.log("Reklam gösterim hatası veya kapatıldı:", err);
+                    // Hata durumunda veya reklam kapatıldığında akışın kesilmemesi için
+                    odulVerVeSogut();
+                });
+            } else {
+                // Eğer script henüz yüklenmediyse güvenli geçiş
+                console.warn("Monetag scripti yüklenemedi, test modunda ödül verildi.");
                 odulVerVeSogut();
-            }, 300);
+            }
         }
 
         function odulVerVeSogut() {
