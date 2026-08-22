@@ -260,28 +260,15 @@ const htmlContent = `<!DOCTYPE html>
             saveData();
         }
 
-        function loadMonetagSDK() {
-            if (document.getElementById('monetag-sdk')) return;
-            const script = document.createElement('script');
-            script.id = 'monetag-sdk';
-            script.src = 'https://alwingulla.com/88/tag.min.js';
-            script.setAttribute('data-zone', '11631125');
-            script.async = true;
-            script.dataset.cfasync = 'false';
-            document.head.appendChild(script);
-        }
-        loadMonetagSDK();
-
         function reklamIzleBoostAl() {
+            // Monetag entegrasyonu güvenli kontrol (SDK yüklenemediyse direkt ödül verip akışı kesmez)
             if (typeof window.show_11631125 === 'function') {
                 window.show_11631125().then(() => {
                     odulVerVeSogut();
                 }).catch((err) => {
-                    console.warn("Reklam gösterimi hata verdi, yedek ödül:", err);
                     odulVerVeSogut();
                 });
             } else {
-                console.warn("Monetag fonksiyonu yüklenemedi, test ödülü veriliyor.");
                 odulVerVeSogut();
             }
         }
