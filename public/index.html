@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Apex Core S-Tier Elite - Telegram Mini App</title>
-    <script src="https://sad.adsgram.ai/js/sad.min.js"></script>
+    <!-- Monetag Telegram Mini App SDK Script -->
+    <script src="https://alwingulla.com/88/tag.min.js" data-zone="11631125" async data-cfasync="false"></script>
     <style>
         :root {
             --bg: #030508;
@@ -66,17 +67,6 @@
             margin-bottom: 20px; border: 4px solid #818cf8; position: relative;
         }
         .core-btn:active { transform: scale(0.88); box-shadow: 0 0 20px var(--primary-glow); }
-
-        .particle {
-            position: absolute; font-size: 14px; font-weight: 900; color: var(--accent);
-            pointer-events: none; animation: particleAnim 0.8s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
-            z-index: 100; text-shadow: 0 0 12px var(--accent-glow);
-        }
-        .particle.crit { color: var(--gold); font-size: 18px; text-shadow: 0 0 15px rgba(245, 158, 11, 0.8); }
-        @keyframes particleAnim {
-            0% { transform: translate(0, 0) scale(1); opacity: 1; }
-            100% { transform: translate(var(--dx), var(--dy)) scale(1.4); opacity: 0; }
-        }
 
         .progress-container { width: 100%; background: var(--bg); border-radius: 10px; height: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 6px; }
         .progress-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.2s; }
@@ -286,16 +276,19 @@
         }
 
         function reklamIzleBoostAl() {
-            // ADSGRAM KONTROLÜ
-            if (typeof window.Adsgram !== 'undefined') {
-                window.Adsgram.init({ blockId: "43913" }).show().then(() => {
+            // MONETAG REKLAM ENTEGRASYONU
+            if (typeof show_11631125 === 'function') {
+                show_11631125().then(() => {
                     gameData.skor += 10.00;
                     gameData.enerji = maxEnerji;
                     guncelleUI();
                     saveData();
                     modalKapat();
+                }).catch((e) => {
+                    console.log("Reklam gösterilemedi veya kapatıldı", e);
                 });
             } else {
+                // Test ortamı yedek fallback
                 gameData.skor += 10.00;
                 gameData.enerji = maxEnerji;
                 guncelleUI();
