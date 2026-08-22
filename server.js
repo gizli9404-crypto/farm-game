@@ -1,15 +1,317 @@
-const express = require('express');
-const path = require('path');
-const app = express();
-const PORT = process.env.PORT || 3000;
+const http = require('http');
 
-// Statik dosyaları ve ana dizini dışarıya sun
-app.use(express.static(path.join(__dirname)));
+const PORT = process.env.PORT || 8080;
 
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+const htmlContent = `<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Apex Core S-Tier Elite - Telegram Mini App</title>
+    <style>
+        :root {
+            --bg: #030508;
+            --surface: #0b0f19;
+            --surface-hover: #131a2b;
+            --primary: #4f46e5;
+            --primary-glow: rgba(79, 70, 229, 0.5);
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.5);
+            --pink: #f43f5e;
+            --gold: #f59e0b;
+            --text: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border: #1e293b;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', -apple-system, sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+        body { background: var(--bg); color: var(--text); height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+
+        #bgCanvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+
+        .app-container {
+            width: 100%; max-width: 400px; height: 100%; max-height: 820px;
+            background: rgba(11, 15, 25, 0.9); backdrop-filter: blur(16px);
+            border: 1px solid var(--border); border-radius: 32px;
+            display: flex; flex-direction: column; justify-content: space-between;
+            padding: 16px; box-shadow: 0 30px 80px rgba(0,0,0,0.95); position: relative; overflow: hidden; z-index: 2;
+        }
+
+        .header { display: flex; justify-content: space-between; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 12px 16px; z-index: 10; }
+        .logo { font-size: 13px; font-weight: 900; color: #818cf8; display: flex; align-items: center; gap: 6px; letter-spacing: 0.5px; }
+        .balance { font-size: 13px; font-weight: 900; color: var(--text); background: rgba(79, 70, 229, 0.15); padding: 6px 12px; border-radius: 12px; border: 1px solid rgba(79, 70, 229, 0.3); }
+
+        .view { display: none; flex-direction: column; gap: 12px; flex-grow: 1; margin: 12px 0; overflow-y: auto; }
+        .view.active { display: flex; }
+
+        .clicker-box {
+            flex-grow: 1; background: var(--surface); border: 1px solid var(--border);
+            border-radius: 24px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative; overflow: hidden; text-align: center; padding: 20px;
+        }
+
+        .rank-badge { font-size: 10px; font-weight: 800; color: var(--gold); background: rgba(245, 158, 11, 0.1); padding: 4px 10px; border-radius: 8px; border: 1px solid rgba(245, 158, 11, 0.2); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px; }
+
+        .core-btn {
+            width: 160px; height: 160px; border-radius: 50%;
+            background: radial-gradient(circle, #6366f1 0%, #3730a3 70%, #1e1b4b 100%);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 64px; box-shadow: 0 0 60px var(--primary-glow);
+            cursor: pointer; transition: transform 0.06s cubic-bezier(0.3, 1.5, 0.5, 1), box-shadow 0.06s ease;
+            margin-bottom: 20px; border: 4px solid #818cf8; position: relative;
+        }
+        .core-btn:active { transform: scale(0.88); box-shadow: 0 0 20px var(--primary-glow); }
+
+        .progress-container { width: 100%; background: var(--bg); border-radius: 10px; height: 10px; border: 1px solid var(--border); overflow: hidden; margin-bottom: 6px; }
+        .progress-bar { width: 100%; height: 100%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.2s; }
+        .stats-text { font-size: 11px; color: var(--text-secondary); font-weight: 700; display: flex; justify-content: space-between; width: 100%; }
+
+        .card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 14px; }
+        .card-title { font-size: 11px; font-weight: 800; color: var(--text-secondary); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .btn { background: var(--primary); color: #fff; border: none; padding: 13px; border-radius: 14px; font-weight: 800; font-size: 11px; cursor: pointer; text-transform: uppercase; width: 100%; transition: 0.15s; box-shadow: 0 4px 15px rgba(79, 70, 229, 0.3); }
+        .btn:active { transform: scale(0.98); }
+        .btn-ad { background: linear-gradient(135deg, var(--pink), var(--primary)); margin-top: 8px; box-shadow: 0 4px 20px rgba(244, 63, 94, 0.3); }
+
+        .list-row { display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 12px; border-radius: 14px; border: 1px solid var(--border); margin-bottom: 8px; font-size: 11px; }
+
+        .dock { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; display: flex; justify-content: space-around; padding: 6px; z-index: 10; backdrop-filter: blur(10px); }
+        .dock-item { background: transparent; border: none; color: var(--text-secondary); border-radius: 14px; padding: 8px 10px; text-align: center; font-size: 8px; font-weight: 700; cursor: pointer; flex: 1; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: 0.2s; }
+        .dock-item span:first-child { font-size: 18px; }
+        .dock-item.active { background: var(--bg); color: #818cf8; border: 1px solid var(--border); }
+
+        .modal-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(3, 5, 8, 0.85); backdrop-filter: blur(8px);
+            display: none; justify-content: center; align-items: center; z-index: 1000; padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-card {
+            background: var(--surface); border: 1px solid var(--pink); border-radius: 24px;
+            padding: 24px; text-align: center; width: 100%; max-width: 320px;
+            box-shadow: 0 10px 40px rgba(244, 63, 94, 0.3); animation: modalPop 0.3s cubic-bezier(0.1, 1.2, 0.3, 1);
+        }
+        @keyframes modalPop {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="bgCanvas"></canvas>
+
+    <div class="app-container" id="appContainer">
+        <div class="header">
+            <div class="logo">⚡ APEX S-TIER</div>
+            <div class="balance">💎 <span id="skorDisplay">0.00</span> APEX</div>
+        </div>
+
+        <div class="view active" data-view="konsol">
+            <div class="clicker-box" id="clickArea">
+                <div class="rank-badge" id="rankBadge">RÜTBE: NOVICE NODE</div>
+                <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 12px; font-weight: 700;">Verimlilik: <span style="color:var(--accent);">+<span id="gucDisplay">0.10</span> APEX / tık</span></div>
+                
+                <div class="core-btn" id="coreButton" onclick="coreTikla(event)">🌌</div>
+
+                <div style="width: 100%;">
+                    <div class="stats-text"><span>Çekirdek Kapasitesi</span> <span id="enerjiText">100 / 100</span></div>
+                    <div class="progress-container">
+                        <div class="progress-bar" id="enerjiBar"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="view" data-view="gorevler">
+            <div class="card" style="border-color: var(--pink);">
+                <div class="card-title" style="color: var(--pink);">🚀 Acil Soğutma ve Turbo Boost</div>
+                <div style="font-size: 11px; color: var(--text-secondary); line-height: 1.4; margin-bottom: 10px;">
+                    Sistemi anında fullemek ve bonus +10.00 APEX kazanmak için tıklayın.
+                </div>
+                <button class="btn btn-ad" onclick="reklamIzleBoostAl()">🎬 SİSTEMİ SOĞUT VE +10 APEX KAZAN</button>
+            </div>
+
+            <div class="card">
+                <div class="card-title">Topluluk Görevleri</div>
+                <div class="list-row">
+                    <div><b>Kanal Doğrulaması</b><div style="font-size: 9px; color: var(--text-secondary);">Ağ bildirimlerini kontrol et</div></div>
+                    <button id="gorevBtn" class="btn" style="width: auto; padding: 6px 12px; font-size: 9px;" onclick="gorevTamamla(this)">Ödülü Al</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="view" data-view="havuz">
+            <div class="card" style="flex-grow: 1;">
+                <div class="card-title">📜 Şeffaf Ödül Havuzu</div>
+                
+                <div class="list-row" style="border-color: var(--primary); background: rgba(79, 70, 229, 0.05);">
+                    <div><b>Senin Cüzdan Varlığın</b><div style="font-size: 9px; color: var(--text-secondary);" id="listeSkor">0.00 APEX</div></div>
+                    <span style="color: #818cf8;">Aktif</span>
+                </div>
+            </div>
+            <button class="btn" onclick="sekmeDegis('konsol')">← KONSOLA DÖN</button>
+        </div>
+
+        <div class="dock">
+            <button class="dock-item active" onclick="sekmeDegis('konsol')"><span>💻</span><span>Konsol</span></button>
+            <button class="dock-item" onclick="sekmeDegis('gorevler')"><span>🎯</span><span>Görevler</span></button>
+            <button class="dock-item" onclick="sekmeDegis('havuz')"><span>📜</span><span>Ödüller</span></button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="overloadModal">
+        <div class="modal-card">
+            <div style="font-size: 36px; margin-bottom: 10px;">⚠️</div>
+            <div style="font-size: 14px; font-weight: 900; color: var(--pink); margin-bottom: 6px;">SİSTEM AŞIRI YÜKLENDİ!</div>
+            <button class="btn btn-ad" style="margin-bottom: 8px;" onclick="reklamIzleBoostAl()">🎬 SİSTEMİ ACİL SOĞUT</button>
+            <button class="btn" style="background: transparent; border: 1px solid var(--border); color: var(--text-secondary);" onclick="modalKapat()">Bekle</button>
+        </div>
+    </div>
+
+    <script>
+        let gameData = { skor: 0.00, enerji: 100, gorevTamamlandi: false };
+
+        function saveData() { localStorage.setItem('apexGameData', JSON.stringify(gameData)); }
+        function loadData() {
+            const saved = localStorage.getItem('apexGameData');
+            if (saved) {
+                gameData = JSON.parse(saved);
+                if (gameData.gorevTamamlandi) {
+                    const gBtn = document.getElementById('gorevBtn');
+                    if(gBtn) { gBtn.innerText = "Tamamlandı"; gBtn.style.background = "var(--accent)"; gBtn.disabled = true; }
+                }
+            }
+        }
+
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        let particles = [];
+        for(let i=0; i<35; i++) {
+            particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6, radius: Math.random() * 2 + 1 });
+        }
+
+        function animateBg() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(79, 70, 229, 0.15)';
+            ctx.strokeStyle = 'rgba(79, 70, 229, 0.08)';
+            particles.forEach((p) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+            });
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+        const tiklamaGucu = 0.10;
+        const maxEnerji = 100;
+
+        function sekmeDegis(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelector('[data-view="' + viewName + '"]').classList.add('active');
+            document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function coreTikla(event) {
+            if (gameData.enerji >= 2) {
+                gameData.skor += tiklamaGucu;
+                gameData.enerji -= 2;
+                guncelleUI();
+                saveData();
+            } else {
+                modalAc();
+            }
+        }
+
+        function guncelleUI() {
+            const skorDisp = document.getElementById("skorDisplay");
+            const listeSkor = document.getElementById("listeSkor");
+            const enerjiText = document.getElementById("enerjiText");
+            const enerjiBar = document.getElementById("enerjiBar");
+            const badge = document.getElementById("rankBadge");
+
+            if(skorDisp) skorDisp.innerText = gameData.skor.toFixed(2);
+            if(listeSkor) listeSkor.innerText = gameData.skor.toFixed(2) + " APEX";
+            if(enerjiText) enerjiText.innerText = gameData.enerji + " / " + maxEnerji;
+            if(enerjiBar) enerjiBar.style.width = (gameData.enerji / maxEnerji) * 100 + "%";
+            
+            if(badge) {
+                if (gameData.skor > 100) badge.innerText = "RÜTBE: APEX LEGEND";
+                else if (gameData.skor > 30) badge.innerText = "RÜTBE: MASTER GRID";
+            }
+        }
+
+        function modalAc() { document.getElementById('overloadModal').classList.add('active'); }
+        function modalKapat() { document.getElementById('overloadModal').classList.remove('active'); }
+
+        function gorevTamamla(btn) {
+            gameData.gorevTamamlandi = true;
+            gameData.skor += 2.00;
+            btn.innerText = "Tamamlandı";
+            btn.style.background = "var(--accent)";
+            btn.disabled = true;
+            guncelleUI();
+            saveData();
+        }
+
+        function loadMonetagSDK() {
+            if (document.getElementById('monetag-sdk')) return;
+            const script = document.createElement('script');
+            script.id = 'monetag-sdk';
+            script.src = 'https://alwingulla.com/88/tag.min.js';
+            script.setAttribute('data-zone', '11631125');
+            script.async = true;
+            script.dataset.cfasync = 'false';
+            document.head.appendChild(script);
+        }
+        loadMonetagSDK();
+
+        function reklamIzleBoostAl() {
+            if (typeof window.show_11631125 === 'function') {
+                window.show_11631125().then(() => {
+                    odulVerVeSogut();
+                }).catch((err) => {
+                    console.warn("Reklam gösterimi hata verdi, yedek ödül:", err);
+                    odulVerVeSogut();
+                });
+            } else {
+                console.warn("Monetag fonksiyonu yüklenemedi, test ödülü veriliyor.");
+                odulVerVeSogut();
+            }
+        }
+
+        function odulVerVeSogut() {
+            gameData.skor += 10.00;
+            gameData.enerji = maxEnerji;
+            guncelleUI();
+            saveData();
+            modalKapat();
+        }
+
+        loadData();
+        guncelleUI();
+        setInterval(() => {
+            if (gameData.enerji < maxEnerji) {
+                gameData.enerji = Math.min(maxEnerji, gameData.enerji + 1);
+                guncelleUI();
+                saveData();
+            }
+        }, 2000);
+    </script>
+</body>
+</html>`;
+
+const server = http.createServer((req, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+    res.end(htmlContent);
 });
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+server.listen(PORT, () => {
+    console.log('Server running on port ' + PORT);
 });
