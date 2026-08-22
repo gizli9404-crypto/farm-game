@@ -1,68 +1,147 @@
-const express = require('express');
-const path = require('path');
-const { Telegraf } = require('telegraf');
+<script>
+        // --- DATA YÖNETİMİ ---
+        let gameData = {
+            skor: 0.00,
+            enerji: 100,
+            gorevTamamlandi: false
+        };
 
-const app = express();
-const PORT = process.env.PORT || 8080;
-
-// Bot Token ve Kanal Bilgileri
-const BOT_TOKEN = process.env.BOT_TOKEN || '8970909833:AAGyAASBhKLaGvC0KQQdQMHosVmv6_cs6A';
-const CHANNEL_ID = process.env.CHANNEL_ID || '@tiny_farm_adventure_channel';
-
-const bot = new Telegraf(BOT_TOKEN);
-
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.json());
-
-// Telegram Bot Komutları (Apex Core S-Tier Uyumlu)
-bot.start((ctx) => {
-    const userName = ctx.from.first_name || 'Operatör';
-    ctx.reply(`🌌 Merhaba ${userName}! Apex Core S-Tier sistemine hoş geldin.\n\nAşağıdaki butona tıklayarak hemen siber çekirdeği çalıştırmaya ve APEX puanları toplamaya başla!`, {
-        reply_markup: {
-            inline_keyboard: [
-                [{ text: "💻 Konsolu Aç & Oyna", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }],
-                [{ text: "📢 Duyuru Kanalı", url: "https://t.me/tin_farm_adventure" }, { text: "💬 Sohbet Grubu", url: "https://t.me/tiny_farm_sohbet" }]
-            ]
+        function saveData() {
+            localStorage.setItem('apexGameData', JSON.stringify(gameData));
         }
-    });
-});
 
-bot.command('market', (ctx) => {
-    ctx.reply("🛒 Çekirdek yükseltmeleri ve sistem soğutma modülleri yakında aktif! Oyunu açarak anlık verimliliğini kontrol edebilirsin.");
-});
-
-// Express sunucusunu önce ayağa kaldırıyoruz (Railway port health-check için bunu ister)
-app.listen(PORT, () => {
-    console.log(`Sunucu ${PORT} portunda başarıyla çalışıyor.`);
-    
-    // Sunucu açıldıktan sonra botu başlatıyoruz
-    bot.launch().then(() => {
-        console.log("Telegram botu başarıyla başlatıldı ve komutları dinliyor!");
-    }).catch(err => {
-        console.error("Bot başlatılırken hata oluştu:", err);
-    });
-});
-
-// Otomatik Kanal/Grup Duyuru Sistemi (Her 1 saatte bir)
-setInterval(async () => {
-    try {
-        await bot.telegram.sendMessage(CHANNEL_ID, "📢 **Sistem Bülteni:** \nÇekirdek kapasiteleri doldu! Enerjini yenilemek, kritik vuruşlar yapmak ve sıralamada zirveye yerleşmek için terminale bağlan! 🚀", {
-            parse_mode: 'Markdown',
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: "⚡ Konsola Dön", web_app: { url: "https://farm-game-production-b1cb.up.railway.app" } }]
-                ]
+        function loadData() {
+            const saved = localStorage.getItem('apexGameData');
+            if (saved) {
+                gameData = JSON.parse(saved);
+                if (gameData.gorevTamamlandi) {
+                    const gBtn = document.getElementById('gorevBtn');
+                    gBtn.innerText = "Tamamlandı";
+                    gBtn.style.background = "var(--accent)";
+                    gBtn.disabled = true;
+                }
             }
-        });
-        console.log("Otomatik duyuru kanala gönderildi.");
-    } catch (e) {
-        console.log("Duyuru gönderilemedi:", e.message);
-    }
-}, 60 * 60 * 1000);
+        }
 
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+        // --- DİNAMİK ARKA PLAN EFEKTİ ---
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d');
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
 
-process.once('SIGINT', () => bot.stop('SIGINT'));
-process.once('SIGTERM', () => bot.stop('SIGTERM'));
+        let particles = [];
+        for(let i=0; i<35; i++) {
+            particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6, radius: Math.random() * 2 + 1 });
+        }
+
+        function animateBg() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(79, 70, 229, 0.15)';
+            ctx.strokeStyle = 'rgba(79, 70, 229, 0.08)';
+            particles.forEach((p) => {
+                p.x += p.vx; p.y += p.vy;
+                if (p.x < 0 || p.x > canvas.width) p.vx *= -1;
+                if (p.y < 0 || p.y > canvas.height) p.vy *= -1;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+            });
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+        // --- OYUN MANTIĞI ---
+        const tiklamaGucu = 0.10;
+        const maxEnerji = 100;
+
+        function sekmeDegis(viewName) {
+            document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+            document.querySelector(`[data-view="${viewName}"]`).classList.add('active');
+            document.querySelectorAll('.dock-item').forEach(d => d.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+        }
+
+        function coreTikla(event) {
+            if (gameData.enerji >= 2) {
+                gameData.skor += tiklamaGucu;
+                gameData.enerji -= 2;
+                guncelleUI();
+                saveData();
+            } else {
+                modalAc();
+            }
+        }
+
+        function guncelleUI() {
+            document.getElementById("skorDisplay").innerText = gameData.skor.toFixed(2);
+            document.getElementById("listeSkor").innerText = gameData.skor.toFixed(2) + " APEX";
+            document.getElementById("enerjiText").innerText = gameData.enerji + " / " + maxEnerji;
+            document.getElementById("enerjiBar").style.width = (gameData.enerji / maxEnerji) * 100 + "%";
+            
+            let badge = document.getElementById("rankBadge");
+            if (gameData.skor > 100) badge.innerText = "RÜTBE: APEX LEGEND";
+            else if (gameData.skor > 30) badge.innerText = "RÜTBE: MASTER GRID";
+        }
+
+        function modalAc() { document.getElementById('overloadModal').classList.add('active'); }
+        function modalKapat() { document.getElementById('overloadModal').classList.remove('active'); }
+
+        function gorevTamamla(btn) {
+            gameData.gorevTamamlandi = true;
+            gameData.skor += 2.00;
+            btn.innerText = "Tamamlandı";
+            btn.style.background = "var(--accent)";
+            btn.disabled = true;
+            guncelleUI();
+            saveData();
+        }
+
+        // --- MONETAG SDK DİNAMİK YÜKLEYİCİ ---
+        function loadMonetagSDK() {
+            if (document.getElementById('monetag-sdk')) return;
+            const script = document.createElement('script');
+            script.id = 'monetag-sdk';
+            script.src = 'https://alwingulla.com/88/tag.min.js';
+            script.setAttribute('data-zone', '11631125');
+            script.async = true;
+            script.dataset.cfasync = 'false';
+            document.head.appendChild(script);
+        }
+        loadMonetagSDK();
+
+        // --- MONETAG REKLAM ENTEGRASYONU ---
+        function reklamIzleBoostAl() {
+            if (typeof window.show_11631125 === 'function') {
+                window.show_11631125().then(() => {
+                    odulVerVeSogut();
+                }).catch((err) => {
+                    console.warn("Reklam gösterimi hata verdi, yedek ödül:", err);
+                    odulVerVeSogut();
+                });
+            } else {
+                console.warn("Monetag fonksiyonu hâlâ yüklenemedi, test ödülü veriliyor.");
+                odulVerVeSogut();
+            }
+        }
+
+        function odulVerVeSogut() {
+            gameData.skor += 10.00;
+            gameData.enerji = maxEnerji;
+            guncelleUI();
+            saveData();
+            modalKapat();
+        }
+
+        // --- BAŞLATICI ---
+        loadData();
+        guncelleUI();
+        setInterval(() => {
+            if (gameData.enerji < maxEnerji) {
+                gameData.enerji = Math.min(maxEnerji, gameData.enerji + 1);
+                guncelleUI();
+                saveData();
+            }
+        }, 2000);
+    </script>
