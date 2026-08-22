@@ -266,20 +266,23 @@
             saveData();
         }
 
-        // --- GÜVENLİ MONETAG / FALLBACK TETİKLEYİCİSİ ---
+        // --- GELİŞMİŞ GÜVENLİ REKLAM TETİKLEYİCİSİ (HATA KORUMALI) ---
         function reklamIzleBoostAl() {
-            if (typeof show_11631125 === 'function') {
-                // Gerçek Monetag Reklam fonksiyonu aktifse çalıştır
-                show_11631125().then(() => {
+            // Eğer fonksiyon tarayıcıda tanımlıysa (reklam yüklenebildiyse) çalıştır
+            if (typeof window.show_11631125 === 'function') {
+                window.show_11631125().then(() => {
                     odulVerVeSogut();
                 }).catch((err) => {
-                    console.log("Reklam gösterilemedi, test/yedek moda geçiliyor.", err);
-                    odulVerVeSogut(); // Hata verse bile kullanıcıyı mağdur etme
+                    console.log("Reklam gösterim hatası, güvenli moda geçildi:", err);
+                    odulVerVeSogut(); // Hata durumunda kullanıcıyı oyunda tut
                 });
             } else {
-                // Betik yüklenemediyse (Telegram WebView engeli vb.) direkt ödülü verip sistemi çalıştırmaya devam et
-                console.warn("Monetag fonksiyonu bulunamadı, güvenli mod üzerinden ödül verildi.");
-                odulVerVeSogut();
+                // Betik yüklenemediyse (Telegram içi engel/reklam engelleyici vb.) kullanıcıyı bekletmeden ödülü ver
+                console.warn("Monetag scripti yüklenemediği için simülasyon modunda ödül verildi.");
+                // Kısa bir yüklenme efekti hissettirmek için 0.5 sn bekletip verelim
+                setTimeout(() => {
+                    odulVerVeSogut();
+                }, 400);
             }
         }
 
