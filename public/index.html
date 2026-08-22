@@ -266,19 +266,18 @@
             saveData();
         }
 
-        // --- GÜVENLİ MONETAG REKLAM KONTROLÜ ---
+        // --- MONETAG REKLAM ENTEGRASYONU (PANELİN ORİJİNAL YAPISI) ---
         function reklamIzleBoostAl() {
-            if (typeof window.show_11631125 === 'function') {
-                window.show_11631125().then(() => {
-                    console.log("Reklam başarıyla izlendi, ödül yükleniyor.");
+            if (typeof show_11631125 === 'function') {
+                show_11631125().then(() => {
+                    // Kullanıcı reklamı başarıyla izleyip kapattığında tetiklenir
                     odulVerVeSogut();
                 }).catch((err) => {
-                    console.warn("Reklam gösterilemedi veya kapatıldı, yedek ödül tetikleniyor:", err);
-                    // Kullanıcı reklam havuzunda boşluk nedeniyle reklam göremezse oyunu tıkamamak için ödülü veriyoruz
+                    console.warn("Reklam gösterilemedi, yedek akış devreye giriyor:", err);
                     odulVerVeSogut();
                 });
             } else {
-                console.warn("Monetag SDK yüklenemedi (AdBlock engelliyor olabilir). Doğrudan ödül veriliyor.");
+                console.warn("Monetag fonksiyonu yüklenemedi, doğrudan ödül veriliyor.");
                 odulVerVeSogut();
             }
         }
